@@ -1,0 +1,84 @@
+// middleware/requireAuth.js
+import jwt from "jsonwebtoken";
+import { pool } from "../db.js";
+import { checkUserPermission, getUserRole } from "../initDatabase.js";
+
+export default async function requireAuth(req, res, next) {
+    const auth = req.headers.authorization || "";
+    const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
+
+    if (!token) return res.status(401).json({ message: "Missing token" });
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Fetch full user context including role
+        const [rows] = await pool.query(
+            `SELECT u.id, u.company_id, u.type, u.role_id, r.name as role 
+             FROM users u 
+             LEFT JOIN roles r ON u.role_id = r.id 
+             WHERE u.id = ? LIMIT 1`,
+            [decoded.id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(401).json({ message: "User not found" });
+        }
+
+        const userRow = rows[0];
+
+        req.user = {
+            id: userRow.id,
+            role: userRow.type === 'super_admin' ? 'super_admin' : userRow.role,
+            type: userRow.type,
+            role_id: userRow.role_id,
+            company_id: userRow.company_id
+        };
+        next();
+    } catch (error) {
+        console.error("JWT verification error:", error);
+        return res.status(401).json({ message: "Invalid or expired token" });
+    }
+}
+
+// Middleware factory for permission-based access control
+export function requirePermission(permission) {
+    return async (req, res, next) => {
+        try {
+            if (!req.user || !req.user.id) {
+                return res.status(401).json({ message: "Authentication required" });
+            }
+
+            const hasPermission = await checkUserPermission(req.user.id, permission);
+            if (!hasPermission) {
+                return res.status(403).json({ message: "Insufficient permissions" });
+            }
+
+            next();
+        } catch (error) {
+            console.error("Permission check error:", error);
+            return res.status(500).json({ message: "Server error" });
+        }
+    };
+}
+
+// Middleware factory for role-based access control
+export function requireRole(roleName) {
+    return async (req, res, next) => {
+        try {
+            if (!req.user || !req.user.id) {
+                return res.status(401).json({ message: "Authentication required" });
+            }
+
+            const userRole = await getUserRole(req.user.id);
+            if (!userRole || userRole.name !== roleName) {
+                return res.status(403).json({ message: "Insufficient role privileges" });
+            }
+
+            next();
+        } catch (error) {
+            console.error("Role check error:", error);
+            return res.status(500).json({ message: "Server error" });
+        }
+    };
+}

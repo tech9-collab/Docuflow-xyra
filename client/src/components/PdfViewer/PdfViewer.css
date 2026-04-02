@@ -1,0 +1,8 @@
+.pdf-wrap { width: 100%; height: 100%; display: grid; grid-template-rows: auto 1fr; gap: 8px; }
+.pdf-toolbar { display: flex; align-items: center; gap: 8px; width: 100%; }
+.btn-mini { height: 30px; padding: 0 10px; border-radius: 8px; border: 1px solid #e5e7eb; background: #fff; cursor: pointer; }
+.btn-mini:disabled { opacity: .5; cursor: not-allowed; }
+.pdf-meta { font-size: 12px; color: #374151; }
+.spacer { flex: 1; }
+.pdf-stage { width: 100%; height: 100%; display: grid; place-items: center; overflow: auto; }
+.pdf-canvas { max-width: 100%; height: auto; border: 1px solid #f3f4f6; border-radius: 8px; }

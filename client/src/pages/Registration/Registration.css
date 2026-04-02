@@ -1,0 +1,497 @@
+:root {
+    --prj-bd: #0000001a;
+    --prj-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    --prj-black: #000;
+    --prj-white: #fff;
+}
+
+/* Scope everything under .prj-page so we don't touch your navbar */
+.prj-page {
+    color: #000;
+    background: transparent;
+    padding: 12px 16px;
+}
+
+/* Header row */
+.prj-headerbar {
+    max-width: 1320px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.prj-h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+/* Grid – responsive: 1 / 2 / 3 columns */
+.prj-grid {
+    max-width: 1320px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+}
+
+@media (min-width: 768px) {
+    .prj-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1200px) {
+    .prj-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Card (smaller, tighter) */
+.prj-card {
+    border: 1px solid var(--prj-bd);
+    border-radius: 16px;
+    background: var(--prj-white);
+    box-shadow: var(--prj-shadow);
+    overflow: hidden;
+}
+
+.prj-card-hd {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 14px;
+    gap: 8px;
+}
+
+.prj-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.prj-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    cursor: text;
+    flex-grow: 1;
+}
+
+.prj-card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.prj-edit-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.prj-edit-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.prj-rename {
+    padding: 8px 10px;
+    border: 1px solid #00000033;
+    border-radius: 8px;
+    outline: none;
+    min-width: 220px;
+    flex-grow: 1;
+}
+
+.prj-rename:focus {
+    box-shadow: 0 0 0 2px #00000040;
+}
+
+.prj-icon-btn {
+    height: 32px;
+    width: 32px;
+    border: 1px solid #00000026;
+    border-radius: 999px;
+    background: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prj-icon-btn:hover {
+    background: #000;
+    color: #fff;
+}
+
+.prj-pad {
+    padding: 0 14px 14px;
+}
+
+.prj-department-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+}
+
+.prj-department-label {
+    font-weight: 600;
+    color: #666;
+}
+
+.prj-department-name {
+    color: #333;
+}
+
+/* Buttons */
+.prj-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.prj-btn-solid {
+    background: var(--prj-black);
+    color: var(--prj-white);
+    border: 1px solid var(--prj-black);
+    padding: 8px 12px;
+}
+
+.prj-btn-solid:hover {
+    opacity: 0.9;
+}
+
+.prj-btn-outline {
+    background: var(--prj-white);
+    color: var(--prj-black);
+    border: 1px solid var(--prj-black);
+    padding: 6px 10px;
+}
+
+.prj-btn-outline:hover {
+    background: var(--prj-black);
+    color: var(--prj-white);
+}
+
+/* Rows */
+.prj-rows {
+    border: 1px solid var(--prj-bd);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.prj-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--prj-bd);
+}
+
+.prj-row:last-child {
+    border-bottom: 0;
+}
+
+.prj-row-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.prj-row-label {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Utilities */
+.prj-wfull {
+    width: 100%;
+}
+
+.prj-empty {
+    margin-top: 28px;
+    text-align: center;
+    color: #666;
+}
+
+.prj-loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.prj-error {
+    color: #e53e3e;
+    font-size: 14px;
+    padding: 8px 0;
+}
+
+/* Modal (scoped) */
+.prj-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 50;
+}
+
+.prj-modal-card {
+    width: 100%;
+    max-width: 480px;
+    background: #fff;
+    border: 1px solid var(--prj-bd);
+    border-radius: 14px;
+    box-shadow: var(--prj-shadow);
+    overflow: hidden;
+}
+
+.prj-modal-hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--prj-bd);
+}
+
+.prj-modal-hd h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.prj-modal-body {
+    padding: 12px 14px;
+    display: grid;
+    gap: 12px;
+}
+
+.prj-field-label {
+    font-size: 12px;
+    color: #333;
+    font-weight: 600;
+}
+
+.prj-modal-ft {
+    padding: 12px 14px;
+    border-top: 1px solid var(--prj-bd);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* Dropdown styles */
+.prj-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.prj-dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border: 1px solid #00000033;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    min-height: 36px;
+}
+
+.prj-dropdown-header.prj-dropdown-open {
+    border-color: #000;
+}
+
+.prj-dropdown-text {
+    font-size: 14px;
+    color: #333;
+    flex-grow: 1;
+    text-align: left;
+}
+
+.prj-dropdown-icon {
+    transition: transform 0.2s ease;
+}
+
+.prj-dropdown-header.prj-dropdown-open .prj-dropdown-icon {
+    transform: rotate(180deg);
+}
+
+.prj-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #00000033;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 4px;
+    z-index: 100;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.prj-dropdown-options {
+    padding: 4px 0;
+}
+
+.prj-dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    gap: 8px;
+}
+
+.prj-dropdown-item:hover {
+    background-color: #f5f5f5;
+}
+
+.prj-dropdown-item.prj-dropdown-selected {
+    background-color: #f0f0f0;
+}
+
+.prj-dropdown-item.prj-select-all {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 4px;
+    padding-bottom: 8px;
+}
+
+.prj-dropdown-checkbox {
+    flex-shrink: 0;
+}
+
+.prj-dropdown-label {
+    font-size: 14px;
+    color: #333;
+    flex-grow: 1;
+}
+
+.prj-dropdown-divider {
+    height: 1px;
+    background-color: #eee;
+    margin: 4px 0;
+}
+
+/* Checkbox group */
+.prj-checkbox-group {
+    border: 1px solid #00000033;
+    border-radius: 8px;
+    padding: 8px;
+    background: #fff;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.prj-checkbox-item {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    cursor: pointer;
+    gap: 8px;
+    border-radius: 4px;
+}
+
+.prj-checkbox-item:hover {
+    background-color: #f5f5f5;
+}
+
+.prj-checkbox-item.prj-select-all {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 4px;
+    padding-bottom: 8px;
+}
+
+/* Registration specific styles */
+.registration-container {
+  padding: 20px;
+}
+
+.registration-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.registration-content {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.registration-summary-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+/* Textarea styles */
+.prj-rename[rows] {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.registration-page {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.page-header p {
+    color: #666;
+    font-size: 16px;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.card p {
+    color: #666;
+    line-height: 1.5;
+}

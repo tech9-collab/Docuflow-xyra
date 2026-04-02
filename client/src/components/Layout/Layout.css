@@ -1,0 +1,39 @@
+/* Light theme shell */
+.app-shell {
+  display: grid;
+  grid-template-columns: 280px 1fr; /* expanded */
+  min-height: 100dvh;
+  background: #f7f8fb;
+  color: #0f172a;
+  transition: grid-template-columns 260ms ease; /* smooth grid change */
+}
+
+.app-shell.is-closed {
+  grid-template-columns: 0px 1fr; /* fully collapsed width */
+}
+
+.app-main {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-width: 0;
+  height: 100dvh;
+}
+
+.app-content { padding: 20px 24px; overflow: auto; transition: padding 200ms ease; }
+
+/* slide the sidebar out when closed */
+.app-shell.is-closed .sidebar {
+  transform: translateX(-100%); /* move out */
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar {
+  transition: transform 260ms ease, opacity 200ms ease;
+}
+
+/* (optional) compact on small screens: start closed */
+@media (max-width: 900px) {
+  .app-shell { grid-template-columns: 0px 1fr; }
+  .app-shell.is-open { grid-template-columns: 260px 1fr; }
+}

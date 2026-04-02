@@ -1,0 +1,57 @@
+.imgv-wrap {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 8px;
+  user-select: none;
+}
+
+.imgv-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-mini {
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+}
+.btn-mini:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.imgv-meta {
+  font-size: 12px;
+  color: #374151;
+}
+.spacer {
+  flex: 1;
+}
+
+.imgv-stage {
+  position: relative;
+  overflow: hidden; /* contain panning */
+  border: 1px solid #f3f4f6;
+  border-radius: 8px;
+  background: #fff;
+  display: grid;
+  place-items: center; /* center the image origin */
+  cursor: grab;
+}
+.imgv-wrap.dragging .imgv-stage {
+  cursor: grabbing;
+}
+
+.imgv-stage img {
+  max-width: none; /* allow true zoom beyond container */
+  max-height: none;
+  will-change: transform;
+  transition: transform 80ms linear;
+  pointer-events: none;
+}

@@ -1,0 +1,43 @@
+/* Additional scoping for CT Type 1 page */
+.ct-bank-only .imp2-header h2 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.ct-bank-header {
+  align-items: center;
+}
+
+.ct-bank-header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* Reuse back button style from CtBankAndInvoice */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #111827;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  transition: all 120ms ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-back:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  transform: translateY(-1px);
+}
+
+.btn-back:active {
+  transform: translateY(0);
+}

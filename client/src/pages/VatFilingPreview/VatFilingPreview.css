@@ -1,0 +1,564 @@
+/* src/pages/vat/VatFillingPreview.css */
+
+/* Layout around the table */
+.result-page {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  background: #f9fafb;
+}
+.result-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: transparent;
+}
+.title-wrap {
+  display: grid;
+  gap: 4px;
+}
+.result-title {
+  margin: 0;
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 800;
+}
+.title-sub {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+.head-actions {
+  display: flex;
+  gap: 10px;
+}
+.muted {
+  color: #6b7280;
+}
+
+/* Buttons – black */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #111827;
+  background: #111827;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 1.15;
+  transition: background 120ms ease, transform 120ms ease, opacity 120ms ease;
+}
+.btn:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+.btn:active {
+  transform: translateY(0);
+}
+.btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn-black {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+.btn-black:hover {
+  background: #0a0a0a;
+}
+
+/* Segmented control */
+.seg {
+  display: inline-flex;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+.seg-black {
+  border-color: #111827;
+}
+.seg-black .seg-btn {
+  color: #111827;
+}
+.seg-black .seg-btn.active {
+  background: #111827;
+  color: #fff;
+}
+.seg-btn {
+  padding: 10px 14px;
+  font-size: 13px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+.seg-btn + .seg-btn {
+  border-left: 1px solid #e5e7eb;
+}
+.seg-btn:hover {
+  background: #f3f4f6;
+}
+.seg-btn.active {
+  font-weight: 700;
+}
+
+/* Card */
+.result-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.05);
+}
+
+/* ───────────────── TABLE + SCROLLER ───────────────── */
+
+/* Wrapper that owns the scrollbars */
+.tbl-scroller {
+  height: 60vh; /* fixed height → vertical scrollbar */
+  overflow-x: auto; /* horizontal scroll */
+  overflow-y: auto; /* vertical scroll */
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Base table */
+.tbl {
+  table-layout: auto; /* columns size based on content by default */
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  width: max-content;
+  min-width: 100%;
+}
+
+/* Sticky header only for NON-VAT-RETURN tables */
+.tbl.nice:not(.vat-return-table) thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #f7f7fb;
+  color: #1f2937;
+  font-weight: 700;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.25;
+  width: 155px;
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  min-width: 180px;
+}
+
+/* extra class added from JSX, just reinforcing no-wrap */
+.no-wrap-header {
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+}
+
+/* Body cells */
+.tbl.nice tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  vertical-align: top;
+  font-size: 13px;
+  line-height: 1.35;
+  background: #fff;
+  text-align: left;
+}
+
+/* Numeric cells */
+.tbl td.num,
+.tbl.nice thead th.num {
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* zebra + hover */
+.tbl.nice tbody tr:nth-child(odd) td {
+  background: #fcfdff;
+}
+.tbl.nice tbody tr:hover td {
+  background: #f8fbff;
+}
+
+/* Sticky first column */
+.sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: inherit;
+  box-shadow: 1px 0 0 0 #eef2f7 inset;
+}
+
+/* RTL */
+.rtl {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Column minimums (works together with max-content width) */
+.tbl th,
+.tbl td {
+  min-width: 160px;
+}
+.tbl th.sticky-col,
+.tbl td.sticky-col {
+  min-width: 190px;
+}
+
+/* Scrollbars styling on the inner scroller */
+.tbl-scroller::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+.tbl-scroller::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 8px;
+}
+.tbl-scroller::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+/* Loading / Error */
+.loading,
+.error {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+.error {
+  color: #dc3545;
+}
+
+.tbl-scroller-bank .tbl,
+.tbl-scroller-bankRecon .tbl,
+.tbl-scroller-sales .tbl,
+.tbl-scroller-purchase .tbl,
+.tbl-scroller-salesTotal .tbl,
+.tbl-scroller-purchaseTotal .tbl,
+.tbl-scroller-vatSummary .tbl {
+  min-width: 1400px;
+}
+
+.result-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Footer actions under the table – bottom right */
+.result-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Outline button style for "Save Draft" */
+.btn-outline {
+  background: #ffffff;
+  color: #111827;
+  border-color: #111827;
+}
+.btn-outline:hover {
+  background: #f3f4f6;
+}
+
+.vf-back-btn {
+  font-size: 12px;
+}
+
+.inline-edit-input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-size: 12px;
+  background: #ffffff;
+}
+
+.actions-col {
+  min-width: 120px;
+  width: 120px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tbl-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tbl-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.row-add-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #111827;
+  background: #ffffff;
+  color: #111827;
+  font-size: 12px;
+  cursor: pointer;
+}
+.row-add-btn:hover {
+  background: #f3f4f6;
+}
+
+.row-delete-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ef4444;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 12px;
+  cursor: pointer;
+}
+.row-delete-btn:hover {
+  background: #fecaca;
+}
+
+.edit-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 6px;
+  font-size: 11px;
+  border-radius: 999px;
+  background: #ffe3bf;
+  color: #b35b00;
+  vertical-align: middle;
+}
+
+/* ───────── VAT RETURN ONLY ───────── */
+
+.vat-return-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.tbl-scroller-vatReturn .vat-return-wrapper {
+  min-width: 1400px; /* same as other tables */
+}
+
+.vat-return-section {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.vat-return-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+/* Use fixed layout so column widths line up across all VAT Return tables */
+.vat-return-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Common cell styles */
+.vat-return-table th,
+.vat-return-table td {
+  border: 1px solid #e5e5e5;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+/* Header styling (non-sticky) */
+.vat-return-table th {
+  background: #f0f0f0;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ★ COLUMN GRID FOR ALL VAT RETURN TABLES
+   col1 = label (55%)
+   col2 = AMOUNT / Amount ( AED ) (15%)
+   col3 = VAT AMOUNT (15%)
+   col4 = TOTAL AMOUNT (15%)
+   Net VAT table only has 2 columns, but col1 + col2 follow same start positions,
+   so "Amount ( AED )" aligns vertically under the AMOUNT column above. */
+.vat-return-table th:nth-child(1),
+.vat-return-table td:nth-child(1) {
+  width: 55%;
+  text-align: left;
+}
+.vat-return-table th:nth-child(2),
+.vat-return-table td:nth-child(2) {
+  width: 15%;
+  text-align: right;
+}
+.vat-return-table th:nth-child(3),
+.vat-return-table td:nth-child(3) {
+  width: 15%;
+  text-align: right;
+}
+.vat-return-table th:nth-child(4),
+.vat-return-table td:nth-child(4) {
+  width: 15%;
+  text-align: right;
+}
+
+/* Total rows bold */
+.vat-return-total-row td {
+  font-weight: 600;
+}
+
+/* NET VAT VALUE special header/first column */
+.vat-return-net th:first-child,
+.vat-return-net td:first-child {
+  text-align: left;
+}
+
+/* FTA input (if you add one later) */
+.vat-return-fta-input {
+  width: 100%;
+  text-align: right;
+}
+
+/* Label column in first two tables uses same left alignment,
+   we no longer force a conflicting fixed width here */
+.vat-return-table .vat-return-col-label {
+  text-align: left;
+  font-weight: 600;
+}
+
+/* Right align all numeric columns (2nd and onwards) */
+.vat-return-table td:nth-child(n + 2),
+.vat-return-table th:nth-child(n + 2) {
+  text-align: right;
+}
+
+.vat-return-total-label {
+  font-weight: 700;
+}
+
+.vat-return-table tfoot td {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+/* Optional explicit input width if you later use an <input> there */
+.vat-return-net .fta-input {
+  width: 120px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  text-align: right;
+}
+
+.vat-return-main-header {
+  background: #f0f0f0;
+  font-weight: 700;
+  text-align: left;
+  padding: 8px 10px;
+}
+
+.vat-return-net th:nth-child(1),
+.vat-return-net td:nth-child(1) {
+  width: 85%; /* reduced from 55% → text will wrap */
+  max-width: 85%;
+  white-space: normal; /* allow multi-line label text */
+}
+
+.vat-return-net th:nth-child(2),
+.vat-return-net td:nth-child(2) {
+  width: 70%; /* take remaining space */
+  max-width: 70%;
+  text-align: right;
+}
+
+.src-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #111;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.invoice-preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+}
+
+.invoice-preview-dialog {
+  width: min(1100px, 100%);
+  height: min(82vh, 900px);
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.invoice-preview-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.preview-title {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.preview-close-btn {
+  border: none;
+  background: #f3f3f3;
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.invoice-preview-body {
+  flex: 1;
+  min-height: 0;
+  padding: 8px;
+}

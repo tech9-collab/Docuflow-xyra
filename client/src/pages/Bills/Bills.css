@@ -1,0 +1,546 @@
+.page {
+  display: grid;
+  gap: 16px;
+}
+
+.page-header h2 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.page-header .muted {
+  color: #6b7280;
+}
+
+.upload-box {
+  padding: 18px;
+  background: #ffffff;
+  border: 1px dashed #d1d5db;
+  border-radius: 12px;
+}
+
+.placeholder {
+  display: grid;
+  place-items: center;
+  height: 220px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  color: #6b7280;
+  font-style: italic;
+  box-shadow: 0 6px 18px rgba(17, 24, 39, 0.04);
+}
+
+/* Container */
+.imp2 {
+  display: grid;
+  gap: 16px;
+}
+
+/* Header: title left, action right (Import / Download) */
+.imp2-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+.imp2-header h2 {
+  margin: 0;
+  color: #0f172a;
+}
+
+/* Two equal panes */
+.imp2-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  min-height: 540px;
+}
+@media (max-width: 1000px) {
+  .imp2-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Buttons (scoped overrides to defeat global styles that hide text) */
+.imp2 .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #111827;
+  cursor: pointer;
+  font-size: 14px !important; /* ensure text is visible */
+  line-height: 1.15; /* avoid clipping */
+  text-indent: 0 !important; /* neutralize weird globals */
+  white-space: nowrap;
+}
+.imp2 .btn:hover {
+  background: #f9fafb;
+}
+.imp2 .btn.primary {
+  background: #1d4ed8;
+  border-color: #1e40af;
+  color: #fff;
+}
+.imp2 .btn.soft {
+  background: #f9fafb;
+}
+.imp2 .btn svg {
+  color: inherit;
+}
+
+.imp2 .progress-card {
+  background: #fff; /* was #e5edf7 */
+  border: 1px solid #e5e7eb; /* was #d6e0ef */
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: grid;
+  gap: 8px;
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.04);
+}
+
+/* Optional: soften the track to theme neutrals */
+.imp2 .progress-outer {
+  width: 100%;
+  height: 8px;
+  background: #f1f5f9; /* was #e2e8f0 */
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+/* Keep the same gradient bar */
+.imp2 .progress-inner {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #6366f1, #06b6d4);
+  transition: width 300ms ease;
+}
+
+/* Left column */
+.pane-left {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.upload-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.04);
+}
+.upload-title {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.upload-sub {
+  margin: 0;
+  color: #6b7280;
+}
+.upload-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.upload-title.with-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.count-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #111827;
+}
+
+/* subtle variants to match your existing kind-pills */
+.count-pill.purchase {
+  background: #ecfeff;
+  border-color: #a5f3fc;
+  color: #155e75;
+}
+.count-pill.sales {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #3730a3;
+}
+
+/* Middle blocks */
+.block {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+.block-title {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* Upload queue */
+.queue-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.queue-item {
+  display: grid;
+  gap: 6px;
+}
+.qi-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: #374151;
+}
+.progress {
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, #60a5fa, #6366f1);
+}
+
+/* Uploaded list */
+.file-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.file-item {
+  display: flex;
+  /* grid-template-columns: minmax(0, 1fr) auto auto;  */
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.file-list-scroll {
+  --file-row-height: 56px; /* adjust if your row is taller/shorter */
+  max-height: calc(var(--file-row-height) * 5); /* ~5 rows visible */
+  overflow: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 2px; /* small padding so scrollbar doesn’t overlap */
+}
+
+/* Make each row height predictable so the 5-row calc is stable */
+.file-list .file-item {
+  min-height: var(--file-row-height);
+}
+
+/* Optional: nicer scrollbars */
+.file-list-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+.file-list-scroll::-webkit-scrollbar-thumb {
+  background: #c7d2fe;
+  border-radius: 8px;
+}
+.file-list-scroll::-webkit-scrollbar-track {
+  background: #eef2ff;
+}
+
+.kind-select {
+  flex: 0 0 130px;
+  padding: 6px 8px;
+  font-size: 12px !important;
+  line-height: 1.1;
+  margin-right: 6px;
+}
+.file-item.active {
+  border-color: #c7d2fe;
+  box-shadow: 0 0 0 2px #eef2ff;
+}
+.file-main {
+  flex: 1 1 auto;
+  min-width: 0; /* ← allows shrinking in flex/grid */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: transparent;
+  border: 0;
+  width: auto;
+  text-align: left;
+  cursor: pointer;
+}
+.icon {
+  width: 20px;
+  display: grid;
+  place-items: center;
+}
+.name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block; /* ensures ellipsis works reliably */
+}
+.icon-btn {
+  flex: 0 0 auto; /* if it ends up in a flex context */
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.icon-btn:hover {
+  background: #f3f4f6;
+}
+.icon-btn.danger {
+  color: #dc2626;
+}
+
+/* Right preview card (no action button inside) */
+.pane-right {
+  min-height: 540px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+  display: grid;
+  grid-template-rows: 1fr;
+}
+.preview-empty {
+  display: grid;
+  place-items: center;
+  color: #6b7280;
+  font-style: italic;
+}
+.img-wrap {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+.img-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Results table wrapper */
+.imp-results {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px;
+}
+.imp-results h3 {
+  margin: 0 0 10px;
+}
+
+.muted {
+  color: #6b7280;
+}
+.small {
+  font-size: 12px;
+}
+
+.import-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.28);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+  backdrop-filter: blur(1px);
+}
+
+.import-card {
+  width: 280px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px 16px;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  box-shadow: 0 12px 40px rgba(2, 6, 23, 0.12);
+}
+
+.import-text {
+  font-size: 14px;
+  color: #374151;
+}
+
+/* circular progress ring */
+.ring {
+  position: relative;
+  width: 72px;
+  height: 72px;
+}
+.ring svg {
+  width: 72px;
+  height: 72px;
+  transform: rotate(-90deg);
+}
+.ring .track {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 4;
+}
+.ring .fill {
+  fill: none;
+  stroke: #3b82f6;
+  stroke-width: 4;
+  transition: stroke-dashoffset 200ms linear;
+}
+.ring-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  color: #111827;
+}
+
+.progress-card {
+  background: #e5edf7;
+  border: 1px solid #d6e0ef;
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.progress-outer {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-inner {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #6366f1, #06b6d4);
+  transition: width 300ms ease;
+}
+
+/* Optional: dim controls while polling */
+.imp2 button[disabled],
+.imp2 select[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.kind-pill {
+  margin-left: auto;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  text-transform: capitalize;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #374151;
+}
+.kind-pill.sales {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #3730a3;
+}
+.kind-pill.purchase {
+  background: #ecfeff;
+  border-color: #a5f3fc;
+  color: #155e75;
+}
+
+/* Keep each uploaded-file row on a single line */
+.imp2 .file-list .file-item {
+  display: flex !important; /* override any previous grid rule */
+  grid-template-columns: unset !important;
+  flex-wrap: nowrap; /* don't wrap to a new line */
+  align-items: center;
+  gap: 8px;
+  min-width: 0; /* allow filename to shrink/ellipsis */
+}
+
+/* Filename area grows/shrinks; allows ellipsis */
+.imp2 .file-list .file-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+/* Purchase/Sales select: fixed width so it won't force wrapping */
+.imp2 .file-list .kind-select {
+  flex: 0 0 130px;
+  margin-right: 6px;
+  padding: 6px 8px;
+  font-size: 12px !important;
+  line-height: 1.1;
+}
+
+/* Delete button stays to the far right, fixed size */
+.imp2 .file-list .icon-btn {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+}
+
+.upload-card-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+
+/* two static inputs row */
+.static-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+.static-col {
+  display: grid;
+  gap: 6px;
+}

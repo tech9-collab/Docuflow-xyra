@@ -1,0 +1,2553 @@
+// src/pages/vat/VatFillingPreview.jsx
+import { useEffect, useMemo, useState } from "react";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import {
+  saveVatFilingDraft,
+  fetchVatRun,
+  updateVatRun,
+} from "../../helper/helper";
+import {
+  getVatFilingPreview,
+  generateVatFilingExcel,
+} from "../../helper/helper";
+import "./VatFilingPreview.css";
+import toast from "react-hot-toast";
+import PdfViewer from "../../components/PdfViewer/PdfViewer";
+import ImageViewer from "../../components/ImageViewer/ImageViewer";
+import { X } from "lucide-react";
+
+const RAW_API_BASE =
+  import.meta.env.VITE_API_BASE || "http://localhost:3001/api";
+
+const API_BASE = RAW_API_BASE.replace(/\/$/, "");
+const BACKEND_ORIGIN = API_BASE.replace(/\/api$/i, "");
+
+function parseReconAmount(val) {
+  if (val === null || val === undefined) return null;
+
+  if (typeof val === "number") {
+    return Number.isFinite(val) ? val : null;
+  }
+
+  let s = String(val).trim();
+  if (!s) return null;
+
+  // Remove commas & spaces
+  s = s.replace(/,/g, "").replace(/\s+/g, "");
+  // Keep only digits, dot, +, -
+  s = s.replace(/[^0-9.+-]/g, "");
+  if (!s) return null;
+
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+
+const VAT_RATE = 0.05;
+
+const round2 = (n) => {
+  const x = Number(n);
+  return Number.isFinite(x) ? Math.round(x * 100) / 100 : 0;
+};
+
+const toNumberLoose = (v) => {
+  if (v === null || v === undefined) return null;
+  const n = parseReconAmount(v); // you already have this
+  return n == null ? null : n;
+};
+
+const fmt2 = (n) => round2(n).toFixed(2);
+
+// Normalize bank rows → one object per row with debit/credit & basic info
+function normalizeBankRowsForReconFrontend(bankData) {
+  const rawRows = Array.isArray(bankData?.rows) ? bankData.rows : [];
+  if (!rawRows.length) return { rows: [] };
+
+  const sample = rawRows[0] || {};
+  const keys =
+    bankData.headers && bankData.headers.length
+      ? bankData.headers
+      : Object.keys(sample);
+
+  let creditKey = null;
+  let debitKey = null;
+  let amountKey = null;
+  let balanceKey = null;
+  let dateKey = null;
+  let refKey = null;
+  let descKey = null;
+
+  for (const k of keys) {
+    const lower = String(k).toLowerCase();
+
+    if (!creditKey && lower.includes("credit")) creditKey = k;
+    if (!debitKey && lower.includes("debit")) debitKey = k;
+
+    if (!amountKey && lower.includes("amount") && !lower.includes("balance")) {
+      amountKey = k;
+    }
+
+    if (!balanceKey && lower.includes("balance")) balanceKey = k;
+    if (!dateKey && lower.includes("date")) dateKey = k;
+    if (!refKey && lower.includes("reference")) refKey = k;
+
+    if (
+      !descKey &&
+      (lower.includes("description") || lower.includes("narration"))
+    ) {
+      descKey = k;
+    }
+  }
+
+  const rows = rawRows
+    .map((row, idx) => {
+      let credit = creditKey ? parseReconAmount(row[creditKey]) : null;
+      let debit = debitKey ? parseReconAmount(row[debitKey]) : null;
+
+      // For banks with only a single "Amount" column
+      if (!creditKey && !debitKey && amountKey) {
+        const amt = parseReconAmount(row[amountKey]);
+        if (amt != null && amt !== 0) {
+          if (amt < 0) {
+            debit = amt;
+          } else {
+            credit = amt;
+          }
+        }
+      }
+
+      return {
+        index: idx,
+        date: dateKey ? row[dateKey] || "" : "",
+        description: descKey ? row[descKey] || "" : "",
+        debit,
+        credit,
+        balance: balanceKey ? parseReconAmount(row[balanceKey]) : null,
+        ref: refKey ? row[refKey] || "" : "",
+      };
+    })
+    // Drop header-like rows with no money
+    .filter((r) => r.debit != null || r.credit != null);
+
+  return { rows };
+}
+
+function normalizeRowKeyToken(key) {
+  return String(key || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function readRowValueByAliases(row, aliases = []) {
+  if (!row || typeof row !== "object") return undefined;
+  const normalizedToActual = new Map();
+  Object.keys(row).forEach((k) => {
+    normalizedToActual.set(normalizeRowKeyToken(k), k);
+  });
+  for (const alias of aliases) {
+    const actual = normalizedToActual.get(normalizeRowKeyToken(alias));
+    if (actual !== undefined) return row[actual];
+  }
+  return undefined;
+}
+
+function normalizeValueToken(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function isBankModeValue(value) {
+  const token = normalizeValueToken(value);
+  if (!token) return false;
+  if (token === "bank" || token === "banktransfer" || token === "wiretransfer")
+    return true;
+  return token.includes("bank");
+}
+
+function isPaidStatusValue(value) {
+  const token = normalizeValueToken(value);
+  if (!token) return false;
+  if (
+    token.startsWith("unpaid") ||
+    token.startsWith("pending") ||
+    token.startsWith("partiallypaid")
+  ) {
+    return false;
+  }
+  if (
+    token === "paid" ||
+    token.startsWith("paid") ||
+    token === "fullypaid" ||
+    token === "settled" ||
+    token === "completed" ||
+    token === "received"
+  ) {
+    return true;
+  }
+  if (token === "unpaid" || token === "partiallypaid" || token === "pending") {
+    return false;
+  }
+  return false;
+}
+
+const PAYMENT_MODE_ALIASES = [
+  "PAYMENT MODE",
+  "PAYMENT_MODE",
+  "MODE OF PAYMENT",
+  "PAYMENT METHOD",
+  "PAYMENT TYPE",
+];
+
+const PAYMENT_STATUS_ALIASES = [
+  "PAYMENT STATUS",
+  "PAYMENT_STATUS",
+  "INVOICE STATUS",
+  "PAYMENT STATE",
+];
+
+function rowHasPaymentMeta(row) {
+  const hasMode =
+    readRowValueByAliases(row, PAYMENT_MODE_ALIASES) !== undefined;
+  const hasStatus =
+    readRowValueByAliases(row, PAYMENT_STATUS_ALIASES) !== undefined;
+  return hasMode || hasStatus;
+}
+
+function isReconEligibleInvoiceRow(row) {
+  const paymentMode = readRowValueByAliases(row, PAYMENT_MODE_ALIASES);
+  const paymentStatus = readRowValueByAliases(row, PAYMENT_STATUS_ALIASES);
+  return isBankModeValue(paymentMode) && isPaidStatusValue(paymentStatus);
+}
+
+// Normalize invoice rows for reconciliation
+function buildInvoiceReconRowsFrontend(invoiceRows = [], typeLabel = "Sales") {
+  const enforcePaymentFilter = (invoiceRows || []).some(rowHasPaymentMeta);
+  const out = [];
+  invoiceRows.forEach((r, idx) => {
+    if (enforcePaymentFilter && !isReconEligibleInvoiceRow(r)) return;
+
+    const net = parseReconAmount(
+      r["NET AMOUNT (AED)"] != null ? r["NET AMOUNT (AED)"] : r["NET AMOUNT"]
+    );
+    if (net == null || !Number.isFinite(net) || net === 0) return;
+
+    out.push({
+      index: idx,
+      type: typeLabel, // "Sales" / "Purchase"
+      net,
+      date: r.DATE ?? null,
+      number: r["INVOICE NUMBER"] ?? "",
+      party: r["SUPPLIER/VENDOR"] ?? r.PARTY ?? "",
+    });
+  });
+  return out;
+}
+
+// Match invoices to bank rows by amount:
+// mode = "sales" → use bank.credit, "purchase" → bank.debit
+function matchInvoicesToBankFrontend(
+  invoices,
+  bankRows,
+  mode,
+  usedBankIndices
+) {
+  const matches = [];
+  const byAmount = new Map();
+
+  // Lookup by ABS(bank amount)
+  for (const b of bankRows) {
+    const rawAmt = mode === "sales" ? b.credit : b.debit;
+    if (rawAmt == null || !Number.isFinite(rawAmt) || rawAmt === 0) continue;
+
+    const amt = Math.abs(rawAmt);
+    const key = amt.toFixed(2);
+    if (!byAmount.has(key)) byAmount.set(key, []);
+    byAmount.get(key).push(b);
+  }
+
+  for (const inv of invoices) {
+    if (inv.net == null || !Number.isFinite(inv.net) || inv.net === 0) continue;
+
+    const key = Math.abs(inv.net).toFixed(2);
+    const list = byAmount.get(key);
+    if (!list || !list.length) continue;
+
+    const bank = list.find((b) => !usedBankIndices.has(b.index));
+    if (!bank) continue;
+
+    usedBankIndices.add(bank.index);
+    matches.push({ invoice: inv, bank });
+  }
+
+  return matches;
+}
+
+// Build display-ready reconciliation rows for UI
+function buildBankReconciliationDisplay(bankData, salesRows, purchaseRows) {
+  const normBank = normalizeBankRowsForReconFrontend(bankData);
+  if (!normBank.rows.length) {
+    return { columns: [], rows: [] };
+  }
+
+  const salesInvoices = buildInvoiceReconRowsFrontend(salesRows, "Sales");
+  const purchaseInvoices = buildInvoiceReconRowsFrontend(
+    purchaseRows,
+    "Purchase"
+  );
+
+  if (!salesInvoices.length && !purchaseInvoices.length) {
+    return { columns: [], rows: [] };
+  }
+
+  const usedBank = new Set();
+
+  const salesMatches = matchInvoicesToBankFrontend(
+    salesInvoices,
+    normBank.rows,
+    "sales",
+    usedBank
+  );
+  const purchaseMatches = matchInvoicesToBankFrontend(
+    purchaseInvoices,
+    normBank.rows,
+    "purchase",
+    usedBank
+  );
+
+  const order = [
+    "MATCH TYPE",
+    "INVOICE TYPE",
+    "INVOICE DATE",
+    "INVOICE NUMBER",
+    "INVOICE PARTY",
+    "INVOICE NET (AED)",
+    "BANK DATE",
+    "BANK DESCRIPTION",
+    "BANK DEBIT",
+    "BANK CREDIT",
+  ];
+
+  const rows = [];
+  const matchedSalesIdx = new Set();
+  const matchedPurchaseIdx = new Set();
+
+  // Matched sales
+  for (const m of salesMatches) {
+    matchedSalesIdx.add(m.invoice.index);
+    rows.push({
+      "MATCH TYPE": "Sales receipt",
+      "INVOICE TYPE": m.invoice.type,
+      "INVOICE DATE": m.invoice.date || "",
+      "INVOICE NUMBER": m.invoice.number || "",
+      "INVOICE PARTY": m.invoice.party || "",
+      "INVOICE NET (AED)": m.invoice.net,
+      "BANK DATE": m.bank.date || "",
+      "BANK DESCRIPTION": m.bank.description || "",
+      "BANK DEBIT": m.bank.debit,
+      "BANK CREDIT": m.bank.credit,
+    });
+  }
+
+  // Matched purchases
+  for (const m of purchaseMatches) {
+    matchedPurchaseIdx.add(m.invoice.index);
+    rows.push({
+      "MATCH TYPE": "Purchase payment",
+      "INVOICE TYPE": m.invoice.type,
+      "INVOICE DATE": m.invoice.date || "",
+      "INVOICE NUMBER": m.invoice.number || "",
+      "INVOICE PARTY": m.invoice.party || "",
+      "INVOICE NET (AED)": m.invoice.net,
+      "BANK DATE": m.bank.date || "",
+      "BANK DESCRIPTION": m.bank.description || "",
+      "BANK DEBIT": m.bank.debit,
+      "BANK CREDIT": m.bank.credit,
+    });
+  }
+
+  // Unmatched invoices (sales)
+  for (const inv of salesInvoices) {
+    if (matchedSalesIdx.has(inv.index)) continue;
+    rows.push({
+      "MATCH TYPE": "Unmatched invoice",
+      "INVOICE TYPE": inv.type,
+      "INVOICE DATE": inv.date || "",
+      "INVOICE NUMBER": inv.number || "",
+      "INVOICE PARTY": inv.party || "",
+      "INVOICE NET (AED)": inv.net,
+      "BANK DATE": "",
+      "BANK DESCRIPTION": "",
+      "BANK DEBIT": null,
+      "BANK CREDIT": null,
+    });
+  }
+
+  // Unmatched invoices (purchases)
+  for (const inv of purchaseInvoices) {
+    if (matchedPurchaseIdx.has(inv.index)) continue;
+    rows.push({
+      "MATCH TYPE": "Unmatched invoice",
+      "INVOICE TYPE": inv.type,
+      "INVOICE DATE": inv.date || "",
+      "INVOICE NUMBER": inv.number || "",
+      "INVOICE PARTY": inv.party || "",
+      "INVOICE NET (AED)": inv.net,
+      "BANK DATE": "",
+      "BANK DESCRIPTION": "",
+      "BANK DEBIT": null,
+      "BANK CREDIT": null,
+    });
+  }
+
+  // Unmatched bank transactions
+  for (const b of normBank.rows) {
+    if (usedBank.has(b.index)) continue;
+    rows.push({
+      "MATCH TYPE": "Unmatched bank transaction",
+      "INVOICE TYPE": "",
+      "INVOICE DATE": "",
+      "INVOICE NUMBER": "",
+      "INVOICE PARTY": "",
+      "INVOICE NET (AED)": null,
+      "BANK DATE": b.date || "",
+      "BANK DESCRIPTION": b.description || "",
+      "BANK DEBIT": b.debit,
+      "BANK CREDIT": b.credit,
+    });
+  }
+
+  const columns = order.map((k) => ({ key: k, label: k }));
+  return { columns, rows };
+}
+
+const formatAED = (value) => {
+  const n = Number(value || 0);
+  if (!Number.isFinite(n)) return "0.00";
+  return n.toFixed(2);
+};
+
+const sanitizeVatReturnOverrides = (o) => {
+  if (!o) return {};
+  const v = o.ftaFund;
+  return v === undefined || v === null || v === "" ? {} : { ftaFund: v };
+};
+
+export default function VatFillingPreview() {
+  const { companyId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+  const [previewData, setPreviewData] = useState(location.state || null);
+  const [error, setError] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const searchParams = new URLSearchParams(location.search);
+  const runId = searchParams.get("runId");
+  const isExistingRun = !!runId;
+
+  const periodIdFromQuery = searchParams.get("periodId");
+
+  const modeFromQuery = searchParams.get("mode");
+  const isEditMode = modeFromQuery === "edit";
+
+  const handleBack = () => {
+    const periodId = periodIdFromQuery || previewData?.periodId;
+
+    if (isExistingRun) {
+      // 👀 Opened from "VAT Filing – Conversions" list
+      if (periodId) {
+        navigate(`/projects/vat-filing/periods/${companyId}/runs/${periodId}`);
+      } else {
+        // Fallback if periodId missing
+        navigate(`/projects/vat-filing/periods/${companyId}`);
+      }
+    } else {
+      // 👀 Opened from Bank & Invoice combined preview
+      if (periodId) {
+        navigate(
+          `/projects/vat-filing/bank-and-invoice/${companyId}?periodId=${periodId}`
+        );
+      } else {
+        // Fallback to periods
+        navigate(`/projects/vat-filing/periods/${companyId}`);
+      }
+    }
+  };
+
+  const [draftSaved, setDraftSaved] = useState(isExistingRun);
+
+  // views:
+  // "bank" | "bankRecon" | "sales" | "purchase" | "salesTotal" | "purchaseTotal" | "vatSummary"
+  const [view, setView] = useState("bank");
+  const [vatSummaryLocks, setVatSummaryLocks] = useState({});
+
+  const [metricLocks, setMetricLocks] = useState({
+    salesTotal: {}, // e.g. { STANDARDRATEDSUPPLIES: true }
+    purchaseTotal: {}, // e.g. { STANDARDRATEDEXPENSES: true }
+  });
+
+  const toNum = (v) => {
+    if (v === null || v === undefined || v === "") return 0;
+    const n = Number(String(v).replace(/,/g, ""));
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const metricKey = (s) =>
+    String(s || "")
+      .replace(/[\s_]/g, "")
+      .toUpperCase();
+
+  const findMetricAmount = (rows, metricName) => {
+    const target = metricKey(metricName);
+    const row = (rows || []).find((r) => metricKey(r?.METRIC) === target);
+    return row ? toNum(row.AMOUNT) : 0;
+  };
+
+  const setMetricAmount = (rows, metricName, amount) => {
+    const target = metricKey(metricName);
+    const idx = (rows || []).findIndex((r) => metricKey(r?.METRIC) === target);
+
+    const fixed = Number(amount || 0).toFixed(2);
+
+    if (idx === -1)
+      return [...(rows || []), { METRIC: metricName, AMOUNT: fixed }];
+
+    const next = [...rows];
+    next[idx] = { ...next[idx], METRIC: metricName, AMOUNT: fixed };
+    return next;
+  };
+
+  const particularKey = (s) =>
+    String(s || "")
+      .replace(/[\s_]/g, "")
+      .toUpperCase();
+
+  const findVatSummaryRow = (rows, particular) => {
+    const target = particularKey(particular);
+    return (rows || []).find((r) => particularKey(r?.PARTICULAR) === target);
+  };
+
+  const getVatSummaryCellNum = (rows, particular, colKey) => {
+    const r = findVatSummaryRow(rows, particular);
+    return toNum(r?.[colKey]);
+  };
+
+  const setVatSummaryCell = (rows, particular, colKey, valueFixed2) => {
+    const target = particularKey(particular);
+    const idx = (rows || []).findIndex(
+      (r) => particularKey(r?.PARTICULAR) === target
+    );
+
+    const base =
+      idx === -1
+        ? { PARTICULAR: particular, SALES: "", PURCHASES: "", NET_VAT: "" }
+        : rows[idx];
+
+    const nextRow = { ...base, [colKey]: valueFixed2 };
+
+    if (idx === -1) return [...rows, nextRow];
+
+    const next = [...rows];
+    next[idx] = nextRow;
+    return next;
+  };
+
+  const normalizeParticularKey = (s) =>
+    String(s || "")
+      .replace(/[\s_]/g, "")
+      .toUpperCase();
+
+  const makeVatSummaryLockKey = (particular, field) =>
+    `${normalizeParticularKey(particular)}::${String(field).toUpperCase()}`;
+
+  useEffect(() => {
+    // If we are opening a saved conversion (runId), don't auto-fetch company preview
+    if (runId) return;
+
+    if (!location.state && !previewData) {
+      fetchPreviewData();
+    } else if (location.state && !previewData) {
+      setPreviewData(location.state);
+    }
+  }, [location.state, previewData, runId]);
+
+  useEffect(() => {
+    if (!previewData && runId) {
+      (async () => {
+        try {
+          setLoading(true);
+          const { payload } = await fetchVatRun(runId);
+          setPreviewData(payload); // {companyId, companyName, bankData, invoiceData, periodId,...}
+          setError(null);
+        } catch (err) {
+          console.error(err);
+          setError(err.message || "Failed to load saved VAT filing");
+        } finally {
+          setLoading(false);
+        }
+      })();
+    }
+  }, [runId, previewData]);
+
+  useEffect(() => {
+    if (!previewData?.invoiceData?.othersRows?.length) return;
+    const rows = previewData.invoiceData.othersRows;
+    const updatedRows = rows.map((row) => {
+      if (!row || typeof row !== "object") return row;
+      const val = row["VAT ELIGIBILTY"];
+      if (val === undefined || val === null || val === "") {
+        return {
+          ...row,
+          "VAT ELIGIBILTY": "Not qualified for Vat Return Filing",
+        };
+      }
+      return row;
+    });
+    const changed =
+      rows.length !== updatedRows.length ||
+      rows.some((r, i) => r !== updatedRows[i]);
+    if (!changed) return;
+
+    setPreviewData((prev) => {
+      if (!prev) return prev;
+      const inv = { ...(prev.invoiceData || {}) };
+      inv.othersRows = updatedRows;
+      inv.__explicitBuckets = true;
+      return { ...prev, invoiceData: inv };
+    });
+  }, [previewData?.invoiceData?.othersRows]);
+
+  const handleSaveDraft = async () => {
+    if (!previewData) {
+      toast.error("No data to save.");
+      return;
+    }
+
+    // Prefer period from payload, fallback to query
+    const periodId = previewData.periodId || periodIdFromQuery;
+    if (!periodId) {
+      toast.error("Missing filing period id; please open from a period.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      if (isExistingRun && runId) {
+        await updateVatRun(runId, {
+          status: previewData.status || "draft",
+          companyId: previewData.companyId || companyId,
+          companyName: previewData.companyName || "",
+          companyTRN: previewData.companyTRN || "",
+          bankData: previewData.bankData,
+          invoiceData: normalizedInvoiceData,
+          bankReconData: previewData.bankReconData,
+          salesTotal: previewData.salesTotal,
+          purchaseTotal: previewData.purchaseTotal,
+          vatSummary: previewData.vatSummary,
+          vatReturnOverrides: sanitizeVatReturnOverrides(
+            previewData.vatReturnOverrides
+          ),
+        });
+
+        toast.success("Conversion updated successfully.");
+      } else {
+        // 🆕 CREATE FIRST DRAFT (same behavior as before)
+        if (draftSaved) {
+          toast.success("Draft already saved for this run.");
+          return;
+        }
+
+        const run = await saveVatFilingDraft(periodId, {
+          companyId: previewData.companyId || companyId,
+          companyName: previewData.companyName || "",
+          companyTRN: previewData.companyTRN || "",
+          bankData: previewData.bankData,
+          invoiceData: normalizedInvoiceData,
+          status: "draft",
+          bankReconData: previewData.bankReconData,
+          salesTotal: previewData.salesTotal,
+          purchaseTotal: previewData.purchaseTotal,
+          vatSummary: previewData.vatSummary,
+          vatReturnOverrides: previewData.vatReturnOverrides,
+        });
+
+        setDraftSaved(true);
+        toast.success("VAT filing draft saved successfully.");
+        // (Optional) you can navigate to conversions list or stay here
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.message || "Failed to save.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerify = () => {
+    // Here you can: call backend to generate Excel and maybe mark run as 'final'
+    // for now just a placeholder
+    alert("Verify action to be implemented (e.g. finalise & generate Excel)");
+  };
+
+  async function fetchPreviewData() {
+    try {
+      setLoading(true);
+      const res = await getVatFilingPreview(companyId);
+      setPreviewData(res);
+    } catch (e) {
+      console.error("Failed to fetch preview data:", e);
+      setError("Failed to load preview data");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDownload() {
+    try {
+      if (!previewData) {
+        alert("No data to download");
+        return;
+      }
+
+      const blob = await generateVatFilingExcel(companyId, {
+        bankData: previewData.bankData,
+        invoiceData: normalizedInvoiceData,
+        companyName: previewData.companyName || `Company ${companyId}`,
+        bankReconData: previewData.bankReconData,
+        salesTotal: previewData.salesTotal,
+        purchaseTotal: previewData.purchaseTotal,
+        vatSummary: previewData.vatSummary,
+        vatReturnOverrides: previewData.vatReturnOverrides,
+      });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = previewData.downloadFileName || "VAT_Filing.xlsx";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Failed to download Excel file:", err);
+      alert("Failed to download Excel file");
+    }
+  }
+
+  const handleCellChange = (viewName, rowIndex, colKey, newValue) => {
+    // helper: unlock totals when invoice (sales/purchase) numbers are edited
+    const unlockTotalsForInvoiceEdit = (viewName, colKey) => {
+      setMetricLocks((prevLocks) => {
+        const updated = { ...prevLocks };
+
+        if (viewName === "sales") {
+          const section = { ...(updated.salesTotal || {}) };
+
+          if (colKey === "BEFORE TAX (AED)")
+            delete section["STANDARDRATEDSUPPLIES"];
+          if (colKey === "VAT (AED)") delete section["OUTPUTTAX"];
+          if (colKey === "ZERO RATED (AED)")
+            delete section["ZERORATEDSUPPLIES"];
+
+          // total including vat must recalc if std/output changed
+          if (["BEFORE TAX (AED)", "VAT (AED)"].includes(colKey)) {
+            delete section["TOTALAMOUNTINCLUDINGVAT"];
+          }
+
+          updated.salesTotal = section;
+        } else {
+          const section = { ...(updated.purchaseTotal || {}) };
+
+          if (colKey === "BEFORE TAX (AED)")
+            delete section["STANDARDRATEDEXPENSES"];
+          if (colKey === "VAT (AED)") delete section["INPUTTAX"];
+          if (colKey === "ZERO RATED (AED)")
+            delete section["ZERORATEDEXPENSES"];
+
+          if (["BEFORE TAX (AED)", "VAT (AED)"].includes(colKey)) {
+            delete section["TOTALAMOUNTINCLUDINGVAT"];
+          }
+
+          updated.purchaseTotal = section;
+        }
+
+        return updated;
+      });
+    };
+
+    setPreviewData((prev) => {
+      if (!prev) return prev;
+      const next = { ...prev };
+
+      // 1) Bank Statement (✅ allow ANY text in debit/credit/balance cells)
+      if (viewName === "bank") {
+        if (!next.bankData || !Array.isArray(next.bankData.rows)) return prev;
+
+        const rows = [...next.bankData.rows];
+        const row = { ...rows[rowIndex] };
+
+        // ✅ store raw string (no parseReconAmount / no numeric coercion)
+        row[colKey] = newValue;
+
+        rows[rowIndex] = row;
+        next.bankData = { ...next.bankData, rows };
+        return next;
+      }
+
+      // 2) Bank Reconciliation (✅ allow ANY text in BANK DEBIT/BANK CREDIT etc.)
+      if (viewName === "bankRecon") {
+        const recon = next.bankReconData || { columns: [], rows: [] };
+        const rowsArr = Array.isArray(recon.rows) ? recon.rows : [];
+        if (!rowsArr.length) return prev;
+
+        const newRows = [...rowsArr];
+        const row = { ...newRows[rowIndex] };
+
+        // ✅ store raw string (no parseReconAmount / no numeric coercion)
+        row[colKey] = newValue;
+
+        newRows[rowIndex] = row;
+        next.bankReconData = { ...recon, rows: newRows };
+        return next;
+      }
+
+      // 3) Sales / Purchase raw tables (editable)
+      if (viewName === "sales" || viewName === "purchase") {
+        const keyName =
+          viewName === "sales" ? "uaeSalesRows" : "uaePurchaseRows";
+        const inv = { ...(next.invoiceData || {}) };
+
+        const rowsArr = Array.isArray(inv[keyName]) ? inv[keyName] : [];
+        if (!rowsArr.length) return prev;
+
+        const newRows = [...rowsArr];
+        const row = { ...newRows[rowIndex] };
+
+        // 1) set the edited cell
+        row[colKey] = newValue;
+
+        // 2) VAT <-> BEFORE TAX sync (only for AED columns)
+        const isBeforeTaxAED = colKey === "BEFORE TAX (AED)";
+        const isVatAED = colKey === "VAT (AED)";
+
+        if (isBeforeTaxAED) {
+          // allow typing freely
+          row["BEFORE TAX (AED)"] = newValue;
+
+          // if user cleared, clear dependent
+          if (String(newValue).trim() === "") {
+            row["VAT (AED)"] = "";
+            row["NET AMOUNT (AED)"] = "";
+          } else {
+            const bt = toNumberLoose(newValue);
+
+            // only compute if parseable
+            if (bt != null) {
+              const vat = round2(bt * VAT_RATE);
+              row["VAT (AED)"] = fmt2(vat);
+              row["NET AMOUNT (AED)"] = fmt2(bt + vat);
+            }
+          }
+        }
+
+        if (isVatAED) {
+          row["VAT (AED)"] = newValue;
+
+          if (String(newValue).trim() === "") {
+            row["BEFORE TAX (AED)"] = "";
+            row["NET AMOUNT (AED)"] = "";
+          } else {
+            const vat = toNumberLoose(newValue);
+
+            if (vat != null) {
+              const bt = round2(vat / VAT_RATE);
+              row["BEFORE TAX (AED)"] = fmt2(bt);
+              row["NET AMOUNT (AED)"] = fmt2(bt + vat);
+            }
+          }
+        }
+
+        // (optional) if user edits NET, you can back-calc too — not requested now
+
+        newRows[rowIndex] = row;
+        inv[keyName] = newRows;
+        inv.__explicitBuckets = true;
+        next.invoiceData = inv;
+
+        // unlock totals so they recalc
+        if (
+          ["BEFORE TAX (AED)", "VAT (AED)", "ZERO RATED (AED)"].includes(colKey)
+        ) {
+          unlockTotalsForInvoiceEdit(viewName, colKey);
+        }
+
+        return next;
+      }
+
+      // 4) Others
+      if (viewName === "others") {
+        const inv = { ...(next.invoiceData || {}) };
+        const rowsArr = Array.isArray(inv.othersRows)
+          ? [...inv.othersRows]
+          : [];
+        if (rowIndex < 0 || rowIndex >= rowsArr.length) return prev;
+        const row = { ...(rowsArr[rowIndex] || {}) };
+        row[colKey] = newValue;
+        rowsArr[rowIndex] = row;
+        inv.othersRows = rowsArr;
+        inv.__explicitBuckets = true;
+        next.invoiceData = inv;
+        return next;
+      }
+
+      // 5) Sales Total / Purchase Total / VAT Summary (NOT editable now)
+      // (keep this block harmless; it won't run because inputs are disabled in UI)
+      if (
+        viewName === "salesTotal" ||
+        viewName === "purchaseTotal" ||
+        viewName === "vatSummary"
+      ) {
+        return prev;
+      }
+
+      return prev;
+    });
+  };
+
+  const handleDeleteRow = (viewName, rowIndex) => {
+    if (!isEditMode) return;
+
+    setPreviewData((prev) => {
+      if (!prev) return prev;
+      const next = { ...prev };
+
+      if (viewName === "bank") {
+        const rows = Array.isArray(next.bankData?.rows)
+          ? [...next.bankData.rows]
+          : [];
+        if (rowIndex < 0 || rowIndex >= rows.length) return prev;
+        rows.splice(rowIndex, 1);
+        next.bankData = { ...(next.bankData || {}), rows };
+        return next;
+      }
+
+      if (viewName === "sales" || viewName === "purchase") {
+        const keyName =
+          viewName === "sales" ? "uaeSalesRows" : "uaePurchaseRows";
+        const inv = { ...(next.invoiceData || {}) };
+        const rowsArr = Array.isArray(inv[keyName]) ? [...inv[keyName]] : [];
+        if (rowIndex < 0 || rowIndex >= rowsArr.length) return prev;
+        rowsArr.splice(rowIndex, 1);
+        inv[keyName] = rowsArr;
+        inv.__explicitBuckets = true;
+        next.invoiceData = inv;
+        return next;
+      }
+
+      if (viewName === "others") {
+        const inv = { ...(next.invoiceData || {}) };
+        const rowsArr = Array.isArray(inv.othersRows)
+          ? [...inv.othersRows]
+          : [];
+        if (rowIndex < 0 || rowIndex >= rowsArr.length) return prev;
+        rowsArr.splice(rowIndex, 1);
+        inv.othersRows = rowsArr;
+        inv.__explicitBuckets = true;
+        next.invoiceData = inv;
+        return next;
+      }
+
+      return prev;
+    });
+  };
+
+  const handleAddRow = (viewName) => {
+    if (!isEditMode) return;
+
+    setPreviewData((prev) => {
+      if (!prev) return prev;
+      const next = { ...prev };
+
+      if (viewName === "bank") {
+        const columns = Array.isArray(next.bankData?.columns)
+          ? normalizeCols(next.bankData.columns)
+          : [];
+        const keys = columns.length
+          ? columns.map((c) => c.key)
+          : Object.keys(next.bankData?.rows?.[0] || {});
+        const newRow = {};
+        keys.forEach((k) => {
+          if (String(k).toLowerCase() === "row") return;
+          newRow[k] = "";
+        });
+        const rows = Array.isArray(next.bankData?.rows)
+          ? [...next.bankData.rows, newRow]
+          : [newRow];
+        next.bankData = { ...(next.bankData || {}), rows };
+        return next;
+      }
+
+      if (viewName === "sales" || viewName === "purchase") {
+        const keyName =
+          viewName === "sales" ? "uaeSalesRows" : "uaePurchaseRows";
+        const inv = { ...(next.invoiceData || {}) };
+        const rowsArr = Array.isArray(inv[keyName]) ? [...inv[keyName]] : [];
+        const order =
+          viewName === "sales" ? UAE_SALES_ORDER : UAE_PURCHASE_ORDER;
+        const newRow = {};
+        order.forEach((k) => {
+          newRow[k] = "";
+        });
+        rowsArr.push(newRow);
+        inv[keyName] = rowsArr;
+        inv.__explicitBuckets = true;
+        next.invoiceData = inv;
+        return next;
+      }
+
+      if (viewName === "others") {
+        const inv = { ...(next.invoiceData || {}) };
+        const rowsArr = Array.isArray(inv.othersRows)
+          ? [...inv.othersRows]
+          : [];
+        const keys = rowsArr.length
+          ? Object.keys(rowsArr[0])
+          : UAE_OTHERS_ORDER;
+        const newRow = {};
+        keys.forEach((k) => {
+          if (String(k).toLowerCase() === "row") return;
+          if (String(k).toUpperCase() === "VAT ELIGIBILTY") {
+            newRow[k] = "Not qualified for Vat Return Filing";
+            return;
+          }
+          newRow[k] = "";
+        });
+        rowsArr.push(newRow);
+        inv.othersRows = rowsArr;
+        inv.__explicitBuckets = true;
+        next.invoiceData = inv;
+        return next;
+      }
+
+      return prev;
+    });
+  };
+
+  // ===== Helpers =====
+  const HIDE_KEYS = new Set(["row"]);
+  const normalizeCols = (cols = []) =>
+    cols.map((c, i) => {
+      if (typeof c === "string") return { key: c, label: c };
+      const key = c?.key ?? c?.field ?? c?.accessor ?? `col_${i}`;
+      const label = Object.prototype.hasOwnProperty.call(c || {}, "label")
+        ? c.label
+        : key;
+      return { key: String(key), label: String(label ?? "") };
+    });
+  const filterHidden = (cols) =>
+    cols.filter((c) => !HIDE_KEYS.has(String(c.key).toLowerCase()));
+  const isNumeric = (text) => {
+    const t = String(text ?? "").trim();
+
+    if (/^[+-]?\d[\d,\s]*(\.\d+)?$/.test(t)) return true;
+
+    if (/^\([\d,\s]+(\.\d+)?\)$/.test(t)) return true;
+
+    return false;
+  };
+
+  const isCellEditable = (viewName) =>
+    isEditMode &&
+    ["bank", "bankRecon", "sales", "purchase", "others"].includes(viewName);
+
+  // === VAT Return overrides helpers ===
+  const handleVatReturnInputChange = (key, rawValue) => {
+    if (key !== "ftaFund") return; // ✅ block everything except FTA fund
+
+    setPreviewData((prev) => {
+      if (!prev) return prev;
+      const next = { ...prev };
+      const overrides = { ...(prev.vatReturnOverrides || {}) };
+      overrides[key] = rawValue;
+      next.vatReturnOverrides = overrides;
+      return next;
+    });
+  };
+
+  const getVatReturnOverrideNumber = (overrides, key, fallback) => {
+    const raw = overrides?.[key];
+    if (raw === undefined || raw === null || raw === "") return fallback;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : fallback;
+  };
+
+  const getVatReturnInputValue = (key, fallbackNumber) => {
+    const overrides = previewData?.vatReturnOverrides || {};
+    const raw = overrides[key];
+    if (raw === undefined || raw === null || raw === "") {
+      if (!Number.isFinite(fallbackNumber)) return "";
+      return fallbackNumber.toFixed(2);
+    }
+    return String(raw);
+  };
+
+  const isRTL = (text) =>
+    /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0590-\u05FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(
+      String(text ?? "")
+    );
+
+  // Defensive utilities
+  const lower = (s) =>
+    String(s || "")
+      .trim()
+      .toLowerCase();
+  const isSalesType = (r) => lower(r?.TYPE).startsWith("sale");
+  const isPurchType = (r) => lower(r?.TYPE).startsWith("purchas");
+
+  // ===== Column orders (match server) =====
+  const UAE_SALES_ORDER = [
+    "DATE",
+    "INVOICE NUMBER",
+    "INVOICE CATEGORY",
+    "SUPPLIER/VENDOR",
+    "PARTY",
+    "SUPPLIER TRN",
+    "CUSTOMER TRN",
+    "CURRENCY",
+    "BEFORE TAX AMOUNT",
+    "VAT",
+    "NET AMOUNT",
+    "BEFORE TAX (AED)",
+    "VAT (AED)",
+    "ZERO RATED (AED)",
+    "NET AMOUNT (AED)",
+    "CONFIDENCE",
+    "SOURCE",
+  ];
+  const UAE_PURCHASE_ORDER = [
+    "DATE",
+    "INVOICE NUMBER",
+    "INVOICE CATEGORY",
+    "SUPPLIER/VENDOR",
+    "PARTY",
+    "SUPPLIER TRN",
+    "CURRENCY",
+    "BEFORE TAX AMOUNT",
+    "VAT",
+    "NET AMOUNT",
+    "BEFORE TAX (AED)",
+    "VAT (AED)",
+    "ZERO RATED (AED)",
+    "NET AMOUNT (AED)",
+    "CONFIDENCE",
+    "SOURCE",
+  ];
+  const UAE_OTHERS_ORDER = [
+    "TYPE",
+    "DATE",
+    "INVOICE NUMBER",
+    "INVOICE CATEGORY",
+    "SUPPLIER/VENDOR",
+    "PARTY",
+    "SUPPLIER TRN",
+    "CUSTOMER TRN",
+    "CURRENCY",
+    "BEFORE TAX AMOUNT",
+    "VAT",
+    "NET AMOUNT",
+    "BEFORE TAX (AED)",
+    "VAT (AED)",
+    "ZERO RATED (AED)",
+    "NET AMOUNT (AED)",
+    "VAT ELIGIBILTY",
+    "CONFIDENCE",
+    "SOURCE",
+  ];
+  const VAT_ELIGIBILITY_OPTIONS = [
+    "Not qualified for Vat Return Filing",
+    "Already accounted in relevant Vat Return Filing",
+    "Will be considered in next quarter Vat Return Filing",
+  ];
+
+  // Sum helper (same logic as backend)
+  const sumAmount = (rows, key) =>
+    (rows || []).reduce((s, r) => s + (Number(r?.[key]) || 0), 0);
+
+  // ===== Bank table =====
+  const bankData = useMemo(() => {
+    const b = previewData?.bankData || { columns: [], rows: [] };
+    const colsAll = normalizeCols(b.columns);
+    return {
+      columns: filterHidden(colsAll),
+      rows: Array.isArray(b.rows) ? b.rows : [],
+    };
+  }, [previewData]);
+
+  // ===== Strict buckets without row dropping =====
+  const { salesRows, purchaseRows, othersRowsView } = useMemo(() => {
+    const inv = previewData?.invoiceData || {};
+
+    // Consider buckets "explicit" if any bucket key exists OR flag is set
+    const hasSalesKey = Object.prototype.hasOwnProperty.call(
+      inv,
+      "uaeSalesRows"
+    );
+    const hasPurchKey = Object.prototype.hasOwnProperty.call(
+      inv,
+      "uaePurchaseRows"
+    );
+    const hasOthersKey =
+      Object.prototype.hasOwnProperty.call(inv, "othersRows") ||
+      Object.prototype.hasOwnProperty.call(inv, "uaeOtherRows");
+    const explicit =
+      !!inv.__explicitBuckets || hasSalesKey || hasPurchKey || hasOthersKey;
+
+    // Start with explicit arrays (or empty)
+    const normalizeRowToken = (v) =>
+      String(v ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+    const confidenceScore = (row) => {
+      const n = Number(String(row?.CONFIDENCE ?? "").replace(/%/g, ""));
+      return Number.isFinite(n) ? n : -1;
+    };
+    const invoiceRowKey = (row) =>
+      [
+        row?.SOURCE,
+        row?.DATE,
+        row?.["INVOICE NUMBER"],
+        row?.["SUPPLIER/VENDOR"],
+        row?.PARTY,
+        row?.["SUPPLIER TRN"],
+        row?.["CUSTOMER TRN"],
+        row?.CURRENCY,
+        row?.["BEFORE TAX AMOUNT"],
+        row?.VAT,
+        row?.["NET AMOUNT"],
+        row?.["BEFORE TAX (AED)"],
+        row?.["VAT (AED)"],
+        row?.["ZERO RATED (AED)"],
+        row?.["NET AMOUNT (AED)"],
+      ]
+        .map(normalizeRowToken)
+        .join("|");
+    const dedupeRows = (rows = []) => {
+      const byKey = new Map();
+      rows.forEach((row) => {
+        if (!row || typeof row !== "object") return;
+        const key = invoiceRowKey(row);
+        if (!byKey.has(key)) {
+          byKey.set(key, row);
+          return;
+        }
+        const prev = byKey.get(key);
+        if (confidenceScore(row) > confidenceScore(prev)) {
+          byKey.set(key, row);
+        }
+      });
+      return Array.from(byKey.values());
+    };
+    let sales = dedupeRows(Array.isArray(inv.uaeSalesRows) ? inv.uaeSalesRows : []);
+    let purch = dedupeRows(
+      Array.isArray(inv.uaePurchaseRows) ? inv.uaePurchaseRows : []
+    );
+    let others = dedupeRows([
+      ...(Array.isArray(inv.othersRows) ? inv.othersRows : []),
+      ...(Array.isArray(inv.uaeOtherRows) ? inv.uaeOtherRows : []),
+    ]);
+
+    // Only when no explicit buckets exist do we use legacy TYPE split.
+    // Unknown/empty TYPE rows must go to Others (never drop).
+    if (!explicit) {
+      const unified = Array.isArray(inv.table?.rows) ? inv.table.rows : [];
+      for (const r of unified) {
+        if (isSalesType(r)) sales.push(r);
+        else if (isPurchType(r)) purch.push(r);
+        else others.push(r);
+      }
+    }
+
+    return {
+      salesRows: dedupeRows(sales),
+      purchaseRows: dedupeRows(purch),
+      othersRowsView: dedupeRows(others),
+    };
+  }, [previewData]);
+
+  const normalizedInvoiceData = useMemo(() => {
+    const inv = previewData?.invoiceData || {};
+    return {
+      ...inv,
+      uaeSalesRows: Array.isArray(salesRows) ? salesRows : [],
+      uaePurchaseRows: Array.isArray(purchaseRows) ? purchaseRows : [],
+      othersRows: Array.isArray(othersRowsView) ? othersRowsView : [],
+      uaeOtherRows: Array.isArray(othersRowsView) ? othersRowsView : [],
+      __explicitBuckets: true,
+    };
+  }, [previewData?.invoiceData, salesRows, purchaseRows, othersRowsView]);
+
+  // ===== Totals (same formula as backend generateCombinedExcel) =====
+  const computedSales = useMemo(() => {
+    const rows = salesRows || [];
+    return {
+      beforeTax: sumAmount(rows, "BEFORE TAX (AED)"),
+      vat: sumAmount(rows, "VAT (AED)"),
+      zero: sumAmount(rows, "ZERO RATED (AED)"),
+      net: sumAmount(rows, "NET AMOUNT (AED)"),
+    };
+  }, [salesRows]);
+
+  const computedPurchase = useMemo(() => {
+    const rows = purchaseRows || [];
+    return {
+      beforeTax: sumAmount(rows, "BEFORE TAX (AED)"),
+      vat: sumAmount(rows, "VAT (AED)"),
+      zero: sumAmount(rows, "ZERO RATED (AED)"),
+      net: sumAmount(rows, "NET AMOUNT (AED)"),
+    };
+  }, [purchaseRows]);
+
+  useEffect(() => {
+    if (!previewData || !previewData.bankData) return;
+
+    setPreviewData((prev) => {
+      if (!prev || !prev.bankData) return prev;
+      // If we already have recon data, don't overwrite user edits
+      if (prev.bankReconData && Array.isArray(prev.bankReconData.rows)) {
+        return prev;
+      }
+
+      const built = buildBankReconciliationDisplay(
+        prev.bankData,
+        salesRows,
+        purchaseRows
+      );
+
+      return {
+        ...prev,
+        bankReconData: built,
+      };
+    });
+  }, [previewData, salesRows, purchaseRows]);
+
+  // ===== Build display data from the final rows =====
+  const salesData = useMemo(() => {
+    const rows = (salesRows || []).map((r) => {
+      const out = {};
+      UAE_SALES_ORDER.forEach((k) => (out[k] = r?.[k] ?? null));
+
+      // ✅ keep source meta for preview
+      out.SOURCE_URL = r?.SOURCE_URL ?? r?.source_url ?? null;
+      out.SOURCE_TYPE = r?.SOURCE_TYPE ?? r?.source_type ?? null;
+
+      return out;
+    });
+
+    return {
+      columns: UAE_SALES_ORDER.map((k) => ({ key: k, label: k })),
+      rows,
+    };
+  }, [salesRows]);
+
+  const purchaseData = useMemo(() => {
+    const rows = (purchaseRows || []).map((r) => {
+      const out = {};
+      UAE_PURCHASE_ORDER.forEach((k) => (out[k] = r?.[k] ?? null));
+
+      // ✅ keep source meta for preview
+      out.SOURCE_URL = r?.SOURCE_URL ?? r?.source_url ?? null;
+      out.SOURCE_TYPE = r?.SOURCE_TYPE ?? r?.source_type ?? null;
+
+      return out;
+    });
+
+    return {
+      columns: UAE_PURCHASE_ORDER.map((k) => ({ key: k, label: k })),
+      rows,
+    };
+  }, [purchaseRows]);
+
+  const bankReconData = useMemo(() => {
+    const b = previewData?.bankReconData || { columns: [], rows: [] };
+    const colsAll = normalizeCols(b.columns);
+    return {
+      columns: filterHidden(colsAll),
+      rows: Array.isArray(b.rows) ? b.rows : [],
+    };
+  }, [previewData]);
+
+  // ===== NEW: Sales Total / Purchase Total tables (UI version of Excel sheets) =====
+  const salesTotalData = useMemo(() => {
+    const cols = [
+      { key: "METRIC", label: "Metric" },
+      { key: "AMOUNT", label: "Amount (AED)" },
+    ];
+    const rows = previewData?.salesTotal || [];
+    return { columns: cols, rows };
+  }, [previewData]);
+
+  const purchaseTotalData = useMemo(() => {
+    const cols = [
+      { key: "METRIC", label: "Metric" },
+      { key: "AMOUNT", label: "Amount (AED)" },
+    ];
+    const rows = previewData?.purchaseTotal || [];
+    return { columns: cols, rows };
+  }, [previewData]);
+
+  const vatSummaryData = useMemo(() => {
+    const cols = [
+      { key: "PARTICULAR", label: "Particular" },
+      { key: "SALES", label: "Sales (AED)" },
+      { key: "PURCHASES", label: "Purchases (AED)" },
+      { key: "NET_VAT", label: "Net VAT (AED)" },
+    ];
+    const rows = previewData?.vatSummary || [];
+    return { columns: cols, rows };
+  }, [previewData]);
+
+  // ===== VAT SUMMARY base values (source-of-truth for VAT Return defaults) =====
+  const vatSummaryRows = previewData?.vatSummary || [];
+
+  const baseStdSuppliesAmount = getVatSummaryCellNum(
+    vatSummaryRows,
+    "STANDARDRATEDSUPPLIES/EXPENSES",
+    "SALES"
+  );
+
+  const baseOutputTaxAmount = getVatSummaryCellNum(
+    vatSummaryRows,
+    "OUTPUTTAX",
+    "SALES"
+  );
+
+  const baseZeroRatedAmount = getVatSummaryCellNum(
+    vatSummaryRows,
+    "ZERORATEDSUPPLIES",
+    "SALES"
+  );
+
+  const baseExemptAmount = getVatSummaryCellNum(
+    vatSummaryRows,
+    "EXEMPTEDSUPPLIES",
+    "SALES"
+  );
+
+  const baseStdExpensesAmount = getVatSummaryCellNum(
+    vatSummaryRows,
+    "STANDARDRATEDSUPPLIES/EXPENSES",
+    "PURCHASES"
+  );
+
+  const baseInputTaxAmount = getVatSummaryCellNum(
+    vatSummaryRows,
+    "INPUTTAX",
+    "PURCHASES"
+  );
+  // ===== VAT Return numbers (from SalesTotal & PurchaseTotal) =====
+  const vatReturnData = useMemo(() => {
+    const overrides = previewData?.vatReturnOverrides || {};
+
+    const readNum = (key, fallback) =>
+      getVatReturnOverrideNumber(overrides, key, fallback);
+
+    // ===== Apply overrides on top of VAT SUMMARY base values =====
+
+    // Outputs (VAT on sales & outputs)
+    const standardAmount = baseStdSuppliesAmount;
+    const standardVat = baseOutputTaxAmount;
+    const standardTotal = standardAmount + standardVat;
+
+    const reverseSupAmount = 0;
+    const reverseSupVat = 0;
+    const reverseSupTotal = reverseSupAmount + reverseSupVat;
+
+    const zeroAmount = baseZeroRatedAmount;
+    const zeroVat = 0;
+    const zeroTotal = zeroAmount + zeroVat;
+
+    const exemptAmount = 0;
+    const exemptVat = 0;
+    const exemptTotal = exemptAmount + exemptVat;
+
+    const goodsAmount = 0;
+    const goodsVat = 0;
+    const goodsTotal = goodsAmount + goodsVat;
+
+    const outputs = {
+      standard: {
+        amount: standardAmount,
+        vat: standardVat,
+        total: standardTotal,
+      },
+      reverseCharge: {
+        amount: reverseSupAmount,
+        vat: reverseSupVat,
+        total: reverseSupTotal,
+      },
+      zeroRated: { amount: zeroAmount, vat: zeroVat, total: zeroTotal },
+      exempt: { amount: exemptAmount, vat: exemptVat, total: exemptTotal },
+      goodsImport: { amount: goodsAmount, vat: goodsVat, total: goodsTotal },
+    };
+
+    const outputsTotals = {
+      amount:
+        outputs.standard.amount +
+        outputs.reverseCharge.amount +
+        outputs.zeroRated.amount +
+        outputs.exempt.amount +
+        outputs.goodsImport.amount,
+      vat:
+        outputs.standard.vat +
+        outputs.reverseCharge.vat +
+        outputs.zeroRated.vat +
+        outputs.exempt.vat +
+        outputs.goodsImport.vat,
+    };
+    outputsTotals.total = outputsTotals.amount + outputsTotals.vat;
+
+    // Inputs (VAT on expenses & inputs)
+    const stdExpAmount = baseStdExpensesAmount;
+    const stdExpVat = baseInputTaxAmount;
+    const stdExpTotal = stdExpAmount + stdExpVat;
+
+    const revExpAmount = 0;
+    const revExpVat = 0;
+    const revExpTotal = revExpAmount + revExpVat;
+
+    const inputs = {
+      standard: { amount: stdExpAmount, vat: stdExpVat, total: stdExpTotal },
+      reverseCharge: {
+        amount: revExpAmount,
+        vat: revExpVat,
+        total: revExpTotal,
+      },
+    };
+
+    const inputsTotals = {
+      amount: inputs.standard.amount + inputs.reverseCharge.amount,
+      vat: inputs.standard.vat + inputs.reverseCharge.vat,
+    };
+    inputsTotals.total = inputsTotals.amount + inputsTotals.vat;
+
+    // NET VAT
+    const totalDueTax = outputsTotals.vat;
+    const totalRecoverableTax = inputsTotals.vat;
+    const vatPayableForPeriod = totalDueTax - totalRecoverableTax;
+
+    const ftaFundNum = readNum("ftaFund", 0);
+    const netVatPayableAfterFund = vatPayableForPeriod - ftaFundNum;
+
+    return {
+      outputs,
+      outputsTotals,
+      inputs,
+      inputsTotals,
+      totalDueTax,
+      totalRecoverableTax,
+      vatPayableForPeriod,
+      ftaFund: ftaFundNum,
+      netVatPayableAfterFund,
+    };
+  }, [
+    previewData?.vatReturnOverrides,
+    baseStdSuppliesAmount,
+    baseOutputTaxAmount,
+    baseZeroRatedAmount,
+    baseExemptAmount,
+    baseStdExpensesAmount,
+    baseInputTaxAmount,
+  ]);
+
+  const ftaFundInputValue = (() => {
+    const raw = previewData?.vatReturnOverrides?.ftaFund;
+
+    // if user already touched it (even ""), show exactly what they typed
+    if (raw !== undefined) return String(raw);
+
+    // not touched yet → show default 0.00 (from calculated ftaFund)
+    const fallback = vatReturnData?.ftaFund ?? 0;
+    return Number(fallback).toFixed(2);
+  })();
+
+  // Auto-switch away from an empty tab (keep previous logic for raw tables)
+  useEffect(() => {
+    const hasSales = (salesData.rows || []).length > 0;
+    const hasPurch = (purchaseData.rows || []).length > 0;
+
+    if (view === "sales" && !hasSales && hasPurch) setView("purchase");
+    if (view === "purchase" && !hasPurch && hasSales) setView("sales");
+  }, [view, salesData.rows, purchaseData.rows]);
+
+  const normalizeMetricKey = (s) =>
+    String(s || "")
+      .replace(/[\s_]/g, "")
+      .toUpperCase();
+
+  useEffect(() => {
+    setPreviewData((prev) => {
+      if (!prev) return prev;
+
+      let next = { ...prev };
+      let changed = false;
+
+      const salesLocks = metricLocks.salesTotal || {};
+      const purchaseLocks = metricLocks.purchaseTotal || {};
+
+      const isMetricLocked = (sectionLocks, metricName) =>
+        !!sectionLocks[metricKey(metricName)];
+
+      // ---------- SALES TOTAL ----------
+      let salesTotalRows = Array.isArray(next.salesTotal)
+        ? [...next.salesTotal]
+        : [];
+
+      // Standard from sales rows unless locked
+      if (!isMetricLocked(salesLocks, "STANDARDRATEDSUPPLIES")) {
+        const newRows = setMetricAmount(
+          salesTotalRows,
+          "STANDARDRATEDSUPPLIES",
+          computedSales.beforeTax
+        );
+        changed =
+          changed || JSON.stringify(newRows) !== JSON.stringify(salesTotalRows);
+        salesTotalRows = newRows;
+      }
+
+      if (!isMetricLocked(salesLocks, "OUTPUTTAX")) {
+        const newRows = setMetricAmount(
+          salesTotalRows,
+          "OUTPUTTAX",
+          computedSales.vat
+        );
+        changed =
+          changed || JSON.stringify(newRows) !== JSON.stringify(salesTotalRows);
+        salesTotalRows = newRows;
+      }
+
+      if (!isMetricLocked(salesLocks, "ZERORATEDSUPPLIES")) {
+        const newRows = setMetricAmount(
+          salesTotalRows,
+          "ZERORATEDSUPPLIES",
+          computedSales.zero
+        );
+        changed =
+          changed || JSON.stringify(newRows) !== JSON.stringify(salesTotalRows);
+        salesTotalRows = newRows;
+      }
+
+      // Exempt is editable: only set default if missing and not locked
+      if (!isMetricLocked(salesLocks, "EXEMPTEDSUPPLIES")) {
+        const newRows = setMetricAmount(salesTotalRows, "EXEMPTEDSUPPLIES", 0);
+        changed =
+          changed || JSON.stringify(newRows) !== JSON.stringify(salesTotalRows);
+        salesTotalRows = newRows;
+      }
+
+      // TOTAL always computed from *current* SalesTotal values
+      const effStdSales = findMetricAmount(
+        salesTotalRows,
+        "STANDARDRATEDSUPPLIES"
+      );
+      const effOutTax = findMetricAmount(salesTotalRows, "OUTPUTTAX");
+      const salesTotalIncVat = effStdSales + effOutTax;
+
+      const rowsWithSalesTotal = setMetricAmount(
+        salesTotalRows,
+        "TOTALAMOUNTINCLUDINGVAT",
+        salesTotalIncVat
+      );
+      changed =
+        changed ||
+        JSON.stringify(rowsWithSalesTotal) !== JSON.stringify(salesTotalRows);
+      salesTotalRows = rowsWithSalesTotal;
+
+      next.salesTotal = salesTotalRows;
+
+      // ---------- PURCHASE TOTAL ----------
+      let purchaseTotalRows = Array.isArray(next.purchaseTotal)
+        ? [...next.purchaseTotal]
+        : [];
+
+      if (!isMetricLocked(purchaseLocks, "STANDARDRATEDEXPENSES")) {
+        const newRows = setMetricAmount(
+          purchaseTotalRows,
+          "STANDARDRATEDEXPENSES",
+          computedPurchase.beforeTax
+        );
+        changed =
+          changed ||
+          JSON.stringify(newRows) !== JSON.stringify(purchaseTotalRows);
+        purchaseTotalRows = newRows;
+      }
+
+      if (!isMetricLocked(purchaseLocks, "INPUTTAX")) {
+        const newRows = setMetricAmount(
+          purchaseTotalRows,
+          "INPUTTAX",
+          computedPurchase.vat
+        );
+        changed =
+          changed ||
+          JSON.stringify(newRows) !== JSON.stringify(purchaseTotalRows);
+        purchaseTotalRows = newRows;
+      }
+
+      if (!isMetricLocked(purchaseLocks, "ZERORATEDEXPENSES")) {
+        const newRows = setMetricAmount(
+          purchaseTotalRows,
+          "ZERORATEDEXPENSES",
+          computedPurchase.zero
+        );
+        changed =
+          changed ||
+          JSON.stringify(newRows) !== JSON.stringify(purchaseTotalRows);
+        purchaseTotalRows = newRows;
+      }
+
+      if (!isMetricLocked(purchaseLocks, "EXEMPTEDEXPENSES")) {
+        const newRows = setMetricAmount(
+          purchaseTotalRows,
+          "EXEMPTEDEXPENSES",
+          0
+        );
+        changed =
+          changed ||
+          JSON.stringify(newRows) !== JSON.stringify(purchaseTotalRows);
+        purchaseTotalRows = newRows;
+      }
+
+      const effStdPurch = findMetricAmount(
+        purchaseTotalRows,
+        "STANDARDRATEDEXPENSES"
+      );
+      const effInputTax = findMetricAmount(purchaseTotalRows, "INPUTTAX");
+      const purchTotalIncVat = effStdPurch + effInputTax;
+
+      const rowsWithPurchTotal = setMetricAmount(
+        purchaseTotalRows,
+        "TOTALAMOUNTINCLUDINGVAT",
+        purchTotalIncVat
+      );
+      changed =
+        changed ||
+        JSON.stringify(rowsWithPurchTotal) !==
+          JSON.stringify(purchaseTotalRows);
+      purchaseTotalRows = rowsWithPurchTotal;
+
+      next.purchaseTotal = purchaseTotalRows;
+
+      // ---------- VAT SUMMARY ----------
+      let vatSummaryRows = Array.isArray(next.vatSummary)
+        ? [...next.vatSummary]
+        : [];
+
+      // Push totals into VAT summary ONLY if VAT summary cells not locked
+      const setIfNotLocked = (particular, colKey, value) => {
+        const lockKey = makeVatSummaryLockKey(particular, colKey);
+        if (vatSummaryLocks[lockKey]) return;
+
+        const fixed = Number(value || 0).toFixed(2);
+        const before = JSON.stringify(vatSummaryRows);
+        vatSummaryRows = setVatSummaryCell(
+          vatSummaryRows,
+          particular,
+          colKey,
+          fixed
+        );
+        const after = JSON.stringify(vatSummaryRows);
+        if (before !== after) changed = true;
+      };
+
+      // STANDARD RATED SUPPLIES/EXPENSES
+      setIfNotLocked("STANDARDRATEDSUPPLIES/EXPENSES", "SALES", effStdSales);
+      setIfNotLocked(
+        "STANDARDRATEDSUPPLIES/EXPENSES",
+        "PURCHASES",
+        effStdPurch
+      );
+
+      // OUTPUTTAX from SalesTotal
+      setIfNotLocked("OUTPUTTAX", "SALES", effOutTax);
+
+      // INPUTTAX from PurchaseTotal
+      setIfNotLocked("INPUTTAX", "PURCHASES", effInputTax);
+
+      // ZERO & EXEMPT
+      const effZeroSales = findMetricAmount(
+        salesTotalRows,
+        "ZERORATEDSUPPLIES"
+      );
+      const effZeroPurch = findMetricAmount(
+        purchaseTotalRows,
+        "ZERORATEDEXPENSES"
+      );
+      setIfNotLocked("ZERORATEDSUPPLIES", "SALES", effZeroSales);
+      setIfNotLocked("ZERORATEDSUPPLIES", "PURCHASES", effZeroPurch);
+
+      setIfNotLocked("EXEMPTEDSUPPLIES", "SALES", 0);
+      setIfNotLocked("EXEMPTEDSUPPLIES", "PURCHASES", 0);
+
+      // 4) Others (read-only for now)
+      // 4) Others (read-only for now)
+      if (view === "others") {
+        return prev;
+      }
+
+      // 5) Sales Total / Purchase Total / VAT Summary (NOT editable now)
+
+      // ✅ TOTALAMOUNTINCLUDINGVAT must be computed from VAT SUMMARY CURRENT VALUES (not totals)
+      const vsStdSales = getVatSummaryCellNum(
+        vatSummaryRows,
+        "STANDARDRATEDSUPPLIES/EXPENSES",
+        "SALES"
+      );
+
+      const vsStdPurch = getVatSummaryCellNum(
+        vatSummaryRows,
+        "STANDARDRATEDSUPPLIES/EXPENSES",
+        "PURCHASES"
+      );
+      const vsOutput = getVatSummaryCellNum(
+        vatSummaryRows,
+        "OUTPUTTAX",
+        "SALES"
+      );
+      const vsInput = getVatSummaryCellNum(
+        vatSummaryRows,
+        "INPUTTAX",
+        "PURCHASES"
+      );
+
+      // Always overwrite total (read-only in UI)
+      {
+        const fixedSales = Number(vsStdSales + vsOutput).toFixed(2);
+        const fixedPurch = Number(vsStdPurch + vsInput).toFixed(2);
+
+        const before = JSON.stringify(vatSummaryRows);
+        vatSummaryRows = setVatSummaryCell(
+          vatSummaryRows,
+          "TOTALAMOUNTINCLUDINGVAT",
+          "SALES",
+          fixedSales
+        );
+        vatSummaryRows = setVatSummaryCell(
+          vatSummaryRows,
+          "TOTALAMOUNTINCLUDINGVAT",
+          "PURCHASES",
+          fixedPurch
+        );
+        const after = JSON.stringify(vatSummaryRows);
+        if (before !== after) changed = true;
+      }
+
+      // ✅ NET VAT PAYABLE FOR THE PERIOD must be computed from VAT SUMMARY CURRENT VALUES
+      {
+        const netVat = vsOutput - vsInput;
+        const fixedNet = Number(netVat).toFixed(2);
+
+        const before = JSON.stringify(vatSummaryRows);
+        vatSummaryRows = setVatSummaryCell(
+          vatSummaryRows,
+          "NETVATPAYABLEFORTHEPERIOD",
+          "NET_VAT",
+          fixedNet
+        );
+        const after = JSON.stringify(vatSummaryRows);
+        if (before !== after) changed = true;
+      }
+
+      next.vatSummary = vatSummaryRows;
+
+      return changed ? next : prev;
+    });
+  }, [computedSales, computedPurchase, metricLocks, vatSummaryLocks]);
+
+  // Decide which table to show based on `view`
+  const current = useMemo(() => {
+    switch (view) {
+      case "bank":
+        return bankData;
+      case "bankRecon":
+        return bankReconData;
+      case "sales":
+        return salesData;
+      case "purchase":
+        return purchaseData;
+      case "salesTotal":
+        return salesTotalData;
+      case "purchaseTotal":
+        return purchaseTotalData;
+      case "vatSummary":
+        return vatSummaryData;
+      case "others": {
+        const rows = othersRowsView || [];
+        const keys = rows.length ? Object.keys(rows[0]) : [];
+        const baseOrder = UAE_OTHERS_ORDER.filter(
+          (k) =>
+            String(k).toUpperCase() !== "SOURCE_URL" &&
+            String(k).toUpperCase() !== "SOURCE_TYPE"
+        );
+        const extraKeys = keys.filter(
+          (k) =>
+            !baseOrder.includes(k) &&
+            String(k).toUpperCase() !== "SOURCE_URL" &&
+            String(k).toUpperCase() !== "SOURCE_TYPE"
+        );
+        const orderedKeys = baseOrder.concat(extraKeys);
+        const columns = orderedKeys.map((k) => ({
+          key: k,
+          label: k,
+        }));
+        return {
+          rows,
+          columns: columns.length
+            ? columns
+            : [{ key: "NoData", label: "No Data" }],
+        };
+      }
+      default:
+        return bankData;
+    }
+  }, [
+    view,
+    bankData,
+    bankReconData,
+    salesData,
+    purchaseData,
+    salesTotalData,
+    purchaseTotalData,
+    vatSummaryData,
+    othersRowsView,
+  ]);
+
+  // ===== Table renderer =====
+  const renderTable = (
+    cols,
+    rows,
+    emptyText = "No rows to display",
+    viewName = ""
+  ) => {
+    if (!cols.length) {
+      return (
+        <div className="muted" style={{ padding: 12 }}>
+          {emptyText}
+        </div>
+      );
+    }
+
+    const scrollerClassName = [
+      "tbl-scroller",
+      viewName ? `tbl-scroller-${viewName}` : "",
+    ]
+      .join(" ")
+      .trim();
+
+    const tableClassName = ["tbl", "nice", viewName ? `tbl-${viewName}` : ""]
+      .join(" ")
+      .trim();
+
+    const showRowActions =
+      isEditMode && ["bank", "sales", "purchase", "others"].includes(viewName);
+
+    return (
+      <div className="tbl-wrap">
+        {showRowActions && (
+          <div className="tbl-actions">
+            <button
+              type="button"
+              className="row-add-btn"
+              onClick={() => handleAddRow(viewName)}
+            >
+              Add Row
+            </button>
+          </div>
+        )}
+        <div className={scrollerClassName}>
+          <table className={tableClassName}>
+            <thead>
+              <tr>
+                {cols.map((c) => {
+                  const label = c.label ?? "";
+
+                  const isNumericHeader =
+                    /\(aed\)/i.test(label) ||
+                    /\bamount\b/i.test(label) ||
+                    /\bvat\b/i.test(label) ||
+                    /\btax\b/i.test(label) ||
+                    /\btotal\b/i.test(label) ||
+                    /\bnet\b/i.test(label) ||
+                    /\bdebit\b/i.test(label) ||
+                    /\bcredit\b/i.test(label) ||
+                    /\bbalance\b/i.test(label);
+
+                  const thCls = [
+                    "no-wrap-header",
+                    isNumericHeader ? "num num-header" : "",
+                  ]
+                    .join(" ")
+                    .trim();
+
+                  return (
+                    <th key={c.key} className={thCls} title={label}>
+                      {label}
+                    </th>
+                  );
+                })}
+                {showRowActions && <th className="actions-col">Action</th>}
+              </tr>
+            </thead>
+
+            <tbody>
+              {!rows || rows.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={cols.length + (showRowActions ? 1 : 0)}
+                    className="muted"
+                    style={{ textAlign: "center", padding: 18 }}
+                  >
+                    {emptyText}
+                  </td>
+                </tr>
+              ) : (
+                rows.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {cols.map((c) => {
+                      const val = row?.[c.key] ?? "";
+                      const text = String(val ?? "");
+
+                      // ✅ NEW: SOURCE column => open preview (pdf/image) using setPreview
+                      if (c.key === "SOURCE") {
+                        const label = val ?? "";
+                        const rawUrl = row.SOURCE_URL || row.source_url || null;
+
+                        const srcUrl =
+                          rawUrl && !String(rawUrl).startsWith("http")
+                            ? `${BACKEND_ORIGIN}${rawUrl}`
+                            : rawUrl;
+
+                        const srcType =
+                          row.SOURCE_TYPE ||
+                          row.source_type ||
+                          (rawUrl &&
+                          String(rawUrl).toLowerCase().endsWith(".pdf")
+                            ? "pdf"
+                            : "image");
+
+                        return (
+                          <td key={c.key} title={String(label ?? "")}>
+                            {srcUrl ? (
+                              <button
+                                type="button"
+                                className="src-link"
+                                onClick={() =>
+                                  setPreview({
+                                    url: srcUrl,
+                                    type: srcType,
+                                    label,
+                                  })
+                                }
+                              >
+                                {label}
+                              </button>
+                            ) : (
+                              label
+                            )}
+                          </td>
+                        );
+                      }
+
+                      const cls = [
+                        isNumeric(text) ? "num" : "",
+                        isRTL(text) ? "rtl" : "",
+                      ]
+                        .join(" ")
+                        .trim();
+
+                      const title =
+                        c.key === "CONFIDENCE" && typeof val === "number"
+                          ? `${val}%`
+                          : text;
+
+                      let editable = isCellEditable(viewName);
+
+                      if (
+                        (viewName === "salesTotal" ||
+                          viewName === "purchaseTotal") &&
+                        metricKey(row?.METRIC) === "TOTALAMOUNTINCLUDINGVAT" &&
+                        String(c.key).toUpperCase() === "AMOUNT"
+                      ) {
+                        editable = false;
+                      }
+
+                      // ✅ VAT SUMMARY: TOTALAMOUNTINCLUDINGVAT row should be read-only (auto)
+                      if (
+                        viewName === "vatSummary" &&
+                        particularKey(row?.PARTICULAR) ===
+                          "TOTALAMOUNTINCLUDINGVAT" &&
+                        (String(c.key).toUpperCase() === "SALES" ||
+                          String(c.key).toUpperCase() === "PURCHASES")
+                      ) {
+                        editable = false;
+                      }
+
+                      // ✅ NET VAT PAYABLE should always be calculated (read-only)
+                      if (
+                        viewName === "vatSummary" &&
+                        normalizeParticularKey(row?.PARTICULAR) ===
+                          "NETVATPAYABLEFORTHEPERIOD" &&
+                        String(c.key).toUpperCase() === "NET_VAT"
+                      ) {
+                        editable = false;
+                      }
+
+                      return (
+                        <td key={c.key} className={cls} title={title}>
+                          {editable ? (
+                            viewName === "others" &&
+                            String(c.key).toUpperCase() === "VAT ELIGIBILTY" ? (
+                              <select
+                                className="inline-edit-input"
+                                value={val ?? ""}
+                                onChange={(e) =>
+                                  handleCellChange(
+                                    viewName,
+                                    rowIndex,
+                                    c.key,
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                <option value="">Select</option>
+                                {VAT_ELIGIBILITY_OPTIONS.map((opt) => (
+                                  <option key={opt} value={opt}>
+                                    {opt}
+                                  </option>
+                                ))}
+                              </select>
+                            ) : (
+                              <input
+                                className="inline-edit-input"
+                                value={val ?? ""}
+                                onChange={(e) =>
+                                  handleCellChange(
+                                    viewName,
+                                    rowIndex,
+                                    c.key,
+                                    e.target.value
+                                  )
+                                }
+                                onBlur={(e) => {
+                                  // Only format these two columns for Sales/Purchase when leaving the field
+                                  if (
+                                    (viewName === "sales" ||
+                                      viewName === "purchase") &&
+                                    (c.key === "BEFORE TAX (AED)" ||
+                                      c.key === "VAT (AED)")
+                                  ) {
+                                    const n = toNumberLoose(e.target.value);
+                                    handleCellChange(
+                                      viewName,
+                                      rowIndex,
+                                      c.key,
+                                      n == null ? "" : fmt2(n)
+                                    );
+                                  }
+                                }}
+                              />
+                            )
+                          ) : viewName === "vatSummary" &&
+                            String(c.key).toUpperCase() === "NET_VAT" ? (
+                            formatAED(val)
+                          ) : c.key === "CONFIDENCE" &&
+                            typeof val === "number" ? (
+                            `${val}%`
+                          ) : (viewName === "salesTotal" ||
+                              viewName === "purchaseTotal") &&
+                            String(c.key).toUpperCase() === "AMOUNT" ? (
+                            formatAED(val)
+                          ) : (
+                            text
+                          )}
+                        </td>
+                      );
+                    })}
+                    {showRowActions && (
+                      <td className="actions-col">
+                        <button
+                          type="button"
+                          className="row-delete-btn"
+                          onClick={() => handleDeleteRow(viewName, rowIndex)}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="result-page">
+        <div className="loading">Loading preview data...</div>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="result-page">
+        <div className="error">{error}</div>
+      </div>
+    );
+  }
+
+  const renderVatReturn = () => {
+    const {
+      outputs,
+      outputsTotals,
+      inputs,
+      inputsTotals,
+      totalDueTax,
+      totalRecoverableTax,
+      vatPayableForPeriod,
+      ftaFund,
+      netVatPayableAfterFund,
+    } = vatReturnData;
+
+    return (
+      // ⬇️ use the same scroller class used by other tabs
+      <div className="tbl-scroller tbl-scroller-vatReturn">
+        <div className="vat-return-wrapper">
+          {/* 1️⃣ VAT ON SALES & OUTPUTS */}
+          <section className="vat-return-section">
+            {/* <h3 className="vat-return-title">
+            VAT ON SALES AND ALL OTHER OUTPUTS
+          </h3> */}
+            {/* ⬇️ also reuse table base classes */}
+            <table className="tbl nice vat-return-table">
+              <thead>
+                <tr>
+                  <th className="vat-return-col-label">
+                    VAT ON SALES AND ALL OTHER OUTPUTS
+                  </th>
+                  <th>AMOUNT</th>
+                  <th>VAT AMOUNT</th>
+                  <th>TOTAL AMOUNT</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>STANDARD RATED SUPPLIES</td>
+                  <td>{formatAED(outputs.standard.amount)}</td>
+                  <td>{formatAED(outputs.standard.vat)}</td>
+                  <td>{formatAED(outputs.standard.total)}</td>
+                </tr>
+                <tr>
+                  <td>Reverse Charge Provisions (Supplies)</td>
+                  <td>{formatAED(outputs.reverseCharge.amount)}</td>
+                  <td>{formatAED(outputs.reverseCharge.vat)}</td>
+                  <td>{formatAED(outputs.reverseCharge.total)}</td>
+                </tr>
+                <tr>
+                  <td>ZERO RATED SUPPLIES</td>
+                  <td>{formatAED(outputs.zeroRated.amount)}</td>
+                  <td>{formatAED(outputs.zeroRated.vat)}</td>
+                  <td>{formatAED(outputs.zeroRated.total)}</td>
+                </tr>
+                <tr>
+                  <td>EXEMPTED SUPPLIES</td>
+                  <td>{formatAED(outputs.exempt.amount)}</td>
+                  <td>{formatAED(outputs.exempt.vat)}</td>
+                  <td>{formatAED(outputs.exempt.total)}</td>
+                </tr>
+                <tr>
+                  <td>Goods imported into UAE</td>
+                  <td>{formatAED(outputs.goodsImport.amount)}</td>
+                  <td>{formatAED(outputs.goodsImport.vat)}</td>
+                  <td>{formatAED(outputs.goodsImport.total)}</td>
+                </tr>
+                <tr className="vat-return-total-row">
+                  <td>TOTAL AMOUNT</td>
+                  <td>{formatAED(outputsTotals.amount)}</td>
+                  <td>{formatAED(outputsTotals.vat)}</td>
+                  <td>{formatAED(outputsTotals.total)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          {/* 2️⃣ VAT ON EXPENSES & INPUTS */}
+          <section className="vat-return-section">
+            {/* <h3 className="vat-return-title">
+            VAT ON EXPENSES AND ALL OTHER INPUTS
+          </h3> */}
+            <table className="tbl nice vat-return-table">
+              <thead>
+                <tr>
+                  <th className="vat-return-col-label">
+                    VAT ON EXPENSES AND ALL OTHER INPUTS
+                  </th>
+                  <th>AMOUNT</th>
+                  <th>VAT AMOUNT</th>
+                  <th>TOTAL AMOUNT</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>STANDARD RATED EXPENSES</td>
+                  <td>{formatAED(inputs.standard.amount)}</td>
+                  <td>{formatAED(inputs.standard.vat)}</td>
+                  <td>{formatAED(inputs.standard.total)}</td>
+                </tr>
+                <tr>
+                  <td>Reverse Charge Provisions (Expenses)</td>
+                  <td>{formatAED(inputs.reverseCharge.amount)}</td>
+                  <td>{formatAED(inputs.reverseCharge.vat)}</td>
+                  <td>{formatAED(inputs.reverseCharge.total)}</td>
+                </tr>
+                <tr className="vat-return-total-row">
+                  <td>TOTAL AMOUNT</td>
+                  <td>{formatAED(inputsTotals.amount)}</td>
+                  <td>{formatAED(inputsTotals.vat)}</td>
+                  <td>{formatAED(inputsTotals.total)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          {/* 3️⃣ NET VAT VALUE */}
+          <section className="vat-return-section">
+            {/* <h3 className="vat-return-title">NET VAT VALUE</h3> */}
+            <table className="tbl nice vat-return-table vat-return-net">
+              <thead>
+                <tr>
+                  <th>NET VAT VALUE</th>
+                  <th>AMOUNT (AED)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Total Value of due tax for the period</td>
+                  <td>{formatAED(totalDueTax)}</td>
+                </tr>
+                <tr>
+                  <td>Total Value of recoverable tax for the period</td>
+                  <td>{formatAED(totalRecoverableTax)}</td>
+                </tr>
+                <tr>
+                  <td>VAT PAYABLE FOR THE PERIOD</td>
+                  <td>{formatAED(vatPayableForPeriod)}</td>
+                </tr>
+                <tr>
+                  <td>FUND AVAILABLE FTA</td>
+                  <td>
+                    {isEditMode ? (
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        className="inline-edit-input"
+                        value={ftaFundInputValue}
+                        onChange={(e) =>
+                          handleVatReturnInputChange("ftaFund", e.target.value)
+                        }
+                        onBlur={(e) => {
+                          const n = parseReconAmount(e.target.value);
+                          handleVatReturnInputChange(
+                            "ftaFund",
+                            n == null ? "" : n.toFixed(2)
+                          );
+                        }}
+                      />
+                    ) : (
+                      formatAED(ftaFund)
+                    )}
+                  </td>
+                </tr>
+                <tr className="vat-return-total-row">
+                  <td>NET VAT PAYABLE FOR THE PERIOD</td>
+                  <td>{formatAED(netVatPayableAfterFund)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="result-page">
+      {/* Header */}
+      <header className="result-head">
+        <div className="title-wrap">
+          <h2 className="result-title">
+            VAT Filing Preview{" "}
+            {isEditMode && <span className="edit-badge">EDIT MODE</span>}
+          </h2>
+        </div>
+
+        <div className="head-actions">
+          {/* 1️⃣ Tabs on the left */}
+          <div className="seg seg-black">
+            <button
+              className={`seg-btn ${view === "bank" ? "active" : ""}`}
+              onClick={() => setView("bank")}
+              title="Show Bank Statement rows"
+            >
+              Bank Statement
+            </button>
+            <button
+              className={`seg-btn ${view === "bankRecon" ? "active" : ""}`}
+              onClick={() => setView("bankRecon")}
+              title="Show Bank Reconciliation"
+            >
+              Bank Reconciliation
+            </button>
+            <button
+              className={`seg-btn ${view === "sales" ? "active" : ""}`}
+              onClick={() => setView("sales")}
+              title="Show Sales rows"
+            >
+              Sales
+            </button>
+            <button
+              className={`seg-btn ${view === "purchase" ? "active" : ""}`}
+              onClick={() => setView("purchase")}
+              title="Show Purchase rows"
+            >
+              Purchase
+            </button>
+            <button
+              className={`seg-btn ${view === "others" ? "active" : ""}`}
+              onClick={() => setView("others")}
+              title="Show Excluded Transactions"
+            >
+              Others
+            </button>
+            <button
+              className={`seg-btn ${view === "salesTotal" ? "active" : ""}`}
+              onClick={() => setView("salesTotal")}
+              title="Show Sales Total sheet"
+            >
+              Sales Total
+            </button>
+            <button
+              className={`seg-btn ${view === "purchaseTotal" ? "active" : ""}`}
+              onClick={() => setView("purchaseTotal")}
+              title="Show Purchase Total sheet"
+            >
+              Purchase Total
+            </button>
+            <button
+              className={`seg-btn ${view === "vatSummary" ? "active" : ""}`}
+              onClick={() => setView("vatSummary")}
+              title="Show VAT Summary"
+            >
+              VAT Summary
+            </button>
+            <button
+              className={`seg-btn ${view === "vatReturn" ? "active" : ""}`}
+              onClick={() => setView("vatReturn")}
+              title="Show VAT Return"
+            >
+              VAT Return
+            </button>
+          </div>
+
+          {/* 2️⃣ Back button – now before Download */}
+          <button
+            type="button"
+            className="prj-btn prj-btn-outline vf-back-btn"
+            onClick={handleBack}
+          >
+            ← {isExistingRun ? "Back to conversions" : "Back to filing"}
+          </button>
+
+          {/* 3️⃣ Download Excel on the far right */}
+          <button className="btn btn-black" onClick={handleDownload}>
+            Download Excel
+          </button>
+        </div>
+      </header>
+
+      {/* Table Card */}
+      <div className="result-card">
+        {view === "vatReturn"
+          ? renderVatReturn()
+          : renderTable(
+              current.columns,
+              current.rows,
+              "No data to display",
+              view
+            )}
+        <div className="result-card-footer">
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={handleSaveDraft}
+            disabled={loading || !previewData}
+          >
+            {isExistingRun
+              ? "Save Changes"
+              : draftSaved
+              ? "Draft Saved"
+              : "Save Draft"}
+          </button>
+          {/* <button type="button" className="btn btn-black">
+            Verify
+          </button> */}
+        </div>
+      </div>
+      {preview && (
+        <div className="invoice-preview-overlay">
+          <div className="invoice-preview-dialog">
+            <div className="invoice-preview-header">
+              <span className="preview-title">
+                {preview.label || "Invoice preview"}
+              </span>
+              <button
+                className="preview-close-btn"
+                onClick={() => setPreview(null)}
+                aria-label="Close preview"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="invoice-preview-body">
+              {preview.type === "pdf" ? (
+                <PdfViewer
+                  fileUrl={preview.url}
+                  controls={{
+                    prev: <span>{"<"}</span>,
+                    next: <span>{">"}</span>,
+                  }}
+                />
+              ) : (
+                <ImageViewer
+                  src={preview.url}
+                  alt={preview.label || "Invoice image"}
+                  initialScale={1}
+                  minScale={0.4}
+                  maxScale={5}
+                  step={0.2}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"generateContent\\\\|usageMetadata\" /c/Users/GC-IT/Desktop/Projects/DocuFlow/server --include=*.js)"
+    ]
+  }
+}

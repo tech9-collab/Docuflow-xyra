@@ -1,0 +1,31 @@
+.super-admin-dashboard {
+    padding: 24px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.stat-card {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.stat-card h3 {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+}
+
+.stat-card .value {
+    margin: 8px 0 0;
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1e293b;
+}

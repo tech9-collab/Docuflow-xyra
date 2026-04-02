@@ -1,0 +1,32 @@
+.nf {
+    height: calc(100dvh - 140px);
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 10px;
+    text-align: center;
+}
+
+.nf h1 {
+    font-size: 64px;
+    margin: 0;
+    color: #0f172a;
+}
+
+.muted {
+    color: #6b7280;
+}
+
+.btn {
+    display: inline-block;
+    background: #1d4ed8;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 1px solid #1e40af;
+}
+
+.btn:hover {
+    filter: brightness(1.06);
+}

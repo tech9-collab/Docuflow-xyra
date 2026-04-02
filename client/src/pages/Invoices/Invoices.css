@@ -1,0 +1,402 @@
+/* ============ Base Layout ============ */
+.imp2 {
+  display: grid;
+  gap: 18px;
+}
+
+.imp2-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.imp2-header h2 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.page-kicker {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* ============ Buttons (Black theme) ============ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #111827;
+  background: #111827;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px !important;
+  line-height: 1.15;
+  text-indent: 0 !important;
+  white-space: nowrap;
+  transition: transform 120ms ease, background 120ms ease, opacity 120ms ease;
+}
+
+.btn:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn svg {
+  color: inherit;
+}
+
+/* explicit semantic alias for clarity */
+.btn-black {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+.btn-black:hover {
+  background: #0a0a0a;
+}
+
+/* Add Files emphasis (same black, slightly larger + dashed container feel) */
+.btn-add-files {
+  padding: 10px 16px;
+  border-radius: 12px;
+}
+
+/* Inputs unified */
+.input,
+.imp2 select.input,
+.imp2 input.input {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #111827;
+  font-size: 14px;
+  width: 100%;
+}
+
+.input:disabled {
+  background: #f9fafb;
+  color: #6b7280;
+}
+
+/* ============ Grid ============ */
+.imp2-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  min-height: 540px;
+}
+
+@media (max-width: 1000px) {
+  .imp2-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============ Cards & Blocks ============ */
+.block,
+.upload-card,
+.pane-right {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.05);
+}
+
+.block {
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.block-title {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* Identity block */
+.block-identity .static-row {
+  margin-top: 0;
+}
+
+/* Upload section */
+.pane-left {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+
+.upload-card {
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.upload-card-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-title {
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.upload-sub {
+  margin: 0;
+  color: #6b7280;
+}
+
+.count-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #111827;
+}
+
+.count-pill.purchase {
+  background: #ecfeff;
+  border-color: #a5f3fc;
+  color: #155e75;
+}
+
+/* Upload queue */
+.queue-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.queue-item {
+  display: grid;
+  gap: 6px;
+}
+
+.qi-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.progress {
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, #60a5fa, #6366f1);
+}
+
+/* File list */
+.file-list-scroll {
+  --file-row-height: 56px;
+  max-height: calc(var(--file-row-height) * 6);
+  overflow: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 2px;
+}
+
+.file-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.file-item {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+}
+
+.file-item.active {
+  border-color: #c7d2fe;
+  box-shadow: 0 0 0 2px #eef2ff;
+}
+
+.file-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.icon {
+  width: 20px;
+  display: grid;
+  place-items: center;
+}
+
+.name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.icon-btn:hover {
+  background: #f3f4f6;
+}
+
+.icon-btn.danger {
+  color: #dc2626;
+}
+
+/* Right preview */
+.pane-right {
+  min-height: 540px;
+  padding: 12px;
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.preview-empty {
+  display: grid;
+  place-items: center;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Static inputs row */
+.static-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.static-col {
+  display: grid;
+  gap: 6px;
+}
+
+.small {
+  font-size: 12px;
+}
+
+.muted {
+  color: #6b7280;
+}
+
+/* Overlay progress */
+.import-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.28);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+  backdrop-filter: blur(1px);
+}
+
+.import-card {
+  width: 320px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 18px 16px;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  box-shadow: 0 12px 40px rgba(2, 6, 23, 0.12);
+}
+
+.progress-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: grid;
+  gap: 8px;
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.04);
+}
+
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.progress-outer {
+  width: 100%;
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-inner {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #6366f1, #06b6d4);
+  transition: width 300ms ease;
+}
+
+/* Disable opacity for selects/inputs when disabled (buttons already handled) */
+.imp2 select[disabled],
+.imp2 input[disabled] {
+  opacity: 1;
+}

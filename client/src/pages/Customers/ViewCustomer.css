@@ -1,0 +1,257 @@
+/* Outer page – similar background as AddCustomer */
+.customer-view-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  background: #f9fafb;
+  display: grid;
+  gap: 18px;
+}
+
+/* Header – aligned with AddCustomer look */
+.customer-view-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.customer-view-title-wrap {
+  display: grid;
+  gap: 4px;
+}
+
+.customer-view-title {
+  margin: 0;
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.customer-view-sub {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.customer-view-head-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Reuse same "card-section" feel as AddCustomer */
+.card-section {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  padding: 18px 16px 20px;
+  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.05);
+  display: grid;
+  gap: 16px;
+}
+
+.card-section + .card-section {
+  margin-top: 6px;
+}
+
+.card-section-head h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.card-section-head p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Subsection (used for shareholding) */
+.subsection {
+  border-top: 1px dashed #e5e7eb;
+  padding-top: 12px;
+  margin-top: 6px;
+  display: grid;
+  gap: 10px;
+}
+
+.subsection h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Grid for label/value pairs – mimic AddCustomer fields but plain text */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.details-grid > div {
+  display: grid;
+  gap: 4px;
+}
+
+.details-grid > div.full {
+  grid-column: 1 / -1;
+}
+
+.two-col-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+
+.inner-col {
+  display: grid;
+  gap: 4px;
+}
+
+.details-grid label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b5563;
+} 
+
+.details-grid.two-col {
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+}
+
+/* plain value text – no input-style boxes */
+.value-text {
+  margin: 0;
+  font-size: 13px;
+  color: #111827;
+  font-weight: 500;
+}
+
+/* Shareholding table – headings NOT all caps */
+.share-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4px;
+  font-size: 0.875rem;
+}
+
+.share-table th,
+.share-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.share-table thead tr {
+  background-color: #f3f4f6;
+}
+
+.share-table th {
+  font-weight: 600;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.share-table tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* Tax sections – two columns for VAT & CT */
+.tax-sections {
+  display: grid;
+  gap: 18px;
+}
+
+.tax-section-block {
+  border-top: 1px dashed #e5e7eb;
+  padding-top: 10px;
+  margin-top: 4px;
+  display: grid;
+  gap: 10px;
+}
+
+.tax-subtitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Loader */
+.loader {
+  max-width: 600px;
+  margin: 80px auto;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+/* Buttons – reuse same sizing as AddCustomer */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid #111827;
+  background: #111827;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 120ms ease, transform 120ms ease, opacity 120ms ease;
+}
+
+.btn:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-black {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+.btn.ghost {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  color: #111827;
+}
+
+.btn.ghost:hover {
+  background: #f3f4f6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .customer-view-page {
+    padding: 12px;
+  }
+
+  .customer-view-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .customer-view-head-actions {
+    justify-content: flex-start;
+  }
+
+  .details-grid > div.full {
+    grid-column: 1 / -1;
+  }
+}

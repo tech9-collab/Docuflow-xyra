@@ -1,0 +1,201 @@
+/* Overall layout */
+.result-page {
+    display: grid;
+    gap: 24px;
+    padding: 16px;
+    background: #f9fafb;
+}
+
+/* Header */
+.result-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.result-title {
+    margin: 0 0 8px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.project-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.project-label {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.project-name {
+    color: #111827;
+    font-weight: 600;
+    background: #f3f4f6;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* Buttons (shared) */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.08s ease, background 0.15s ease, opacity 0.15s ease;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.btn-sm {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+/* Black/white button spec */
+.btn-black {
+    background: #111111;
+    color: #ffffff;
+    border-color: #111111;
+}
+
+.btn-black:hover:not(:disabled) {
+    background: #000000;
+    transform: translateY(-1px);
+}
+
+/* Card container */
+.result-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Table wrapper */
+.tbl-scroller {
+    max-height: 70vh;
+    overflow: auto;
+}
+
+/* Table styling */
+.tbl.nice {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.tbl.nice th,
+.tbl.nice td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+}
+
+.tbl.nice th {
+    background: #f9fafb;
+    font-weight: 700;
+    color: #111827;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.tbl.nice tr:nth-child(even) td {
+    background: #fcfcfd;
+}
+
+.tbl.nice tr:hover td {
+    background: #f3f4f6;
+}
+
+.tbl.nice td {
+    color: #1f2937;
+    vertical-align: top;
+}
+
+/* Sticky first column */
+.sticky-col {
+    position: sticky;
+    left: 0;
+    background: inherit;
+    z-index: 5;
+}
+
+/* Number & RTL alignment */
+.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.rtl {
+    text-align: right;
+    direction: rtl;
+}
+
+/* Muted text */
+.muted {
+    color: #6b7280;
+}
+
+.small {
+    font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .result-head {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .result-title {
+        font-size: 20px;
+    }
+
+    .tbl.nice th,
+    .tbl.nice td {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+}
+
+/* Scrollbar tweaks */
+.tbl-scroller::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.tbl-scroller::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.tbl-scroller::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.tbl-scroller::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}

@@ -1,0 +1,274 @@
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100dvh;
+  overflow: auto;
+  z-index: 20;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: transparent;
+  border-right: 1px solid #e5e7eb;
+  padding: 16px 14px;
+  gap: 12px;
+  transition: padding 200ms ease;
+  box-shadow: none;
+}
+
+.app-shell.is-closed .sidebar {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar.collapsed .nav-title,
+.sidebar.collapsed .brand-title,
+.sidebar.collapsed .brand-wordmark {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.sidebar-brand {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 16px 8px;
+  background: transparent;
+  border-radius: 16px;
+  backdrop-filter: none;
+}
+
+.brand-wordmark {
+  font-family: "Pacifico", ui-rounded, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 30px;
+  line-height: 1;
+  color: #333333;
+  text-shadow: none;
+  white-space: nowrap;
+  transition: opacity 160ms ease, transform 220ms ease;
+  will-change: transform;
+  font-weight: 600;
+}
+
+.brand-logo {
+  transition: height 220ms ease, transform 220ms ease;
+  /* smooth logo resize */
+}
+
+.brand-logo.large {
+  height: 64px;
+  width: auto;
+}
+
+/* bigger logo when expanded */
+.brand-logo.small {
+  height: 28px;
+  width: auto;
+}
+
+.sidebar:not(.collapsed) .brand-wordmark {
+  transform: translateY(0);
+}
+
+
+.brand-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #666666;
+  transition: opacity 160ms ease;
+  letter-spacing: 0.5px;
+}
+
+.user-badge {
+  background: #f3f4f6;
+  color: #333333;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  backdrop-filter: none;
+  transition: all 200ms ease;
+}
+
+.user-badge:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.company-badge {
+  background: #000;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+  text-align: center;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.nav-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: #999999;
+  font-weight: 600;
+  padding: 8px 12px 6px;
+  margin-top: 16px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: #333333;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all 200ms ease;
+  font-weight: 500;
+  position: relative;
+  backdrop-filter: none;
+  background: transparent;
+}
+
+.nav-item:hover {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+  color: #333333;
+  transform: translateX(4px);
+}
+
+.nav-item.active {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+  color: #333333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.nav-icon {
+  width: 20px;
+  display: grid;
+  place-items: center;
+  transition: transform 200ms ease;
+  color: #666666;
+}
+
+.nav-item:hover .nav-icon {
+  transform: scale(1.1);
+  color: #333333;
+}
+
+.nav-item.active .nav-icon {
+  color: #333333;
+}
+
+/* Smooth scrollbar styling */
+.sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 2px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Enhanced collapsed state */
+.sidebar.collapsed {
+  padding: 16px 8px;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 12px 8px;
+}
+
+/* Add subtle animation for sections */
+.nav-group>* {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Special styling for admin section */
+.nav-title:first-child {
+  margin-top: 0;
+  color: #666666;
+  font-weight: 700;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: #ef4444;
+  /* red-500 */
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 200ms ease;
+  font-weight: 500;
+  font-size: inherit;
+}
+
+.logout-btn:hover {
+  background: #fef2f2;
+  /* red-50 */
+  border-color: #fee2e2;
+  /* red-100 */
+}
+
+.sidebar.collapsed .logout-btn {
+  justify-content: center;
+  padding: 12px 8px;
+}

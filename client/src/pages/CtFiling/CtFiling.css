@@ -1,0 +1,233 @@
+:root {
+  --prj-bd: #0000001a;
+  --prj-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  --prj-black: #000;
+  --prj-white: #fff;
+}
+
+/* Customer list page wrapper */
+.vat-filing-page {
+  color: #000;
+  background: transparent;
+  padding: 12px 16px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+/* Action column (customer table only) */
+.vat-filing-page .customers-table td:last-child,
+.vat-filing-page .customers-table th:last-child {
+  text-align: center;
+  width: 140px;
+}
+
+/* Header row */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.page-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.page-header p {
+  color: #666;
+  font-size: 16px;
+  margin: 0;
+}
+
+.page-header > div:first-child {
+  flex: 1;
+}
+
+/* Grid – responsive: 1 / 2 / 3 columns (kept if you use cards later) */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+@media (min-width: 768px) {
+  .content-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .content-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Card (generic, if you use any on this page) */
+.card {
+  border: 1px solid var(--prj-bd);
+  border-radius: 16px;
+  background: var(--prj-white);
+  box-shadow: var(--prj-shadow);
+  overflow: hidden;
+}
+
+.prj-card-hd {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  gap: 8px;
+}
+
+.prj-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.prj-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  cursor: text;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.prj-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.prj-pad {
+  padding: 0 14px 14px;
+}
+
+.prj-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--prj-bd);
+}
+
+.prj-row:last-child {
+  border-bottom: 0;
+}
+
+.prj-row-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Buttons (generic, not the black pill vf-btn – that moved to periods css) */
+.prj-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.prj-btn-solid {
+  background: var(--prj-black);
+  color: var(--prj-white);
+  border: 1px solid var(--prj-black);
+  padding: 8px 12px;
+}
+
+.prj-btn-solid:hover {
+  opacity: 0.9;
+}
+
+.prj-btn-outline {
+  background: var(--prj-white);
+  color: var(--prj-black);
+  border: 1px solid var(--prj-black);
+  padding: 6px 10px;
+}
+
+.prj-btn-outline:hover {
+  background: var(--prj-black);
+  color: var(--prj-white);
+}
+
+.prj-icon-btn {
+  height: 32px;
+  width: 32px;
+  border: 1px solid #00000026;
+  border-radius: 999px;
+  background: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prj-icon-btn:hover {
+  background: #000;
+  color: #fff;
+}
+
+/* Utilities (if you show any empty / loading state on this page) */
+.prj-empty {
+  margin-top: 28px;
+  text-align: center;
+  color: #666;
+}
+
+.prj-loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.prj-error {
+  color: #e53e3e;
+  font-size: 14px;
+  padding: 8px 0;
+}
+
+/* Customer list layout */
+.vf-search-wrap {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.vf-search-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.vf-search-input input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 13px;
+}
+
+.vf-small-muted {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.vf-customers-only {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

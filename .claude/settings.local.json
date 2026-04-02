@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"department-document-counts\\\\|aggregated-user-document-counts\\\\|all-users-document-counts\" /c/Users/GC-IT/Desktop/Projects/DocuFlow/server --include=*.js)",
+      "Bash(find /c/Users/GC-IT/Desktop/Projects/DocuFlow -type f -name *dashboard* -o -name *Dashboard*)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -E \"\\\\.js$\")",
+      "Bash(npx react-scripts:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}

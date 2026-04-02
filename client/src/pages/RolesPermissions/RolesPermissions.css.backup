@@ -1,0 +1,1981 @@
+:root {
+    --blue: #2563eb;
+    --blue-600: #1d4ed8;
+    --blue-light: #eff6ff;
+    --purple: #8b5cf6;
+    --purple-light: #f3f0ff;
+    --green: #10b981;
+    --text: #0f172a;
+    --text-secondary: #374151;
+    --muted: #64748b;
+    --border: #e5e7eb;
+    --border-light: #f3f4f6;
+    --card: #ffffff;
+    --page: #f8fafc;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Main Container */
+.roles-permissions-page {
+    padding: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+    color: var(--text);
+    background: linear-gradient(135deg, #fafbfc 0%, #f7f9fc 100%);
+    min-height: 100vh;
+}
+
+.page-header {
+    margin-bottom: 40px;
+    text-align: center;
+    background: white;
+    padding: 32px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+
+.page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--blue), var(--purple), var(--green));
+}
+
+.page-header h1 {
+    margin: 0 0 12px;
+    font-size: 36px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.page-header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Access Denied */
+.access-denied {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px;
+    text-align: center;
+    color: var(--muted);
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.access-denied h2 {
+    margin: 24px 0 12px;
+    color: var(--text);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* Alert Messages */
+.alert {
+    padding: 16px 20px;
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow-sm);
+}
+
+.alert.success {
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    color: var(--success);
+    border: 2px solid #bbf7d0;
+}
+
+.alert.error {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    color: var(--danger);
+    border: 2px solid #fecaca;
+}
+
+/* Enhanced Tabs */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--border);
+    background: white;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: 8px 8px 0;
+    box-shadow: var(--shadow-sm);
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 24px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.tab::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.tab:hover:not(:disabled) {
+    color: var(--text);
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    transform: translateY(-2px);
+}
+
+.tab:hover::before {
+    left: 100%;
+}
+
+.tab.active {
+    color: var(--blue);
+    border-bottom-color: var(--blue);
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    box-shadow: 0 -4px 12px rgba(37, 99, 235, 0.15);
+}
+
+.tab:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Loading Animation */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 80px;
+    color: var(--muted);
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.loading::before {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border);
+    border-top: 4px solid var(--blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Users Section */
+.users-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 24px 32px;
+    background: linear-gradient(135deg, white, #f8fafc);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 2px solid var(--border-light);
+}
+
+.users-section h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-count {
+    font-size: 14px;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    border: 2px solid rgba(37, 99, 235, 0.2);
+    /* Debug: Make user count more visible */
+    border: 1px solid cyan !important;
+    background: rgba(0, 255, 255, 0.1) !important;
+}
+
+/* Enhanced Tables */
+.users-table-container,
+.departments-table-container {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.users-table,
+.departments-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.users-table th,
+.users-table td,
+.departments-table th,
+.departments-table td {
+    padding: 20px 24px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.users-table th,
+.departments-table th {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    font-weight: 700;
+    color: var(--text);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.users-table td,
+.departments-table td {
+    font-size: 15px;
+    background: white;
+}
+
+.users-table tr:hover td,
+.departments-table tr:hover td {
+    background: linear-gradient(135deg, #fafbfc, #f8fafc);
+    transform: scale(1.01);
+    transition: var(--transition);
+}
+
+.users-table tr:last-child td,
+.departments-table tr:last-child td {
+    border-bottom: none;
+}
+
+.users-table tr.editing td,
+.departments-table tr.editing td {
+    background: linear-gradient(135deg, #fef3c7 0%, #fef7cd 100%);
+    box-shadow: inset 0 0 0 2px rgba(245, 158, 11, 0.3);
+}
+
+/* User Cell */
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: var(--shadow-md);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user-name {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 16px;
+}
+
+.user-email {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.contact-info .phone {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 600;
+}
+
+.contact-info .no-phone {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+}
+
+/* Role Badges */
+.role-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.role-badge.super_admin {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #d97706;
+    border: 2px solid rgba(217, 119, 6, 0.3);
+}
+
+.role-badge.admin {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: var(--blue);
+    border: 2px solid rgba(37, 99, 235, 0.3);
+}
+
+.role-badge.user {
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    color: var(--muted);
+    border: 2px solid rgba(100, 116, 139, 0.3);
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-edit, .btn-save, .btn-cancel, .btn-delete {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.btn-edit {
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    color: var(--muted);
+}
+
+.btn-edit:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--blue-light), #dbeafe);
+    color: var(--blue);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-edit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+}
+
+.btn-save:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-cancel {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    color: var(--danger);
+}
+
+.btn-cancel:hover {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    transform: translateY(-2px);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    color: var(--danger);
+}
+
+.btn-delete:hover:not(:disabled) {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+}
+
+.btn-delete:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f3f4f6;
+    color: var(--muted);
+}
+
+/* Primary Button */
+.btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, var(--blue), #1d4ed8);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 15px;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    /* Debug: Make button more visible */
+    border: 3px solid yellow !important;
+    background: red !important;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.4);
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+/* Roles Table Styling */
+.roles-section {
+    background: linear-gradient(135deg, white, #f8fafc);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 0;
+    overflow: visible;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 32px;
+    /* Debug: Make section more visible */
+    border: 5px solid blue !important;
+}
+
+.roles-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 36px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 0;
+    /* Debug: Make section header more visible */
+    border: 2px solid cyan !important;
+    background: rgba(0, 255, 255, 0.1) !important;
+}
+
+.roles-section h3 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.role-count {
+    font-size: 15px;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 2px solid rgba(37, 99, 235, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    /* Debug: Make role count more visible */
+    border: 1px solid magenta !important;
+    background: rgba(255, 0, 255, 0.1) !important;
+}
+
+.roles-table-container {
+    background: var(--card);
+    overflow: hidden;
+}
+
+.roles-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.roles-table th,
+.roles-table td {
+    padding: 20px 24px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.roles-table th {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    font-weight: 700;
+    color: var(--text);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.roles-table td {
+    font-size: 15px;
+    background: white;
+}
+
+.roles-table tr:hover td {
+    background: linear-gradient(135deg, #fafbfc, #f8fafc);
+    transform: scale(1.01);
+    transition: var(--transition);
+}
+
+.roles-table tr:last-child td {
+    border-bottom: none;
+}
+
+.role-name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    color: var(--text);
+    font-size: 16px;
+    /* Debug: Make role name more visible */
+    border: 1px solid yellow !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    padding: 5px !important;
+}
+
+.role-description {
+    color: var(--muted);
+    font-style: italic;
+    /* Debug: Make role description more visible */
+    border: 1px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+    padding: 5px !important;
+}
+
+.menu-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    /* Debug: Make menu badges more visible */
+    border: 1px solid green !important;
+    background: rgba(0, 255, 0, 0.1) !important;
+    padding: 5px !important;
+}
+
+.menu-count {
+    font-size: 12px;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    /* Debug: Make menu count more visible */
+    border: 1px solid red !important;
+    background: rgba(255, 0, 0, 0.1) !important;
+}
+
+/* Role Form Styling */
+.role-form-container {
+    margin-bottom: 32px;
+    /* Debug: Make role form container more visible */
+    border: 2px solid purple !important;
+    background: rgba(128, 0, 128, 0.1) !important;
+    padding: 10px !important;
+}
+
+.role-form {
+    background: linear-gradient(135deg, white 0%, #fafbfc 100%);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    /* Debug: Ensure form is visible and on top */
+    z-index: 9999 !important;
+    /* Debug: Make form more visible */
+    border: 5px solid red !important;
+    /* Debug: Ensure no overflow hiding */
+    overflow: visible !important;
+}
+
+.role-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--blue), var(--purple), var(--green));
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.role-form h3 {
+    margin: 0 0 28px;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.help-text {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-style: italic;
+    /* Debug: Make help text more visible */
+    border: 1px solid blue !important;
+    background: rgba(0, 0, 255, 0.1) !important;
+    padding: 5px !important;
+}
+
+.menu-selection {
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: white;
+    /* Debug: Make menu selection more visible */
+    border: 2px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+}
+
+.menu-category {
+    border-bottom: 1px solid var(--border);
+    /* Debug: Make menu category more visible */
+    border: 1px solid red !important;
+    background: rgba(255, 0, 0, 0.1) !important;
+    padding: 5px !important;
+}
+
+.menu-category:last-child {
+    border-bottom: none;
+}
+
+.menu-category h4 {
+    margin: 0;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+}
+
+.menu-items {
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    /* Debug: Make menu items more visible */
+    border: 1px solid green !important;
+    background: rgba(0, 255, 0, 0.1) !important;
+    padding: 10px !important;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    font-weight: 600;
+    /* Debug: Make menu item more visible */
+    border: 1px solid blue !important;
+    background: rgba(0, 0, 255, 0.1) !important;
+    margin: 2px 0 !important;
+}
+
+.menu-item:hover {
+    background: var(--blue-light);
+    transform: translateX(4px);
+    /* Debug: Make hovered menu item more visible */
+    background: rgba(37, 99, 235, 0.1) !important;
+    border: 1px solid purple !important;
+}
+
+.menu-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--blue);
+    /* Debug: Make checkbox more visible */
+    border: 2px solid red !important;
+    background: yellow !important;
+}
+
+.menu-item span {
+    color: var(--text);
+    font-size: 14px;
+    /* Debug: Make menu item span more visible */
+    border: 1px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+    padding: 2px !important;
+}
+
+/* Permissions Panel */
+.permissions-panel {
+    background: linear-gradient(135deg, white, #f8fafc);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: var(--shadow-lg);
+    /* Debug: Make permissions panel more visible */
+    border: 3px solid pink !important;
+    background: rgba(255, 192, 203, 0.1) !important;
+    /* Debug: Ensure permissions panel is visible */
+    margin: 10px 0 !important;
+}
+
+.permissions-panel h3 {
+    margin: 0 0 24px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    /* Debug: Make permissions panel h3 more visible */
+    border: 1px solid yellow !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    padding: 5px !important;
+}
+
+.permissions-tree {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 8px;
+    /* Debug: Make permissions tree more visible */
+    border: 1px solid cyan !important;
+    background: rgba(0, 255, 255, 0.1) !important;
+    padding: 10px !important;
+}
+
+.permission-module {
+    margin-bottom: 20px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    /* Debug: Make permission module more visible */
+    border: 2px solid magenta !important;
+    background: rgba(255, 0, 255, 0.1) !important;
+    margin: 10px 0 !important;
+}
+
+.module-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: var(--transition);
+    letter-spacing: 0.5px;
+    /* Debug: Make module header more visible */
+    border: 1px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+    padding: 10px !important;
+}
+
+.module-header:hover {
+    background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+    /* Debug: Make hovered module header more visible */
+    background: rgba(229, 231, 235, 0.1) !important;
+    border: 1px solid red !important;
+}
+
+.module-permissions {
+    padding: 16px 20px;
+    background: white;
+    /* Debug: Make module permissions more visible */
+    border: 1px solid blue !important;
+    background: rgba(0, 0, 255, 0.1) !important;
+    padding: 10px !important;
+}
+
+.permission-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 12px 0;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    /* Debug: Make permission item more visible */
+    border: 1px solid green !important;
+    background: rgba(0, 255, 0, 0.1) !important;
+    margin: 2px 0 !important;
+}
+
+.permission-item:hover {
+    background: #f8fafc;
+    padding-left: 8px;
+    /* Debug: Make hovered permission item more visible */
+    background: rgba(248, 250, 252, 0.1) !important;
+    border: 1px solid purple !important;
+}
+
+.permission-item input[type="checkbox"] {
+    margin-top: 3px;
+    width: 16px;
+    height: 16px;
+    /* Debug: Make checkbox more visible */
+    border: 2px solid red !important;
+    background: yellow !important;
+}
+
+.permission-info {
+    flex: 1;
+    /* Debug: Make permission info more visible */
+    border: 1px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+    padding: 5px !important;
+}
+
+.permission-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 4px;
+    /* Debug: Make permission name more visible */
+    border: 1px solid blue !important;
+    background: rgba(0, 0, 255, 0.1) !important;
+    padding: 2px !important;
+}
+
+.permission-desc {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.4;
+    /* Debug: Make permission desc more visible */
+    border: 1px solid green !important;
+    background: rgba(0, 255, 0, 0.1) !important;
+    padding: 2px !important;
+}
+
+/* Organizations Section */
+.organizations-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    padding: 24px 32px;
+    background: linear-gradient(135deg, white, #f8fafc);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 2px solid var(--border-light);
+    /* Debug: Make organizations section header more visible */
+    border: 2px solid cyan !important;
+    background: rgba(0, 255, 255, 0.1) !important;
+}
+
+.organizations-section h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    /* Debug: Make organizations section h3 more visible */
+    border: 1px solid yellow !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    padding: 5px !important;
+}
+
+.organizations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+    /* Debug: Make organizations grid more visible */
+    border: 1px solid magenta !important;
+    background: rgba(255, 0, 255, 0.1) !important;
+    padding: 10px !important;
+}
+
+.organization-card {
+    background: linear-gradient(135deg, white, #fafbfc);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    /* Debug: Make organization card more visible */
+    border: 2px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+    margin: 5px 0 !important;
+}
+
+.organization-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--blue), var(--purple), var(--green));
+}
+
+.organization-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(37, 99, 235, 0.3);
+    /* Debug: Make hovered organization card more visible */
+    border: 2px solid red !important;
+    background: rgba(255, 0, 0, 0.1) !important;
+}
+
+.org-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    /* Debug: Make org header more visible */
+    border: 1px solid blue !important;
+    background: rgba(0, 0, 255, 0.1) !important;
+    padding: 5px !important;
+}
+
+.org-title {
+    flex: 1;
+    /* Debug: Make org title more visible */
+    border: 1px solid green !important;
+    background: rgba(0, 255, 0, 0.1) !important;
+    padding: 5px !important;
+}
+
+.org-header h4 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    /* Debug: Make org header h4 more visible */
+    border: 1px solid yellow !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    padding: 2px !important;
+}
+
+.org-description {
+    margin-bottom: 16px;
+    /* Debug: Make org description more visible */
+    border: 1px solid cyan !important;
+    background: rgba(0, 255, 255, 0.1) !important;
+    padding: 5px !important;
+}
+
+.org-description p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+    /* Debug: Make org description p more visible */
+    border: 1px solid magenta !important;
+    background: rgba(255, 0, 255, 0.1) !important;
+    padding: 2px !important;
+}
+
+.org-address {
+    margin-bottom: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    /* Debug: Make org address more visible */
+    border: 1px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+    padding: 10px !important;
+}
+
+.org-address small {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    /* Debug: Make org address small more visible */
+    border: 1px solid blue !important;
+    background: rgba(0, 0, 255, 0.1) !important;
+    padding: 2px !important;
+}
+
+.org-footer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    /* Debug: Make org footer more visible */
+    border: 1px solid green !important;
+    background: rgba(0, 255, 0, 0.1) !important;
+    padding: 10px !important;
+}
+
+.created-date {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+    /* Debug: Make created date more visible */
+    border: 1px solid red !important;
+    background: rgba(255, 0, 0, 0.1) !important;
+    padding: 2px !important;
+}
+
+/* Departments Section */
+.departments-section {
+    background: linear-gradient(135deg, white, #f8fafc);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 0;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    /* Debug: Make departments section more visible */
+    border: 5px solid blue !important;
+    background: rgba(0, 0, 255, 0.1) !important;
+    margin: 10px 0 !important;
+}
+
+.departments-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 36px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 0;
+    /* Debug: Make departments section header more visible */
+    border: 2px solid cyan !important;
+    background: rgba(0, 255, 255, 0.1) !important;
+    margin: 5px 0 !important;
+}
+
+.departments-section .header-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    /* Debug: Make departments section header left more visible */
+    border: 1px solid magenta !important;
+    background: rgba(255, 0, 255, 0.1) !important;
+    padding: 5px !important;
+}
+
+.departments-section h3 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    /* Debug: Make departments section h3 more visible */
+    border: 1px solid yellow !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    padding: 5px !important;
+}
+
+.departments-section h3::before {
+    content: '';
+    width: 6px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 3px;
+    /* Debug: Make departments section h3 before more visible */
+    border: 1px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+}
+
+.department-count {
+    font-size: 15px;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 2px solid rgba(37, 99, 235, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    /* Debug: Make department count more visible */
+    border: 1px solid red !important;
+    background: rgba(255, 0, 0, 0.1) !important;
+    padding: 10px !important;
+}
+
+/* Form Styling */
+.department-form,
+.organization-form,
+.user-form {
+    background: linear-gradient(135deg, white 0%, #fafbfc 100%);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+    margin: 28px 36px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    /* Debug: Make forms more visible */
+    border: 3px solid green !important;
+    background: rgba(0, 255, 0, 0.1) !important;
+    margin: 10px 0 !important;
+}
+
+.department-form::before,
+.organization-form::before,
+.user-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--blue), var(--purple), var(--green));
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    /* Debug: Make form before more visible */
+    border: 1px solid cyan !important;
+    background: rgba(0, 255, 255, 0.1) !important;
+}
+
+.department-form h4,
+.organization-form h4,
+.user-form h4 {
+    margin: 0 0 28px;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    /* Debug: Make form h4 more visible */
+    border: 1px solid magenta !important;
+    background: rgba(255, 0, 255, 0.1) !important;
+    padding: 5px !important;
+}
+
+.department-form h4::before {
+    content: '+';
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 800;
+    /* Debug: Make department form h4 before more visible */
+    border: 1px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+}
+
+.user-form h4::before {
+    content: '👤';
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--green), #059669);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    /* Debug: Make user form h4 before more visible */
+    border: 1px solid blue !important;
+    background: rgba(0, 0, 255, 0.1) !important;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 28px;
+    margin-bottom: 28px;
+    /* Debug: Make form grid more visible */
+    border: 3px solid magenta !important;
+    padding: 10px !important;
+    background: rgba(255, 0, 255, 0.1) !important;
+    /* Debug: Ensure form grid is visible */
+    margin: 10px 0 !important;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* Debug: Make form group more visible */
+    border: 2px solid blue !important;
+    padding: 10px !important;
+    margin: 5px 0 !important;
+    /* Debug: Ensure form group is visible */
+    background: rgba(0, 0, 255, 0.1) !important;
+}
+
+.form-group label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    /* Debug: Make label more visible */
+    background: lightgreen !important;
+    border: 1px solid black !important;
+    padding: 5px !important;
+    /* Debug: Ensure label is visible */
+    margin: 2px 0 !important;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 14px 18px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    background: white;
+    transition: var(--transition);
+    font-family: inherit;
+    font-weight: 500;
+    /* Debug: Add outline to see if element is visible */
+    outline: 2px solid red !important;
+    /* Debug: Make select more visible */
+    background: yellow !important;
+    color: black !important;
+    font-weight: bold !important;
+    /* Debug: Ensure select is visible */
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 40px !important;
+    /* Debug: Ensure form elements are visible */
+    margin: 5px 0 !important;
+}
+
+/* Debug: Specific style for role name select */
+.form-group select:first-child {
+    background: orange !important;
+    border: 3px solid purple !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+}
+
+/* Debug: Specific style for role name select */
+.form-group select:first-child {
+    background: orange !important;
+    border: 3px solid purple !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+}
+
+/* Debug: Specific style for department select */
+.form-group select:nth-child(2) {
+    background: lightblue !important;
+    border: 3px solid green !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+    transform: translateY(-2px);
+    /* Debug: Make focused elements more visible */
+    border: 3px solid purple !important;
+    background: rgba(128, 0, 128, 0.1) !important;
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+    border-color: var(--blue-light);
+    /* Debug: Make hovered elements more visible */
+    border: 2px solid cyan !important;
+    background: rgba(0, 255, 255, 0.1) !important;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--muted);
+    font-style: italic;
+    /* Debug: Make placeholders more visible */
+    color: red !important;
+    font-weight: bold !important;
+}
+
+.form-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+    padding-top: 28px;
+    border-top: 2px solid var(--border);
+    margin-top: 12px;
+    /* Debug: Make form actions more visible */
+    border: 2px solid purple !important;
+    background: rgba(128, 0, 128, 0.1) !important;
+    /* Debug: Ensure form actions don't overlap */
+    position: relative !important;
+    z-index: 1 !important;
+    /* Debug: Ensure form actions are visible */
+    margin: 10px 0 !important;
+}
+
+.form-actions .btn-save {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 14px;
+    white-space: nowrap;
+    /* Debug: Make save button more visible */
+    border: 2px solid yellow !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+}
+
+.form-actions .btn-save:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, #059669, #047857);
+    /* Debug: Make hovered save button more visible */
+    border: 2px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+}
+
+.form-actions .btn-cancel {
+    background: white;
+    color: var(--muted);
+    border: 2px solid var(--border);
+    padding: 16px 32px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 14px;
+    white-space: nowrap;
+    /* Debug: Make cancel button more visible */
+    border: 2px solid red !important;
+    background: rgba(255, 0, 0, 0.1) !important;
+}
+
+.form-actions .btn-cancel:hover {
+    background: #f8fafc;
+    border-color: var(--muted);
+    color: var(--text);
+    transform: translateY(-2px);
+    /* Debug: Make hovered cancel button more visible */
+    border: 2px solid blue !important;
+    background: rgba(0, 0, 255, 0.1) !important;
+}
+
+/* Department Specific Styles */
+.dept-cell {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    /* Debug: Make department cell more visible */
+    border: 1px solid green !important;
+    background: rgba(0, 255, 0, 0.1) !important;
+    padding: 5px !important;
+}
+
+.dept-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--purple-light), #ede9fe);
+    color: var(--purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
+    /* Debug: Make department icon more visible */
+    border: 1px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+}
+
+.dept-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    /* Debug: Make department info more visible */
+    border: 1px solid blue !important;
+    background: rgba(0, 0, 255, 0.1) !important;
+    padding: 5px !important;
+}
+
+.dept-name {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 16px;
+}
+
+.dept-description {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.4;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.inline-input, .inline-select {
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    font-size: 12px;
+    min-width: 100px;
+}
+
+.inline-input:focus, .inline-select:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.user-count-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    background: var(--blue-light);
+    color: var(--blue);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.budget {
+    font-weight: 600;
+    color: var(--success);
+}
+
+.manager {
+    font-weight: 500;
+    color: var(--text);
+}
+
+.organization {
+    color: var(--blue);
+    font-weight: 500;
+}
+
+.role-select {
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    font-size: 12px;
+    min-width: 100px;
+}
+
+.department {
+    color: var(--purple);
+    font-weight: 500;
+}
+
+.user-form {
+    margin: 28px 0;
+}
+
+/* Enhanced No Data States */
+.no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    text-align: center;
+    color: var(--muted);
+    background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+    border-radius: var(--radius-md);
+    margin: 24px;
+}
+
+.no-data svg {
+    margin-bottom: 16px;
+    opacity: 0.6;
+}
+
+.no-data p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .roles-permissions-page {
+        padding: 16px;
+    }
+    
+    .roles-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .tabs {
+        flex-wrap: wrap;
+    }
+    
+    .users-table {
+        overflow-x: auto;
+    }
+    
+    .organizations-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .departments-section {
+        margin: 16px;
+        border-radius: 12px;
+    }
+    
+    .departments-section .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px 24px;
+    }
+    
+    .departments-section .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        width: 100%;
+    }
+    
+    .departments-section h3 {
+        font-size: 20px;
+    }
+    
+    .section-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .department-form {
+        margin: 16px 24px;
+        padding: 24px;
+        border-radius: 12px;
+    }
+    
+    .department-form .form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .departments-table-container {
+        overflow-x: auto;
+        margin: 0 24px 24px;
+        border-radius: 12px;
+    }
+    
+    .departments-table th,
+    .departments-table td {
+        padding: 16px;
+        font-size: 13px;
+    }
+    
+    .dept-cell {
+        gap: 12px;
+    }
+    
+    .dept-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .dept-name {
+        font-size: 14px;
+    }
+    
+    .dept-description {
+        max-width: 150px;
+    }
+    
+    .btn-primary {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .form-actions .btn-save,
+    .form-actions .btn-cancel {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Roles Container */
+.roles-container {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 24px;
+    padding: 24px;
+    /* Debug: Make container more visible */
+    border: 3px solid green !important;
+    background: rgba(0, 255, 0, 0.1) !important;
+}
+
+/* Debug: Ensure role form container is visible */
+.roles-container > div:first-child {
+    border: 2px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+}
+
+/* Debug: Make roles list more visible */
+.roles-list {
+    border: 2px solid lime !important;
+    background: rgba(0, 255, 0, 0.1) !important;
+    padding: 10px !important;
+}
+
+/* Debug: Make role card more visible */
+.role-card {
+    border: 2px solid orange !important;
+    background: rgba(255, 165, 0, 0.1) !important;
+    margin: 5px 0 !important;
+}
+
+/* Debug: Make selected role card more visible */
+.role-card.selected {
+    border: 3px solid red !important;
+    background: rgba(255, 0, 0, 0.1) !important;
+}
+
+/* Debug: Make hovered role card more visible */
+.role-card:hover {
+    border: 3px solid blue !important;
+    background: rgba(0, 0, 255, 0.1) !important;
+}
+
+/* Debug: Make role meta more visible */
+.role-meta {
+    border: 1px solid gray !important;
+    background: rgba(128, 128, 128, 0.1) !important;
+    padding: 5px !important;
+}
+
+/* Debug: Make department badge more visible */
+.department-badge {
+    border: 1px solid purple !important;
+    background: rgba(128, 0, 128, 0.1) !important;
+    padding: 5px !important;
+}
+
+/* Department Menu Management Styles */
+.department-menus-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.department-menus-content {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.departments-list h4 {
+    margin-bottom: 1rem;
+    color: #374151;
+    font-weight: 600;
+}
+
+.department-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.department-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.department-card:hover {
+    border-color: #3b82f6;
+    background: #f8fafc;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.department-card.selected {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.department-card .dept-icon {
+    color: #6b7280;
+    transition: color 0.2s ease;
+}
+
+.department-card.selected .dept-icon {
+    color: #3b82f6;
+}
+
+.department-card .dept-info h5 {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.department-card .dept-info p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.menu-access-config {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+}
+
+.config-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.config-header h4 {
+    margin: 0;
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.menu-items-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.menu-category {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.menu-category h5 {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.menu-items {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-item-config {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s ease;
+}
+
+.menu-item-config:last-child {
+    border-bottom: none;
+}
+
+.menu-item-config:hover {
+    background: #f9fafb;
+}
+
+.menu-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.menu-name {
+    font-weight: 500;
+    color: #1f2937;
+    font-size: 0.9rem;
+}
+
+.menu-id {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-family: 'Courier New', monospace;
+}
+
+.menu-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #374151;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0;
+    width: 1rem;
+    height: 1rem;
+    accent-color: #3b82f6;
+}
+
+.menu-controls select {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.85rem;
+    background: white;
+    color: #374151;
+    transition: border-color 0.2s ease;
+}
+
+.menu-controls select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.menu-controls select:disabled {
+    background: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* Responsive design for department menus */
+@media (max-width: 768px) {
+    .department-menus-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .department-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 0.75rem;
+    }
+}

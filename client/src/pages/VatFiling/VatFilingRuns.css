@@ -1,0 +1,219 @@
+/* src/pages/vat/VatFilingRuns.css */
+
+/* --- page wrapper (same as periods) --- */
+.vat-periods-page {
+  padding: 12px 16px;
+  max-width: 1320px;
+  margin: 0 auto;
+  background: transparent;
+  color: #000;
+}
+
+/* Period-style card reused for runs */
+.vf-period-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  padding: 14px;
+  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.05);
+  display: grid;
+  gap: 10px;
+}
+
+/* Slight extra spacing for runs card */
+.vf-runs-card {
+  margin-top: 12px;
+}
+
+/* Header back button */
+.vf-back-btn {
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ----- Customer line under heading ----- */
+.vf-runs-customer {
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.page-header p + .vf-runs-customer {
+  margin-top: 8px;
+}
+
+.vf-runs-label {
+  font-weight: 500;
+  color: #374151;
+}
+
+.vf-runs-name {
+  font-weight: 600;
+  color: #111827;
+}
+
+.vf-runs-trn {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ----- Table base styling ----- */
+
+.vf-period-table th,
+.vf-period-table td {
+  font-size: 13px;
+}
+
+/* Make the runs table use full width and nice column alignment */
+.vf-runs-table {
+  width: 100%;
+  table-layout: fixed; /* keeps columns aligned row-to-row */
+  border-collapse: collapse;
+}
+
+/* Base padding + typography for all cells in runs table */
+.vf-runs-table th,
+.vf-runs-table td {
+  padding: 10px 14px;
+  font-size: 13px;
+  text-align: left;
+}
+
+/* number column (No) */
+.vf-runs-table .col-no {
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Align dates nicely (no wrap) */
+.vf-runs-table th:nth-child(5),
+.vf-runs-table td:nth-child(5),
+.vf-runs-table th:nth-child(6),
+.vf-runs-table td:nth-child(6) {
+  white-space: nowrap;
+}
+
+/* Hover row */
+.vf-runs-table tbody tr:hover {
+  background-color: #f3f4f6;
+}
+
+/* Slightly taller rows + separator line */
+.vf-runs-table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.vf-runs-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* ------- Column widths for better spacing ------- */
+
+/* No. column – small and centered */
+.vf-runs-table th:nth-child(1),
+.vf-runs-table td:nth-child(1) {
+  width: 6%;
+  text-align: center;
+}
+
+/* Conversion column */
+.vf-runs-table th:nth-child(2),
+.vf-runs-table td:nth-child(2) {
+  width: 16%;
+}
+
+/* Status column – just enough for pill */
+.vf-runs-table th:nth-child(3),
+.vf-runs-table td:nth-child(3) {
+  width: 10%;
+}
+
+/* Company Name – wider */
+.vf-runs-table th:nth-child(4),
+.vf-runs-table td:nth-child(4) {
+  width: 30%;
+}
+
+/* Created / Last Updated – equal width */
+.vf-runs-table th:nth-child(5),
+.vf-runs-table td:nth-child(5),
+.vf-runs-table th:nth-child(6),
+.vf-runs-table td:nth-child(6) {
+  width: 16%;
+}
+
+/* Action column – narrow and centered */
+.vf-runs-table th:nth-child(7),
+.vf-runs-table td:nth-child(7) {
+  width: 6%;
+  text-align: center;
+  padding: 0 4px;
+}
+
+/* ----- Status pill ----- */
+.vf-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.vf-status-draft {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.vf-status-final,
+.vf-status-submitted {
+  background: #ecfdf3;
+  color: #15803d;
+}
+
+/* ----- Empty + error ----- */
+.vf-empty {
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px dashed #d1d5db;
+  background: #f9fafb;
+  text-align: center;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.vf-error {
+  padding: 18px;
+  font-size: 0.9rem;
+  color: #b91c1c;
+  background: #fee2e2;
+  border-radius: 10px;
+}
+
+/* ----- Action buttons (Eye + Edit) ----- */
+
+.vf-run-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* space BETWEEN eye and edit */
+}
+
+/* Tidy icon buttons (same size, no extra margin) */
+.vf-run-actions .prj-icon-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important; /* kills inline marginLeft from JSX */
+  border-radius: 999px;
+}
+
+/* ensure icon itself is centered visually */
+.vf-run-actions .prj-icon-btn svg {
+  display: block;
+}
+
