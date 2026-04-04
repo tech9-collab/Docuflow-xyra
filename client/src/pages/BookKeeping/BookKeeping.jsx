@@ -7,7 +7,7 @@ import "./BookKeeping.css";
 export default function BookKeeping() {
     // Set document title
     React.useEffect(() => {
-        document.title = "DocuFlow - Book Keeping";
+        document.title = "Xyra Books - Book Keeping";
     }, []);
 
     return (

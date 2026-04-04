@@ -18,7 +18,7 @@ export default function CtFiling() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    document.title = "DocuFlow - CT Filing";
+    document.title = "Xyra Books - CT Filing";
   }, []);
 
   // Load customers (same helper as VAT)

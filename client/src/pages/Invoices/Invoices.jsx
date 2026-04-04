@@ -22,7 +22,7 @@ import {
 export default function Invoices() {
   // Set document title
   useEffect(() => {
-    document.title = "DocuFlow - Upload Invoices & Bills";
+    document.title = "Xyra Books - Upload Invoices & Bills";
   }, []);
 
   return <ImporterInvoices />;

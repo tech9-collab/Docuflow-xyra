@@ -18,7 +18,7 @@ export default function VatFiling() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    document.title = "DocuFlow - VAT Filing";
+    document.title = "Xyra Books - VAT Filing";
   }, []);
 
   // Load customers

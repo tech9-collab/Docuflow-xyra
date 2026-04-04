@@ -7,7 +7,7 @@ import "./AuditReport.css";
 export default function AuditReport() {
     // Set document title
     React.useEffect(() => {
-        document.title = "DocuFlow - Audit Report";
+        document.title = "Xyra Books - Audit Report";
     }, []);
 
     return (

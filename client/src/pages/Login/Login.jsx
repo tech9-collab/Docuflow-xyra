@@ -4,6 +4,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import "./Login.css";
 import { API_BASE } from "../../helper/helper";
 
+import logo from "../../assets/logo.png";
+
 export default function Login() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -14,12 +16,15 @@ export default function Login() {
 
     // Set document title
     React.useEffect(() => {
-        document.title = "Xyra Books - Login";
+        document.title = "XYRA - Login";
     }, []);
 
     return (
         <div className="login-page">
             <div className="login-card">
+                <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                    <img src={logo} alt="XYRA Logo" style={{ height: '80px', width: 'auto' }} />
+                </div>
 
                 <h2 className="title">Welcome back</h2>
 

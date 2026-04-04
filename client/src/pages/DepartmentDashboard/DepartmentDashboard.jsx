@@ -79,7 +79,7 @@ export default function DepartmentDashboard() {
   const { user, hasPermission, isSuperAdmin, isDepartmentAdmin } = useAuth();
 
   useEffect(() => {
-    document.title = "DocuFlow - Department Dashboard";
+    document.title = "Xyra Books - Department Dashboard";
   }, []);
 
   const now = new Date();

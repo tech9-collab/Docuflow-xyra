@@ -8,7 +8,7 @@ import './DepartmentUsers.css';
 export default function DepartmentUsers() {
   // Set document title
   useEffect(() => {
-    document.title = "DocuFlow - Department Users";
+    document.title = "Xyra Books - Department Users";
   }, []);
 
   const { departmentId } = useParams();

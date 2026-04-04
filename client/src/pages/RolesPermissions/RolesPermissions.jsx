@@ -20,7 +20,7 @@ import './RolesPermissions.css';
 export default function RolesPermissions() {
     // Set document title
     useEffect(() => {
-        document.title = "DocuFlow - Roles & Permissions";
+        document.title = "Xyra Books - Roles & Permissions";
     }, []);
 
     const { hasPermission, isSuperAdmin, user } = useAuth();

@@ -23,7 +23,7 @@ import {
 export default function TradeLicense() {
     // Set document title
     useEffect(() => {
-        document.title = "DocuFlow - Upload Trade License";
+        document.title = "Xyra Books - Upload Trade License";
     }, []);
 
     return <ImporterTradeLicense />;

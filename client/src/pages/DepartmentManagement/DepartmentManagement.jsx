@@ -7,7 +7,7 @@ import './DepartmentManagement.css';
 export default function DepartmentManagement() {
     // Set document title
     useEffect(() => {
-        document.title = "DocuFlow - Department Management";
+        document.title = "Xyra Books - Department Management";
     }, []);
 
     const { isSuperAdmin } = useAuth();

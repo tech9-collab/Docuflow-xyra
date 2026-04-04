@@ -23,7 +23,7 @@ export default function Signup() {
 
     // Set document title
     React.useEffect(() => {
-        document.title = "DocuFlow - Sign Up";
+        document.title = "Xyra Books - Sign Up";
     }, []);
 
     const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));

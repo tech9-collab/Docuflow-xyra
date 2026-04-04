@@ -11,7 +11,7 @@ import { startVisaJob, pollVisaStatus, fetchVisaPreview, makeVisaDownloadUrl } f
 export default function Visa() { 
   // Set document title
   useEffect(() => {
-    document.title = "DocuFlow - Upload Visa";
+    document.title = "Xyra Books - Upload Visa";
   }, []);
 
   return <VisaImporter />;

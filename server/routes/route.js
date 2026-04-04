@@ -15,13 +15,14 @@ import emiratesRoutes from "./emirates.js";
 import passportRoutes from "./passport.js";
 import visaRoutes from "./visa.js";
 import billsRoutes from "./bills.js";
-import tradeLicenseRoutes  from "./tradeLicenseRoutes.js";
+import tradeLicenseRoutes from "./tradeLicenseRoutes.js";
 import rolesRouter from "./roles.js";
 import companyRoutes from "./companyRoutes.js";
 // Removed projectsRouter import
 import vatFilingRoutes from "./vatFilingRoutes.js";
 import ctFilingRoutes from "./ctFilingRoutes.js";
 import customerRoutes from "./customerRoutes.js";
+import dashboardRoutes from "./dashboardRoutes.js";
 
 
 const router = express.Router();
@@ -33,6 +34,9 @@ router.route("/auth/register").post(controller.registerUser);
 
 // Route for User Login - auth - POST
 router.route("/auth/login").post(controller.loginUser);
+
+// Route for API Login - auth - POST (returns JSON token)
+router.route("/auth/login-api").post(controller.loginUserForApi);
 
 // Customers
 router.use("/customers", customerRoutes);
@@ -63,6 +67,9 @@ router.use("/admin", requireAuth, rolesRouter);
 
 // Companies
 router.use("/companies", requireAuth, companyRoutes);
+
+// Dashboard
+router.use("/dashboard", dashboardRoutes);
 
 // VAT Filing
 router.use("/vat-filing", vatFilingRoutes);

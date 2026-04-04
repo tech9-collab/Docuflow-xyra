@@ -7,7 +7,7 @@ import "./Registration.css";
 export default function Registration() {
     // Set document title
     React.useEffect(() => {
-        document.title = "DocuFlow - Registration";
+        document.title = "Xyra Books - Registration";
     }, []);
 
     return (

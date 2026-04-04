@@ -19,7 +19,7 @@ export default function VatPeriodRuns() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = "DocuFlow - VAT Filing Conversions";
+    document.title = "Xyra Books - VAT Filing Conversions";
   }, []);
 
   // Load customer + all runs for this period

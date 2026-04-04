@@ -25,7 +25,7 @@ const MAX_BYTES = 20 * 1024 * 1024; // 20MB
 export default function BankStatement() {
   // Set document title
   useEffect(() => {
-    document.title = "DocuFlow - Upload Bank Statements";
+    document.title = "Xyra Books - Upload Bank Statements";
   }, []);
 
   return <ImporterBank />;

@@ -1,11 +1,11 @@
 :root {
-    --blue: #2563eb;
-    --blue-600: #1d4ed8;
+    --brand: #0f172a;
+    --brand-600: #020617;
     --text: #0f172a;
     --muted: #64748b;
-    --border: #e5e7eb;
+    --border: #e2e8f0;
     --card: #ffffff;
-    --page: #f8fafc;
+    --page: #1E0033;
     --success: #10b981;
     --danger: #ef4444;
 }
@@ -40,7 +40,7 @@
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    background: linear-gradient(135deg, var(--blue), var(--blue-600));
+    background: linear-gradient(135deg, var(--brand), var(--brand-600));
 }
 
 .brand h1 {
@@ -78,8 +78,8 @@ input {
 }
 
 input:focus {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, .15);
+    border-color: var(--brand);
+    box-shadow: 0 0 0 4px rgba(15, 23, 42, .08);
 }
 
 .password-field {
@@ -98,7 +98,7 @@ input:focus {
     height: 34px;
     border: none;
     background: transparent;
-    color: var(--blue);
+    color: var(--brand);
     cursor: pointer;
     border-radius: 8px;
 }
@@ -110,7 +110,7 @@ input:focus {
 .btn-primary {
     margin-top: 6px;
     width: 100%;
-    background: var(--blue);
+    background: var(--brand);
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -121,7 +121,7 @@ input:focus {
 }
 
 .btn-primary:hover {
-    background: var(--blue-600);
+    background: var(--brand-600);
 }
 
 .btn-primary:active {
@@ -176,7 +176,7 @@ input:focus {
 
 /* Link button as inline text */
 .link-btn {
-    color: var(--blue);
+    color: var(--brand);
     font-weight: 600;
     cursor: pointer;
     padding: 0 2px;

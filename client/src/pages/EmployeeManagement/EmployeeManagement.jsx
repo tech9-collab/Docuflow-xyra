@@ -7,7 +7,7 @@ import './EmployeeManagement.css';
 export default function EmployeeManagement() {
     // Set document title
     useEffect(() => {
-        document.title = "DocuFlow - User Management";
+        document.title = "Xyra Books - User Management";
     }, []);
 
     const { isSuperAdmin, user, isCompanyAdmin } = useAuth();

@@ -210,3 +210,59 @@ export const loginUser = async (req, res) => {
         return res.redirect(`${frontendUrl}/login?error=${errorType}`);
     }
 };
+
+// POST /login-api (JSON response for API testing)
+export const loginUserForApi = async (req, res) => {
+    try {
+        const { email, password } = req.body || {};
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password required" });
+        }
+
+        const emailNorm = email.trim().toLowerCase();
+        const [rows] = await pool.query(
+            `SELECT u.*, r.name as role_name 
+             FROM users u 
+             LEFT JOIN roles r ON u.role_id = r.id 
+             WHERE LOWER(TRIM(u.email)) = ? 
+             LIMIT 1`,
+            [emailNorm]
+        );
+
+        if (!rows.length) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        const user = rows[0];
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        const token = jwt.sign(
+            {
+                id: user.id,
+                email: user.email,
+                role_id: user.role_id,
+                company_id: user.company_id,
+                type: user.type,
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES || "1d" }
+        );
+
+        res.json({
+            message: "Login successful",
+            token,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.type === "super_admin" ? "super_admin" : (user.role_name || "user")
+            }
+        });
+    } catch (err) {
+        console.error("API login error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};

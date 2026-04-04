@@ -35,7 +35,7 @@ export default function CtFilingPeriods() {
   const [editingPeriod, setEditingPeriod] = useState(null);
 
   useEffect(() => {
-    document.title = "DocuFlow - CT Filing Periods";
+    document.title = "Xyra Books - CT Filing Periods";
   }, []);
 
   // Load selected customer (same as VAT)

@@ -10,7 +10,7 @@ import { extractBills } from "../../helper/helper";
 export default function Bills() {
   // Set document title
   useEffect(() => {
-    document.title = "DocuFlow - Upload Bills (UAE)";
+    document.title = "Xyra Books - Upload Bills (UAE)";
   }, []);
 
   return <BillsImporter />;

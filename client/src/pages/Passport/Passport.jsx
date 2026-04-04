@@ -16,7 +16,7 @@ import {
 export default function Passport() {
   // Set document title
   useEffect(() => {
-    document.title = "DocuFlow - Upload Passport";
+    document.title = "Xyra Books - Upload Passport";
   }, []);
 
   return <PassportImporter />;

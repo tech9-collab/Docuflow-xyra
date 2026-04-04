@@ -1,3 +1,4 @@
+import logo from "../../assets/logo.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   Landmark, // Bank (bank statements)
@@ -35,6 +36,7 @@ function NavItem({ to, icon, text, collapsed }) {
   );
 }
 
+
 export default function Sidebar({ collapsed }) {
   const { logout, hasPermission, isSuperAdmin, isDepartmentAdmin, isBusinessUser, user } = useAuth();
   const navigate = useNavigate();
@@ -47,11 +49,19 @@ export default function Sidebar({ collapsed }) {
   return (
     <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar-brand">
-        <div className={`brand-wordmark ${collapsed ? "collapsed" : ""}`}>
-          Xyra Books
-        </div>
+        <img
+          src={logo}
+          alt="XYRA Logo"
+          className={`brand-logo ${collapsed ? "small" : "large"}`}
+          style={{
+            height: collapsed ? '40px' : '60px',
+            width: 'auto',
+            marginBottom: '8px',
+            transition: 'all 0.3s ease'
+          }}
+        />
         {!collapsed && (
-          <div className="brand-title">Account & VAT Management Suite</div>
+          <div className="brand-title">Document Processing Suite</div>
         )}
         {!collapsed && user && (
           <div className="user-badge">
@@ -78,12 +88,6 @@ export default function Sidebar({ collapsed }) {
               to="/admin/departments"
               icon={<Building2 size={18} />}
               text="Departments"
-              collapsed={collapsed}
-            />
-            <NavItem
-              to="/admin/companies"
-              icon={<Building2 size={18} />}
-              text="Companies"
               collapsed={collapsed}
             />
             <NavItem

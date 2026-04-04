@@ -57,7 +57,7 @@ export default function AdminDashboard() {
     const { user, isSuperAdmin } = useAuth();
 
     useEffect(() => {
-        document.title = "DocuFlow - Super Admin Dashboard";
+        document.title = "XYRA Books - Super Admin Dashboard";
     }, []);
 
     // Month picker state — default to current month

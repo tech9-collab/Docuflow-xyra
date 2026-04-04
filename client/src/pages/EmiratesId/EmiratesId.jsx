@@ -16,7 +16,7 @@ import {
 export default function EmiratesId() { 
   // Set document title
   useEffect(() => {
-    document.title = "DocuFlow - Upload Emirates ID";
+    document.title = "Xyra Books - Upload Emirates ID";
   }, []);
 
   return <EmiratesImporter />;

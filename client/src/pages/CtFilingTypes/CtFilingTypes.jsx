@@ -21,7 +21,7 @@ export default function CtFilingTypes() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = "DocuFlow - CT Filing - Select Type";
+    document.title = "Xyra Books - CT Filing - Select Type";
   }, []);
 
   useEffect(() => {

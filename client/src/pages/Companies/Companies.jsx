@@ -7,7 +7,7 @@ import './Companies.css';
 export default function Companies() {
     // Set document title
     useEffect(() => {
-        document.title = "DocuFlow - Company Management";
+        document.title = "Xyra Books - Company Management";
     }, []);
 
     const { isSuperAdmin } = useAuth();

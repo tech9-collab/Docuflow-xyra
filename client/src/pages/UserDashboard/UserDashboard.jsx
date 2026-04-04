@@ -67,7 +67,7 @@ export default function UserDashboard() {
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
 
   useEffect(() => {
-    document.title = "DocuFlow - User Dashboard";
+    document.title = "Xyra Books - User Dashboard";
   }, []);
 
   useEffect(() => {

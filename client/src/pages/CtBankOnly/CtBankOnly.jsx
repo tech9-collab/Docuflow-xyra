@@ -49,7 +49,7 @@ export default function CtBankOnly() {
   }, [companyId]);
 
   useEffect(() => {
-    document.title = `DocuFlow - CT Filing - Type 1`;
+    document.title = `Xyra Books - CT Filing - Type 1`;
   }, []);
 
   // ===== Single-file state (same as BankStatement.jsx) =====

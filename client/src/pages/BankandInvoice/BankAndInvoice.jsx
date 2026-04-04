@@ -53,7 +53,7 @@ function VatFilingComposer() {
 
   // Set the document title when display company name changes
   useEffect(() => {
-    document.title = `DocuFlow - VAT Filing - ${displayCompanyName || "Company"
+    document.title = `Xyra Books - VAT Filing - ${displayCompanyName || "Company"
       }`;
   }, [displayCompanyName]);
 

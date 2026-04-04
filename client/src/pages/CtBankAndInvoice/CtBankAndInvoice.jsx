@@ -46,7 +46,7 @@ function CtFilingComposer() {
 
   // Set the document title when display company name changes
   useEffect(() => {
-    document.title = `DocuFlow - CT Filing - ${
+    document.title = `Xyra Books - CT Filing - ${
       displayCompanyName || "Company"
     }`;
   }, [displayCompanyName]);

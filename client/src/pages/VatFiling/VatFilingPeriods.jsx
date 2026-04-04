@@ -33,7 +33,7 @@ export default function VatFilingPeriods() {
   const [status, setStatus] = useState("not_started");
 
   useEffect(() => {
-    document.title = "DocuFlow - VAT Filing Periods";
+    document.title = "Xyra Books - VAT Filing Periods";
   }, []);
 
   // helper for date input format (YYYY-MM-DD)

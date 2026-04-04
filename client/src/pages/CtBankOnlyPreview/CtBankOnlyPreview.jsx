@@ -148,7 +148,7 @@ export default function CtBankOnlyPreview() {
     };
 
   useEffect(() => {
-    document.title = "DocuFlow - CT Filing - Type 1 Preview";
+    document.title = "Xyra Books - CT Filing - Type 1 Preview";
   }, []);
 
   // ===== Helpers =====
