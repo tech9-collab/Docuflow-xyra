@@ -16,6 +16,37 @@ function isEmail(str) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str);
 }
 
+function wantsJson(req) {
+    const accept = req.headers.accept || "";
+    const contentType = req.headers["content-type"] || "";
+    return accept.includes("application/json") || contentType.includes("application/json");
+}
+
+function buildAuthPayload(user, token, redirectUrl) {
+    const finalRole =
+        user.type === "super_admin"
+            ? "super_admin"
+            : (user.role_name || "user").toLowerCase();
+
+    return {
+        token,
+        redirectUrl,
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            countryCode: user.country_code || "",
+            business_name: user.business_name || "",
+            role_id: user.role_id,
+            company_id: user.company_id,
+            role: finalRole,
+            role_name: user.role_name || finalRole,
+            type: user.type,
+        },
+    };
+}
+
 /* ===== Controllers ===== */
 
 // POST /register
@@ -88,18 +119,6 @@ export const registerUser = async (req, res) => {
 
             await connection.commit();
 
-            const userRes = {
-                id: userId,
-                name: nameNorm,
-                email: emailNorm,
-                phone: phoneNorm,
-                countryCode: countryNorm || "",
-                business_name: businessNameNorm || "",
-                role_id: 1,
-                company_id: companyId,
-                role: "super_admin",
-                type: "super_admin"
-            };
             const token = signToken({
                 id: userId,
                 email: emailNorm,
@@ -116,6 +135,23 @@ export const registerUser = async (req, res) => {
             });
 
             const frontendUrl = process.env.FRONTEND_URL || "";
+            const payload = buildAuthPayload({
+                id: userId,
+                name: nameNorm,
+                email: emailNorm,
+                phone: phoneNorm,
+                country_code: countryNorm || "",
+                business_name: businessNameNorm || "",
+                role_id: 1,
+                company_id: companyId,
+                role_name: "super_admin",
+                type: "super_admin",
+            }, token, redirectUrl);
+
+            if (wantsJson(req)) {
+                return res.status(201).json(payload);
+            }
+
             return res.redirect(`${frontendUrl}${redirectUrl}`);
         } catch (err) {
             await connection.rollback();
@@ -137,6 +173,9 @@ export const loginUser = async (req, res) => {
         const { email, password } = req.body || {};
 
         if (!email || typeof email !== "string" || !password || typeof password !== "string") {
+            if (wantsJson(req)) {
+                return res.status(401).json({ message: "Invalid credentials" });
+            }
             return res.redirect(`${frontendUrl}/login?error=invalid_credentials`);
         }
 
@@ -164,6 +203,9 @@ export const loginUser = async (req, res) => {
         );
 
         if (!rows.length) {
+            if (wantsJson(req)) {
+                return res.status(401).json({ message: "Invalid credentials" });
+            }
             return res.redirect(`${frontendUrl}/login?error=invalid_credentials`);
         }
 
@@ -171,6 +213,9 @@ export const loginUser = async (req, res) => {
 
         const isPasswordValid = await bcrypt.compare(passwordNorm, user.password);
         if (!isPasswordValid) {
+            if (wantsJson(req)) {
+                return res.status(401).json({ message: "Invalid credentials" });
+            }
             return res.redirect(`${frontendUrl}/login?error=invalid_credentials`);
         }
 
@@ -202,11 +247,20 @@ export const loginUser = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000 // 1 day
         });
 
-        // Perform direct backend redirection as requested
+        if (wantsJson(req)) {
+            return res.status(200).json(buildAuthPayload(user, token, redirectUrl));
+        }
+
         return res.redirect(`${frontendUrl}${redirectUrl}`);
     } catch (err) {
         console.error("loginUser error:", err);
         const errorType = err.message === "Invalid credentials" ? "invalid_credentials" : "server_error";
+        if (wantsJson(req)) {
+            const statusCode = errorType === "invalid_credentials" ? 401 : 500;
+            return res.status(statusCode).json({
+                message: errorType === "invalid_credentials" ? "Invalid credentials" : "Server error",
+            });
+        }
         return res.redirect(`${frontendUrl}/login?error=${errorType}`);
     }
 };
