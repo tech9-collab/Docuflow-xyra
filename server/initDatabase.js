@@ -7,7 +7,7 @@ export async function initializeDatabase() {
 
     // Consistent charset/engine
     await pool.query(`SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci`);
-    await pool.query(`SET FOREIGN_KEY_CHECKS = 1`);
+    await pool.query(`SET FOREIGN_KEY_CHECKS = 0`);
 
     // 1) departments (parent for roles, users, user_departments)
     await pool.query(`
@@ -211,8 +211,9 @@ export async function initializeDatabase() {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS companies (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        type ENUM('Mainland', 'Freezone', 'Individual', 'Corporate') DEFAULT 'Mainland',
+        business_name VARCHAR(255) NOT NULL,
+        business_id VARCHAR(100) NULL,
+        type VARCHAR(50) DEFAULT 'admin',
         description TEXT,
         user_id INT NULL,
         department_id INT NULL,
@@ -225,10 +226,30 @@ export async function initializeDatabase() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
 
-    // Ensure companies table has correct columns if it already exists
+    // Migrate: rename name -> business_name if old column still exists
+    const [oldNameCol] = await pool.query("SHOW COLUMNS FROM companies LIKE 'name'");
+    if (oldNameCol.length) {
+      await pool.query("ALTER TABLE companies CHANGE COLUMN name business_name VARCHAR(255) NOT NULL DEFAULT ''");
+    }
+
+    // Ensure business_name column exists
+    const [busNameCol] = await pool.query("SHOW COLUMNS FROM companies LIKE 'business_name'");
+    if (!busNameCol.length) {
+      await pool.query("ALTER TABLE companies ADD COLUMN business_name VARCHAR(255) NOT NULL DEFAULT '' AFTER id");
+    }
+
+    // Add business_id column if missing
+    const [busIdCol] = await pool.query("SHOW COLUMNS FROM companies LIKE 'business_id'");
+    if (!busIdCol.length) {
+      await pool.query("ALTER TABLE companies ADD COLUMN business_id VARCHAR(100) NULL AFTER business_name");
+    }
+
+    // Migrate type column from ENUM to VARCHAR(50) so it can store 'admin'
     const [compTypeCol] = await pool.query("SHOW COLUMNS FROM companies LIKE 'type'");
-    if (!compTypeCol.length) {
-      await pool.query("ALTER TABLE companies ADD COLUMN type ENUM('Mainland', 'Freezone', 'Individual', 'Corporate') DEFAULT 'Mainland' AFTER name");
+    if (compTypeCol.length && compTypeCol[0].Type.startsWith('enum')) {
+      await pool.query("ALTER TABLE companies MODIFY COLUMN type VARCHAR(50) DEFAULT 'admin'");
+    } else if (!compTypeCol.length) {
+      await pool.query("ALTER TABLE companies ADD COLUMN type VARCHAR(50) DEFAULT 'admin' AFTER business_id");
     }
 
     const [compDescCol] = await pool.query("SHOW COLUMNS FROM companies LIKE 'description'");
@@ -246,11 +267,33 @@ export async function initializeDatabase() {
       await pool.query("ALTER TABLE companies ADD COLUMN department_id INT NULL AFTER user_id, ADD INDEX (department_id)");
     }
 
-    // 6.6) Add company_id to users if not present
-    const [userCompIdCol] = await pool.query("SHOW COLUMNS FROM users LIKE 'company_id'");
+    // Auth fields for company admin accounts (registered via /auth/register)
+    const [compEmailCol] = await pool.query("SHOW COLUMNS FROM companies LIKE 'email'");
+    if (!compEmailCol.length) {
+      await pool.query("ALTER TABLE companies ADD COLUMN email VARCHAR(255) NULL UNIQUE AFTER department_id");
+    }
+    const [compPasswordCol] = await pool.query("SHOW COLUMNS FROM companies LIKE 'password'");
+    if (!compPasswordCol.length) {
+      await pool.query("ALTER TABLE companies ADD COLUMN password VARCHAR(255) NULL AFTER email");
+    }
+    const [compContactCol] = await pool.query("SHOW COLUMNS FROM companies LIKE 'contact_name'");
+    if (!compContactCol.length) {
+      await pool.query("ALTER TABLE companies ADD COLUMN contact_name VARCHAR(255) NULL AFTER password");
+    }
+    const [compPhoneCol] = await pool.query("SHOW COLUMNS FROM companies LIKE 'phone'");
+    if (!compPhoneCol.length) {
+      await pool.query("ALTER TABLE companies ADD COLUMN phone VARCHAR(20) NULL AFTER contact_name");
+    }
+    const [compCountryCol] = await pool.query("SHOW COLUMNS FROM companies LIKE 'country_code'");
+    if (!compCountryCol.length) {
+      await pool.query("ALTER TABLE companies ADD COLUMN country_code VARCHAR(10) NULL AFTER phone");
+    }
+
+    // 6.6) Add business_id to users if not present
+    const [userCompIdCol] = await pool.query("SHOW COLUMNS FROM users LIKE 'business_id'");
     if (!userCompIdCol.length) {
-      await pool.query("ALTER TABLE users ADD COLUMN company_id INT NULL AFTER department_id, ADD INDEX (company_id)");
-      await pool.query("ALTER TABLE users ADD CONSTRAINT fk_users_company FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE SET NULL");
+      await pool.query("ALTER TABLE users ADD COLUMN business_id INT NULL AFTER department_id, ADD INDEX (business_id)");
+      await pool.query("ALTER TABLE users ADD CONSTRAINT fk_users_company FOREIGN KEY (business_id) REFERENCES companies(id) ON DELETE SET NULL");
     }
 
     // 6.7) Add company_id to departments if not present
@@ -847,6 +890,49 @@ CREATE TABLE IF NOT EXISTS vat_filing_runs (
       }
     }
 
+    // Ensure every company has the full default department set
+    try {
+      const defaultDepts = ['Audit', 'Bookkeeping', 'Accounts', 'Corporate Tax', 'Default', 'Invoice'];
+      const [companies] = await pool.query("SELECT id FROM companies");
+      for (const company of companies) {
+        const [existing] = await pool.query(
+          "SELECT name FROM departments WHERE company_id = ?",
+          [company.id]
+        );
+        const existingNames = new Set(existing.map((dept) => dept.name));
+
+        for (const deptName of defaultDepts) {
+          if (!existingNames.has(deptName)) {
+            await pool.query(
+              "INSERT INTO departments (name, company_id) VALUES (?, ?)",
+              [deptName, company.id]
+            );
+          }
+        }
+      }
+    } catch (e) { console.warn("Default departments migration skipped:", e.message); }
+
+    // Make user_id nullable in vat_filing_periods (admin users have no users-table row)
+    try {
+      const [vfpUserCol] = await pool.query("SHOW COLUMNS FROM vat_filing_periods LIKE 'user_id'");
+      if (vfpUserCol.length && vfpUserCol[0].Null === 'NO') {
+        await pool.query("SET FOREIGN_KEY_CHECKS = 0");
+        await pool.query("ALTER TABLE vat_filing_periods MODIFY COLUMN user_id INT NULL");
+        await pool.query("SET FOREIGN_KEY_CHECKS = 1");
+      }
+    } catch (e) { console.warn("vat_filing_periods user_id migration skipped:", e.message); }
+
+    // Make user_id nullable in ct_filing_periods
+    try {
+      const [ctfpUserCol] = await pool.query("SHOW COLUMNS FROM ct_filing_periods LIKE 'user_id'");
+      if (ctfpUserCol.length && ctfpUserCol[0].Null === 'NO') {
+        await pool.query("SET FOREIGN_KEY_CHECKS = 0");
+        await pool.query("ALTER TABLE ct_filing_periods MODIFY COLUMN user_id INT NULL");
+        await pool.query("SET FOREIGN_KEY_CHECKS = 1");
+      }
+    } catch (e) { console.warn("ct_filing_periods user_id migration skipped:", e.message); }
+
+    await pool.query(`SET FOREIGN_KEY_CHECKS = 1`);
     console.log("Database schema initialized successfully");
   } catch (error) {
     console.error("Error initializing database:", error);

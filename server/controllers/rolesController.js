@@ -1,6 +1,19 @@
 import { pool } from "../db.js";
 import { checkUserPermission, getUserPermissions, getUserRole } from "../initDatabase.js";
 
+// Helper: returns effective role for the requester.
+// Company admin (type='admin') is treated as super_admin for all access checks.
+async function getEffectiveRole(req) {
+    if (req.user?.type === 'admin') return { name: 'super_admin' };
+    return getUserRole(req.user.id);
+}
+
+// Helper: company admins (type='admin') always pass permission checks.
+async function checkEffectivePermission(req, permissionName) {
+    if (req.user?.type === 'admin') return true;
+    return checkEffectivePermission(req, permissionName);
+}
+
 // Helper: fetch the requesting user's business_name (empty string = none)
 async function getRequesterBusinessName(userId) {
     const [rows] = await pool.query(
@@ -12,7 +25,7 @@ async function getRequesterBusinessName(userId) {
 // Helper: fetch the requesting user's company_id
 async function getRequesterCompanyId(userId) {
     const [rows] = await pool.query(
-        "SELECT company_id FROM users WHERE id = ?", [userId]
+        "SELECT business_id AS company_id FROM users WHERE id = ?", [userId]
     );
     return rows[0]?.company_id || null;
 }
@@ -43,7 +56,7 @@ function buildDateFilter(query) {
 export const getAllDepartments = async (req, res) => {
     try {
         const { companyId: qCompanyId } = req.query;
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
 
         const targetCompanyId = isSuperAdmin ? (qCompanyId || null) : await getRequesterCompanyId(req.user.id);
@@ -88,11 +101,11 @@ export const getDepartmentById = async (req, res) => {
     try {
         const { id } = req.params;
         const requesterCompanyId = await getRequesterCompanyId(req.user.id);
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
 
         if (!isSuperAdmin) {
-            const hasPermission = await checkUserPermission(req.user.id, 'departments.read');
+            const hasPermission = await checkEffectivePermission(req, 'departments.read');
             if (!hasPermission) return res.status(403).json({ message: "Insufficient permissions" });
         }
 
@@ -160,7 +173,7 @@ export const getUserDocumentCount = async (req, res) => {
         const { userId } = req.params;
 
         // Check if the requesting user has permission to view this data
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isDepartmentAdmin = userRole?.name === 'admin' && userRole?.department_id;
 
@@ -222,7 +235,7 @@ export const getDepartmentDocumentCount = async (req, res) => {
         const { departmentId } = req.params;
 
         // Get user role to determine filtering
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isDepartmentAdmin = userRole?.name === 'admin' && userRole?.department_id;
 
@@ -238,7 +251,7 @@ export const getDepartmentDocumentCount = async (req, res) => {
             }
         } else if (!isSuperAdmin) {
             // Regular user - check permission
-            const hasPermission = await checkUserPermission(req.user.id, 'dashboard.read');
+            const hasPermission = await checkEffectivePermission(req, 'dashboard.read');
             if (!hasPermission) {
                 return res.status(403).json({ message: "Insufficient permissions" });
             }
@@ -293,7 +306,7 @@ export const getDepartmentDocumentCount = async (req, res) => {
 // Get total document count across the entire system
 export const getSystemDocumentCount = async (req, res) => {
     try {
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isDepartmentAdmin = userRole?.name === 'admin' && userRole?.department_id;
         const sysBusinessName = !isSuperAdmin && !isDepartmentAdmin
@@ -341,7 +354,7 @@ export const getSystemDocumentCount = async (req, res) => {
 // Get department-wise document counts for super admin dashboard
 export const getDepartmentDocumentCounts = async (req, res) => {
     try {
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isDeptAdmin2 = userRole?.name === 'admin' && userRole?.department_id;
         const deptCountBizName = !isSuperAdmin && !isDeptAdmin2
@@ -406,7 +419,7 @@ export const getDepartmentDocumentCounts = async (req, res) => {
 // Get detailed document counts for all users (for super admin dashboard)
 export const getAllUsersDocumentCounts = async (req, res) => {
     try {
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isDA3 = userRole?.name === 'admin' && userRole?.department_id;
         const allUsersBizName = !isSuperAdmin && !isDA3
@@ -475,7 +488,7 @@ export const getAllUsersDocumentCounts = async (req, res) => {
 // Get aggregated user document counts by department (for super admin dashboard)
 export const getAggregatedUserDocumentCounts = async (req, res) => {
     try {
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isDA4 = userRole?.name === 'admin' && userRole?.department_id;
         const aggBizName = !isSuperAdmin && !isDA4
@@ -545,7 +558,7 @@ export const getAggregatedUserDocumentCounts = async (req, res) => {
 // Get monthly summary for last 12 months (super admin or business user)
 export const getMonthlySummary = async (req, res) => {
     try {
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isDA5 = userRole?.name === 'admin' && userRole?.department_id;
         const monthlyBizName = !isSuperAdmin && !isDA5
@@ -592,7 +605,7 @@ export const getMonthlySummary = async (req, res) => {
 export const getUserMonthlySummary = async (req, res) => {
     try {
         const { userId } = req.params;
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isDepartmentAdmin = userRole?.name === 'admin' && userRole?.department_id;
 
@@ -630,7 +643,7 @@ export const getUserMonthlySummary = async (req, res) => {
 export const getDepartmentMonthlySummary = async (req, res) => {
     try {
         const { departmentId } = req.params;
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isDepartmentAdmin = userRole?.name === 'admin' && userRole?.department_id;
 
@@ -676,7 +689,7 @@ export const getDepartmentUsers = async (req, res) => {
         const { departmentId } = req.params;
 
         // Get user role to determine filtering
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isDepartmentAdmin = userRole?.name === 'admin' && userRole?.department_id;
 
@@ -692,7 +705,7 @@ export const getDepartmentUsers = async (req, res) => {
             }
         } else if (!isSuperAdmin) {
             // Regular user - check permission
-            const hasPermission = await checkUserPermission(req.user.id, 'employees.read');
+            const hasPermission = await checkEffectivePermission(req, 'employees.read');
             if (!hasPermission) {
                 return res.status(403).json({ message: "Insufficient permissions" });
             }
@@ -720,7 +733,7 @@ export const getUserDepartmentPermissions = async (req, res) => {
         const { userId } = req.params;
 
         // Check if user is trying to access their own data or if they're a super admin
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isOwnData = parseInt(req.user.id) === parseInt(userId);
 
@@ -772,7 +785,7 @@ export const getDepartmentRoles = async (req, res) => {
         const { departmentId } = req.params;
 
         // Get user role to determine filtering
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isDepartmentAdmin = userRole?.name === 'admin' && userRole?.department_id;
 
@@ -788,7 +801,7 @@ export const getDepartmentRoles = async (req, res) => {
             }
         } else if (!isSuperAdmin) {
             // Regular user - check permission
-            const hasPermission = await checkUserPermission(req.user.id, 'roles.read');
+            const hasPermission = await checkEffectivePermission(req, 'roles.read');
             if (!hasPermission) {
                 return res.status(403).json({ message: "Insufficient permissions" });
             }
@@ -845,11 +858,11 @@ export const createDepartment = async (req, res) => {
     try {
         const { name, description, location, manager, budget, status, companyId } = req.body;
         const requesterCompanyId = await getRequesterCompanyId(req.user.id);
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
 
         if (!isSuperAdmin) {
-            const hasPermission = await checkUserPermission(req.user.id, 'departments.create');
+            const hasPermission = await checkEffectivePermission(req, 'departments.create');
             if (!hasPermission) return res.status(403).json({ message: "Insufficient permissions" });
         }
 
@@ -886,11 +899,11 @@ export const updateDepartment = async (req, res) => {
         const { departmentId: id } = req.params;
         const { name, description, location, manager, budget, status } = req.body;
         const requesterCompanyId = await getRequesterCompanyId(req.user.id);
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
 
         if (!isSuperAdmin) {
-            const hasPermission = await checkUserPermission(req.user.id, 'departments.update');
+            const hasPermission = await checkEffectivePermission(req, 'departments.update');
             if (!hasPermission) return res.status(403).json({ message: "Insufficient permissions" });
         }
 
@@ -928,11 +941,11 @@ export const deleteDepartment = async (req, res) => {
     try {
         const { departmentId: id } = req.params;
         const requesterCompanyId = await getRequesterCompanyId(req.user.id);
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
 
         if (!isSuperAdmin) {
-            const hasPermission = await checkUserPermission(req.user.id, 'departments.delete');
+            const hasPermission = await checkEffectivePermission(req, 'departments.delete');
             if (!hasPermission) return res.status(403).json({ message: "Insufficient permissions" });
         }
 
@@ -958,7 +971,7 @@ export const updateDepartmentAdminPermissions = async (req, res) => {
         const { selectedConverts } = req.body;
 
         // Check permission (only super_admin can update department admin permissions)
-        const hasPermission = await checkUserPermission(req.user.id, 'roles.update');
+        const hasPermission = await checkEffectivePermission(req, 'roles.update');
         if (!hasPermission) {
             return res.status(403).json({ message: "Insufficient permissions" });
         }
@@ -1036,12 +1049,12 @@ export const updateDepartmentAdminPermissions = async (req, res) => {
 export const getAllRoles = async (req, res) => {
     try {
         const { companyId: qCompanyId, departmentId: qDepartmentId } = req.query;
-        const hasPermission = await checkUserPermission(req.user.id, 'roles.read');
+        const hasPermission = await checkEffectivePermission(req, 'roles.read');
         if (!hasPermission) {
             return res.status(403).json({ message: "Insufficient permissions" });
         }
 
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
 
         const targetCompanyId = isSuperAdmin ? (qCompanyId || null) : await getRequesterCompanyId(req.user.id);
@@ -1082,7 +1095,7 @@ export const getAllRoles = async (req, res) => {
 export const getAllPermissions = async (req, res) => {
     try {
         // Check permission
-        const hasPermission = await checkUserPermission(req.user.id, 'roles.read');
+        const hasPermission = await checkEffectivePermission(req, 'roles.read');
         if (!hasPermission) {
             return res.status(403).json({ message: "Insufficient permissions" });
         }
@@ -1104,11 +1117,11 @@ export const getRolePermissions = async (req, res) => {
     try {
         const { roleId } = req.params;
         const requesterCompanyId = await getRequesterCompanyId(req.user.id);
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
 
         if (!isSuperAdmin) {
-            const hasPermission = await checkUserPermission(req.user.id, 'roles.read');
+            const hasPermission = await checkEffectivePermission(req, 'roles.read');
             if (!hasPermission) return res.status(403).json({ message: "Insufficient permissions" });
         }
 
@@ -1143,13 +1156,13 @@ export const updateRolePermissions = async (req, res) => {
         const { permissionIds } = req.body;
 
         // Check permission
-        const hasPermission = await checkUserPermission(req.user.id, 'roles.update');
+        const hasPermission = await checkEffectivePermission(req, 'roles.update');
         if (!hasPermission) {
             return res.status(403).json({ message: "Insufficient permissions" });
         }
 
         // Prevent non-super-admins from modifying super_admin role
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         if (userRole?.name !== 'super_admin' && parseInt(roleId) === 1) {
             return res.status(403).json({ message: "Cannot modify super admin role" });
         }
@@ -1188,34 +1201,42 @@ export const updateRolePermissions = async (req, res) => {
 // Get all employees (renamed from getAllUsers)
 export const getAllEmployees = async (req, res) => {
     try {
-        const hasPermission = await checkUserPermission(req.user.id, 'employees.read');
+        const user = req.user;
+        const hasPermission = await checkEffectivePermission(req, 'employees.read');
         if (!hasPermission) {
             return res.status(403).json({ message: "Insufficient permissions" });
         }
 
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
-        const requesterCompanyId = await getRequesterCompanyId(req.user.id);
+        const requesterCompanyId = user.company_id || await getRequesterCompanyId(user.id);
 
         let sql = `
-            SELECT u.id, u.name, u.email, u.phone, u.country_code, u.status, u.company_id,
+            SELECT u.id, u.name, u.email, u.phone, u.country_code, u.status, u.business_id AS company_id,
                    u.created_at, u.updated_at, r.name as role_name, r.id as role_id,
-                   d.name as department_name, d.id as department_id, c.name as company_name
+                   d.name as department_name, d.id as department_id, c.business_name as company_name
             FROM users u
             LEFT JOIN roles r ON u.role_id = r.id
             LEFT JOIN departments d ON u.department_id = d.id
-            LEFT JOIN companies c ON u.company_id = c.id
-            WHERE (r.name != 'super_admin' OR r.name IS NULL)
+            LEFT JOIN companies c ON u.business_id = c.id
+            WHERE 1=1
         `;
 
         const params = [];
+        // Non-super admins only see their own company
         if (!isSuperAdmin) {
             if (requesterCompanyId) {
-                sql += ` AND u.company_id = ?`;
+                sql += ` AND u.business_id = ?`;
                 params.push(requesterCompanyId);
             } else {
+                // If they don't have a company assigned, they shouldn't see anyone (unless they are super_admin)
                 return res.json({ employees: [] });
             }
+        }
+
+        // Hide other super admins from the list if the requester isn't a super admin
+        if (!isSuperAdmin) {
+            sql += ` AND (r.name != 'super_admin' OR r.name IS NULL)`;
         }
 
         sql += ` ORDER BY u.created_at DESC`;
@@ -1234,15 +1255,26 @@ export const updateUserRole = async (req, res) => {
         const { userId } = req.params;
         const { roleId } = req.body;
 
-        // Check permission
-        const hasPermission = await checkUserPermission(req.user.id, 'users.update');
+        const hasPermission = await checkEffectivePermission(req, 'users.update');
         if (!hasPermission) {
             return res.status(403).json({ message: "Insufficient permissions" });
         }
 
+        const userRole = await getEffectiveRole(req);
+        const isSuperAdmin = userRole?.name === 'super_admin';
+        const requesterCompanyId = await getRequesterCompanyId(req.user.id);
+
+        // Security Check: Non-super admins can only update users in their own company
+        if (!isSuperAdmin) {
+            const [targetUser] = await pool.query("SELECT business_id AS company_id FROM users WHERE id = ?", [userId]);
+            if (!targetUser.length) return res.status(404).json({ message: "User not found" });
+            if (parseInt(targetUser[0].company_id) !== parseInt(requesterCompanyId)) {
+                return res.status(403).json({ message: "Access denied: User belongs to a different company" });
+            }
+        }
+
         // Prevent non-super-admins from assigning super_admin role
-        const userRole = await getUserRole(req.user.id);
-        if (userRole?.name !== 'super_admin' && parseInt(roleId) === 1) {
+        if (!isSuperAdmin && parseInt(roleId) === 1) {
             return res.status(403).json({ message: "Cannot assign super admin role" });
         }
 
@@ -1252,7 +1284,6 @@ export const updateUserRole = async (req, res) => {
         }
 
         await pool.query('UPDATE users SET role_id = ? WHERE id = ?', [roleId, userId]);
-
         res.json({ message: "User role updated successfully" });
     } catch (error) {
         console.error("Update user role error:", error);
@@ -1263,9 +1294,42 @@ export const updateUserRole = async (req, res) => {
 // Get current user profile with permissions
 export const getCurrentUserProfile = async (req, res) => {
     try {
+        // Company admin accounts (type='admin') are stored in companies table
+        if (req.user.type === 'admin') {
+            const [rows] = await pool.query(
+                `SELECT id, business_name, email, contact_name, phone, country_code, type, business_id
+                 FROM companies WHERE id = ? LIMIT 1`,
+                [req.user.id]
+            );
+            if (!rows.length) {
+                return res.status(404).json({ message: "Account not found" });
+            }
+            const company = rows[0];
+            return res.json({
+                user: {
+                    id: company.id,
+                    name: company.contact_name || company.business_name,
+                    email: company.email,
+                    phone: company.phone,
+                    country_code: company.country_code,
+                    business_name: company.business_name,
+                    business_id: company.business_id,
+                    type: 'admin',
+                    role_name: 'admin',
+                    role_id: null,
+                    company_id: company.id,
+                    department_id: null,
+                    status: 'active',
+                },
+                permissions: ['all'],
+                role: { name: 'admin' }
+            });
+        }
+
+        // Employee accounts are stored in users table
         const [user] = await pool.query(`
             SELECT u.id, u.name, u.email, u.phone, u.country_code, u.status, u.type,
-                   u.business_name, u.created_at, u.department_id, u.company_id, r.name as role_name, r.id as role_id
+                   u.business_name, u.created_at, u.department_id, u.business_id AS company_id, r.name as role_name, r.id as role_id
             FROM users u
             LEFT JOIN roles r ON u.role_id = r.id
             WHERE u.id = ?
@@ -1276,9 +1340,8 @@ export const getCurrentUserProfile = async (req, res) => {
         }
 
         const permissions = await getUserPermissions(req.user.id);
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
 
-        // Get department name if user has a department
         let departmentName = null;
         if (user[0].department_id) {
             const [dept] = await pool.query(
@@ -1311,17 +1374,22 @@ export const createEmployee = async (req, res) => {
     try {
         const { name, email, password, phone, countryCode, roleId, departmentId, companyId } = req.body;
 
-        const hasPermission = await checkUserPermission(req.user.id, 'employees.create');
+        const hasPermission = await checkEffectivePermission(req, 'employees.create');
         if (!hasPermission) {
             return res.status(403).json({ message: "Insufficient permissions" });
         }
 
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
-        const requesterCompanyId = await getRequesterCompanyId(req.user.id);
+        const isAdminType = req.user.type === 'admin';
 
-        // Force company_id if not super admin
-        const finalCompanyId = isSuperAdmin ? (companyId || null) : requesterCompanyId;
+        // For company admin users, use their own company_id directly
+        const requesterCompanyId = isAdminType
+            ? req.user.company_id
+            : await getRequesterCompanyId(req.user.id);
+
+        // Force company_id if not a true super_admin (i.e., admin-type users always use their own company)
+        const finalCompanyId = (isSuperAdmin && !isAdminType) ? (companyId || null) : requesterCompanyId;
 
         if (!finalCompanyId && !isSuperAdmin) {
             return res.status(403).json({ message: "Requester must belong to a company to create users" });
@@ -1355,7 +1423,7 @@ export const createEmployee = async (req, res) => {
         const password_hash = await bcrypt.default.hash(password, 12);
 
         const [result] = await pool.query(
-            `INSERT INTO users (name, email, password, phone, country_code, role_id, department_id, company_id, type)
+            `INSERT INTO users (name, email, password, phone, country_code, role_id, department_id, business_id, type)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 name.trim(),
@@ -1407,40 +1475,36 @@ export const updateEmployee = async (req, res) => {
         const { name, email, phone, countryCode, roleId, departmentId, companyId, status, password } = req.body;
 
         // Check permission (super_admin or department admin can update employees)
-        const hasPermission = await checkUserPermission(req.user.id, 'employees.update');
+        const hasPermission = await checkEffectivePermission(req, 'employees.update');
         if (!hasPermission) {
             return res.status(403).json({ message: "Insufficient permissions" });
         }
 
         // Get user role to determine filtering
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
+        const requesterCompanyId = await getRequesterCompanyId(req.user.id);
 
-        // If not super admin, check if user is department admin and can only update users in their department
+        // If not super admin, check if user is admin and belongs to the same company
         if (!isSuperAdmin) {
-            // Get user's department
-            const [currentUser] = await pool.query("SELECT department_id FROM users WHERE id = ?", [req.user.id]);
-            const userDepartmentId = currentUser.length > 0 ? currentUser[0].department_id : null;
+            // Get target user's company and department
+            const [targetUser] = await pool.query("SELECT business_id AS company_id, department_id FROM users WHERE id = ?", [userId]);
+            if (!targetUser.length) return res.status(404).json({ message: "User not found" });
 
-            // Get target user's department
-            const [targetUser] = await pool.query("SELECT department_id FROM users WHERE id = ?", [userId]);
-            const targetUserDepartmentId = targetUser.length > 0 ? targetUser[0].department_id : null;
+            const targetUserCompanyId = targetUser[0].company_id;
+            const targetUserDepartmentId = targetUser[0].department_id;
 
-            // Check if trying to update user from a different department
-            // Convert both to integers for proper comparison
-            if (parseInt(targetUserDepartmentId) !== parseInt(userDepartmentId)) {
-                return res.status(403).json({ message: "Department admins can only update users in their own department" });
+            // Check company isolation
+            if (parseInt(targetUserCompanyId) !== parseInt(requesterCompanyId)) {
+                return res.status(403).json({ message: "Access denied: User belongs to a different company" });
             }
 
-            // Check if user has admin role in their department (must be exactly 'admin' and have a department_id)
-            const [userRoleCheck] = await pool.query(
-                `SELECT r.name FROM users u 
-                 JOIN roles r ON u.role_id = r.id 
-                 WHERE u.id = ? AND r.name = 'admin' AND u.department_id IS NOT NULL`,
-                [req.user.id]
-            );
-            if (!userRoleCheck.length) {
-                return res.status(403).json({ message: "Only department admins can update users" });
+            // Check if user is department admin (if role is admin and they have a department) or company admin (no department mapping but role is admin/business_user)
+            // For now, let's just use the 'employees.update' permission we checked above.
+            // But if they are a department admin, they should only update users in their department.
+            const isDeptAdmin = userRole?.name === 'admin' && userRole?.department_id;
+            if (isDeptAdmin && parseInt(targetUserDepartmentId) !== parseInt(userRole.department_id)) {
+                return res.status(403).json({ message: "Access denied: User belongs to a different department" });
             }
         }
 
@@ -1571,40 +1635,34 @@ export const deleteEmployee = async (req, res) => {
         const { userId } = req.params;
 
         // Check permission (super_admin or department admin can delete employees)
-        const hasPermission = await checkUserPermission(req.user.id, 'employees.delete');
+        const hasPermission = await checkEffectivePermission(req, 'employees.delete');
         if (!hasPermission) {
             return res.status(403).json({ message: "Insufficient permissions" });
         }
 
         // Get user role to determine filtering
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
+        const requesterCompanyId = await getRequesterCompanyId(req.user.id);
 
-        // If not super admin, check if user is department admin and can only delete users in their department
+        // If not super admin, check company and department isolation
         if (!isSuperAdmin) {
-            // Get user's department
-            const [currentUser] = await pool.query("SELECT department_id FROM users WHERE id = ?", [req.user.id]);
-            const userDepartmentId = currentUser.length > 0 ? currentUser[0].department_id : null;
+            // Get target user's company and department
+            const [targetUser] = await pool.query("SELECT business_id AS company_id, department_id FROM users WHERE id = ?", [userId]);
+            if (!targetUser.length) return res.status(404).json({ message: "User not found" });
 
-            // Get target user's department
-            const [targetUser] = await pool.query("SELECT department_id FROM users WHERE id = ?", [userId]);
-            const targetUserDepartmentId = targetUser.length > 0 ? targetUser[0].department_id : null;
+            const targetUserCompanyId = targetUser[0].company_id;
+            const targetUserDepartmentId = targetUser[0].department_id;
 
-            // Check if trying to delete user from a different department
-            // Convert both to integers for proper comparison
-            if (parseInt(targetUserDepartmentId) !== parseInt(userDepartmentId)) {
-                return res.status(403).json({ message: "Department admins can only delete users in their own department" });
+            // Check company isolation
+            if (parseInt(targetUserCompanyId) !== parseInt(requesterCompanyId)) {
+                return res.status(403).json({ message: "Access denied: User belongs to a different company" });
             }
 
-            // Check if user has admin role in their department (must be exactly 'admin' and have a department_id)
-            const [userRoleCheck] = await pool.query(
-                `SELECT r.name FROM users u 
-                 JOIN roles r ON u.role_id = r.id 
-                 WHERE u.id = ? AND r.name = 'admin' AND u.department_id IS NOT NULL`,
-                [req.user.id]
-            );
-            if (!userRoleCheck.length) {
-                return res.status(403).json({ message: "Only department admins can delete users" });
+            // Check if user is department admin
+            const isDeptAdmin = userRole?.name === 'admin' && userRole?.department_id;
+            if (isDeptAdmin && parseInt(targetUserDepartmentId) !== parseInt(userRole.department_id)) {
+                return res.status(403).json({ message: "Access denied: User belongs to a different department" });
             }
         }
 
@@ -1628,11 +1686,11 @@ export const createRole = async (req, res) => {
     try {
         const { name, description, permissions, departmentId, companyId } = req.body;
         const requesterCompanyId = await getRequesterCompanyId(req.user.id);
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
 
         if (!isSuperAdmin) {
-            const hasPermission = await checkUserPermission(req.user.id, 'roles.create');
+            const hasPermission = await checkEffectivePermission(req, 'roles.create');
             if (!hasPermission) return res.status(403).json({ message: "Insufficient permissions" });
         }
 
@@ -1677,11 +1735,11 @@ export const deleteRole = async (req, res) => {
     try {
         const { roleId } = req.params;
         const requesterCompanyId = await getRequesterCompanyId(req.user.id);
-        const userRole = await getUserRole(req.user.id);
+        const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
 
         if (!isSuperAdmin) {
-            const hasPermission = await checkUserPermission(req.user.id, 'roles.delete');
+            const hasPermission = await checkEffectivePermission(req, 'roles.delete');
             if (!hasPermission) return res.status(403).json({ message: "Insufficient permissions" });
         }
 
@@ -1708,7 +1766,7 @@ export const updateRole = async (req, res) => {
         const { name, description, permissions, departmentId } = req.body;
 
         // Check permission (only super_admin can update roles)
-        const hasPermission = await checkUserPermission(req.user.id, 'roles.update');
+        const hasPermission = await checkEffectivePermission(req, 'roles.update');
         if (!hasPermission) {
             return res.status(403).json({ message: "Insufficient permissions" });
         }

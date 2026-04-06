@@ -109,8 +109,10 @@ export const AuthProvider = ({ children }) => {
     // Helper function to check if user has specific permission
     const hasPermission = (permission) => {
         if (!user) return false;
-        // Super admin has all permissions
-        if (user.role === 'super_admin') return true;
+        // Super admin and company admin have all permissions
+        if (user.role === 'super_admin' || user.type === 'admin') return true;
+        // Check for wildcard permission
+        if (permissions.includes('all')) return true;
         // Regular user has specific permissions
         return permissions.includes(permission);
     };
@@ -120,9 +122,9 @@ export const AuthProvider = ({ children }) => {
         return user?.role === role;
     };
 
-    // Helper function to check if user is super admin
+    // Helper function to check if user is super admin or company admin
     const isSuperAdmin = () => {
-        return user?.role === 'super_admin' || user?.type === 'super_admin' || Number(user?.role_id) === 1;
+        return user?.role === 'super_admin' || user?.type === 'super_admin' || user?.type === 'admin' || Number(user?.role_id) === 1;
     };
 
     // Helper function to check if user is a department admin

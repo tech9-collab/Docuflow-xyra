@@ -12,11 +12,31 @@ export default async function requireAuth(req, res, next) {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Fetch full user context including role
+        // Company admin accounts (registered via /auth/register) are stored in companies table
+        if (decoded.type === 'admin') {
+            const [compRows] = await pool.query(
+                "SELECT id FROM companies WHERE id = ? LIMIT 1",
+                [decoded.id]
+            );
+            if (compRows.length === 0) {
+                return res.status(401).json({ message: "Account not found" });
+            }
+            req.user = {
+                id: decoded.id,
+                role: 'admin',
+                type: 'admin',
+                role_id: null,
+                company_id: decoded.id,
+                department_id: null,
+            };
+            return next();
+        }
+
+        // Employee accounts are stored in users table
         const [rows] = await pool.query(
-            `SELECT u.id, u.company_id, u.type, u.role_id, r.name as role 
-             FROM users u 
-             LEFT JOIN roles r ON u.role_id = r.id 
+            `SELECT u.id, u.business_id AS company_id, u.type, u.role_id, u.department_id, r.name as role
+             FROM users u
+             LEFT JOIN roles r ON u.role_id = r.id
              WHERE u.id = ? LIMIT 1`,
             [decoded.id]
         );
@@ -32,7 +52,8 @@ export default async function requireAuth(req, res, next) {
             role: userRow.type === 'super_admin' ? 'super_admin' : userRow.role,
             type: userRow.type,
             role_id: userRow.role_id,
-            company_id: userRow.company_id
+            company_id: userRow.company_id,
+            department_id: userRow.department_id
         };
         next();
     } catch (error) {

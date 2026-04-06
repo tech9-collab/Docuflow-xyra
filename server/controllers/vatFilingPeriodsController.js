@@ -6,20 +6,31 @@ import { pool } from "../db.js";
  */
 export async function listCustomerPeriods(req, res) {
   try {
-    const userId = req.user.id;
     const { customerId } = req.params;
+    const isAdmin = req.user.type === 'admin' || req.user.role === 'super_admin';
 
-    const [rows] = await pool.query(
-      `
+    let sql, params;
+    if (isAdmin) {
+      sql = `
+      SELECT id, customer_id, period_from, period_to, due_date, submit_date, status,
+             created_at, updated_at
+      FROM vat_filing_periods
+      WHERE customer_id = ?
+      ORDER BY period_from DESC
+      `;
+      params = [customerId];
+    } else {
+      sql = `
       SELECT id, customer_id, period_from, period_to, due_date, submit_date, status,
              created_at, updated_at
       FROM vat_filing_periods
       WHERE user_id = ? AND customer_id = ?
       ORDER BY period_from DESC
-      `,
-      [userId, customerId]
-    );
+      `;
+      params = [req.user.id, customerId];
+    }
 
+    const [rows] = await pool.query(sql, params);
     res.json({ periods: rows });
   } catch (err) {
     console.error("listCustomerPeriods error:", err);
@@ -33,8 +44,9 @@ export async function listCustomerPeriods(req, res) {
  */
 export async function createPeriod(req, res) {
   try {
-    const userId = req.user.id;
     const { customerId } = req.params;
+    const isAdmin = req.user.type === 'admin' || req.user.role === 'super_admin';
+    const effectiveUserId = isAdmin ? null : req.user.id;
     const {
       periodFrom,
       periodTo,
@@ -56,7 +68,7 @@ export async function createPeriod(req, res) {
       VALUES (?, ?, ?, ?, ?, ?, ?)
       `,
       [
-        userId,
+        effectiveUserId,
         customerId,
         periodFrom,
         periodTo,
@@ -84,8 +96,8 @@ export async function createPeriod(req, res) {
  */
 export async function updatePeriod(req, res) {
   try {
-    const userId = req.user.id;
     const { id } = req.params;
+    const isAdmin = req.user.type === 'admin' || req.user.role === 'super_admin';
     const {
       periodFrom,
       periodTo,
@@ -94,22 +106,24 @@ export async function updatePeriod(req, res) {
       status = "not_started",
     } = req.body;
 
-    const [result] = await pool.query(
-      `
+    let sql, params;
+    if (isAdmin) {
+      sql = `
+      UPDATE vat_filing_periods
+      SET period_from = ?, period_to = ?, due_date = ?, submit_date = ?, status = ?
+      WHERE id = ?
+      `;
+      params = [periodFrom || null, periodTo || null, dueDate || null, submitDate || null, status, id];
+    } else {
+      sql = `
       UPDATE vat_filing_periods
       SET period_from = ?, period_to = ?, due_date = ?, submit_date = ?, status = ?
       WHERE id = ? AND user_id = ?
-      `,
-      [
-        periodFrom || null,
-        periodTo || null,
-        dueDate || null,
-        submitDate || null,
-        status,
-        id,
-        userId,
-      ]
-    );
+      `;
+      params = [periodFrom || null, periodTo || null, dueDate || null, submitDate || null, status, id, req.user.id];
+    }
+
+    const [result] = await pool.query(sql, params);
 
     if (!result.affectedRows) {
       return res.status(404).json({ message: "Filing period not found" });
@@ -129,16 +143,19 @@ export async function updatePeriod(req, res) {
 
 export async function deletePeriod(req, res) {
   try {
-    const userId = req.user.id;
     const { id } = req.params;
+    const isAdmin = req.user.type === 'admin' || req.user.role === 'super_admin';
 
-    const [result] = await pool.query(
-      `
-      DELETE FROM vat_filing_periods
-      WHERE id = ? AND user_id = ?
-      `,
-      [id, userId]
-    );
+    let sql, params;
+    if (isAdmin) {
+      sql = `DELETE FROM vat_filing_periods WHERE id = ?`;
+      params = [id];
+    } else {
+      sql = `DELETE FROM vat_filing_periods WHERE id = ? AND user_id = ?`;
+      params = [id, req.user.id];
+    }
+
+    const [result] = await pool.query(sql, params);
 
     if (!result.affectedRows) {
       return res.status(404).json({ message: "Filing period not found" });

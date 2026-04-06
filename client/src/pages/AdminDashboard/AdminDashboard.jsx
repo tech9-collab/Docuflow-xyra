@@ -54,11 +54,15 @@ function fmtCost(cost) {
 }
 
 export default function AdminDashboard() {
-    const { user, isSuperAdmin } = useAuth();
+    const { user, isSuperAdmin, isDepartmentAdmin } = useAuth();
+    const canAccess = isSuperAdmin() || isDepartmentAdmin() || user?.role === 'admin';
 
     useEffect(() => {
-        document.title = "XYRA Books - Super Admin Dashboard";
-    }, []);
+        let title = "XYRA Books - Dashboard";
+        if (isSuperAdmin()) title = "XYRA Books - Super Admin Dashboard";
+        else if (isDepartmentAdmin()) title = "XYRA Books - Department Dashboard";
+        document.title = title;
+    }, [isSuperAdmin, isDepartmentAdmin]);
 
     // Month picker state — default to current month
     const now = new Date();
@@ -87,11 +91,9 @@ export default function AdminDashboard() {
         return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
     };
 
-    const monthParam = `?month=${selectedMonth}&year=${selectedYear}`;
-
     // data load
     useEffect(() => {
-        if (!isSuperAdmin()) {
+        if (!canAccess) {
             setError("Access denied: Administrator access required.");
             setLoading(false);
             return;
@@ -103,38 +105,19 @@ export default function AdminDashboard() {
     const fetchDashboardData = useCallback(async (m, y) => {
         const month = m || selectedMonth;
         const year = y || selectedYear;
-        const qp = `?month=${month}&year=${year}`;
 
         setLoading(true);
         setError("");
         try {
-            const [
-                usersRes,
-                rolesRes,
-                deptsRes,
-                docCountRes,
-                deptDocCountsRes,
-                aggregatedUserDocCountsRes,
-                allDocDetailsRes,
-                monthlySummaryRes,
-            ] = await Promise.all([
-                api.get("/admin/employees"),
-                api.get("/admin/roles"),
-                api.get("/admin/departments"),
-                api.get(`/admin/system/document-count${qp}`),
-                api.get(`/admin/system/department-document-counts${qp}`),
-                api.get(`/admin/system/aggregated-user-document-counts${qp}`),
-                api.get(`/admin/system/all-users-document-counts${qp}`),
-                api.get("/admin/system/monthly-summary"),
-            ]);
+            const data = await api.get(`/dashboard/summary?month=${month}&year=${year}`).then(r => r.data);
 
-            const users = usersRes.data.employees || [];
-            const roles = rolesRes.data.roles || [];
-            const departments = deptsRes.data.departments || [];
-            const docCount = docCountRes.data || {};
-            const deptDocCounts = deptDocCountsRes.data?.departmentCounts || [];
-            const aggregated = aggregatedUserDocCountsRes.data?.aggregatedCounts || [];
-            const allDocs = allDocDetailsRes.data?.documentCounts || [];
+            const users = data.employees || [];
+            const roles = data.roles || [];
+            const departments = data.departments || [];
+            const docCount = data.sysStats || {};
+            const deptDocCounts = data.departmentCounts || [];
+            const aggregated = data.aggregatedCounts || [];
+            const allDocs = data.documentCounts || [];
 
             setStats({
                 totalUsers: users.length,
@@ -149,7 +132,7 @@ export default function AdminDashboard() {
                 aggregatedUserDocumentCounts: aggregated,
                 allDocumentDetails: allDocs,
             });
-            setMonthlySummary(monthlySummaryRes.data?.monthlySummary || []);
+            setMonthlySummary(data.monthlySummary || []);
         } catch (err) {
             setError(err.message || "Failed to fetch dashboard data");
         } finally {
@@ -251,7 +234,7 @@ export default function AdminDashboard() {
         );
     }
 
-    if (!isSuperAdmin()) {
+    if (!canAccess) {
         return (
             <div className="admin-dashboard">
                 <div className="block center">

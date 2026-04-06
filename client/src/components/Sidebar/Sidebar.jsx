@@ -39,6 +39,7 @@ function NavItem({ to, icon, text, collapsed }) {
 
 export default function Sidebar({ collapsed }) {
   const { logout, hasPermission, isSuperAdmin, isDepartmentAdmin, isBusinessUser, user } = useAuth();
+  const isAdmin = () => user?.type === 'admin';
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -65,7 +66,7 @@ export default function Sidebar({ collapsed }) {
         )}
         {!collapsed && user && (
           <div className="user-badge">
-            {user.type === "super_admin" ? "SUPER ADMIN" : (user.role_name || user.role || "User").replace(/_/g, " ")}
+            {user.type === "super_admin" ? "SUPER ADMIN" : user.type === "admin" ? "ADMIN" : (user.role_name || user.role || "User").replace(/_/g, " ")}
           </div>
         )}
         {!collapsed && user?.business_name && (
@@ -75,7 +76,38 @@ export default function Sidebar({ collapsed }) {
 
       <div className="nav-group">
         {/* Super Admin section */}
-        {isSuperAdmin() && (
+        {isSuperAdmin() && !isAdmin() && (
+          <>
+            {!collapsed && <div className="nav-title">Administration</div>}
+            <NavItem
+              to="/admin/dashboard"
+              icon={<BarChart3 size={18} />}
+              text="Dashboard"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/admin/departments"
+              icon={<Building2 size={18} />}
+              text="Departments"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/admin/roles-permissions"
+              icon={<Shield size={18} />}
+              text="Roles & Permissions"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/admin/employees"
+              icon={<Users size={18} />}
+              text="User Management"
+              collapsed={collapsed}
+            />
+          </>
+        )}
+
+        {/* Company Admin section (registered via signup, type='admin') */}
+        {isAdmin() && (
           <>
             {!collapsed && <div className="nav-title">Administration</div>}
             <NavItem
@@ -106,7 +138,7 @@ export default function Sidebar({ collapsed }) {
         )}
 
         {/* Business User Admin section */}
-        {isBusinessUser() && (
+        {isBusinessUser() && !isAdmin() && (
           <>
             {!collapsed && <div className="nav-title">Administration</div>}
             <NavItem
@@ -239,7 +271,7 @@ export default function Sidebar({ collapsed }) {
           />
         )}
 
-        {hasPermission("converts.emirates_id") && (
+        {!isAdmin() && hasPermission("converts.emirates_id") && (
           <NavItem
             to="/converts/emiratesid"
             icon={<IdCard size={18} />}
@@ -248,7 +280,7 @@ export default function Sidebar({ collapsed }) {
           />
         )}
 
-        {hasPermission("converts.passport") && (
+        {!isAdmin() && hasPermission("converts.passport") && (
           <NavItem
             to="/converts/passport"
             icon={<BookUser size={18} />}
@@ -257,7 +289,7 @@ export default function Sidebar({ collapsed }) {
           />
         )}
 
-        {hasPermission("converts.visa") && (
+        {!isAdmin() && hasPermission("converts.visa") && (
           <NavItem
             to="/converts/visa"
             icon={<PlaneTakeoff size={18} />}
@@ -266,7 +298,7 @@ export default function Sidebar({ collapsed }) {
           />
         )}
 
-        {hasPermission("converts.trade_license") && (
+        {!isAdmin() && hasPermission("converts.trade_license") && (
           <NavItem
             to="/converts/tradelicense"
             icon={<BadgeCheck size={18} />}

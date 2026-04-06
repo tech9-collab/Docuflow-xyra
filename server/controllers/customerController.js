@@ -69,9 +69,11 @@ export async function getCustomer(req, res) {
 export async function createCustomer(req, res) {
   const conn = await pool.getConnection();
   try {
-    const { id: userId, company_id: requesterCompanyId, role: userRole } = req.user;
+    const { id: userId, company_id: requesterCompanyId, role: userRole, type: userType } = req.user;
     const isSuperAdmin = userRole === 'super_admin';
-    const departmentId = await getUserDepartmentId(userId);
+    // Admin users (type='admin') are in the companies table, not users — pass null for user_id
+    const effectiveUserId = userType === 'admin' ? null : userId;
+    const departmentId = userType === 'admin' ? null : await getUserDepartmentId(userId);
     const body = req.body;
 
     const targetCompanyId = isSuperAdmin ? (body.companyId || null) : requesterCompanyId;
@@ -116,7 +118,7 @@ export async function createCustomer(req, res) {
         corporate_tax_period, first_ct_period_start_date, first_ct_period_end_date, first_ct_return_due_date
       ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       [
-        userId, departmentId, targetCompanyId, customerName || "", address || "", email || "", mobile || "", country || "",
+        effectiveUserId, departmentId, targetCompanyId, customerName || "", address || "", email || "", mobile || "", country || "",
         entityType || "", entitySubType || "", dateOfIncorporation || null, tradeLicenseAuthority || "",
         tradeLicenseNumber || "", licenseIssueDate || null, licenseExpiryDate || null, businessActivity || "",
         body.isFreezone === "true" || body.isFreezone === "on" || body.isFreezone === true ? 1 : 0,

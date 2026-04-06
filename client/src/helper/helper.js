@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export 
-// const API_BASE = import.meta?.env?.VITE_API_BASE || "http://localhost:3001/api";
-const API_BASE = import.meta?.env?.VITE_API_BASE || "https://apivatfiling.thexyra.com/api";
+export
+  const API_BASE = import.meta?.env?.VITE_API_BASE || "http://localhost:3001/api";
+// const API_BASE = import.meta?.env?.VITE_API_BASE || "https://apivatfiling.thexyra.com/api";
 
 export const api = axios.create({
   baseURL: API_BASE,
@@ -10,14 +10,27 @@ export const api = axios.create({
   timeout: 300000,
 });
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 api.interceptors.response.use(
-  (r) => r,
-  (err) =>
-    Promise.reject(
-      new Error(
-        err?.response?.data?.message || err?.message || "Request failed.",
-      ),
-    ),
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("token");
+      // Redirect to login if possible, or just let the caller handle it
+      if (typeof window !== "undefined") {
+        window.location.href = "/login?error=session_expired";
+      }
+    }
+    const msg = error.response?.data?.message || error.message || "Request failed.";
+    return Promise.reject(new Error(msg));
+  }
 );
 
 export const apiUpload = axios.create({ baseURL: API_BASE });
@@ -913,5 +926,51 @@ export async function generateCtFilingExcel(companyId, data) {
     return response.data; // ✅ same pattern as VAT
   } catch (err) {
     rethrow(err, "Failed to generate CT filing Excel");
+  }
+}
+
+// --- Dashboard Analytics APIs ---
+export async function fetchDashboardSummary(params = {}) {
+  try {
+    const { data } = await api.get("/dashboard/summary", { params });
+    return data;
+  } catch (err) {
+    rethrow(err, "Failed to load dashboard summary");
+  }
+}
+
+export async function fetchDashboardStats(params = {}) {
+  try {
+    const { data } = await api.get("/dashboard/stats", { params });
+    return data;
+  } catch (err) {
+    rethrow(err, "Failed to load dashboard stats");
+  }
+}
+
+export async function fetchDepartmentStats(params = {}) {
+  try {
+    const { data } = await api.get("/dashboard/department-stats", { params });
+    return data;
+  } catch (err) {
+    rethrow(err, "Failed to load department stats");
+  }
+}
+
+export async function fetchModuleStats(params = {}) {
+  try {
+    const { data } = await api.get("/dashboard/module-stats", { params });
+    return data;
+  } catch (err) {
+    rethrow(err, "Failed to load module stats");
+  }
+}
+
+export async function fetchUserProcessingDetails(params = {}) {
+  try {
+    const { data } = await api.get("/dashboard/user-processing", { params });
+    return data;
+  } catch (err) {
+    rethrow(err, "Failed to load user processing details");
   }
 }

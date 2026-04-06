@@ -79,89 +79,78 @@ export const registerUser = async (req, res) => {
             return res.status(422).json({ message: "business_name is required (2+ chars)" });
         }
 
-        // Existing?
+        // Check email uniqueness in companies table
         const [exists] = await pool.query(
-            "SELECT id FROM users WHERE email = ? LIMIT 1",
+            "SELECT id FROM companies WHERE email = ? LIMIT 1",
             [emailNorm]
         );
         if (exists.length) {
             return res.status(409).json({ message: "Email already registered" });
         }
 
-        // Hash + insert (forcing role_id: 1 for super_admin users as requested)
         const passwordHash = await bcrypt.hash(passwordNorm, 12);
 
-        // Start transaction for consistency
-        const connection = await pool.getConnection();
-        await connection.beginTransaction();
+        // Save admin account only in companies table
+        const [companyResult] = await pool.query(
+            `INSERT INTO companies (business_name, email, password, contact_name, phone, country_code, type, description)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [businessNameNorm, emailNorm, passwordHash, nameNorm, phoneNorm, countryNorm, 'admin',
+                `Registered by ${nameNorm}`]
+        );
+        const companyId = companyResult.insertId;
 
-        try {
-            // 1. Create User
-            const [userResult] = await connection.query(
-                `INSERT INTO users (name, email, password, phone, country_code, role_id, business_name, company_name, type)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [nameNorm, emailNorm, passwordHash, phoneNorm, countryNorm, 1, businessNameNorm, businessNameNorm, 'super_admin']
+        // Auto-generate business_id using the company's ID (e.g. BIZ-00005)
+        const businessId = `BIZ-${String(companyId).padStart(5, '0')}`;
+        await pool.query("UPDATE companies SET business_id = ? WHERE id = ?", [businessId, companyId]);
+
+        // Seed default departments for the new company
+        const defaultDepts = ['Audit', 'Bookkeeping', 'Accounts', 'Corporate Tax', 'Default', 'Invoice'];
+        for (const deptName of defaultDepts) {
+            await pool.query(
+                "INSERT INTO departments (name, company_id) VALUES (?, ?)",
+                [deptName, companyId]
             );
-            const userId = userResult.insertId;
-
-            // 2. Create Company for the Super Admin
-            const [companyResult] = await connection.query(
-                `INSERT INTO companies (name, type, user_id, description) VALUES (?, ?, ?, ?)`,
-                [businessNameNorm, 'Mainland', userId, `Created during registration for ${nameNorm}`]
-            );
-            const companyId = companyResult.insertId;
-
-            // 3. Link Company back to User (company_id field in users)
-            await connection.query(
-                `UPDATE users SET company_id = ? WHERE id = ?`,
-                [companyId, userId]
-            );
-
-            await connection.commit();
-
-            const token = signToken({
-                id: userId,
-                email: emailNorm,
-                role_id: 1,
-                company_id: companyId,
-                type: "super_admin",
-            });
-
-            const redirectUrl = "/admin/dashboard";
-
-            res.cookie('token', token, {
-                httpOnly: false,
-                maxAge: 24 * 60 * 60 * 1000
-            });
-
-            const frontendUrl = process.env.FRONTEND_URL || "";
-            const payload = buildAuthPayload({
-                id: userId,
-                name: nameNorm,
-                email: emailNorm,
-                phone: phoneNorm,
-                country_code: countryNorm || "",
-                business_name: businessNameNorm || "",
-                role_id: 1,
-                company_id: companyId,
-                role_name: "super_admin",
-                type: "super_admin",
-            }, token, redirectUrl);
-
-            if (wantsJson(req)) {
-                return res.status(201).json(payload);
-            }
-
-            return res.redirect(`${frontendUrl}${redirectUrl}`);
-        } catch (err) {
-            await connection.rollback();
-            throw err;
-        } finally {
-            connection.release();
         }
+
+        const token = signToken({
+            id: companyId,
+            email: emailNorm,
+            company_id: companyId,
+            type: "admin",
+        });
+
+        const redirectUrl = "/admin/dashboard";
+
+        res.cookie('token', token, {
+            httpOnly: false,
+            maxAge: 24 * 60 * 60 * 1000
+        });
+
+        const frontendUrl = (process.env.FRONTEND_URL || "http://localhost:5173").replace(/\/$/, "");
+        const payload = buildAuthPayload({
+            id: companyId,
+            name: nameNorm,
+            email: emailNorm,
+            phone: phoneNorm,
+            country_code: countryNorm || "",
+            business_name: businessNameNorm || "",
+            role_id: null,
+            company_id: companyId,
+            role_name: "admin",
+            type: "admin",
+        }, token, redirectUrl);
+
+        if (wantsJson(req)) {
+            return res.status(201).json(payload);
+        }
+
+        return res.redirect(`${frontendUrl}${redirectUrl}`);
     } catch (err) {
         console.error("registerUser error:", err);
-        const frontendUrl = process.env.FRONTEND_URL || "";
+        const frontendUrl = (process.env.FRONTEND_URL || "http://localhost:5173").replace(/\/$/, "");
+        if (wantsJson(req)) {
+            return res.status(500).json({ message: err.message || "Server error during registration" });
+        }
         return res.redirect(`${frontendUrl}/signup?error=server_error`);
     }
 };
@@ -169,7 +158,7 @@ export const registerUser = async (req, res) => {
 // POST /login
 export const loginUser = async (req, res) => {
     try {
-        const frontendUrl = process.env.FRONTEND_URL || "";
+        const frontendUrl = (process.env.FRONTEND_URL || "http://localhost:5173").replace(/\/$/, "");
         const { email, password } = req.body || {};
 
         if (!email || typeof email !== "string" || !password || typeof password !== "string") {
@@ -182,8 +171,52 @@ export const loginUser = async (req, res) => {
         const emailNorm = email.trim().toLowerCase();
         const passwordNorm = password.trim();
 
+        // Check companies table first (admin accounts registered via /auth/register)
+        const [companyRows] = await pool.query(
+            `SELECT id, business_name, email, password, contact_name, phone, country_code
+             FROM companies WHERE LOWER(TRIM(email)) = ? LIMIT 1`,
+            [emailNorm]
+        );
+
+        if (companyRows.length) {
+            const company = companyRows[0];
+            const isPasswordValid = await bcrypt.compare(passwordNorm, company.password || "");
+            if (!isPasswordValid) {
+                if (wantsJson(req)) {
+                    return res.status(401).json({ message: "Invalid credentials" });
+                }
+                return res.redirect(`${frontendUrl}/login?error=invalid_credentials`);
+            }
+
+            const token = signToken({
+                id: company.id,
+                email: company.email,
+                company_id: company.id,
+                type: "admin",
+            });
+
+            res.cookie('token', token, { httpOnly: false, maxAge: 24 * 60 * 60 * 1000 });
+
+            const payload = buildAuthPayload({
+                id: company.id,
+                name: company.contact_name || company.business_name,
+                email: company.email,
+                phone: company.phone,
+                country_code: company.country_code || "",
+                business_name: company.business_name,
+                role_id: null,
+                company_id: company.id,
+                role_name: "admin",
+                type: "admin",
+            }, token, "/admin/dashboard");
+
+            if (wantsJson(req)) return res.status(200).json(payload);
+            return res.redirect(`${frontendUrl}/admin/dashboard`);
+        }
+
+        // Fall back to users table (employees)
         const [rows] = await pool.query(
-            `SELECT 
+            `SELECT
           u.id,
           u.name,
           u.email,
@@ -193,7 +226,7 @@ export const loginUser = async (req, res) => {
           u.business_name,
           u.type,
           u.role_id,
-          u.company_id,
+          u.business_id AS company_id,
           r.name AS role_name
        FROM users u
        LEFT JOIN roles r ON u.role_id = r.id
@@ -240,11 +273,9 @@ export const loginUser = async (req, res) => {
             redirectUrl = "/admin/dashboard";
         }
 
-        // Set JWT token as a cookie for direct redirection support
         res.cookie('token', token, {
-            httpOnly: false, // Accessible by frontend JS (needed for your current Auth logic)
-            secure: false,   // Set to true in production with HTTPS
-            maxAge: 24 * 60 * 60 * 1000 // 1 day
+            httpOnly: false,
+            maxAge: 24 * 60 * 60 * 1000
         });
 
         if (wantsJson(req)) {
@@ -254,6 +285,7 @@ export const loginUser = async (req, res) => {
         return res.redirect(`${frontendUrl}${redirectUrl}`);
     } catch (err) {
         console.error("loginUser error:", err);
+        const frontendUrl = (process.env.FRONTEND_URL || "http://localhost:5173").replace(/\/$/, "");
         const errorType = err.message === "Invalid credentials" ? "invalid_credentials" : "server_error";
         if (wantsJson(req)) {
             const statusCode = errorType === "invalid_credentials" ? 401 : 500;

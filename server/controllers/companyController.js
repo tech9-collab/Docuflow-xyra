@@ -11,10 +11,10 @@ export const getUserCompanies = async (req, res) => {
         let params = [];
 
         if (userRole === 'super_admin') {
-            query = "SELECT id, name, type, description, department_id, user_id, created_at FROM companies ORDER BY created_at DESC";
+            query = "SELECT id, business_name, business_id, type, description, department_id, user_id, created_at FROM companies ORDER BY created_at DESC";
         } else {
             if (!requesterCompanyId) return res.json({ companies: [] });
-            query = "SELECT id, name, type, description, department_id, user_id, created_at FROM companies WHERE id = ? ORDER BY created_at DESC";
+            query = "SELECT id, business_name, business_id, type, description, department_id, user_id, created_at FROM companies WHERE id = ? ORDER BY created_at DESC";
             params = [requesterCompanyId];
         }
 
@@ -37,7 +37,7 @@ export const getCompanyById = async (req, res) => {
         }
 
         const [companies] = await pool.query(
-            "SELECT id, name, type, description, department_id, user_id, created_at FROM companies WHERE id = ? LIMIT 1",
+            "SELECT id, business_name, business_id, type, description, department_id, user_id, created_at FROM companies WHERE id = ? LIMIT 1",
             [companyId]
         );
 
@@ -56,11 +56,11 @@ export const getCompanyById = async (req, res) => {
 export const createCompany = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { name, type, description } = req.body;
+        const { business_name, business_id, type, description } = req.body;
 
         // Validate input
-        if (!name || name.trim().length === 0) {
-            return res.status(422).json({ message: "Company name is required" });
+        if (!business_name || business_name.trim().length === 0) {
+            return res.status(422).json({ message: "Business name is required" });
         }
 
         // Get user's department ID
@@ -71,10 +71,10 @@ export const createCompany = async (req, res) => {
 
         const departmentId = user.length > 0 ? user[0].department_id : null;
 
-        // Check if company with same name already exists
+        // Check if company with same business_name already exists
         const [existing] = await pool.query(
-            "SELECT id FROM companies WHERE name = ? LIMIT 1",
-            [name.trim()]
+            "SELECT id FROM companies WHERE business_name = ? LIMIT 1",
+            [business_name.trim()]
         );
 
         if (existing.length > 0) {
@@ -83,15 +83,15 @@ export const createCompany = async (req, res) => {
 
         // Insert new company
         const [result] = await pool.query(
-            "INSERT INTO companies (user_id, department_id, name, type, description) VALUES (?, ?, ?, ?, ?)",
-            [userId, departmentId, name.trim(), type || 'Mainland', description || null]
+            "INSERT INTO companies (user_id, department_id, business_name, business_id, type, description) VALUES (?, ?, ?, ?, ?, ?)",
+            [userId, departmentId, business_name.trim(), business_id || null, type || 'admin', description || null]
         );
 
         const companyId = result.insertId;
 
         // Return the created company
         const [companies] = await pool.query(
-            "SELECT id, name, type, description, department_id, created_at FROM companies WHERE id = ?",
+            "SELECT id, business_name, business_id, type, description, department_id, created_at FROM companies WHERE id = ?",
             [companyId]
         );
 
@@ -111,10 +111,10 @@ export const updateCompany = async (req, res) => {
         const userRole = req.user.role;
         const requesterCompanyId = req.user.company_id;
         const { companyId } = req.params;
-        const { name, type, description } = req.body;
+        const { business_name, business_id, type, description } = req.body;
 
-        if (!name || name.trim().length === 0) {
-            return res.status(422).json({ message: "Company name is required" });
+        if (!business_name || business_name.trim().length === 0) {
+            return res.status(422).json({ message: "Business name is required" });
         }
 
         if (userRole !== 'super_admin' && parseInt(companyId) !== parseInt(requesterCompanyId)) {
@@ -122,8 +122,8 @@ export const updateCompany = async (req, res) => {
         }
 
         const [duplicate] = await pool.query(
-            "SELECT id FROM companies WHERE name = ? AND id != ? LIMIT 1",
-            [name.trim(), companyId]
+            "SELECT id FROM companies WHERE business_name = ? AND id != ? LIMIT 1",
+            [business_name.trim(), companyId]
         );
 
         if (duplicate.length > 0) {
@@ -131,12 +131,12 @@ export const updateCompany = async (req, res) => {
         }
 
         await pool.query(
-            "UPDATE companies SET name = ?, type = ?, description = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-            [name.trim(), type || 'Mainland', description || null, companyId]
+            "UPDATE companies SET business_name = ?, business_id = ?, type = ?, description = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+            [business_name.trim(), business_id || null, type || 'admin', description || null, companyId]
         );
 
         const [companies] = await pool.query(
-            "SELECT id, name, type, description, department_id, created_at FROM companies WHERE id = ?",
+            "SELECT id, business_name, business_id, type, description, department_id, created_at FROM companies WHERE id = ?",
             [companyId]
         );
 

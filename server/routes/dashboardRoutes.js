@@ -4,6 +4,8 @@ import requireAuth from "../middleware/requireAuth.js";
 
 const router = express.Router();
 
+router.get("/", requireAuth, dashboardController.getDashboardStats);
+router.get("/summary", requireAuth, dashboardController.getDashboardSummary);
 router.get("/stats", requireAuth, dashboardController.getDashboardStats);
 router.get("/department-stats", requireAuth, dashboardController.getDepartmentStats);
 router.get("/module-stats", requireAuth, dashboardController.getModuleStats);

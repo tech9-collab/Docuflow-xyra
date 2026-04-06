@@ -297,7 +297,7 @@ export default function EmployeeManagement() {
                                 </div>
                             )}
 
-                            {isSuperAdmin() && (
+                            {isSuperAdmin() && user?.type !== 'admin' && (
                                 <div className="form-group">
                                     <label>Company *</label>
                                     <select
@@ -332,7 +332,7 @@ export default function EmployeeManagement() {
                                             setNewEmployee({ ...newEmployee, departmentId: val, roleId: '' });
                                         }
                                     }}
-                                    disabled={!(editingEmployee ? editingEmployee.company_id : newEmployee.companyId)}
+                                    disabled={user?.type !== 'admin' && !(editingEmployee ? editingEmployee.company_id : newEmployee.companyId)}
                                     required
                                 >
                                     <option value="">Select Department</option>
@@ -402,131 +402,136 @@ export default function EmployeeManagement() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {employees.map(employee => (
-                                    <tr key={employee.id}>
-                                        {editingEmployee?.id === employee.id ? (
-                                            // Edit Mode
-                                            <td colSpan="6">
-                                                <div className="employee-edit-form">
-                                                    <div className="edit-header">
-                                                        <Users size={24} />
-                                                        <h4>Editing User</h4>
-                                                    </div>
-
-                                                    <div className="edit-fields">
-                                                        <div className="field-group">
-                                                            <label>Name</label>
-                                                            <input
-                                                                type="text"
-                                                                value={editingEmployee.name}
-                                                                onChange={(e) => setEditingEmployee({ ...editingEmployee, name: e.target.value })}
-                                                            />
+                                {employees
+                                    .filter(employee => {
+                                        if (isSuperAdmin()) return true;
+                                        return parseInt(employee.company_id) === parseInt(user.company_id);
+                                    })
+                                    .map(employee => (
+                                        <tr key={employee.id}>
+                                            {editingEmployee?.id === employee.id ? (
+                                                // Edit Mode
+                                                <td colSpan="6">
+                                                    <div className="employee-edit-form">
+                                                        <div className="edit-header">
+                                                            <Users size={24} />
+                                                            <h4>Editing User</h4>
                                                         </div>
 
-                                                        <div className="field-group">
-                                                            <label>Email</label>
-                                                            <input
-                                                                type="email"
-                                                                value={editingEmployee.email}
-                                                                onChange={(e) => setEditingEmployee({ ...editingEmployee, email: e.target.value })}
-                                                            />
-                                                        </div>
-
-                                                        <div className="field-group">
-                                                            <label>Status</label>
-                                                            <select
-                                                                value={editingEmployee.status || 'active'}
-                                                                onChange={(e) => setEditingEmployee({ ...editingEmployee, status: e.target.value })}
-                                                            >
-                                                                <option value="active">Active</option>
-                                                                <option value="inactive">Inactive</option>
-                                                            </select>
-                                                        </div>
-
-                                                        {isSuperAdmin() && (
+                                                        <div className="edit-fields">
                                                             <div className="field-group">
-                                                                <label>Company</label>
+                                                                <label>Name</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={editingEmployee.name}
+                                                                    onChange={(e) => setEditingEmployee({ ...editingEmployee, name: e.target.value })}
+                                                                />
+                                                            </div>
+
+                                                            <div className="field-group">
+                                                                <label>Email</label>
+                                                                <input
+                                                                    type="email"
+                                                                    value={editingEmployee.email}
+                                                                    onChange={(e) => setEditingEmployee({ ...editingEmployee, email: e.target.value })}
+                                                                />
+                                                            </div>
+
+                                                            <div className="field-group">
+                                                                <label>Status</label>
                                                                 <select
-                                                                    value={editingEmployee.company_id || ''}
-                                                                    onChange={(e) => setEditingEmployee({ ...editingEmployee, company_id: e.target.value })}
+                                                                    value={editingEmployee.status || 'active'}
+                                                                    onChange={(e) => setEditingEmployee({ ...editingEmployee, status: e.target.value })}
                                                                 >
-                                                                    <option value="">No Company</option>
-                                                                    {companies.map(comp => (
-                                                                        <option key={comp.id} value={comp.id}>{comp.name}</option>
-                                                                    ))}
+                                                                    <option value="active">Active</option>
+                                                                    <option value="inactive">Inactive</option>
                                                                 </select>
                                                             </div>
-                                                        )}
-                                                    </div>
 
-                                                    <div className="edit-actions">
-                                                        <button className="btn-save" onClick={updateEmployee}>
-                                                            <Save size={14} />
-                                                            Save
-                                                        </button>
-                                                        <button className="btn-cancel" onClick={cancelEditEmployee}>
-                                                            <X size={14} />
-                                                            Cancel
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        ) : (
-                                            // View Mode
-                                            <>
-                                                <td>
-                                                    <div className="employee-name">
-                                                        <Users size={16} />
-                                                        {employee.name}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span className="employee-email">
-                                                        {employee.email}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span className="employee-department">
-                                                        {employee.department_name || 'No Department'}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span className="employee-company">
-                                                        {employee.company_name || 'No Company'}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span className="employee-role">
-                                                        {employee.role_name || 'No Role'}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span className={`status-badge ${employee.status || 'active'}`}>
-                                                        {employee.status || 'active'}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <div className="action-buttons">
-                                                        <button
-                                                            className="btn-edit"
-                                                            onClick={() => startEditEmployee(employee)}
-                                                            title="Edit user"
-                                                        >
-                                                            <Edit2 size={14} />
-                                                        </button>
-                                                        <button
-                                                            className="btn-delete"
-                                                            onClick={() => deleteEmployee(employee.id)}
-                                                            title="Delete user"
-                                                        >
-                                                            <Trash2 size={14} />
-                                                        </button>
+                                                            {isSuperAdmin() && (
+                                                                <div className="field-group">
+                                                                    <label>Company</label>
+                                                                    <select
+                                                                        value={editingEmployee.company_id || ''}
+                                                                        onChange={(e) => setEditingEmployee({ ...editingEmployee, company_id: e.target.value })}
+                                                                    >
+                                                                        <option value="">No Company</option>
+                                                                        {companies.map(comp => (
+                                                                            <option key={comp.id} value={comp.id}>{comp.name}</option>
+                                                                        ))}
+                                                                    </select>
+                                                                </div>
+                                                            )}
+                                                        </div>
+
+                                                        <div className="edit-actions">
+                                                            <button className="btn-save" onClick={updateEmployee}>
+                                                                <Save size={14} />
+                                                                Save
+                                                            </button>
+                                                            <button className="btn-cancel" onClick={cancelEditEmployee}>
+                                                                <X size={14} />
+                                                                Cancel
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </td>
-                                            </>
-                                        )}
-                                    </tr>
-                                ))}
+                                            ) : (
+                                                // View Mode
+                                                <>
+                                                    <td>
+                                                        <div className="employee-name">
+                                                            <Users size={16} />
+                                                            {employee.name}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className="employee-email">
+                                                            {employee.email}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className="employee-department">
+                                                            {employee.department_name || 'No Department'}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className="employee-company">
+                                                            {employee.company_name || 'No Company'}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className="employee-role">
+                                                            {employee.role_name || 'No Role'}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className={`status-badge ${employee.status || 'active'}`}>
+                                                            {employee.status || 'active'}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <div className="action-buttons">
+                                                            <button
+                                                                className="btn-edit"
+                                                                onClick={() => startEditEmployee(employee)}
+                                                                title="Edit user"
+                                                            >
+                                                                <Edit2 size={14} />
+                                                            </button>
+                                                            <button
+                                                                className="btn-delete"
+                                                                onClick={() => deleteEmployee(employee.id)}
+                                                                title="Delete user"
+                                                            >
+                                                                <Trash2 size={14} />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </>
+                                            )}
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
 
