@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout/Layout";
 import Signup from "./pages/Signup/Signup";
 import Login from "./pages/Login/Login";
+import AutoLogin from "./pages/AutoLogin/AutoLogin";
 import routes from "./routes/index.jsx";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
@@ -11,6 +12,7 @@ export default function App() {
       {/* Public auth pages */}
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/auto-login" element={<AutoLogin />} />
 
       {/* Private app under Layout */}
       <Route
