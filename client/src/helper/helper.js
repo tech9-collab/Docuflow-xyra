@@ -593,6 +593,22 @@ export async function fetchTradeLicensePreview({ jobId, token }) {
 export const makeTradeLicenseDownloadUrl = (jobId) =>
   `${API_BASE}/tradelicense/jobs/result/${jobId}`;
 
+export async function extractTradeLicense(file) {
+  const fd = new FormData();
+  fd.append("files", file); // Backend expects 'files' array/single
+  try {
+    const { data } = await api.post("/tradelicense/extract-one", fd, {
+      headers: {
+        ...getAuthHeader(),
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data; // normalized row
+  } catch (err) {
+    rethrow(err, "Failed to extract trade license data");
+  }
+}
+
 /* ---------- Invoice Convert APIs (NEW) ---------- */
 export async function startInvoiceJob({
   files,

@@ -17,6 +17,15 @@ import { useAuth } from '../../context/AuthContext';
 import { api } from '../../helper/helper';
 import './RolesPermissions.css';
 
+const USER_FORM_DEPARTMENT_NAMES = [
+    'Audit',
+    'Bookkeeping',
+    'Accounts',
+    'Corporate Tax',
+    'Default',
+    'Invoice'
+];
+
 export default function RolesPermissions() {
     // Set document title
     useEffect(() => {
@@ -76,6 +85,12 @@ export default function RolesPermissions() {
         { id: 'admin.dashboard', name: 'Dashboard', category: 'Administration' },
         { id: 'admin.users', name: 'User Management', category: 'Administration' }
     ]);
+
+    const userFormDepartments = USER_FORM_DEPARTMENT_NAMES
+        .map((departmentName) =>
+            departments.find((department) => department.name === departmentName)
+        )
+        .filter(Boolean);
 
     // Check if user has access to this page
     // Allow both super admins and department admins to access this page
@@ -591,7 +606,7 @@ export default function RolesPermissions() {
                                 onChange={(e) => setNewUser({...newUser, departmentId: e.target.value})}
                             >
                                 <option value="">Select Department</option>
-                                {departments.map(dept => (
+                                {userFormDepartments.map(dept => (
                                     <option key={dept.id} value={dept.id}>{dept.name}</option>
                                 ))}
                             </select>

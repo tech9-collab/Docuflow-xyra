@@ -52,47 +52,48 @@ export default function EmployeeManagement() {
         fetchInitialData();
     }, []);
 
-    // Fetch departments when companyId changes (for new/edit employee)
+    // Refresh departments whenever the form opens or the selected company changes.
     useEffect(() => {
         if (showEmployeeForm) {
             const compId = editingEmployee ? editingEmployee.company_id : newEmployee.companyId;
-            if (compId) {
-                fetchDepartments(compId);
-            } else {
-                setDepartments([]);
-            }
+            fetchDepartments(compId || null);
         }
     }, [newEmployee.companyId, editingEmployee?.company_id, showEmployeeForm]);
 
-    // Fetch roles when departmentId changes
+    // Refresh roles whenever the selected department changes.
     useEffect(() => {
         if (showEmployeeForm) {
             const deptId = editingEmployee ? editingEmployee.department_id : newEmployee.departmentId;
+            const compId = editingEmployee ? editingEmployee.company_id : newEmployee.companyId;
             if (deptId) {
-                fetchRoles(deptId);
+                fetchRoles(deptId, compId || null);
             } else {
                 setRoles([]);
             }
         }
-    }, [newEmployee.departmentId, editingEmployee?.department_id, showEmployeeForm]);
+    }, [newEmployee.departmentId, editingEmployee?.department_id, newEmployee.companyId, editingEmployee?.company_id, showEmployeeForm]);
 
     const fetchInitialData = async () => {
         setLoading(true);
         setError('');
         try {
-            const [empRes, compRes] = await Promise.all([
+            const [empRes, compRes, deptRes] = await Promise.all([
                 api.get('/admin/employees'),
-                isSuperAdmin() ? api.get('/companies') : Promise.resolve({ data: { companies: [] } })
+                isSuperAdmin() ? api.get('/companies') : Promise.resolve({ data: { companies: [] } }),
+                isSuperAdmin()
+                    ? api.get('/admin/departments')
+                    : user.company_id
+                        ? api.get(`/admin/departments?companyId=${user.company_id}`)
+                        : Promise.resolve({ data: { departments: [] } })
             ]);
             setEmployees(empRes.data.employees || []);
+            setDepartments(deptRes.data.departments || []);
+            setRoles([]);
             if (isSuperAdmin()) {
                 setCompanies(compRes.data.companies || []);
             } else {
                 // For company admin, we might need their company's departments сразу
-                if (user.company_id) {
-                    fetchDepartments(user.company_id);
-                    setNewEmployee(prev => ({ ...prev, companyId: user.company_id }));
-                }
+                setNewEmployee(prev => ({ ...prev, companyId: user.company_id }));
             }
         } catch (err) {
             setError(err.response?.data?.message || err.message || 'Failed to fetch data');
@@ -101,21 +102,37 @@ export default function EmployeeManagement() {
         }
     };
 
-    const fetchDepartments = async (compId) => {
+    const fetchDepartments = async (compId = null) => {
         try {
-            const res = await api.get(`/admin/departments?companyId=${compId}`);
+            const endpoint = compId ? `/admin/departments?companyId=${compId}` : '/admin/departments';
+            const res = await api.get(endpoint);
             setDepartments(res.data.departments || []);
         } catch (err) {
             console.error('Failed to fetch departments:', err);
         }
     };
 
-    const fetchRoles = async (deptId) => {
+    const fetchRoles = async (deptId, compId = null) => {
         try {
-            const res = await api.get(`/admin/roles?departmentId=${deptId}`);
-            setRoles(res.data.roles || []);
+            const params = new URLSearchParams({ departmentId: String(deptId) });
+            if (compId) {
+                params.set('companyId', String(compId));
+            }
+
+            const [departmentRolesRes, filteredRolesRes] = await Promise.all([
+                api.get(`/admin/departments/${deptId}/roles`),
+                api.get(`/admin/roles?${params.toString()}`)
+            ]);
+
+            const mergedRoles = [...(departmentRolesRes.data.roles || []), ...(filteredRolesRes.data.roles || [])];
+            const uniqueRoles = mergedRoles.filter((role, index, list) =>
+                role?.id && list.findIndex(candidate => String(candidate.id) === String(role.id)) === index
+            );
+
+            setRoles(uniqueRoles.filter(role => role.name !== 'super_admin'));
         } catch (err) {
             console.error('Failed to fetch roles:', err);
+            setRoles([]);
         }
     };
 
@@ -219,6 +236,8 @@ export default function EmployeeManagement() {
                                 if (!isSuperAdmin()) {
                                     setNewEmployee(prev => ({ ...prev, companyId: user.company_id }));
                                 }
+                                fetchDepartments(isSuperAdmin() ? null : user.company_id);
+                                setRoles([]);
                             }}
                         >
                             <UserPlus size={16} />
@@ -356,7 +375,7 @@ export default function EmployeeManagement() {
                                     <option value="">Select Role</option>
                                     {roles.map(role => (
                                         <option key={role.id} value={role.id}>
-                                            {role.name}
+                                            {`${role.name} - ${role.department_name || 'No Department'}`}
                                         </option>
                                     ))}
                                 </select>

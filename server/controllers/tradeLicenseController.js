@@ -163,6 +163,72 @@ export function jobResult(req, res) {
     // optional cleanup: // res.on("finish", () => JOBS.delete(req.params.id));
 }
 
+/** POST /api/tradelicense/extract-one */
+export async function extractOne(req, res) {
+    try {
+        const file = req.files?.[0];
+        if (!file) return res.status(400).json({ message: "No file uploaded." });
+
+        let uploadPath = file.path;
+        const tmpPaths = new Set();
+        const isPdf = file.mimetype === "application/pdf" || file.originalname.toLowerCase().endsWith(".pdf");
+
+        // 1. Process/Compress
+        if (isPdf) {
+            try {
+                const compressedPath = await compressPdfWithGs(file.path, {
+                    pdfSettings: "/ebook",
+                    compatibilityLevel: "1.6",
+                    dpi: 110,
+                });
+                if (compressedPath && compressedPath !== file.path) {
+                    uploadPath = compressedPath;
+                    tmpPaths.add(compressedPath);
+                }
+            } catch (err) {
+                console.warn("TL PDF extraction compression failed:", err.message);
+            }
+        } else if (file.mimetype.startsWith("image/")) {
+            try {
+                const out = path.join(TMP_DIR, `${Date.now()}-re.jpg`);
+                await sharp(file.path).resize({ width: 2000, withoutEnlargement: true }).jpeg({ quality: 80 }).toFile(out);
+                uploadPath = out;
+                tmpPaths.add(out);
+            } catch (err) {
+                console.warn("TL Image extraction re-encode failed:", err.message);
+            }
+        }
+
+        // 2. Gemini Extraction
+        const gFile = await uploadPathToGemini({
+            path: uploadPath,
+            filename: file.originalname,
+            mimeType: file.mimetype,
+        });
+
+        const gJSON = await extractJsonFromFile({
+            file: gFile,
+            systemPrompt: TL_SYSTEM_PROMPT,
+            userPrompt: TL_USER_PROMPT,
+        });
+
+        // Cleanup
+        for (const p of tmpPaths) { try { await fs.unlink(p); } catch { } }
+        try { await fs.unlink(file.path); } catch { }
+
+        if (!gJSON) {
+            return res.status(422).json({ message: "Could not extract data from this document." });
+        }
+
+        const normalized = normalizeTLJson(gJSON, file.originalname);
+        res.json(normalized);
+
+    } catch (err) {
+        console.error("TL extractOne error:", err);
+        res.status(500).json({ message: "Failed to extract trade license data." });
+    }
+}
+
 /* ---------------- internals ---------------- */
 
 async function processJob(jobId) {

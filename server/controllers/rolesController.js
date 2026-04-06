@@ -11,7 +11,7 @@ async function getEffectiveRole(req) {
 // Helper: company admins (type='admin') always pass permission checks.
 async function checkEffectivePermission(req, permissionName) {
     if (req.user?.type === 'admin') return true;
-    return checkEffectivePermission(req, permissionName);
+    return checkUserPermission(req.user.id, permissionName);
 }
 
 // Helper: fetch the requesting user's business_name (empty string = none)
@@ -1713,8 +1713,16 @@ export const createRole = async (req, res) => {
             const roleId = result.insertId;
 
             if (permissions && permissions.length > 0) {
-                for (const pId of permissions) {
-                    await connection.query("INSERT INTO role_permissions (role_id, permission_id) VALUES (?, ?)", [roleId, pId]);
+                for (const permissionName of permissions) {
+                    const [permRows] = await connection.query(
+                        "SELECT id FROM permissions WHERE name = ? LIMIT 1",
+                        [permissionName]
+                    );
+                    if (!permRows.length) continue;
+                    await connection.query(
+                        "INSERT INTO role_permissions (role_id, permission_id) VALUES (?, ?)",
+                        [roleId, permRows[0].id]
+                    );
                 }
             }
             await connection.commit();
@@ -1889,4 +1897,3 @@ export const updateRole = async (req, res) => {
 };
 
 // IP Address Management Functions
-
