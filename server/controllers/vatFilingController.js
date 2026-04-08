@@ -1003,6 +1003,7 @@ function uniqueRows(rows = []) {
       row?.["VAT (AED)"],
       row?.["ZERO RATED (AED)"],
       row?.["NET AMOUNT (AED)"],
+      row?.["PLACE OF SUPPLY"],
     ]
       .map(normalizeRowToken)
       .join("|");
@@ -1025,7 +1026,7 @@ function uniqueRows(rows = []) {
 
 function strictSplitInvoice(invoiceData) {
   if (!invoiceData || typeof invoiceData !== "object") {
-    return { uaeSalesRows: [], uaePurchaseRows: [], uaeOtherRows: [] };
+    return { uaeSalesRows: [], uaePurchaseRows: [], uaeOtherRows: [], placeOfSupplyRows: [] };
   }
 
   const hasExplicitSales = Object.prototype.hasOwnProperty.call(
@@ -1039,8 +1040,9 @@ function strictSplitInvoice(invoiceData) {
   const hasExplicitOthers =
     Object.prototype.hasOwnProperty.call(invoiceData, "othersRows") ||
     Object.prototype.hasOwnProperty.call(invoiceData, "uaeOtherRows");
+  const hasExplicitPOS = Object.prototype.hasOwnProperty.call(invoiceData, "placeOfSupplyRows");
 
-  if (hasExplicitSales || hasExplicitPurch || hasExplicitOthers) {
+  if (hasExplicitSales || hasExplicitPurch || hasExplicitOthers || hasExplicitPOS) {
     return {
       uaeSalesRows: uniqueRows(ensureArray(invoiceData.uaeSalesRows)),
       uaePurchaseRows: uniqueRows(ensureArray(invoiceData.uaePurchaseRows)),
@@ -1048,6 +1050,7 @@ function strictSplitInvoice(invoiceData) {
         ...ensureArray(invoiceData.othersRows),
         ...ensureArray(invoiceData.uaeOtherRows),
       ]),
+      placeOfSupplyRows: uniqueRows(ensureArray(invoiceData.placeOfSupplyRows)),
     };
   }
 
@@ -1069,10 +1072,11 @@ function strictSplitInvoice(invoiceData) {
       uaeSalesRows: uniqueRows(sales),
       uaePurchaseRows: uniqueRows(purchase),
       uaeOtherRows: uniqueRows(others),
+      placeOfSupplyRows: [],
     };
   }
 
-  return { uaeSalesRows: [], uaePurchaseRows: [], uaeOtherRows: [] };
+  return { uaeSalesRows: [], uaePurchaseRows: [], uaeOtherRows: [], placeOfSupplyRows: [] };
 }
 
 function totalsFromUiRows(rows = []) {
@@ -1144,12 +1148,12 @@ export async function generateCombinedExcel(req, res) {
     if (bankData && Array.isArray(bankData.rows) && bankData.rows.length > 0) {
       const bankOrder = Array.isArray(bankData.columns)
         ? bankData.columns
-            .map((c) =>
-              typeof c === "string"
-                ? c
-                : (c.key ?? c.field ?? c.accessor ?? ""),
-            )
-            .filter(Boolean)
+          .map((c) =>
+            typeof c === "string"
+              ? c
+              : (c.key ?? c.field ?? c.accessor ?? ""),
+          )
+          .filter(Boolean)
         : [];
 
       const effectiveOrder =
@@ -1175,9 +1179,10 @@ export async function generateCombinedExcel(req, res) {
 
     if (invoiceData) {
       // TRUST the strict split first
-      const { uaeSalesRows, uaePurchaseRows, uaeOtherRows } =
+      const { uaeSalesRows, uaePurchaseRows, uaeOtherRows, placeOfSupplyRows: uaePOSRows } =
         strictSplitInvoice(invoiceData);
       const othersRows = ensureArray(uaeOtherRows);
+      const placeOfSupplyRows = ensureArray(uaePOSRows);
 
       let salesRows = ensureArray(uaeSalesRows);
       let purchaseRows = ensureArray(uaePurchaseRows);
@@ -1189,6 +1194,7 @@ export async function generateCombinedExcel(req, res) {
         ...salesRows.map((r) => ({ TYPE: "Sales", ...r })),
         ...purchaseRows.map((r) => ({ TYPE: "Purchase", ...r })),
         ...othersRows.map((r) => ({ TYPE: "Other", ...r })),
+        ...placeOfSupplyRows.map((r) => ({ TYPE: "Place of Supply", ...r })),
       ];
       if (unified.length) {
         XLSX.utils.book_append_sheet(
@@ -1297,6 +1303,20 @@ export async function generateCombinedExcel(req, res) {
           wb,
           sheetFromObjects(othersRows, othersOrder),
           "Others",
+        );
+      }
+
+      if (placeOfSupplyRows.length) {
+        const sampleKeys = Object.keys(placeOfSupplyRows[0] || {});
+        const posOrder = sampleKeys.filter(
+          (k) =>
+            String(k).toUpperCase() !== "SOURCE_URL" &&
+            String(k).toUpperCase() !== "SOURCE_TYPE",
+        );
+        XLSX.utils.book_append_sheet(
+          wb,
+          sheetFromObjects(placeOfSupplyRows, posOrder),
+          "Place of Supply",
         );
       }
 
@@ -1416,12 +1436,12 @@ export async function generateCombinedExcel(req, res) {
           // 👇 Use the EXACT edited reconciliation rows from UI
           const reconOrder = Array.isArray(bankReconData.columns)
             ? bankReconData.columns
-                .map((c) =>
-                  typeof c === "string"
-                    ? c
-                    : (c.key ?? c.field ?? c.accessor ?? ""),
-                )
-                .filter(Boolean)
+              .map((c) =>
+                typeof c === "string"
+                  ? c
+                  : (c.key ?? c.field ?? c.accessor ?? ""),
+              )
+              .filter(Boolean)
             : Object.keys(bankReconData.rows[0]);
 
           const reconSheet = sheetFromObjects(bankReconData.rows, reconOrder);

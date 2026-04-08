@@ -1,0 +1,56 @@
+{
+  "source": "06.09.2025 NGC INV 014048 AED 1732.50.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "06-Sep-2025",
+      "invoice_number": "014048",
+      "vendor_name": "NGC walls floors fabrics",
+      "customer_name": "DECOWALLS TECHNICAL SERVICE LLC",
+      "vendor_trn": "100295968000003",
+      "customer_trn": "104643212400003",
+      "before_tax_amount": 1650,
+      "vat": 82.5,
+      "net_amount": 1732.5,
+      "line_items": [
+        {
+          "description": "HOTSPOTS \"PLAIN ROLL-053 X 10 05 M",
+          "quantity": 11,
+          "unit_price": 150,
+          "tax_amount": null,
+          "net_amount": 1650
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "place_of_supply": "DUBAI",
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 0.95,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither the uploading company's name 'TRAVEL MEDIA MIDDLE EAST - FZCO' nor TRN '104165761800003' matches the vendor (NGC walls floors fabrics, TRN 100295968000003) or the customer (DECOWALLS TECHNICAL SERVICE LLC, TRN 104643212400003) on the invoice.",
+      "overall_confidence": 0.98,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    }
+  ]
+}

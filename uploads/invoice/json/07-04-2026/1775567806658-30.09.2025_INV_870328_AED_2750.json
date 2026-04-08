@@ -1,0 +1,63 @@
+{
+  "source": "30.09.2025 INV 870328 AED 2750.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "30/09/2025",
+      "invoice_number": "870328",
+      "vendor_name": "First Flight Couriers (Middle East) L.L.C.",
+      "customer_name": "DECOWALLS TECHNICAL SERVICES L.L.",
+      "vendor_trn": "100074584200003",
+      "customer_trn": "104643212400003",
+      "before_tax_amount": 2750,
+      "vat": 0,
+      "net_amount": 2750,
+      "line_items": [
+        {
+          "description": "IMP5780214 1Z00R5078699429389 Fr:UNITED",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0,
+          "net_amount": 1949.99
+        },
+        {
+          "description": "IMP5781004 1ZHR16988639221212 Fr:UNITED",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0,
+          "net_amount": 800.01
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name and TRN not found as either vendor or customer.",
+      "overall_confidence": 0.98,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": "First Flight Couriers (Middle East) L.L.C.-870328"
+    }
+  ]
+}

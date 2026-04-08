@@ -277,6 +277,116 @@
   margin-top: 8px;
 }
 
+.result-card-body {
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.result-main-pane {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.result-doc-pane {
+  width: 360px;
+  min-width: 360px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.result-doc-pane-head {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.result-doc-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.result-doc-subtitle {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+  word-break: break-word;
+}
+
+.result-doc-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px 0;
+  background: #f8fafc;
+}
+
+.result-doc-tab {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #111827;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.result-doc-tab.active {
+  background: #111827;
+  border-color: #111827;
+  color: #fff;
+}
+
+.result-doc-pane-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.result-doc-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.result-doc-viewer {
+  flex: 1 1 auto;
+  min-height: 520px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.result-doc-viewer .pdf-wrap,
+.result-doc-viewer .imgv-wrap {
+  height: 100%;
+}
+
+.result-doc-empty {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #6b7280;
+  border: 1px dashed #d1d5db;
+  border-radius: 12px;
+  background: #fff;
+  padding: 20px;
+}
+
+.row-selected td {
+  background: #eef6ff !important;
+}
+
 /* Outline button style for "Save Draft" */
 .btn-outline {
   background: #ffffff;
@@ -318,6 +428,17 @@
   justify-content: flex-end;
 }
 
+@media (max-width: 1280px) {
+  .result-card-body {
+    flex-direction: column;
+  }
+
+  .result-doc-pane {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 .row-add-btn {
   padding: 6px 10px;
   border-radius: 8px;
@@ -342,6 +463,12 @@
 }
 .row-delete-btn:hover {
   background: #fecaca;
+}
+
+.action-select {
+  min-width: 112px;
+  font-size: 12px;
+  padding-right: 24px;
 }
 
 .edit-badge {

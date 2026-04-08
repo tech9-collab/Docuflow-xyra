@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Save, Plus, Trash2, UploadCloud } from "lucide-react";
 import "./EditCustomer.css";
 import { fetchCustomerById, updateCustomer } from "../../helper/helper";
+import { TRADE_LICENSE_AUTHORITIES } from "../../constants/authorities";
 
 /* --- Utility: Convert backend DATE → <input type="date"> format --- */
 function toDateInput(value) {
@@ -72,6 +73,8 @@ export default function EditCustomer() {
     ctCertificateTax: null,
   });
 
+  const [showCustomAuthority, setShowCustomAuthority] = useState(false);
+
   /* Shareholders (editable) */
   const [shareholders, setShareholders] = useState([
     { ownerType: "", name: "", nationality: "", sharePercentage: "" },
@@ -134,6 +137,10 @@ export default function EditCustomer() {
           ctCertificateTax: null, // cannot prefill file
         });
 
+        if (c.trade_license_authority && !TRADE_LICENSE_AUTHORITIES.includes(c.trade_license_authority)) {
+          setShowCustomAuthority(true);
+        }
+
         if (data.shareholders?.length) {
           setShareholders(
             data.shareholders.map((s) => ({
@@ -158,7 +165,21 @@ export default function EditCustomer() {
   /* Handlers (same as AddCustomer) */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setForm((p) => ({ ...p, [name]: value }));
+    setForm((prev) => {
+      const next = { ...prev, [name]: value };
+      if (name === "vatTaxTreatment") {
+        const isVatReg = ["vat_registered", "vat_registered_dz", "gcc_vat_registered"].includes(value);
+        if (!isVatReg) {
+          next.vatTrn = "";
+          next.vatRegisteredDate = "";
+          next.firstVatFilingPeriod = "";
+          next.vatReturnDueDate = "";
+          next.vatReportingPeriod = "";
+          next.vatInfoCertificate = null;
+        }
+      }
+      return next;
+    });
   };
 
   const handleCheckboxChange = (e) => {
@@ -508,12 +529,43 @@ export default function EditCustomer() {
 
               <div className="field">
                 <label>Trade License Issuing Authority</label>
-                <input
-                  type="text"
-                  name="tradeLicenseAuthority"
-                  value={form.tradeLicenseAuthority}
-                  onChange={handleInputChange}
-                />
+                <select
+                  name="tradeLicenseAuthoritySelect"
+                  value={
+                    showCustomAuthority
+                      ? "__custom__"
+                      : form.tradeLicenseAuthority || ""
+                  }
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === "__custom__") {
+                      setShowCustomAuthority(true);
+                      setForm((p) => ({ ...p, tradeLicenseAuthority: "" }));
+                    } else {
+                      setShowCustomAuthority(false);
+                      setForm((p) => ({ ...p, tradeLicenseAuthority: val }));
+                    }
+                  }}
+                >
+                  <option value="">Select Authority</option>
+                  {TRADE_LICENSE_AUTHORITIES.map((auth) => (
+                    <option key={auth} value={auth}>
+                      {auth}
+                    </option>
+                  ))}
+                  <option value="__custom__">Other (Enter manually)</option>
+                </select>
+
+                {showCustomAuthority && (
+                  <input
+                    type="text"
+                    name="tradeLicenseAuthority"
+                    style={{ marginTop: "0.5rem" }}
+                    value={form.tradeLicenseAuthority}
+                    onChange={handleInputChange}
+                    placeholder="Enter manual authority name"
+                  />
+                )}
               </div>
 
               <div className="field">
@@ -770,58 +822,61 @@ export default function EditCustomer() {
                 </div>
               )}
 
-              <div className="field">
-                <label>Tax Registration Number</label>
-                <input
-                  type="text"
-                  name="vatTrn"
-                  value={form.vatTrn}
-                  onChange={handleInputChange}
-                />
-              </div>
+              {showVatCertificateUpload && (
+                <>
+                  <div className="field">
+                    <label>Tax Registration Number</label>
+                    <input
+                      type="text"
+                      name="vatTrn"
+                      value={form.vatTrn}
+                      onChange={handleInputChange}
+                    />
+                  </div>
 
-              <div className="field">
-                <label>VAT Registered Date</label>
-                <input
-                  type="date"
-                  name="vatRegisteredDate"
-                  value={form.vatRegisteredDate}
-                  onChange={handleInputChange}
-                />
-              </div>
+                  <div className="field">
+                    <label>VAT Registered Date</label>
+                    <input
+                      type="date"
+                      name="vatRegisteredDate"
+                      value={form.vatRegisteredDate}
+                      onChange={handleInputChange}
+                    />
+                  </div>
 
-              <div className="field">
-                <label>First VAT Return Period</label>
-                <input
-                  type="text"
-                  name="firstVatFilingPeriod"
-                  value={form.firstVatFilingPeriod}
-                  onChange={handleInputChange}
-                />
-              </div>
+                  <div className="field">
+                    <label>First VAT Return Period</label>
+                    <input
+                      type="text"
+                      name="firstVatFilingPeriod"
+                      value={form.firstVatFilingPeriod}
+                      onChange={handleInputChange}
+                    />
+                  </div>
 
-              <div className="field">
-                <label>VAT Return Due Date</label>
-                <input
-                  type="date"
-                  name="vatReturnDueDate"
-                  value={form.vatReturnDueDate}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="field">
-                <label>Reporting Period</label>
-                <select
-                  name="vatReportingPeriod"
-                  value={form.vatReportingPeriod}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Select reporting period</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="quarterly">Quarterly</option>
-                </select>
-              </div>
+                  <div className="field">
+                    <label>VAT Return Due Date</label>
+                    <input
+                      type="date"
+                      name="vatReturnDueDate"
+                      value={form.vatReturnDueDate}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="field">
+                    <label>Reporting Period</label>
+                    <select
+                      name="vatReportingPeriod"
+                      value={form.vatReportingPeriod}
+                      onChange={handleInputChange}
+                    >
+                      <option value="">Select reporting period</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="quarterly">Quarterly</option>
+                    </select>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

@@ -1,0 +1,64 @@
+{
+  "source": "30.07.2025 AAG INV Q-4048 AED 488.25.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "29/08/2025",
+      "invoice_number": "AAG25-Q-4048",
+      "vendor_name": "DECOWALLS TECHNICAL SERVICES L.L.C",
+      "customer_name": null,
+      "vendor_trn": "100388550400003",
+      "customer_trn": null,
+      "before_tax_amount": 465,
+      "vat": 23.25,
+      "net_amount": 488.25,
+      "line_items": [
+        {
+          "description": "Printing & Supply of Deco Fabric Printing & Supply of Deco Fabric of size 4.65 Sqm",
+          "quantity": 1,
+          "unit_price": 465,
+          "tax_amount": null,
+          "net_amount": 465
+        },
+        {
+          "description": "Transportation & Crew Not in our scope",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 0
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "place_of_supply": "Dubai",
+      "document_category": "Sales order",
+      "document_category_evidence": {
+        "matched_text": null,
+        "page_region": "header",
+        "confidence": 0.7
+      },
+      "field_confidence": {
+        "document_category": 0.7,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 1,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1,
+        "place_of_supply": 0.8
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company's name nor TRN found as vendor or customer on the document.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 // src/pages/vat/VatFillingPreview.jsx
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import {
   saveVatFilingDraft,
@@ -56,6 +56,60 @@ const toNumberLoose = (v) => {
 };
 
 const fmt2 = (n) => round2(n).toFixed(2);
+
+/* --- DATE FORMATTING UTILS --- */
+const parseFlexibleDate = (s) => {
+  if (!s) return null;
+  const str = String(s).trim();
+  if (!str) return null;
+
+  // 1. Try standard parse (YYYY-MM-DD or MM/DD/YYYY)
+  let d = new Date(str);
+  if (!isNaN(d.getTime())) {
+    // Check if it's DD/MM/YYYY format which JS might misinterpret as MM/DD/YYYY
+    // e.g. 05/01/2024 (Jan 5 in UAE) -> JS might say May 1.
+    // If it has slashes, we'll favor the explicit parse below for DD/MM/YYYY.
+    if (str.includes("/") && !str.includes("-") && str.split("/")[0].length <= 2) {
+      // Continue to explicit parse
+    } else {
+      return d;
+    }
+  }
+
+  // 2. Explicit DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY
+  const ddmmMatch = str.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);
+  if (ddmmMatch) {
+    const day = parseInt(ddmmMatch[1], 10);
+    const month = parseInt(ddmmMatch[2], 10) - 1;
+    const year = parseInt(ddmmMatch[3], 10);
+    return new Date(year, month, day);
+  }
+
+  // 3. Handle "03 SEP 2025" or "3 Sep 2025" or "06-Sep-2025"
+  const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+  // Regex to match "D(D) MMM YYYY" with various separators
+  const alphaMatch = str.match(/^(\d{1,2})[\/\- ]?([a-z]{3})[\/\- ]?(\d{4})$/i);
+  if (alphaMatch) {
+    const day = parseInt(alphaMatch[1], 10);
+    const monthStr = alphaMatch[2].toLowerCase();
+    const monthIndex = monthNames.indexOf(monthStr);
+    const year = parseInt(alphaMatch[3], 10);
+    if (monthIndex !== -1) return new Date(year, monthIndex, day);
+  }
+
+  return isNaN(d.getTime()) ? null : d;
+};
+
+const formatDateDisplay = (val) => {
+  if (val === null || val === undefined || val === "") return "";
+  const d = parseFlexibleDate(val);
+  if (!d || isNaN(d.getTime())) return String(val);
+
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
 
 // Normalize bank rows → one object per row with debit/credit & basic info
 function normalizeBankRowsForReconFrontend(bankData) {
@@ -123,6 +177,9 @@ function normalizeBankRowsForReconFrontend(bankData) {
         credit,
         balance: balanceKey ? parseReconAmount(row[balanceKey]) : null,
         ref: refKey ? row[refKey] || "" : "",
+        source: row?.SOURCE ?? row?.source ?? "",
+        sourceUrl: row?.SOURCE_URL ?? row?.source_url ?? null,
+        sourceType: row?.SOURCE_TYPE ?? row?.source_type ?? null,
       };
     })
     // Drop header-like rows with no money
@@ -240,6 +297,9 @@ function buildInvoiceReconRowsFrontend(invoiceRows = [], typeLabel = "Sales") {
       date: r.DATE ?? null,
       number: r["INVOICE NUMBER"] ?? "",
       party: r["SUPPLIER/VENDOR"] ?? r.PARTY ?? "",
+      source: r.SOURCE ?? r.source ?? "",
+      sourceUrl: r.SOURCE_URL ?? r.source_url ?? null,
+      sourceType: r.SOURCE_TYPE ?? r.source_type ?? null,
     });
   });
   return out;
@@ -347,6 +407,12 @@ function buildBankReconciliationDisplay(bankData, salesRows, purchaseRows) {
       "BANK DESCRIPTION": m.bank.description || "",
       "BANK DEBIT": m.bank.debit,
       "BANK CREDIT": m.bank.credit,
+      "INVOICE SOURCE": m.invoice.source || "",
+      INVOICE_SOURCE_URL: m.invoice.sourceUrl,
+      INVOICE_SOURCE_TYPE: m.invoice.sourceType,
+      "BANK SOURCE": m.bank.source || "",
+      BANK_SOURCE_URL: m.bank.sourceUrl,
+      BANK_SOURCE_TYPE: m.bank.sourceType,
     });
   }
 
@@ -364,6 +430,12 @@ function buildBankReconciliationDisplay(bankData, salesRows, purchaseRows) {
       "BANK DESCRIPTION": m.bank.description || "",
       "BANK DEBIT": m.bank.debit,
       "BANK CREDIT": m.bank.credit,
+      "INVOICE SOURCE": m.invoice.source || "",
+      INVOICE_SOURCE_URL: m.invoice.sourceUrl,
+      INVOICE_SOURCE_TYPE: m.invoice.sourceType,
+      "BANK SOURCE": m.bank.source || "",
+      BANK_SOURCE_URL: m.bank.sourceUrl,
+      BANK_SOURCE_TYPE: m.bank.sourceType,
     });
   }
 
@@ -381,6 +453,9 @@ function buildBankReconciliationDisplay(bankData, salesRows, purchaseRows) {
       "BANK DESCRIPTION": "",
       "BANK DEBIT": null,
       "BANK CREDIT": null,
+      "INVOICE SOURCE": inv.source || "",
+      INVOICE_SOURCE_URL: inv.sourceUrl,
+      INVOICE_SOURCE_TYPE: inv.sourceType,
     });
   }
 
@@ -398,6 +473,9 @@ function buildBankReconciliationDisplay(bankData, salesRows, purchaseRows) {
       "BANK DESCRIPTION": "",
       "BANK DEBIT": null,
       "BANK CREDIT": null,
+      "INVOICE SOURCE": inv.source || "",
+      INVOICE_SOURCE_URL: inv.sourceUrl,
+      INVOICE_SOURCE_TYPE: inv.sourceType,
     });
   }
 
@@ -415,6 +493,9 @@ function buildBankReconciliationDisplay(bankData, salesRows, purchaseRows) {
       "BANK DESCRIPTION": b.description || "",
       "BANK DEBIT": b.debit,
       "BANK CREDIT": b.credit,
+      "BANK SOURCE": b.source || "",
+      BANK_SOURCE_URL: b.sourceUrl,
+      BANK_SOURCE_TYPE: b.sourceType,
     });
   }
 
@@ -434,6 +515,99 @@ const sanitizeVatReturnOverrides = (o) => {
   return v === undefined || v === null || v === "" ? {} : { ftaFund: v };
 };
 
+const DEFAULT_TAB_VISIBILITY = {
+  bank: false,
+  bankRecon: false,
+};
+
+function toOptionalBoolean(value) {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value !== 0;
+  if (typeof value !== "string") return undefined;
+
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) return undefined;
+  if (["true", "1", "yes", "enabled", "show", "visible"].includes(normalized)) {
+    return true;
+  }
+  if (["false", "0", "no", "disabled", "hide", "hidden"].includes(normalized)) {
+    return false;
+  }
+  return undefined;
+}
+
+function pickVisibilityValue(sources, keys, fallback) {
+  for (const source of sources) {
+    if (!source || typeof source !== "object") continue;
+    for (const key of keys) {
+      const resolved = toOptionalBoolean(source[key]);
+      if (resolved !== undefined) return resolved;
+    }
+  }
+  return fallback;
+}
+
+function resolvePreviewUrl(rawUrl) {
+  if (!rawUrl) return null;
+  return String(rawUrl).startsWith("http")
+    ? rawUrl
+    : `${BACKEND_ORIGIN}${rawUrl}`;
+}
+
+function inferPreviewType(rawType, rawUrl) {
+  if (rawType) return rawType;
+  if (rawUrl && String(rawUrl).toLowerCase().endsWith(".pdf")) return "pdf";
+  return "image";
+}
+
+function buildRowDocuments(row, viewName) {
+  if (!row || typeof row !== "object") return [];
+
+  const docs = [];
+  const seen = new Set();
+
+  const pushDoc = ({ label, rawUrl, rawType, role }) => {
+    const url = resolvePreviewUrl(rawUrl);
+    if (!url || seen.has(url)) return;
+    seen.add(url);
+    docs.push({
+      id: `${role || "doc"}:${url}`,
+      label: label || "Uploaded document",
+      type: inferPreviewType(rawType, rawUrl),
+      url,
+      role: role || viewName || "doc",
+    });
+  };
+
+  pushDoc({
+    label: row.SOURCE || row.source || "Uploaded document",
+    rawUrl: row.SOURCE_URL || row.source_url,
+    rawType: row.SOURCE_TYPE || row.source_type,
+    role: viewName,
+  });
+
+  pushDoc({
+    label: row["INVOICE SOURCE"] || row.invoiceSourceLabel || "Invoice document",
+    rawUrl: row.INVOICE_SOURCE_URL || row.invoice_source_url,
+    rawType: row.INVOICE_SOURCE_TYPE || row.invoice_source_type,
+    role: "invoice",
+  });
+
+  pushDoc({
+    label: row["BANK SOURCE"] || row.bankSourceLabel || "Bank document",
+    rawUrl: row.BANK_SOURCE_URL || row.bank_source_url,
+    rawType: row.BANK_SOURCE_TYPE || row.bank_source_type,
+    role: "bank",
+  });
+
+  return docs;
+}
+
+function clonePreviewSnapshot(data) {
+  if (!data) return data;
+  return JSON.parse(JSON.stringify(data));
+}
+
 export default function VatFillingPreview() {
   const { companyId } = useParams();
   const location = useLocation();
@@ -443,6 +617,12 @@ export default function VatFillingPreview() {
   const [previewData, setPreviewData] = useState(location.state || null);
   const [error, setError] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [activeDocumentId, setActiveDocumentId] = useState(null);
+  const [committedPreviewData, setCommittedPreviewData] = useState(
+    clonePreviewSnapshot(location.state || null)
+  );
+  const editablePaneRef = useRef(null);
 
   const searchParams = new URLSearchParams(location.search);
   const runId = searchParams.get("runId");
@@ -452,6 +632,24 @@ export default function VatFillingPreview() {
 
   const modeFromQuery = searchParams.get("mode");
   const isEditMode = modeFromQuery === "edit";
+
+  const exitEditMode = (nextData = committedPreviewData) => {
+    const snapshot = clonePreviewSnapshot(nextData);
+    if (snapshot) {
+      setPreviewData(snapshot);
+      setCommittedPreviewData(snapshot);
+    }
+
+    const nextParams = new URLSearchParams(location.search);
+    nextParams.delete("mode");
+    navigate(
+      `${location.pathname}${nextParams.toString() ? `?${nextParams.toString()}` : ""}`,
+      {
+        replace: true,
+        state: snapshot,
+      }
+    );
+  };
 
   const handleBack = () => {
     const periodId = periodIdFromQuery || previewData?.periodId;
@@ -480,9 +678,44 @@ export default function VatFillingPreview() {
   const [draftSaved, setDraftSaved] = useState(isExistingRun);
 
   // views:
-  // "bank" | "bankRecon" | "sales" | "purchase" | "salesTotal" | "purchaseTotal" | "vatSummary"
-  const [view, setView] = useState("bank");
+  // "bank" | "bankRecon" | "sales" | "purchase" | "others" | "placeOfSupply" | "salesTotal" | "purchaseTotal" | "vatSummary" | "vatReturn"
+  const [view, setView] = useState("sales");
   const [vatSummaryLocks, setVatSummaryLocks] = useState({});
+
+  const tabVisibility = useMemo(() => {
+    const tabOptions = previewData?.tabVisibility;
+    const displayMenu = previewData?.displayMenu;
+    const visibilityOptions = previewData?.visibilityOptions;
+    const uiOptions = previewData?.uiOptions;
+    const sources = [tabOptions, displayMenu, visibilityOptions, uiOptions];
+
+    return {
+      bank: pickVisibilityValue(
+        sources,
+        [
+          "bank",
+          "showBank",
+          "showBankStatement",
+          "bankStatement",
+          "enableBankStatement",
+          "bankStatementVisible",
+        ],
+        DEFAULT_TAB_VISIBILITY.bank
+      ),
+      bankRecon: pickVisibilityValue(
+        sources,
+        [
+          "bankRecon",
+          "showBankRecon",
+          "showBankReconciliation",
+          "bankReconciliation",
+          "enableBankReconciliation",
+          "bankReconciliationVisible",
+        ],
+        DEFAULT_TAB_VISIBILITY.bankRecon
+      ),
+    };
+  }, [previewData]);
 
   const [metricLocks, setMetricLocks] = useState({
     salesTotal: {}, // e.g. { STANDARDRATEDSUPPLIES: true }
@@ -571,6 +804,7 @@ export default function VatFillingPreview() {
       fetchPreviewData();
     } else if (location.state && !previewData) {
       setPreviewData(location.state);
+      setCommittedPreviewData(clonePreviewSnapshot(location.state));
     }
   }, [location.state, previewData, runId]);
 
@@ -581,6 +815,7 @@ export default function VatFillingPreview() {
           setLoading(true);
           const { payload } = await fetchVatRun(runId);
           setPreviewData(payload); // {companyId, companyName, bankData, invoiceData, periodId,...}
+          setCommittedPreviewData(clonePreviewSnapshot(payload));
           setError(null);
         } catch (err) {
           console.error(err);
@@ -635,6 +870,10 @@ export default function VatFillingPreview() {
 
     try {
       setLoading(true);
+      const savedSnapshot = clonePreviewSnapshot({
+        ...previewData,
+        invoiceData: normalizedInvoiceData,
+      });
 
       if (isExistingRun && runId) {
         await updateVatRun(runId, {
@@ -654,6 +893,8 @@ export default function VatFillingPreview() {
         });
 
         toast.success("Conversion updated successfully.");
+        setCommittedPreviewData(savedSnapshot);
+        exitEditMode(savedSnapshot);
       } else {
         // 🆕 CREATE FIRST DRAFT (same behavior as before)
         if (draftSaved) {
@@ -677,6 +918,8 @@ export default function VatFillingPreview() {
 
         setDraftSaved(true);
         toast.success("VAT filing draft saved successfully.");
+        setCommittedPreviewData(savedSnapshot);
+        exitEditMode(savedSnapshot);
         // (Optional) you can navigate to conversions list or stay here
       }
     } catch (err) {
@@ -698,6 +941,7 @@ export default function VatFillingPreview() {
       setLoading(true);
       const res = await getVatFilingPreview(companyId);
       setPreviewData(res);
+      setCommittedPreviewData(clonePreviewSnapshot(res));
     } catch (e) {
       console.error("Failed to fetch preview data:", e);
       setError("Failed to load preview data");
@@ -888,17 +1132,19 @@ export default function VatFillingPreview() {
         return next;
       }
 
-      // 4) Others
-      if (viewName === "others") {
+      // 4) Others & Place of Supply
+      if (viewName === "others" || viewName === "placeOfSupply") {
+        const keyName = viewName === "others" ? "othersRows" : "placeOfSupplyRows";
         const inv = { ...(next.invoiceData || {}) };
-        const rowsArr = Array.isArray(inv.othersRows)
-          ? [...inv.othersRows]
+        const rowsArr = Array.isArray(inv[keyName])
+          ? [...inv[keyName]]
           : [];
         if (rowIndex < 0 || rowIndex >= rowsArr.length) return prev;
         const row = { ...(rowsArr[rowIndex] || {}) };
         row[colKey] = newValue;
         rowsArr[rowIndex] = row;
-        inv.othersRows = rowsArr;
+        inv[keyName] = rowsArr;
+        if (viewName === "others") inv.uaeOtherRows = rowsArr;
         inv.__explicitBuckets = true;
         next.invoiceData = inv;
         return next;
@@ -948,20 +1194,77 @@ export default function VatFillingPreview() {
         return next;
       }
 
-      if (viewName === "others") {
+      if (viewName === "others" || viewName === "placeOfSupply") {
+        const keyName = viewName === "others" ? "othersRows" : "placeOfSupplyRows";
         const inv = { ...(next.invoiceData || {}) };
-        const rowsArr = Array.isArray(inv.othersRows)
-          ? [...inv.othersRows]
-          : [];
+        const rowsArr = Array.isArray(inv[keyName]) ? [...inv[keyName]] : [];
         if (rowIndex < 0 || rowIndex >= rowsArr.length) return prev;
         rowsArr.splice(rowIndex, 1);
-        inv.othersRows = rowsArr;
+        inv[keyName] = rowsArr;
+        if (viewName === "others") inv.uaeOtherRows = rowsArr;
         inv.__explicitBuckets = true;
         next.invoiceData = inv;
         return next;
       }
 
       return prev;
+    });
+  };
+
+  const handleOthersRowAction = (rowIndex, action) => {
+    if (!action) return;
+
+    if (action === "edit") {
+      setSelectedRecord({ view: "others", rowIndex });
+
+      if (!isEditMode) {
+        const nextParams = new URLSearchParams(location.search);
+        nextParams.set("mode", "edit");
+        navigate(
+          `${location.pathname}${nextParams.toString() ? `?${nextParams.toString()}` : ""}`
+        );
+      }
+      return;
+    }
+
+    if (action !== "moveToSales" && action !== "moveToPurchase") return;
+
+    const targetView = action === "moveToSales" ? "sales" : "purchase";
+
+    setPreviewData((prev) => {
+      if (!prev) return prev;
+
+      const inv = { ...(prev.invoiceData || {}) };
+      const othersRows = Array.isArray(inv.othersRows) ? [...inv.othersRows] : [];
+      if (rowIndex < 0 || rowIndex >= othersRows.length) return prev;
+
+      const [movedRow] = othersRows.splice(rowIndex, 1);
+      const targetKey =
+        targetView === "sales" ? "uaeSalesRows" : "uaePurchaseRows";
+      const targetRows = Array.isArray(inv[targetKey]) ? [...inv[targetKey]] : [];
+
+      targetRows.push({
+        ...movedRow,
+        TYPE: targetView === "sales" ? "Sales" : "Purchase",
+      });
+
+      inv.othersRows = othersRows;
+      inv.uaeOtherRows = othersRows;
+      inv[targetKey] = targetRows;
+      inv.__explicitBuckets = true;
+
+      setView(targetView);
+      setSelectedRecord({ view: targetView, rowIndex: targetRows.length - 1 });
+      setActiveDocumentId(null);
+
+      toast.success(
+        `Record moved to ${targetView === "sales" ? "Sales" : "Purchase"}.`
+      );
+
+      return {
+        ...prev,
+        invoiceData: inv,
+      };
     });
   };
 
@@ -1009,25 +1312,27 @@ export default function VatFillingPreview() {
         return next;
       }
 
-      if (viewName === "others") {
+      if (viewName === "others" || viewName === "placeOfSupply") {
+        const keyName = viewName === "others" ? "othersRows" : "placeOfSupplyRows";
         const inv = { ...(next.invoiceData || {}) };
-        const rowsArr = Array.isArray(inv.othersRows)
-          ? [...inv.othersRows]
+        const rowsArr = Array.isArray(inv[keyName])
+          ? [...inv[keyName]]
           : [];
         const keys = rowsArr.length
           ? Object.keys(rowsArr[0])
-          : UAE_OTHERS_ORDER;
+          : (viewName === "others" ? UAE_OTHERS_ORDER : UAE_PLACE_OF_SUPPLY_ORDER);
         const newRow = {};
         keys.forEach((k) => {
           if (String(k).toLowerCase() === "row") return;
-          if (String(k).toUpperCase() === "VAT ELIGIBILTY") {
+          if (viewName === "others" && String(k).toUpperCase() === "VAT ELIGIBILTY") {
             newRow[k] = "Not qualified for Vat Return Filing";
             return;
           }
           newRow[k] = "";
         });
         rowsArr.push(newRow);
-        inv.othersRows = rowsArr;
+        inv[keyName] = rowsArr;
+        if (viewName === "others") inv.uaeOtherRows = rowsArr;
         inv.__explicitBuckets = true;
         next.invoiceData = inv;
         return next;
@@ -1062,7 +1367,7 @@ export default function VatFillingPreview() {
 
   const isCellEditable = (viewName) =>
     isEditMode &&
-    ["bank", "bankRecon", "sales", "purchase", "others"].includes(viewName);
+    ["bank", "bankRecon", "sales", "purchase", "others", "placeOfSupply"].includes(viewName);
 
   // === VAT Return overrides helpers ===
   const handleVatReturnInputChange = (key, rawValue) => {
@@ -1117,6 +1422,7 @@ export default function VatFillingPreview() {
     "PARTY",
     "SUPPLIER TRN",
     "CUSTOMER TRN",
+    "PLACE OF SUPPLY",
     "CURRENCY",
     "BEFORE TAX AMOUNT",
     "VAT",
@@ -1135,6 +1441,7 @@ export default function VatFillingPreview() {
     "SUPPLIER/VENDOR",
     "PARTY",
     "SUPPLIER TRN",
+    "PLACE OF SUPPLY",
     "CURRENCY",
     "BEFORE TAX AMOUNT",
     "VAT",
@@ -1155,6 +1462,7 @@ export default function VatFillingPreview() {
     "PARTY",
     "SUPPLIER TRN",
     "CUSTOMER TRN",
+    "PLACE OF SUPPLY",
     "CURRENCY",
     "BEFORE TAX AMOUNT",
     "VAT",
@@ -1164,6 +1472,26 @@ export default function VatFillingPreview() {
     "ZERO RATED (AED)",
     "NET AMOUNT (AED)",
     "VAT ELIGIBILTY",
+    "CONFIDENCE",
+    "SOURCE",
+  ];
+  const UAE_PLACE_OF_SUPPLY_ORDER = [
+    "DATE",
+    "INVOICE NUMBER",
+    "INVOICE CATEGORY",
+    "SUPPLIER/VENDOR",
+    "PARTY",
+    "SUPPLIER TRN",
+    "CUSTOMER TRN",
+    "PLACE OF SUPPLY",
+    "CURRENCY",
+    "BEFORE TAX AMOUNT",
+    "VAT",
+    "NET AMOUNT",
+    "BEFORE TAX (AED)",
+    "VAT (AED)",
+    "ZERO RATED (AED)",
+    "NET AMOUNT (AED)",
     "CONFIDENCE",
     "SOURCE",
   ];
@@ -1188,7 +1516,7 @@ export default function VatFillingPreview() {
   }, [previewData]);
 
   // ===== Strict buckets without row dropping =====
-  const { salesRows, purchaseRows, othersRowsView } = useMemo(() => {
+  const { salesRows, purchaseRows, othersRowsView, placeOfSupplyRowsView } = useMemo(() => {
     const inv = previewData?.invoiceData || {};
 
     // Consider buckets "explicit" if any bucket key exists OR flag is set
@@ -1203,8 +1531,9 @@ export default function VatFillingPreview() {
     const hasOthersKey =
       Object.prototype.hasOwnProperty.call(inv, "othersRows") ||
       Object.prototype.hasOwnProperty.call(inv, "uaeOtherRows");
+    const hasPlaceOfSupplyKey = Object.prototype.hasOwnProperty.call(inv, "placeOfSupplyRows");
     const explicit =
-      !!inv.__explicitBuckets || hasSalesKey || hasPurchKey || hasOthersKey;
+      !!inv.__explicitBuckets || hasSalesKey || hasPurchKey || hasOthersKey || hasPlaceOfSupplyKey;
 
     // Start with explicit arrays (or empty)
     const normalizeRowToken = (v) =>
@@ -1233,6 +1562,7 @@ export default function VatFillingPreview() {
         row?.["VAT (AED)"],
         row?.["ZERO RATED (AED)"],
         row?.["NET AMOUNT (AED)"],
+        row?.["PLACE OF SUPPLY"],
       ]
         .map(normalizeRowToken)
         .join("|");
@@ -1261,21 +1591,17 @@ export default function VatFillingPreview() {
       ...(Array.isArray(inv.uaeOtherRows) ? inv.uaeOtherRows : []),
     ]);
 
-    // Only when no explicit buckets exist do we use legacy TYPE split.
-    // Unknown/empty TYPE rows must go to Others (never drop).
-    if (!explicit) {
-      const unified = Array.isArray(inv.table?.rows) ? inv.table.rows : [];
-      for (const r of unified) {
-        if (isSalesType(r)) sales.push(r);
-        else if (isPurchType(r)) purch.push(r);
-        else others.push(r);
-      }
-    }
+    // ✅ Place of Supply: Populate from Sales, Purchase, and Others to ensure data consistency
+    let posInit = Array.isArray(inv.placeOfSupplyRows) ? inv.placeOfSupplyRows : [];
+
+    // Combine everything into a pool for PoS if requested or as a master view
+    let posCombined = [...posInit, ...sales, ...purch, ...others];
 
     return {
       salesRows: dedupeRows(sales),
       purchaseRows: dedupeRows(purch),
       othersRowsView: dedupeRows(others),
+      placeOfSupplyRowsView: dedupeRows(posCombined),
     };
   }, [previewData]);
 
@@ -1287,6 +1613,7 @@ export default function VatFillingPreview() {
       uaePurchaseRows: Array.isArray(purchaseRows) ? purchaseRows : [],
       othersRows: Array.isArray(othersRowsView) ? othersRowsView : [],
       uaeOtherRows: Array.isArray(othersRowsView) ? othersRowsView : [],
+      placeOfSupplyRows: Array.isArray(placeOfSupplyRowsView) ? placeOfSupplyRowsView : [],
       __explicitBuckets: true,
     };
   }, [previewData?.invoiceData, salesRows, purchaseRows, othersRowsView]);
@@ -1371,6 +1698,24 @@ export default function VatFillingPreview() {
       rows,
     };
   }, [purchaseRows]);
+
+  const placeOfSupplyData = useMemo(() => {
+    const rows = (placeOfSupplyRowsView || []).map((r) => {
+      const out = {};
+      UAE_PLACE_OF_SUPPLY_ORDER.forEach((k) => (out[k] = r?.[k] ?? null));
+
+      // ✅ keep source meta for preview
+      out.SOURCE_URL = r?.SOURCE_URL ?? r?.source_url ?? null;
+      out.SOURCE_TYPE = r?.SOURCE_TYPE ?? r?.source_type ?? null;
+
+      return out;
+    });
+
+    return {
+      columns: UAE_PLACE_OF_SUPPLY_ORDER.map((k) => ({ key: k, label: k })),
+      rows,
+    };
+  }, [placeOfSupplyRowsView]);
 
   const bankReconData = useMemo(() => {
     const b = previewData?.bankReconData || { columns: [], rows: [] };
@@ -1584,6 +1929,16 @@ export default function VatFillingPreview() {
     if (view === "purchase" && !hasPurch && hasSales) setView("sales");
   }, [view, salesData.rows, purchaseData.rows]);
 
+  useEffect(() => {
+    if (view === "bank" && !tabVisibility.bank) {
+      setView("sales");
+      return;
+    }
+    if (view === "bankRecon" && !tabVisibility.bankRecon) {
+      setView("sales");
+    }
+  }, [tabVisibility, view]);
+
   const normalizeMetricKey = (s) =>
     String(s || "")
       .replace(/[\s_]/g, "")
@@ -1737,7 +2092,7 @@ export default function VatFillingPreview() {
       changed =
         changed ||
         JSON.stringify(rowsWithPurchTotal) !==
-          JSON.stringify(purchaseTotalRows);
+        JSON.stringify(purchaseTotalRows);
       purchaseTotalRows = rowsWithPurchTotal;
 
       next.purchaseTotal = purchaseTotalRows;
@@ -1911,6 +2266,8 @@ export default function VatFillingPreview() {
             : [{ key: "NoData", label: "No Data" }],
         };
       }
+      case "placeOfSupply":
+        return placeOfSupplyData;
       default:
         return bankData;
     }
@@ -1924,7 +2281,88 @@ export default function VatFillingPreview() {
     purchaseTotalData,
     vatSummaryData,
     othersRowsView,
+    placeOfSupplyData,
   ]);
+
+  useEffect(() => {
+    if (view === "vatReturn") {
+      setSelectedRecord(null);
+      setActiveDocumentId(null);
+      return;
+    }
+
+    const rows = Array.isArray(current?.rows) ? current.rows : [];
+    if (!rows.length) {
+      setSelectedRecord(null);
+      setActiveDocumentId(null);
+      return;
+    }
+
+    const currentIndex =
+      selectedRecord && selectedRecord.view === view ? selectedRecord.rowIndex : -1;
+
+    if (currentIndex >= 0 && currentIndex < rows.length) {
+      return;
+    }
+
+    const firstRowWithDocument = rows.findIndex(
+      (row) => buildRowDocuments(row, view).length > 0
+    );
+
+    if (firstRowWithDocument >= 0) {
+      setSelectedRecord({ view, rowIndex: firstRowWithDocument });
+    } else {
+      setSelectedRecord(null);
+      setActiveDocumentId(null);
+    }
+  }, [current, selectedRecord, view]);
+
+  const selectedRow =
+    selectedRecord &&
+    selectedRecord.view === view &&
+    Array.isArray(current?.rows) &&
+    selectedRecord.rowIndex >= 0 &&
+    selectedRecord.rowIndex < current.rows.length
+      ? current.rows[selectedRecord.rowIndex]
+      : null;
+
+  const contextualDocuments = useMemo(
+    () => buildRowDocuments(selectedRow, view),
+    [selectedRow, view]
+  );
+
+  useEffect(() => {
+    if (!contextualDocuments.length) {
+      if (activeDocumentId !== null) setActiveDocumentId(null);
+      return;
+    }
+    if (!contextualDocuments.some((doc) => doc.id === activeDocumentId)) {
+      setActiveDocumentId(contextualDocuments[0].id);
+    }
+  }, [activeDocumentId, contextualDocuments]);
+
+  const activeDocument =
+    contextualDocuments.find((doc) => doc.id === activeDocumentId) ||
+    contextualDocuments[0] ||
+    null;
+
+  useEffect(() => {
+    if (!isEditMode) return;
+
+    const handleOutsideClick = (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      if (editablePaneRef.current?.contains(target)) return;
+      if (target.closest(".invoice-preview-overlay")) return;
+      if (target.closest(".result-card-footer")) return;
+
+      exitEditMode();
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, [exitEditMode, isEditMode]);
 
   // ===== Table renderer =====
   const renderTable = (
@@ -1952,12 +2390,18 @@ export default function VatFillingPreview() {
       .join(" ")
       .trim();
 
-    const showRowActions =
-      isEditMode && ["bank", "sales", "purchase", "others"].includes(viewName);
+    const showActionColumn =
+      viewName === "others" ||
+      (isEditMode &&
+        ["bank", "sales", "purchase", "placeOfSupply"].includes(viewName));
+
+    const showAddRowButton =
+      isEditMode &&
+      ["bank", "sales", "purchase", "others", "placeOfSupply"].includes(viewName);
 
     return (
       <div className="tbl-wrap">
-        {showRowActions && (
+        {showAddRowButton && (
           <div className="tbl-actions">
             <button
               type="button"
@@ -1999,7 +2443,7 @@ export default function VatFillingPreview() {
                     </th>
                   );
                 })}
-                {showRowActions && <th className="actions-col">Action</th>}
+                {showActionColumn && <th className="actions-col">Action</th>}
               </tr>
             </thead>
 
@@ -2007,7 +2451,7 @@ export default function VatFillingPreview() {
               {!rows || rows.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={cols.length + (showRowActions ? 1 : 0)}
+                    colSpan={cols.length + (showActionColumn ? 1 : 0)}
                     className="muted"
                     style={{ textAlign: "center", padding: 18 }}
                   >
@@ -2016,28 +2460,31 @@ export default function VatFillingPreview() {
                 </tr>
               ) : (
                 rows.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
+                  <tr
+                    key={rowIndex}
+                    className={
+                      selectedRecord?.view === viewName &&
+                      selectedRecord?.rowIndex === rowIndex
+                        ? "row-selected"
+                        : ""
+                    }
+                    onClick={() => setSelectedRecord({ view: viewName, rowIndex })}
+                  >
                     {cols.map((c) => {
                       const val = row?.[c.key] ?? "";
-                      const text = String(val ?? "");
+                      const isDateCol = String(c.key).toUpperCase().includes("DATE");
+                      const formattedDate = isDateCol ? formatDateDisplay(val) : null;
+                      const text = isDateCol ? formattedDate : String(val ?? "");
 
                       // ✅ NEW: SOURCE column => open preview (pdf/image) using setPreview
                       if (c.key === "SOURCE") {
                         const label = val ?? "";
                         const rawUrl = row.SOURCE_URL || row.source_url || null;
-
-                        const srcUrl =
-                          rawUrl && !String(rawUrl).startsWith("http")
-                            ? `${BACKEND_ORIGIN}${rawUrl}`
-                            : rawUrl;
-
-                        const srcType =
-                          row.SOURCE_TYPE ||
-                          row.source_type ||
-                          (rawUrl &&
-                          String(rawUrl).toLowerCase().endsWith(".pdf")
-                            ? "pdf"
-                            : "image");
+                        const srcUrl = resolvePreviewUrl(rawUrl);
+                        const srcType = inferPreviewType(
+                          row.SOURCE_TYPE || row.source_type,
+                          rawUrl
+                        );
 
                         return (
                           <td key={c.key} title={String(label ?? "")}>
@@ -2045,13 +2492,15 @@ export default function VatFillingPreview() {
                               <button
                                 type="button"
                                 className="src-link"
-                                onClick={() =>
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedRecord({ view: viewName, rowIndex });
                                   setPreview({
                                     url: srcUrl,
                                     type: srcType,
                                     label,
-                                  })
-                                }
+                                  });
+                                }}
                               >
                                 {label}
                               </button>
@@ -2089,7 +2538,7 @@ export default function VatFillingPreview() {
                       if (
                         viewName === "vatSummary" &&
                         particularKey(row?.PARTICULAR) ===
-                          "TOTALAMOUNTINCLUDINGVAT" &&
+                        "TOTALAMOUNTINCLUDINGVAT" &&
                         (String(c.key).toUpperCase() === "SALES" ||
                           String(c.key).toUpperCase() === "PURCHASES")
                       ) {
@@ -2100,7 +2549,7 @@ export default function VatFillingPreview() {
                       if (
                         viewName === "vatSummary" &&
                         normalizeParticularKey(row?.PARTICULAR) ===
-                          "NETVATPAYABLEFORTHEPERIOD" &&
+                        "NETVATPAYABLEFORTHEPERIOD" &&
                         String(c.key).toUpperCase() === "NET_VAT"
                       ) {
                         editable = false;
@@ -2110,7 +2559,7 @@ export default function VatFillingPreview() {
                         <td key={c.key} className={cls} title={title}>
                           {editable ? (
                             viewName === "others" &&
-                            String(c.key).toUpperCase() === "VAT ELIGIBILTY" ? (
+                              String(c.key).toUpperCase() === "VAT ELIGIBILTY" ? (
                               <select
                                 className="inline-edit-input"
                                 value={val ?? ""}
@@ -2133,7 +2582,7 @@ export default function VatFillingPreview() {
                             ) : (
                               <input
                                 className="inline-edit-input"
-                                value={val ?? ""}
+                                value={isDateCol ? formattedDate : (val ?? "")}
                                 onChange={(e) =>
                                   handleCellChange(
                                     viewName,
@@ -2168,7 +2617,7 @@ export default function VatFillingPreview() {
                             typeof val === "number" ? (
                             `${val}%`
                           ) : (viewName === "salesTotal" ||
-                              viewName === "purchaseTotal") &&
+                            viewName === "purchaseTotal") &&
                             String(c.key).toUpperCase() === "AMOUNT" ? (
                             formatAED(val)
                           ) : (
@@ -2177,15 +2626,35 @@ export default function VatFillingPreview() {
                         </td>
                       );
                     })}
-                    {showRowActions && (
+                    {showActionColumn && (
                       <td className="actions-col">
-                        <button
-                          type="button"
-                          className="row-delete-btn"
-                          onClick={() => handleDeleteRow(viewName, rowIndex)}
-                        >
-                          Delete
-                        </button>
+                        {viewName === "others" ? (
+                          <select
+                            className="inline-edit-input action-select"
+                            value=""
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              handleOthersRowAction(rowIndex, e.target.value);
+                            }}
+                          >
+                            <option value="">Actions</option>
+                            <option value="edit">Edit</option>
+                            <option value="moveToSales">Move to Sales</option>
+                            <option value="moveToPurchase">Move to Purchase</option>
+                          </select>
+                        ) : (
+                          <button
+                            type="button"
+                            className="row-delete-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteRow(viewName, rowIndex);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        )}
                       </td>
                     )}
                   </tr>
@@ -2402,20 +2871,6 @@ export default function VatFillingPreview() {
           {/* 1️⃣ Tabs on the left */}
           <div className="seg seg-black">
             <button
-              className={`seg-btn ${view === "bank" ? "active" : ""}`}
-              onClick={() => setView("bank")}
-              title="Show Bank Statement rows"
-            >
-              Bank Statement
-            </button>
-            <button
-              className={`seg-btn ${view === "bankRecon" ? "active" : ""}`}
-              onClick={() => setView("bankRecon")}
-              title="Show Bank Reconciliation"
-            >
-              Bank Reconciliation
-            </button>
-            <button
               className={`seg-btn ${view === "sales" ? "active" : ""}`}
               onClick={() => setView("sales")}
               title="Show Sales rows"
@@ -2437,6 +2892,13 @@ export default function VatFillingPreview() {
               Others
             </button>
             <button
+              className={`seg-btn ${view === "placeOfSupply" ? "active" : ""}`}
+              onClick={() => setView("placeOfSupply")}
+              title="Show Place of Supply"
+            >
+              Place of Supply
+            </button>
+            <button
               className={`seg-btn ${view === "salesTotal" ? "active" : ""}`}
               onClick={() => setView("salesTotal")}
               title="Show Sales Total sheet"
@@ -2450,6 +2912,24 @@ export default function VatFillingPreview() {
             >
               Purchase Total
             </button>
+            {tabVisibility.bank && (
+              <button
+                className={`seg-btn ${view === "bank" ? "active" : ""}`}
+                onClick={() => setView("bank")}
+                title="Show Bank Statement rows"
+              >
+                Bank Statement
+              </button>
+            )}
+            {tabVisibility.bankRecon && (
+              <button
+                className={`seg-btn ${view === "bankRecon" ? "active" : ""}`}
+                onClick={() => setView("bankRecon")}
+                title="Show Bank Reconciliation"
+              >
+                Bank Reconciliation
+              </button>
+            )}
             <button
               className={`seg-btn ${view === "vatSummary" ? "active" : ""}`}
               onClick={() => setView("vatSummary")}
@@ -2484,14 +2964,100 @@ export default function VatFillingPreview() {
 
       {/* Table Card */}
       <div className="result-card">
-        {view === "vatReturn"
-          ? renderVatReturn()
-          : renderTable(
-              current.columns,
-              current.rows,
-              "No data to display",
-              view
+        <div className="result-card-body">
+          <div className="result-main-pane" ref={editablePaneRef}>
+            {view === "vatReturn"
+              ? renderVatReturn()
+              : renderTable(
+                current.columns,
+                current.rows,
+                "No data to display",
+                view
+              )}
+          </div>
+
+          <aside className="result-doc-pane" aria-label="Document preview">
+            <div className="result-doc-pane-head">
+              <div className="result-doc-title">Verification Document</div>
+              <div className="result-doc-subtitle">
+                {activeDocument
+                  ? activeDocument.label || "Uploaded document"
+                  : "Select a row with an uploaded document"}
+              </div>
+            </div>
+
+            {contextualDocuments.length > 1 && (
+              <div className="result-doc-tabs">
+                {contextualDocuments.map((doc) => (
+                  <button
+                    key={doc.id}
+                    type="button"
+                    className={`result-doc-tab ${doc.id === activeDocument?.id ? "active" : ""}`}
+                    onClick={() => setActiveDocumentId(doc.id)}
+                  >
+                    {doc.role === "invoice"
+                      ? "Invoice"
+                      : doc.role === "bank"
+                        ? "Bank"
+                        : "Document"}
+                  </button>
+                ))}
+              </div>
             )}
+
+            <div className="result-doc-pane-body">
+              {!activeDocument ? (
+                <div className="result-doc-empty">
+                  No uploaded document is available for the current selection.
+                </div>
+              ) : (
+                <>
+                  <div className="result-doc-actions">
+                    <button
+                      type="button"
+                      className="btn btn-outline"
+                      onClick={() => setPreview(activeDocument)}
+                    >
+                      Open Preview
+                    </button>
+                    <a
+                      className="btn btn-outline"
+                      href={activeDocument.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      download
+                    >
+                      Download
+                    </a>
+                  </div>
+
+                  <div className="result-doc-viewer">
+                    {activeDocument.type === "pdf" ? (
+                      <PdfViewer
+                        key={activeDocument.id}
+                        fileUrl={activeDocument.url}
+                        controls={{
+                          prev: <span>{"<"}</span>,
+                          next: <span>{">"}</span>,
+                        }}
+                      />
+                    ) : (
+                      <ImageViewer
+                        key={activeDocument.id}
+                        src={activeDocument.url}
+                        alt={activeDocument.label || "Uploaded document"}
+                        initialScale={1}
+                        minScale={0.4}
+                        maxScale={5}
+                        step={0.2}
+                      />
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          </aside>
+        </div>
         <div className="result-card-footer">
           <button
             type="button"
@@ -2502,8 +3068,8 @@ export default function VatFillingPreview() {
             {isExistingRun
               ? "Save Changes"
               : draftSaved
-              ? "Draft Saved"
-              : "Save Draft"}
+                ? "Draft Saved"
+                : "Save Draft"}
           </button>
           {/* <button type="button" className="btn btn-black">
             Verify

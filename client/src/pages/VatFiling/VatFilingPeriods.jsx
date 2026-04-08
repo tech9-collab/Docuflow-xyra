@@ -126,12 +126,125 @@ export default function VatFilingPeriods() {
   // ✅ Open modal in ADD mode
   const openAddPeriodModal = () => {
     setEditingPeriod(null); // make sure we're in add mode
+    setSubmitDate("");
+    setStatus("not_started");
+
+    // Auto-fill logic
+    if (customer) {
+      console.log("Auto-filling for customer:", customer.customer_name);
+      console.log("Current periods count:", periods.length);
+      if (periods.length === 0) {
+        // Try First VAT Period from customer profile
+        console.log("Using first period from profile:", customer.first_vat_filing_period);
+        if (customer.first_vat_filing_period) {
+          const range = parseVatPeriodString(customer.first_vat_filing_period);
+          if (range) {
+            console.log("Parsed range:", range);
+            setPeriodFrom(toDateInput(range.from));
+            setPeriodTo(toDateInput(range.to));
+            // Use saved due date if available, else calculate (standard 28th of next month)
+            setDueDate(toDateInput(customer.vat_return_due_date) || calculateDueDate(range.to));
+          } else {
+            console.warn("Could not parse first_vat_filing_period string");
+            resetAddPeriodDates();
+          }
+        } else if (customer.vat_registered_date && customer.vat_reporting_period) {
+          // Fallback: derive from registration date
+          const from = new Date(customer.vat_registered_date);
+          const to = new Date(from);
+          if (customer.vat_reporting_period === "monthly") {
+            to.setMonth(to.getMonth() + 1);
+            to.setDate(0);
+          } else {
+            to.setMonth(to.getMonth() + 3);
+            to.setDate(0);
+          }
+          setPeriodFrom(toDateInput(from));
+          setPeriodTo(toDateInput(to));
+          setDueDate(calculateDueDate(to));
+        } else {
+          resetAddPeriodDates();
+        }
+      } else {
+        // Suggest next period based on latest period_to
+        const sorted = [...periods].sort((a, b) => new Date(b.period_to) - new Date(a.period_to));
+        const latest = sorted[0];
+        const nextFrom = new Date(latest.period_to);
+        nextFrom.setDate(nextFrom.getDate() + 1);
+
+        const nextTo = new Date(nextFrom);
+        if (customer.vat_reporting_period === "monthly") {
+          nextTo.setMonth(nextTo.getMonth() + 1);
+          nextTo.setDate(0);
+        } else {
+          nextTo.setMonth(nextTo.getMonth() + 3);
+          nextTo.setDate(0);
+        }
+        setPeriodFrom(toDateInput(nextFrom));
+        setPeriodTo(toDateInput(nextTo));
+        setDueDate(calculateDueDate(nextTo));
+      }
+    } else {
+      resetAddPeriodDates();
+    }
+
+    setIsPeriodModalOpen(true);
+  };
+
+  const resetAddPeriodDates = () => {
     setPeriodFrom("");
     setPeriodTo("");
     setDueDate("");
-    setSubmitDate("");
-    setStatus("not_started");
-    setIsPeriodModalOpen(true);
+  };
+
+  // Helper to parse VAT period string "1 Jan 2024 - 31 Mar 2024" or "01/12/2023 - 29/02/2024"
+  const parseVatPeriodString = (str) => {
+    if (!str) return null;
+    const parts = str.split(/\s*[-–—]| to \s*/i).map(p => p.trim());
+    if (parts.length !== 2) return null;
+
+    const from = parseFlexibleDate(parts[0]);
+    const to = parseFlexibleDate(parts[1]);
+
+    if (!from || !to) return null;
+    return { from, to };
+  };
+
+  // Helper to handle DD/MM/YYYY besides standard JS parse
+  const parseFlexibleDate = (s) => {
+    if (!s) return null;
+    // 1. Try standard parse (handles ISO, "Jan 1, 2024", etc.)
+    const d = new Date(s);
+    if (!isNaN(d.getTime())) {
+      // Check if it looks like DD/MM/YYYY but JS parsed it as MM/DD/YYYY
+      // (e.g. 01/12/2023 parsed as Jan 12)
+      if (s.includes("/") && !s.includes("-") && s.split("/")[0].length <= 2) {
+        // Continue to explicit parse below
+      } else {
+        return d;
+      }
+    }
+
+    // 2. Explicitly handle DD/MM/YYYY
+    const ddmm = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+    if (ddmm) {
+      const day = parseInt(ddmm[1], 10);
+      const month = parseInt(ddmm[2], 10) - 1;
+      const year = parseInt(ddmm[3], 10);
+      return new Date(year, month, day);
+    }
+    return isNaN(d.getTime()) ? null : d;
+  };
+
+  // Helper to calculate UAE VAT Due Date (28th of month following period end)
+  const calculateDueDate = (periodTo) => {
+    if (!periodTo) return "";
+    const d = new Date(periodTo);
+    // Move to next month
+    d.setMonth(d.getMonth() + 1);
+    // Set to 28th
+    d.setDate(28);
+    return toDateInput(d);
   };
 
   // ✅ Open modal in EDIT mode with values from row

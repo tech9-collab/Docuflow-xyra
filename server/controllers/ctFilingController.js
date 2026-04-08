@@ -566,10 +566,10 @@ export async function generateCombinedExcel(req, res) {
     if (bankData && Array.isArray(bankData.rows) && bankData.rows.length > 0) {
       const bankOrder = Array.isArray(bankData.columns)
         ? bankData.columns
-            .map((c) =>
-              typeof c === "string" ? c : c.key ?? c.field ?? c.accessor ?? ""
-            )
-            .filter(Boolean)
+          .map((c) =>
+            typeof c === "string" ? c : c.key ?? c.field ?? c.accessor ?? ""
+          )
+          .filter(Boolean)
         : [];
 
       const effectiveOrder =

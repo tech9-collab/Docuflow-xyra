@@ -2,16 +2,12 @@ import { useLocation } from "react-router-dom";
 import { useMemo, useState } from "react";
 import axios from "axios";
 import "./InvoiceTable.css";
+import { API_BASE, BACKEND_ORIGIN } from "../../helper/helper";
 
 import PdfViewer from "../../components/PdfViewer/PdfViewer";
 import ImageViewer from "../../components/ImageViewer/ImageViewer";
 import { X } from "lucide-react";
 
-const RAW_API_BASE =
-  import.meta.env.VITE_API_BASE || "http://localhost:3001/api";
-
-const API_BASE = RAW_API_BASE.replace(/\/$/, "");
-const BACKEND_ORIGIN = API_BASE.replace(/\/api$/i, "");
 
 const UAE_SALES_ORDER = [
   "DATE",
@@ -97,8 +93,8 @@ export default function InvoiceTable() {
     const fallbackRows = Array.isArray(uaePurchaseRows) ? uaePurchaseRows : [];
     const rows = (table.rows || []).length
       ? (table.rows || []).filter(
-          (r) => String(r.TYPE || "").toLowerCase() === "purchase"
-        )
+        (r) => String(r.TYPE || "").toLowerCase() === "purchase"
+      )
       : fallbackRows;
     return {
       columns: UAE_PURCHASE_ORDER.map((k) => ({ key: k, label: k })),
@@ -118,8 +114,8 @@ export default function InvoiceTable() {
     const fallbackRows = Array.isArray(uaeSalesRows) ? uaeSalesRows : [];
     const rows = (table.rows || []).length
       ? (table.rows || []).filter(
-          (r) => String(r.TYPE || "").toLowerCase() === "sales"
-        )
+        (r) => String(r.TYPE || "").toLowerCase() === "sales"
+      )
       : fallbackRows;
     return {
       columns: UAE_SALES_ORDER.map((k) => ({ key: k, label: k })),
@@ -139,9 +135,9 @@ export default function InvoiceTable() {
     const fallbackRows = Array.isArray(othersRows) ? othersRows : [];
     const rows = (table.rows || []).length
       ? (table.rows || []).filter((r) => {
-          const t = String(r.TYPE || "").toLowerCase();
-          return t === "other" || t === "others";
-        })
+        const t = String(r.TYPE || "").toLowerCase();
+        return t === "other" || t === "others";
+      })
       : fallbackRows;
     return {
       columns: UAE_OTHERS_ORDER.map((k) => ({ key: k, label: k })),
@@ -161,8 +157,8 @@ export default function InvoiceTable() {
     view === "sales"
       ? salesData
       : view === "others"
-      ? othersData
-      : purchaseData;
+        ? othersData
+        : purchaseData;
 
   const numericKeys = new Set([
     "BEFORE TAX AMOUNT",
@@ -206,8 +202,8 @@ export default function InvoiceTable() {
       view === "sales"
         ? "Zoho_Sales_Template.xlsx"
         : view === "purchase"
-        ? "Zoho_Purchase_Template.xlsx"
-        : "Zoho_Others_Template.xlsx";
+          ? "Zoho_Purchase_Template.xlsx"
+          : "Zoho_Others_Template.xlsx";
 
     try {
       const res = await axios.get(zohoUrl, {

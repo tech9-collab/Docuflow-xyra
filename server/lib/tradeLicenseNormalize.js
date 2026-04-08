@@ -37,7 +37,11 @@ export const TL_COLUMNS = [
     { key: "MANAGERS", label: "Managers" },
     { key: "ACTIVITIES", label: "Activities" },
     { key: "ACTIVITIES_CODE", label: "Code" },
+    { key: "ISSUING_AUTHORITY", label: "Issuing Authority" },
+    { key: "VAT_TRN", label: "VAT TRN" },
+    { key: "VAT_REGISTERED_DATE", label: "VAT Reg Date" },
     { key: "SOURCE", label: "Source" },
+    { key: "SHAREHOLDERS", label: "Shareholders" },
 ];
 
 export function normalizeTLJson(j, sourceName = null) {
@@ -53,7 +57,20 @@ export function normalizeTLJson(j, sourceName = null) {
         MANAGERS: clean(j?.managers),
         ACTIVITIES: clean(j?.activities),
         ACTIVITIES_CODE: clean(j?.activities_code),
+        ISSUING_AUTHORITY: clean(j?.issuing_authority),
+        IS_FREEZONE: j?.is_freezone === true || String(j?.is_freezone).toLowerCase() === "true",
+        VAT_TRN: clean(j?.vat_trn)?.replace(/\s+/g, "") || null,
+        VAT_REGISTERED_DATE: toISOorOriginal(j?.vat_registered_date),
+        FIRST_VAT_PERIOD: clean(j?.first_vat_period),
+        VAT_RETURN_DUE_DATE: toISOorOriginal(j?.vat_return_due_date),
         SOURCE: clean(sourceName),
+        SHAREHOLDERS: Array.isArray(j?.shareholders)
+            ? j.shareholders.map((s) => ({
+                name: clean(s.name),
+                nationality: clean(s.nationality),
+                share_percentage: clean(s.share_percentage),
+            }))
+            : null,
     };
     return row;
 }

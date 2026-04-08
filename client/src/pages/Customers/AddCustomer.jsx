@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Save, Plus, Trash2, UploadCloud, Loader2 } from "lucide-react";
 import "./AddCustomer.css";
 import { createCustomer, extractTradeLicense } from "../../helper/helper";
+import { TRADE_LICENSE_AUTHORITIES } from "../../constants/authorities";
 
 const REQUIRED_FIELD_LABELS = [
   ["customerName", "Customer Name"],
   ["email", "Email ID"],
   ["address", "Address"],
-  ["mobile", "Mobile No"],
   ["country", "Country"],
   ["entityType", "Entity Type"],
   ["entitySubType", "Entity Sub Type"],
@@ -25,17 +25,29 @@ const REQUIRED_FIELD_LABELS = [
   ["firstVatFilingPeriod", "First VAT Return Period"],
   ["vatReturnDueDate", "VAT Return Due Date"],
   ["vatReportingPeriod", "Reporting Period"],
-  ["ctTaxTreatment", "Corporate Tax Treatment"],
-  ["ctTrn", "Corporate Tax TRN"],
-  ["ctRegisteredDate", "CT Registered Date"],
-  ["coporateTaxPeriod", "Corporate Tax Period"],
-  ["firstCtPeriodStartDate", "First Corporate Tax Period Start Date"],
-  ["firstCtPeriodEndDate", "First Corporate Tax Period End Date"],
-  ["firstCtReturnDueDate", "First Corporate Tax Return Filing Due Date"],
 ];
 
 function getMissingRequiredFields(form) {
+  const isVatReg = [
+    "vat_registered",
+    "vat_registered_dz",
+    "gcc_vat_registered",
+  ].includes(form.vatTaxTreatment);
+
+  const vatSpecificFields = [
+    "vatTrn",
+    "vatRegisteredDate",
+    "firstVatFilingPeriod",
+    "vatReturnDueDate",
+    "vatReportingPeriod",
+  ];
+
   return REQUIRED_FIELD_LABELS.filter(([field]) => {
+    // If not VAT registered, skip VAT-specific fields
+    if (!isVatReg && vatSpecificFields.includes(field)) {
+      return false;
+    }
+
     if (field === "isFreezone") {
       return typeof form.isFreezone !== "boolean";
     }
@@ -95,6 +107,9 @@ export default function AddCustomer() {
     ctCertificateTax: null,
   });
 
+  const [showCustomAuthority, setShowCustomAuthority] = useState(false);
+  const [isExtractingVat, setIsExtractingVat] = useState(false);
+
   // Business documents (single upload + document type, multiple rows)
   const [businessDocuments, setBusinessDocuments] = useState([
     { docType: "", file: null, isExtracting: false },
@@ -107,7 +122,25 @@ export default function AddCustomer() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => {
+      const next = { ...prev, [name]: value };
+
+      if (name === "vatTaxTreatment") {
+        const isVatReg = ["vat_registered", "vat_registered_dz", "gcc_vat_registered"].includes(value);
+        if (isVatReg && prev.vatInfoCertificate) {
+          handleVatExtract(prev.vatInfoCertificate);
+        } else if (!isVatReg) {
+          // Clear VAT fields when switching to Non VAT
+          next.vatTrn = "";
+          next.vatRegisteredDate = "";
+          next.firstVatFilingPeriod = "";
+          next.vatReturnDueDate = "";
+          next.vatReportingPeriod = "";
+          next.vatInfoCertificate = null;
+        }
+      }
+      return next;
+    });
   };
 
   const handleCheckboxChange = (e) => {
@@ -122,6 +155,11 @@ export default function AddCustomer() {
       ...prev,
       [name]: file,
     }));
+
+    const isVatReg = ["vat_registered", "vat_registered_dz", "gcc_vat_registered"].includes(form.vatTaxTreatment);
+    if (name === "vatInfoCertificate" && file && isVatReg) {
+      handleVatExtract(file);
+    }
   };
 
   // Business document handlers
@@ -129,8 +167,9 @@ export default function AddCustomer() {
     setBusinessDocuments((prev) => {
       const next = [...prev];
       next[index] = { ...next[index], docType: value };
-      // If file exists and docType is trade_license, maybe extract
-      if (value === "trade_license" && next[index].file) {
+      // Check for document types that support auto-fill extraction
+      const supportsExtraction = ["trade_license", "moa", "incorporation"].includes(value);
+      if (supportsExtraction && next[index].file) {
         handleExtract(index, next[index].file);
       }
       return next;
@@ -142,11 +181,36 @@ export default function AddCustomer() {
     setBusinessDocuments((prev) => {
       const next = [...prev];
       next[index] = { ...next[index], file };
-      if (file && next[index].docType === "trade_license") {
+      const supportsExtraction = ["trade_license", "moa", "incorporation"].includes(next[index].docType);
+      if (file && supportsExtraction) {
         handleExtract(index, file);
       }
       return next;
     });
+  };
+
+  const handleVatExtract = async (file) => {
+    if (!file) return;
+    setIsExtractingVat(true);
+    try {
+      console.log("Starting VAT extraction for:", file.name);
+      const data = await extractTradeLicense(file);
+      console.log("Extracted data:", data);
+      if (data) {
+        setForm((prev) => ({
+          ...prev,
+          vatTrn: data.VAT_TRN || prev.vatTrn || "",
+          vatRegisteredDate: data.VAT_REGISTERED_DATE || prev.vatRegisteredDate || "",
+          firstVatFilingPeriod: data.FIRST_VAT_PERIOD || prev.firstVatFilingPeriod || "",
+          vatReturnDueDate: data.VAT_RETURN_DUE_DATE || prev.vatReturnDueDate || "",
+        }));
+        console.log("VAT fields populated.");
+      }
+    } catch (err) {
+      console.error("VAT extraction failed:", err.message);
+    } finally {
+      setIsExtractingVat(false);
+    }
   };
 
   const handleExtract = async (index, file) => {
@@ -163,8 +227,19 @@ export default function AddCustomer() {
         let eType = "";
         const fType = (data.FORMATION_TYPE || "").toLowerCase();
         if (fType.includes("llc") || fType.includes("limited liability")) {
-            eType = "legal_llc";
+          eType = "legal_llc";
         }
+
+        const rawAuthority = data.ISSUING_AUTHORITY || "";
+        const extractedAuthority = rawAuthority.trim();
+        const isPredefined = TRADE_LICENSE_AUTHORITIES.some(
+          (auth) => auth.toLowerCase().trim() === extractedAuthority.toLowerCase()
+        );
+
+        // Find the exact matching string from the list if it exists
+        const matchedAuthority = isPredefined
+          ? TRADE_LICENSE_AUTHORITIES.find(a => a.toLowerCase().trim() === extractedAuthority.toLowerCase())
+          : extractedAuthority;
 
         setForm((prev) => ({
           ...prev,
@@ -172,11 +247,26 @@ export default function AddCustomer() {
           address: data.ADDRESS || prev.address,
           entityType: eType || prev.entityType,
           dateOfIncorporation: data.LICENSE_FORMATION_DATE || prev.dateOfIncorporation,
+          tradeLicenseAuthority: (matchedAuthority || prev.tradeLicenseAuthority),
           tradeLicenseNumber: data.LICENSE_NUMBER || prev.tradeLicenseNumber,
           licenseIssueDate: data.ISSUE_DATE || prev.licenseIssueDate,
           licenseExpiryDate: data.EXPIRY_DATE || prev.licenseExpiryDate,
           businessActivity: data.ACTIVITIES || prev.businessActivity,
+          isFreezone: data.IS_FREEZONE ?? prev.isFreezone,
         }));
+
+        if (data.SHAREHOLDERS && data.SHAREHOLDERS.length > 0) {
+          setShareholders(data.SHAREHOLDERS.map(s => ({
+            ownerType: "Individual", // Default to individual, can be changed
+            name: s.name || "",
+            nationality: s.nationality || "",
+            sharePercentage: s.share_percentage || ""
+          })));
+        }
+
+        if (extractedAuthority) {
+          setShowCustomAuthority(!isPredefined);
+        }
       }
     } catch (err) {
       console.warn("Auto-fill extraction failed:", err.message);
@@ -334,14 +424,13 @@ export default function AddCustomer() {
               />
             </div>
             <div className="field">
-              <label>Mobile No *</label>
+              <label>Mobile No</label>
               <input
                 type="text"
                 name="mobile"
                 value={form.mobile}
                 onChange={handleInputChange}
                 placeholder="+971 ..."
-                required
               />
             </div>
             <div className="field">
@@ -505,14 +594,45 @@ export default function AddCustomer() {
 
               <div className="field">
                 <label>Trade License Issuing Authority *</label>
-                <input
-                  type="text"
-                  name="tradeLicenseAuthority"
-                  value={form.tradeLicenseAuthority}
-                  onChange={handleInputChange}
-                  placeholder="DED, Freezone authority, etc."
+                <select
+                  name="tradeLicenseAuthoritySelect"
+                  value={
+                    showCustomAuthority
+                      ? "__custom__"
+                      : form.tradeLicenseAuthority || ""
+                  }
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === "__custom__") {
+                      setShowCustomAuthority(true);
+                      setForm((p) => ({ ...p, tradeLicenseAuthority: "" }));
+                    } else {
+                      setShowCustomAuthority(false);
+                      setForm((p) => ({ ...p, tradeLicenseAuthority: val }));
+                    }
+                  }}
                   required
-                />
+                >
+                  <option value="">Select Authority</option>
+                  {TRADE_LICENSE_AUTHORITIES.map((auth) => (
+                    <option key={auth} value={auth}>
+                      {auth}
+                    </option>
+                  ))}
+                  <option value="__custom__">Other (Enter manually)</option>
+                </select>
+
+                {showCustomAuthority && (
+                  <input
+                    type="text"
+                    name="tradeLicenseAuthority"
+                    style={{ marginTop: "0.5rem" }}
+                    value={form.tradeLicenseAuthority}
+                    onChange={handleInputChange}
+                    placeholder="Enter manual authority name"
+                    required
+                  />
+                )}
               </div>
 
               <div className="field">
@@ -762,11 +882,17 @@ export default function AddCustomer() {
                   <label>VAT Certificate</label>
                   <label className="file-trigger">
                     <div className="file-trigger-main">
-                      <UploadCloud size={16} />
+                      {isExtractingVat ? (
+                        <Loader2 className="animate-spin" size={16} />
+                      ) : (
+                        <UploadCloud size={16} />
+                      )}
                       <span>
-                        {form.vatInfoCertificate
-                          ? form.vatInfoCertificate.name
-                          : "Upload VAT certificate"}
+                        {isExtractingVat
+                          ? "Analyzing document..."
+                          : form.vatInfoCertificate
+                            ? form.vatInfoCertificate.name
+                            : "Upload VAT certificate"}
                       </span>
                     </div>
                     <span className="file-trigger-sub">
@@ -782,63 +908,65 @@ export default function AddCustomer() {
                 </div>
               )}
 
-              <div className="field">
-                <label>Tax Registration Number *</label>
-                <input
-                  type="text"
-                  name="vatTrn"
-                  value={form.vatTrn}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="field">
-                <label>VAT Registered Date *</label>
-                <input
-                  type="date"
-                  name="vatRegisteredDate"
-                  value={form.vatRegisteredDate}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="field">
-                <label>First VAT Return Period *</label>
-                <input
-                  type="text"
-                  name="firstVatFilingPeriod"
-                  value={form.firstVatFilingPeriod}
-                  onChange={handleInputChange}
-                  placeholder="e.g. Jan–Mar 2024"
-                />
-              </div>
-
-              <div className="field">
-                <label>VAT Return Due Date *</label>
-                <input
-                  type="date"
-                  name="vatReturnDueDate"
-                  value={form.vatReturnDueDate}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="field">
-                <label>Reporting Period *</label>
-                <select
-                  name="vatReportingPeriod"
-                  value={form.vatReportingPeriod}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Select reporting period</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="quarterly">Quarterly</option>
-                </select>
-              </div>
+              {showVatCertificateUpload && (
+                <>
+                  <div className="field">
+                    <label>Tax Registration Number {showVatCertificateUpload && "*"}</label>
+                    <input
+                      type="text"
+                      name="vatTrn"
+                      value={form.vatTrn}
+                      onChange={handleInputChange}
+                      placeholder="100xxxxxxxxxxxx"
+                      required={showVatCertificateUpload}
+                    />
+                  </div>
+                  <div className="field">
+                    <label>VAT Registered Date {showVatCertificateUpload && "*"}</label>
+                    <input
+                      type="date"
+                      name="vatRegisteredDate"
+                      value={form.vatRegisteredDate}
+                      onChange={handleInputChange}
+                      required={showVatCertificateUpload}
+                    />
+                  </div>
+                  <div className="field">
+                    <label>First VAT Return Period {showVatCertificateUpload && "*"}</label>
+                    <input
+                      type="text"
+                      name="firstVatFilingPeriod"
+                      value={form.firstVatFilingPeriod}
+                      onChange={handleInputChange}
+                      placeholder="e.g. 1 Dec 2023 - 29 Feb 2024"
+                      required={showVatCertificateUpload}
+                    />
+                  </div>
+                  <div className="field">
+                    <label>VAT Return Due Date {showVatCertificateUpload && "*"}</label>
+                    <input
+                      type="date"
+                      name="vatReturnDueDate"
+                      value={form.vatReturnDueDate}
+                      onChange={handleInputChange}
+                      required={showVatCertificateUpload}
+                    />
+                  </div>
+                  <div className="field">
+                    <label>Reporting Period {showVatCertificateUpload && "*"}</label>
+                    <select
+                      name="vatReportingPeriod"
+                      value={form.vatReportingPeriod}
+                      onChange={handleInputChange}
+                      required={showVatCertificateUpload}
+                    >
+                      <option value="">Select period</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="quarterly">Quarterly</option>
+                    </select>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -847,12 +975,11 @@ export default function AddCustomer() {
             <h3>Corporate Tax Information</h3>
             <div className="card-grid-3">
               <div className="field">
-                <label>Tax Treatment *</label>
+                <label>Tax Treatment</label>
                 <select
                   name="ctTaxTreatment"
                   value={form.ctTaxTreatment}
                   onChange={handleInputChange}
-                  required
                 >
                   <option value="">Select tax treatment</option>
                   <option value="corporate_tax_registered">
@@ -893,29 +1020,27 @@ export default function AddCustomer() {
               )}
 
               <div className="field">
-                <label>Corporate Tax TRN *</label>
+                <label>Corporate Tax TRN</label>
                 <input
                   type="text"
                   name="ctTrn"
                   value={form.ctTrn}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
 
               <div className="field">
-                <label>CT Registered Date *</label>
+                <label>CT Registered Date</label>
                 <input
                   type="date"
                   name="ctRegisteredDate"
                   value={form.ctRegisteredDate}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
 
               <div className="field">
-                <label>Corporate Tax Period *</label>
+                <label>Corporate Tax Period</label>
                 <input
                   type="text"
                   name="coporateTaxPeriod"
@@ -926,35 +1051,32 @@ export default function AddCustomer() {
               </div>
 
               <div className="field">
-                <label>First Corporate Tax Period Start Date *</label>
+                <label>First Corporate Tax Period Start Date</label>
                 <input
                   type="date"
                   name="firstCtPeriodStartDate"
                   value={form.firstCtPeriodStartDate}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
 
               <div className="field">
-                <label>First Corporate Tax Period End Date *</label>
+                <label>First Corporate Tax Period End Date</label>
                 <input
                   type="date"
                   name="firstCtPeriodEndDate"
                   value={form.firstCtPeriodEndDate}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
 
               <div className="field">
-                <label>First Corporate Tax Return Filing Due Date *</label>
+                <label>First Corporate Tax Return Filing Due Date</label>
                 <input
                   type="date"
                   name="firstCtReturnDueDate"
                   value={form.firstCtReturnDueDate}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
             </div>

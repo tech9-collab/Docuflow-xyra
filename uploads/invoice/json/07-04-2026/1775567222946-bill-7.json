@@ -1,0 +1,56 @@
+{
+  "source": "bill-7.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "Mar 6, 2026",
+      "invoice_number": "BILL-1006",
+      "vendor_name": "krishna",
+      "customer_name": "admin",
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": 5567,
+      "vat": 0,
+      "net_amount": 5567,
+      "line_items": [
+        {
+          "description": "Rent or Lease Payments",
+          "quantity": 1,
+          "unit_price": 5567,
+          "tax_amount": 0,
+          "net_amount": 5567
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": 0,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Bill",
+      "document_category_evidence": {
+        "matched_text": "BILL",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 0.8,
+        "customer_name": 1,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name/TRN not found as vendor or customer on the document.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": "BILL-1006"
+    }
+  ]
+}

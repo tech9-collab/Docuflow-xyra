@@ -1,0 +1,1913 @@
+{
+  "headers": [
+    "Date",
+    "Description",
+    "Reference Number",
+    "Debit",
+    "Credit",
+    "Balance"
+  ],
+  "rows": [
+    {
+      "Date": "02 Jul 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_72426910- T_CEBE4C7DB3B047F3865 D96439CEO0A34",
+      "Reference Number": "033IPPD25183C4ZD",
+      "Debit": "200.00",
+      "Credit": "",
+      "Balance": "13,566.03"
+    },
+    {
+      "Date": "04 Jul 2025",
+      "Description": "Visa Purchase 259 0701 889816 PAK LIYARI RESTAURANT AED DUBAI AED 52.5 0701",
+      "Reference Number": "030POSB251850DWJ",
+      "Debit": "52.50",
+      "Credit": "",
+      "Balance": "13,513.53"
+    },
+    {
+      "Date": "05 Jul 2025",
+      "Description": "Visa Purchase 259 0702 216205 GALA SUPERMARKET LLC SHJ AED DUBAI AED 44.79 0702",
+      "Reference Number": "030POSB251860ear",
+      "Debit": "44.79",
+      "Credit": "",
+      "Balance": "13,468.74"
+    },
+    {
+      "Date": "07 Jul 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_73428042- T_BEA51467ACEB4FDF8BFD E14588252569",
+      "Reference Number": "033IPPD25188A2SJ",
+      "Debit": "4,000.00",
+      "Credit": "",
+      "Balance": "9,468.74"
+    },
+    {
+      "Date": "07 Jul 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_73428257- T_5E449682AB6C4932B9D B1FCD83811837",
+      "Reference Number": "033IPPD25188A2LC",
+      "Debit": "3,500.00",
+      "Credit": "",
+      "Balance": "5,968.74"
+    },
+    {
+      "Date": "07 Jul 2025",
+      "Description": "ATM Cash Withdrawal ITM69117846911-SAHARA CENTRE BSHARJAH AE AED ATM CASH WITHDRAWAL 07-JUL-25 190636",
+      "Reference Number": "038VCAW2518806Vn",
+      "Debit": "1,800.00",
+      "Credit": "",
+      "Balance": "4,168.74"
+    },
+    {
+      "Date": "08 Jul 2025",
+      "Description": "ATM Cash Withdrawal SDU82267848226-BAY AVENUE MALLDUBAI AE AED ATM CASH WITHDRAWAL 08-JUL-25 143600",
+      "Reference Number": "038VCAW2518901U5",
+      "Debit": "200.00",
+      "Credit": "",
+      "Balance": "3,968.74"
+    },
+    {
+      "Date": "08 Jul 2025",
+      "Description": "Outward Clearing Cheque OUTWARD CLEARING002071",
+      "Reference Number": "033CCOU251891516",
+      "Debit": "",
+      "Credit": "6,262.73",
+      "Balance": "10,231.47"
+    },
+    {
+      "Date": "09 Jul 2025",
+      "Description": "Visa Purchase 259 0707 752600 NGC NAFEES WALL PAPE AED DUBAI AED 173.25 0707",
+      "Reference Number": "030POSB251900duM",
+      "Debit": "173.25",
+      "Credit": "",
+      "Balance": "10,058.22"
+    },
+    {
+      "Date": "10 Jul 2025",
+      "Description": "Visa Purchase 259 0708 258152 SKY POOL CLEANING AED ABU DHABI AED 400 0708",
+      "Reference Number": "030POSB251911cc2",
+      "Debit": "400.00",
+      "Credit": "",
+      "Balance": "9,658.22"
+    },
+    {
+      "Date": "11 Jul 2025",
+      "Description": "Visa Purchase 259 0708 342257 KARMA CLASSIC LADIES SALO AED DUBAI AED 126 0708",
+      "Reference Number": "030POSB251920AFh",
+      "Debit": "126.00",
+      "Credit": "",
+      "Balance": "9,532.22"
+    },
+    {
+      "Date": "11 Jul 2025",
+      "Description": "Visa Purchase 259 0709 681299 EMARAT 6470 TAQNIYA S AED DUBAI AED 100 0709",
+      "Reference Number": "030POSB251921KRp",
+      "Debit": "100.00",
+      "Credit": "",
+      "Balance": "9,432.22"
+    },
+    {
+      "Date": "12 Jul 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_74979876- T_8D4D7381549345CEA66 CEDDB59EADAOC",
+      "Reference Number": "033IPPD25193B6BV",
+      "Debit": "1,000.00",
+      "Credit": "",
+      "Balance": "8,432.22"
+    },
+    {
+      "Date": "14 Jul 2025",
+      "Description": "Visa Purchase 259 0710 195014 DAY TO DAY ALNAHDA DXB AED DUBAI AED 139.40710",
+      "Reference Number": "030POSB251950WRE",
+      "Debit": "139.40",
+      "Credit": "",
+      "Balance": "8,292.82"
+    },
+    {
+      "Date": "14 Jul 2025",
+      "Description": "Visa Purchase 259 0710 179110 FAKHRI SWEETS AED DUBAI AED 97 0710",
+      "Reference Number": "030POSB251950zMg",
+      "Debit": "97.00",
+      "Credit": "",
+      "Balance": "8,195.82"
+    },
+    {
+      "Date": "14 Jul 2025",
+      "Description": "Visa Purchase 259 0711 806726 LULUHYPERMARKET QUSAIS AED DUBAI AED 71.05 0711",
+      "Reference Number": "030POSB251952GK9",
+      "Debit": "71.05",
+      "Credit": "",
+      "Balance": "8,124.77"
+    },
+    {
+      "Date": "15 Jul 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_75617890- T_58639E25B0B34872BDC 860A0C44694C2",
+      "Reference Number": "033IPPD25196C1U5",
+      "Debit": "300.00",
+      "Credit": "",
+      "Balance": "7,824.77"
+    },
+    {
+      "Date": "16 Jul 2025",
+      "Description": "IPP TRANSFER AE460400000332352628 001-AAG ADVERTISING LLC -/REF/COMMERCIAL INVESTMENTS - BOMLAEAD_75749327- T_255DD541C55F4D0E920 5337A70831AC2",
+      "Reference Number": "033IPPD25197AOFE",
+      "Debit": "157.50",
+      "Credit": "",
+      "Balance": "7,667.27"
+    },
+    {
+      "Date": "17 Jul 2025",
+      "Description": "ATM Cash Withdrawal SDU82267848226-BAY AVENUE MALLDUBAI AE AED ATM CASH WITHDRAWAL 17- JUL-25 134433",
+      "Reference Number": "038VCAW2519801Bk",
+      "Debit": "700.00",
+      "Credit": "",
+      "Balance": "6,967.27"
+    },
+    {
+      "Date": "17 Jul 2025",
+      "Description": "Visa Purchase 259 0715 669612 ETISALAT DIGITAL APP AED ABU DHABI AED 50 0715",
+      "Reference Number": "030POSB251980Tnr",
+      "Debit": "50.00",
+      "Credit": "",
+      "Balance": "6,917.27"
+    },
+    {
+      "Date": "17 Jul 2025",
+      "Description": "Visa Purchase 259 0715 596101NG CNAFEES WALL PAPE AED DUBAI AED 714 0715",
+      "Reference Number": "030POSB251980WtR",
+      "Debit": "714.00",
+      "Credit": "",
+      "Balance": "6,203.27"
+    },
+    {
+      "Date": "18 Jul 2025",
+      "Description": "Visa Purchase 259 0715 664449 FALAK TAYYEB CAR CARE AED DUBAI AED 52 0715",
+      "Reference Number": "030POSB251990ngh",
+      "Debit": "52.00",
+      "Credit": "",
+      "Balance": "6,151.27"
+    },
+    {
+      "Date": "18 Jul 2025",
+      "Description": "Visa Purchase 259 0716 968536 ETISALAT DIGITAL APP AED ABU DHABI AED 350.3 0716",
+      "Reference Number": "030POSB251991Tnm",
+      "Debit": "350.30",
+      "Credit": "",
+      "Balance": "5,800.97"
+    },
+    {
+      "Date": "19 Jul 2025",
+      "Description": "IPP TRANSFER AE5803400037075484439 01-EXCEL TRADING COMPANY LLC - /REF/ COMMERCIAL INVESTMENTS - BOMLAEAD_76450030- T_E3C8968DD4EF4B69A1A 4380D4B8276D1",
+      "Reference Number": "033IPPD25200A11V",
+      "Debit": "600.00",
+      "Credit": "",
+      "Balance": "5,200.97"
+    },
+    {
+      "Date": "21 Jul 2025",
+      "Description": "ATM Cash Withdrawal 0757 INDEX EXCG HORALANZO757DUBAI AE AED ATM CASH WITHDRAWAL 21-JUL-25 151026",
+      "Reference Number": "030VCAW25202045e",
+      "Debit": "2,200.00",
+      "Credit": "",
+      "Balance": "3,000.97"
+    },
+    {
+      "Date": "22 Jul 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 21JUL2025 – AUTH-ID 392934",
+      "Reference Number": "006ATMF252031826",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "2,998.97"
+    },
+    {
+      "Date": "22 Jul 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 21JUL2025 - AUTH-ID 392934",
+      "Reference Number": "006ATMF252031826",
+      "Debit": "0.10",
+      "Credit": "",
+      "Balance": "2,998.87"
+    },
+    {
+      "Date": "22 Jul 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_77004937- T_04F28605325E414FAA8 8CA8A42967152",
+      "Reference Number": "033IPPD252037196",
+      "Debit": "100.00",
+      "Credit": "",
+      "Balance": "2,898.87"
+    },
+    {
+      "Date": "22 Jul 2025",
+      "Description": "Visa Purchase 259 0720 112927 PIZZA HUT-SAHARA MALL AED SHARJAH AED 75 0720",
+      "Reference Number": "030POSB252030z9d",
+      "Debit": "75.00",
+      "Credit": "",
+      "Balance": "2,823.87"
+    },
+    {
+      "Date": "23 Jul 2025",
+      "Description": "Visa Purchase 259 0721 413432 EMARAT 3760 AL KHUBAIS AED DUBAI AED 80 0721",
+      "Reference Number": "030POSB252041OLO",
+      "Debit": "80.00",
+      "Credit": "",
+      "Balance": "2,743.87"
+    },
+    {
+      "Date": "25 Jul 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_77884709- T_DC7D444FDB6E4A71978 C6B5CCA325F79",
+      "Reference Number": "033IPPD25206D4H7",
+      "Debit": "200.00",
+      "Credit": "",
+      "Balance": "2,543.87"
+    },
+    {
+      "Date": "26 Jul 2025",
+      "Description": "Visa Purchase 259 0724 808640 BOMBAY SWEETS&BAKERIES AED DUBAI AED 29.5 0724",
+      "Reference Number": "030POSB252070ZfA",
+      "Debit": "29.50",
+      "Credit": "",
+      "Balance": "2,514.37"
+    },
+    {
+      "Date": "28 Jul 2025",
+      "Description": "Visa Purchase 259 0724 816506 GALA SUPERMARKET LLC SHJ AED DUBAI AED 28.210724",
+      "Reference Number": "030POSB252091CMW",
+      "Debit": "28.21",
+      "Credit": "",
+      "Balance": "2,486.16"
+    },
+    {
+      "Date": "28 Jul 2025",
+      "Description": "ATM Cash Withdrawal 4505385 ADIB SHAKLAN SM NAHDAH DUBAI AE AED ATM CASH WITHDRAWAL 27-JUL- 25164207",
+      "Reference Number": "030VCAW2520901UI",
+      "Debit": "100.00",
+      "Credit": "",
+      "Balance": "2,386.16"
+    },
+    {
+      "Date": "28 Jul 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 27JUL2025 – AUTH-ID 277565",
+      "Reference Number": "006ATMF25209A1V4",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "2,384.16"
+    },
+    {
+      "Date": "28 Jul 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 27JUL2025 - AUTH-ID 277565",
+      "Reference Number": "006ATMF25209A1V4",
+      "Debit": "0.10",
+      "Credit": "",
+      "Balance": "2,384.06"
+    },
+    {
+      "Date": "28 Jul 2025",
+      "Description": "Visa Purchase 259 0726 652512 ADNOC NAHDA 1 463 AED DUBAI AED 160 0726",
+      "Reference Number": "030POSB2520927E0",
+      "Debit": "160.00",
+      "Credit": "",
+      "Balance": "2,224.06"
+    },
+    {
+      "Date": "28 Jul 2025",
+      "Description": "Visa Purchase 259 0725 159287 GALA SUPERMARKET LLC SHJ AED DUBAI AED 19.2 0725",
+      "Reference Number": "030POSB252092m4E",
+      "Debit": "19.20",
+      "Credit": "",
+      "Balance": "2,204.86"
+    },
+    {
+      "Date": "29 Jul 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE680030012568867920 001 SECUREVERSE TECHNICAL SERVICES LLC /REF/PAYMENT SRN:T516237074 //REC/103250729000829 0000001/SHA",
+      "Reference Number": "033ICLB252100570",
+      "Debit": "",
+      "Credit": "4,000.00",
+      "Balance": "6,204.86"
+    },
+    {
+      "Date": "29 Jul 2025",
+      "Description": "ATM Cash Withdrawal 0757 INDEX EXCG HORALANZO757DUBAI AE AED ATM CASH WITHDRAWAL 29-JUL-25 104847",
+      "Reference Number": "030VCAW2521000Vf",
+      "Debit": "4,000.00",
+      "Credit": "",
+      "Balance": "2,204.86"
+    },
+    {
+      "Date": "29 Jul 2025",
+      "Description": "IPP TRANSFER AE5803400037075484439 01-EXCEL TRADING COMPANY LLC -/REF/ COMMERCIAL INVESTMENTS - BOMLAEAD_78711121- T_AF547B31891F4189B2FO 2D6C63C12938",
+      "Reference Number": "033IPPD25210A7OZ",
+      "Debit": "500.00",
+      "Credit": "",
+      "Balance": "1,704.86"
+    },
+    {
+      "Date": "29 Jul 2025",
+      "Description": "Visa Purchase 259 0726 538420 SMART DUBAI GOVERNMENT AED DUBAI AED 250 0726",
+      "Reference Number": "030POSB2521014LY",
+      "Debit": "250.00",
+      "Credit": "",
+      "Balance": "1,454.86"
+    },
+    {
+      "Date": "29 Jul 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_78856801- T_17F1853B3C20494F9F2B 341DFD15D994",
+      "Reference Number": "033IPPD25210D4MI",
+      "Debit": "200.00",
+      "Credit": "",
+      "Balance": "1,254.86"
+    },
+    {
+      "Date": "30 Jul 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 29JUL2025 – AUTH-ID 120923",
+      "Reference Number": "006ATMF252116880",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "1,252.86"
+    },
+    {
+      "Date": "30 Jul 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 29JUL2025 - AUTH-ID 120923",
+      "Reference Number": "006ATMF252116880",
+      "Debit": "0.10",
+      "Credit": "",
+      "Balance": "1,252.76"
+    },
+    {
+      "Date": "30 Jul 2025",
+      "Description": "Visa Purchase 259 0729 309178 TIM HORTONS AED DUBAI AE AED 36 0729",
+      "Reference Number": "030POSB252110t9v",
+      "Debit": "36.00",
+      "Credit": "",
+      "Balance": "1,216.76"
+    },
+    {
+      "Date": "30 Jul 2025",
+      "Description": "Visa Purchase 259 0728 951361 FEDERAL TAX AUTHORITY AED DUBAI AED 129.13 0728",
+      "Reference Number": "030POSB2521112pl",
+      "Debit": "129.13",
+      "Credit": "",
+      "Balance": "1,087.63"
+    },
+    {
+      "Date": "30 Jul 2025",
+      "Description": "Outward Clearing Cheque OUTWARD CLEARING006149",
+      "Reference Number": "033CCOU252112083",
+      "Debit": "",
+      "Credit": "17,000.00",
+      "Balance": "18,087.63"
+    },
+    {
+      "Date": "30 Jul 2025",
+      "Description": "Visa Purchase 259 0728 828662 THE VAT CONSULTANT AED ABU DHABI AED 525 0728",
+      "Reference Number": "030POSB252111Pxm",
+      "Debit": "525.00",
+      "Credit": "",
+      "Balance": "17,562.63"
+    },
+    {
+      "Date": "31 Jul 2025",
+      "Description": "Visa Purchase 259 0729 122257 NGC NAFEES WALL PAPE AED DUBAI AED 315 0729",
+      "Reference Number": "030POSB252120wvE",
+      "Debit": "315.00",
+      "Credit": "",
+      "Balance": "17,247.63"
+    },
+    {
+      "Date": "31 Jul 2025",
+      "Description": "ATM Cash Withdrawal 00005961 DIB AL NAHDA BRANCH DUBAI AE AED ATM CASH WITHDRAWAL 31-JUL-25 224929",
+      "Reference Number": "030VCAW2521204QM",
+      "Debit": "1,000.00",
+      "Credit": "",
+      "Balance": "16,247.63"
+    },
+    {
+      "Date": "31 Jul 2025",
+      "Description": "Value Added Tax - Output 019101513951",
+      "Reference Number": "099REFEAED 00002",
+      "Debit": "10.00",
+      "Credit": "",
+      "Balance": "16,237.63"
+    },
+    {
+      "Date": "31 Jul 2025",
+      "Description": "Monthly Maintenance Fee 019101513951",
+      "Reference Number": "099REFEAED 00001",
+      "Debit": "200.00",
+      "Credit": "",
+      "Balance": "16,037.63"
+    },
+    {
+      "Date": "01 Aug 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 31JUL2025 – AUTH-ID 514403",
+      "Reference Number": "006ATMF252133259",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "16,035.63"
+    },
+    {
+      "Date": "01 Aug 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 31JUL2025-AUTH-ID 514403",
+      "Reference Number": "006ATMF252133259",
+      "Debit": "0.10",
+      "Credit": "",
+      "Balance": "16,035.53"
+    },
+    {
+      "Date": "01 Aug 2025",
+      "Description": "ATM Cash Withdrawal 4508388 ADIB NESTO AL NAHDA DUBAI AE AED ATM CASH WITHDRAWAL 01-AUG-25 121026",
+      "Reference Number": "030VCAW25213016d",
+      "Debit": "1,400.00",
+      "Credit": "",
+      "Balance": "14,635.53"
+    },
+    {
+      "Date": "02 Aug 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 01AUG2025 – AUTH-ID 710474",
+      "Reference Number": "006ATMF252147139",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "14,633.53"
+    },
+    {
+      "Date": "02 Aug 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 01AUG2025 - AUTH-ID 710474",
+      "Reference Number": "006ATMF252147139",
+      "Debit": "0.10",
+      "Credit": "",
+      "Balance": "14,633.43"
+    },
+    {
+      "Date": "02 Aug 2025",
+      "Description": "ATM Cash Withdrawal 00005961 DIB AL NAHDA BRANCH DUBAI AE AED ATM CASH WITHDRAWAL 02-AUG-25 151747",
+      "Reference Number": "030VCAW2521401gc",
+      "Debit": "1,000.00",
+      "Credit": "",
+      "Balance": "13,633.43"
+    },
+    {
+      "Date": "02 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_80067431-T_A200C9E1CDBB4E57B721 4B6E3B4E72C8",
+      "Reference Number": "033IPPD25214C5K8",
+      "Debit": "200.00",
+      "Credit": "",
+      "Balance": "13,433.43"
+    },
+    {
+      "Date": "04 Aug 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 02AUG2025 - AUTH-ID 368880",
+      "Reference Number": "006ATMF252162418",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "13,431.43"
+    },
+    {
+      "Date": "04 Aug 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 02AUG2025 - AUTH-ID 368880",
+      "Reference Number": "006ATMF252162418",
+      "Debit": "0.10",
+      "Credit": "",
+      "Balance": "13,431.33"
+    },
+    {
+      "Date": "04 Aug 2025",
+      "Description": "Visa Purchase 259 0801 106610 SMART DUBAI GOVERNMENT AED DUBAI AED 310 0801",
+      "Reference Number": "030POSB2521628zj",
+      "Debit": "310.00",
+      "Credit": "",
+      "Balance": "13,121.33"
+    },
+    {
+      "Date": "04 Aug 2025",
+      "Description": "Visa Purchase 259 0802 613716 ΑΜΑΖΟΝ.ΑΕ AED DUBAI AED 379 0802",
+      "Reference Number": "030POSB252162D3G",
+      "Debit": "379.00",
+      "Credit": "",
+      "Balance": "12,742.33"
+    },
+    {
+      "Date": "04 Aug 2025",
+      "Description": "Visa Purchase 259 0801 105629 SMART DUBAI GOVERNMENT AED DUBAI AED 1020 0801",
+      "Reference Number": "030POSB252163YRJ",
+      "Debit": "-1,020.00",
+      "Credit": "",
+      "Balance": "11,722.33"
+    },
+    {
+      "Date": "05 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_80853575- T_F1435DC5BB954FC4AB4 3650139B5BFF8",
+      "Reference Number": "033IPPD25217C2K9",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "11,522.33"
+    },
+    {
+      "Date": "06 Aug 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE1302600010158352569 01 SUPPLY AND DESIGN DECORATION DESIGN /REF/PAY DECOWALLS ADV. 50PERC K47 WALLPAPER INSTALLATION SRN:EPHCOP21807BLKFB //REC/1032508060081250 000001/OUR",
+      "Reference Number": "033|CLB25218A1PL",
+      "Debit": "",
+      "Credit": "+1,155.00",
+      "Balance": "12,677.33"
+    },
+    {
+      "Date": "06 Aug 2025",
+      "Description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 06- AUG-25125855",
+      "Reference Number": "030VCAW25218014n",
+      "Debit": "-1,000.00",
+      "Credit": "",
+      "Balance": "11,677.33"
+    },
+    {
+      "Date": "07 Aug 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 06AUG2025-AUTH-ID 340733",
+      "Reference Number": "006ATMF252194495",
+      "Debit": "-2.00",
+      "Credit": "",
+      "Balance": "11,675.33"
+    },
+    {
+      "Date": "07 Aug 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 06AUG2025-AUTH-ID 340733",
+      "Reference Number": "006ATMF252194495",
+      "Debit": "-0.10",
+      "Credit": "",
+      "Balance": "11,675.23"
+    },
+    {
+      "Date": "08 Aug 2025",
+      "Description": "Visa Purchase 259 0806 477754 SKY POOL CLEANING AED ABU DHABI AED 350 0806",
+      "Reference Number": "030POSB2522009yo",
+      "Debit": "-350.00",
+      "Credit": "",
+      "Balance": "11,325.23"
+    },
+    {
+      "Date": "08 Aug 2025",
+      "Description": "Visa Purchase 259 0806 440231 ETISALAT DIGITAL APP AED ABU DHABI AED 50 0806",
+      "Reference Number": "030POSB252200bEx",
+      "Debit": "-50.00",
+      "Credit": "",
+      "Balance": "11,275.23"
+    },
+    {
+      "Date": "08 Aug 2025",
+      "Description": "Visa Purchase 259 0805 968252 RIVIERE MINERAL WATER AED SHARJAH AED 70 0805",
+      "Reference Number": "030POSB252201BMd",
+      "Debit": "-70.00",
+      "Credit": "",
+      "Balance": "11,205.23"
+    },
+    {
+      "Date": "08 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_81727747- T_F72D4D2AD4E74CE1B36F 2F7BEB3B173B",
+      "Reference Number": "033IPPD25220C3X1",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "11,005.23"
+    },
+    {
+      "Date": "09 Aug 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE640200000031145840 001 MR AKASH PATEL /REF/AEV090855QK6PQR KSCO DAVIS PAT EL V147 SRN:0H90280037835575 //REC/1022508090000187 000005/SHA",
+      "Reference Number": "033|CLB252210558",
+      "Debit": "",
+      "Credit": "+10,594.50",
+      "Balance": "21,599.73"
+    },
+    {
+      "Date": "09 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_81863195- T_E1FB7B4371FC422789193 773D1728745",
+      "Reference Number": "033IPPD25221A365",
+      "Debit": "-800.00",
+      "Credit": "",
+      "Balance": "20,799.73"
+    },
+    {
+      "Date": "11 Aug 2025",
+      "Description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 11-AUG- 25 115800",
+      "Reference Number": "030VCAW2522303OQ",
+      "Debit": "-3,000.00",
+      "Credit": "",
+      "Balance": "17,799.73"
+    },
+    {
+      "Date": "11 Aug 2025",
+      "Description": "Visa Purchase 259 0809 823354 ADNOC DUBAI HILLS 252 AED DUBAI AED 170 0809",
+      "Reference Number": "030POSB252232kHx",
+      "Debit": "-170.00",
+      "Credit": "",
+      "Balance": "17,629.73"
+    },
+    {
+      "Date": "12 Aug 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 11AUG2025 – AUTH-ID 787114",
+      "Reference Number": "006ATMF252244901",
+      "Debit": "-2.00",
+      "Credit": "",
+      "Balance": "17,627.73"
+    },
+    {
+      "Date": "12 Aug 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 11AUG2025-AUTH-ID 787114",
+      "Reference Number": "006ATMF252244901",
+      "Debit": "-0.10",
+      "Credit": "",
+      "Balance": "17,627.63"
+    },
+    {
+      "Date": "12 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_82633063-T_B7C84E56BD11494C9C4EBACEOFA2B203",
+      "Reference Number": "033IPPD25224C1S4",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "17,427.63"
+    },
+    {
+      "Date": "13 Aug 2025",
+      "Description": "Visa Purchase 259 0810 320298 NOON FOOD FOOD DELIVERY AED DUBAI AED 45.5 0810",
+      "Reference Number": "030POSB2522500C8",
+      "Debit": "-45.50",
+      "Credit": "",
+      "Balance": "17,382.13"
+    },
+    {
+      "Date": "13 Aug 2025",
+      "Description": "Visa Purchase 259 0810 548942 NOON FOOD FOOD DELIVERY AED DUBAI AED 53.09 0810",
+      "Reference Number": "030POSB252251Ald",
+      "Debit": "-53.09",
+      "Credit": "",
+      "Balance": "17,329.04"
+    },
+    {
+      "Date": "13 Aug 2025",
+      "Description": "IPP TRANSFER AE3302300000010054668 73-NAZIM FIXER -/REF/ COMMISSIONPAYMENT - BOMLAEAD_82943457- T_5BE9A428811E407BB4F8C8D94A91DCD9",
+      "Reference Number": "033IPPD25225D2IO",
+      "Debit": "-500.00",
+      "Credit": "",
+      "Balance": "16,829.04"
+    },
+    {
+      "Date": "13 Aug 2025",
+      "Description": "IPP TRANSFER AE6903400037074499823 01 - DAVIS INTERIORS-/REF/ COMMISSION PAYMENT - BOMLAEAD_82943967- T_A310589B39D446F48B7E535268CCAC2B",
+      "Reference Number": "033IPPD25225D274",
+      "Debit": "-2,018.00",
+      "Credit": "",
+      "Balance": "14,811.04"
+    },
+    {
+      "Date": "15 Aug 2025",
+      "Description": "Visa Purchase 259 0812 450060 LULUHYPERMARKET QUSAIS AED DUBAI AED 69 0812",
+      "Reference Number": "030POSB252270H9F",
+      "Debit": "-69.00",
+      "Credit": "",
+      "Balance": "14,742.04"
+    },
+    {
+      "Date": "15 Aug 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE240260001015036067 301 CLASSIC HOME INTERIOR DECORATION LL /REF/2500288 5000AED 2500355 5000AE D SRN:EPHCOP22707E99KS //REC/1032508150144970 000001/OUR",
+      "Reference Number": "033ICLB25227BOQW",
+      "Debit": "",
+      "Credit": "+10,000.00",
+      "Balance": "24,742.04"
+    },
+    {
+      "Date": "15 Aug 2025",
+      "Description": "Visa Purchase 259 0813 767841NG CNAFEES WALL PAPE AED DUBAI AED 556.5 0813",
+      "Reference Number": "030POSB252271Egk",
+      "Debit": "-556.50",
+      "Credit": "",
+      "Balance": "24,185.54"
+    },
+    {
+      "Date": "15 Aug 2025",
+      "Description": "IPP TRANSFER AE3302300000010054668 73-NAZIM FIXER -/REF/ COMMISSION PAYMENT - BOMLAEAD_83429404-T_8B5505EA0917447BB9C 42C17221D17C3",
+      "Reference Number": "033IPPD25227C6JL",
+      "Debit": "-500.00",
+      "Credit": "",
+      "Balance": "23,685.54"
+    },
+    {
+      "Date": "16 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_83593055 - T_B7F20143EBCF428F94057B7EF2CCB832",
+      "Reference Number": "033IPPD25228B218",
+      "Debit": "-400.00",
+      "Credit": "",
+      "Balance": "23,285.54"
+    },
+    {
+      "Date": "18 Aug 2025",
+      "Description": "Visa Purchase 259 0814 596331 ETISALAT DIGITAL APP AED ABU DHABI AED 404.78 0814",
+      "Reference Number": "030POSB252300JwG",
+      "Debit": "-404.78",
+      "Credit": "",
+      "Balance": "22,880.76"
+    },
+    {
+      "Date": "18 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_83975861-T_9CEC0395E2C34D3A8F5 D32CA4634C95A",
+      "Reference Number": "033IPPD25230D3K4",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "22,680.76"
+    },
+    {
+      "Date": "18 Aug 2025",
+      "Description": "Visa Purchase 259 0817 803173 NOVO CINEMAS GULF FILM LL AED SHARJAH AE AED 150 0817",
+      "Reference Number": "030POSB252302nBg",
+      "Debit": "-150.00",
+      "Credit": "",
+      "Balance": "22,530.76"
+    },
+    {
+      "Date": "20 Aug 2025",
+      "Description": "Acct to Acct transfer FUND TRANSFER - 019101571687- MOHAMMED HAFIZTOC- UAE-015275838- 250820125929 LEGAL AND TRANSLATION SERVICES /AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M200825890237WAM",
+      "Reference Number": "033AACT252325087",
+      "Debit": "-3,000.00",
+      "Credit": "",
+      "Balance": "19,530.76"
+    },
+    {
+      "Date": "20 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_84440687- T_F35D35EA72C54FA5B67 DB885C0337264",
+      "Reference Number": "033|PPD25232A382",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "19,330.76"
+    },
+    {
+      "Date": "20 Aug 2025",
+      "Description": "Visa Purchase 259 0817 989208 RAND B DCC AED SHARJAH AED 50 0817",
+      "Reference Number": "030POSB2523213Ra",
+      "Debit": "-50.00",
+      "Credit": "",
+      "Balance": "19,280.76"
+    },
+    {
+      "Date": "20 Aug 2025",
+      "Description": "Acct to Acct transfer FUND TRANSFER - 019010139958- HUZEFA SHOPURWALA ANWAR HUSSAINTOC-UAE- 015275838-250820183821 COMMISSION PAYMENT /AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M200825896812WAM",
+      "Reference Number": "033AACT25232A19P",
+      "Debit": "-600.00",
+      "Credit": "",
+      "Balance": "18,680.76"
+    },
+    {
+      "Date": "21 Aug 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE68020000003502983 4001 FOOD SPECIALITIES LIMITED /REF/AEH210855QLAI2WW QTN-655/25 SRN:OHL0520038042736 //REC/1022508210000093 000016/OUR",
+      "Reference Number": "033|CLB252331600",
+      "Debit": "",
+      "Credit": "+11,625.00",
+      "Balance": "30,305.76"
+    },
+    {
+      "Date": "21 Aug 2025",
+      "Description": "ATM Cash Withdrawal SDU82267848226-BAY AVENUE MALLDUBAI AE AED ATM CASH WITHDRAWAL 21-AUG-25 124433",
+      "Reference Number": "038VCAW2523300ph",
+      "Debit": "-3,000.00",
+      "Credit": "",
+      "Balance": "27,305.76"
+    },
+    {
+      "Date": "21 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_84793876- T_9D59EAFA66AC44829C CDD9C9CB55A6FE",
+      "Reference Number": "033IPPD25233C4QM",
+      "Debit": "-300.00",
+      "Credit": "",
+      "Balance": "27,005.76"
+    },
+    {
+      "Date": "22 Aug 2025",
+      "Description": "Visa Purchase 259 0820 106025 EMARAT 1275 AL AL DANA AED DUBAI AED 50 0820",
+      "Reference Number": "030POSB252340ZU3",
+      "Debit": "-50.00",
+      "Credit": "",
+      "Balance": "26,955.76"
+    },
+    {
+      "Date": "23 Aug 2025",
+      "Description": "ATM Cash Withdrawal 00001235 DIB LULU HYPER MARKET U DUBAI AE AED ATM CASH WITHDRAWAL 23-AUG-25 111155",
+      "Reference Number": "030VCAW2523500T5",
+      "Debit": "-300.00",
+      "Credit": "",
+      "Balance": "26,655.76"
+    },
+    {
+      "Date": "25 Aug 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 23AUG2025 – AUTH-ID 526926",
+      "Reference Number": "006ATMF252375352",
+      "Debit": "-2.00",
+      "Credit": "",
+      "Balance": "26,653.76"
+    },
+    {
+      "Date": "25 Aug 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 23AUG2025-AUTH-ID 526926",
+      "Reference Number": "006ATMF252375352",
+      "Debit": "-0.10",
+      "Credit": "",
+      "Balance": "26,653.66"
+    },
+    {
+      "Date": "25 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_85369455- T_C6A626CB0E724414A2B 2425DB7DF6D07",
+      "Reference Number": "033IPPD25237A7OA",
+      "Debit": "200.00",
+      "Credit": "",
+      "Balance": "26,453.66"
+    },
+    {
+      "Date": "25 Aug 2025",
+      "Description": "Acct to Acct transfer FUND TRANSFER - 019101571687- MOHAMMED HAFIZTOC- UAE-015275838- 250825113239 LEGAL AND TRANSLATION SERVICES -/AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M250825947387WAM",
+      "Reference Number": "033AACT25237A561",
+      "Debit": "3,000.00",
+      "Credit": "",
+      "Balance": "23,453.66"
+    },
+    {
+      "Date": "25 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_85553917 - T_4B5692E06AAB4793A17 4A89EADOC006F",
+      "Reference Number": "033IPPD25237E1SR",
+      "Debit": "200.00",
+      "Credit": "",
+      "Balance": "23,253.66"
+    },
+    {
+      "Date": "25 Aug 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE240260001015036067 301 CLASSIC HOME INTERIOR DECORATION LL/REF/PO NO 2500697 2500763 SRN:EPHCOP23707GYD56 //REC/1032508250315204 000001/OUR",
+      "Reference Number": "033ICLB25237C2DW",
+      "Debit": "",
+      "Credit": "13,816.11",
+      "Balance": "37,069.77"
+    },
+    {
+      "Date": "25 Aug 2025",
+      "Description": "Value Added Tax - Output TOC-UAE-015275838- 250825233931 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W250825960352INF",
+      "Reference Number": "033DBFC252373451",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "37,067.77"
+    },
+    {
+      "Date": "25 Aug 2025",
+      "Description": "Value Added Tax - Output TOC-UAE-015275838- 250825233931 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W250825960352INF",
+      "Reference Number": "033DBFC252373451",
+      "Debit": "1.25",
+      "Credit": "",
+      "Balance": "37,066.52"
+    },
+    {
+      "Date": "25 Aug 2025",
+      "Description": "Corr.Bank.Charges TOC- UAE-015275838- 250825233931 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W250825960352INF",
+      "Reference Number": "033DBFC252373451",
+      "Debit": "25.00",
+      "Credit": "",
+      "Balance": "37,041.52"
+    },
+    {
+      "Date": "25 Aug 2025",
+      "Description": "Online International Money Transfer TOC-UAE- 015275838-250825233931 PURCHASE OF HOME DECOR ITEMS/192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W250825960352INF",
+      "Reference Number": "033DBFC252373451",
+      "Debit": "5,870.61",
+      "Credit": "",
+      "Balance": "31,170.91"
+    },
+    {
+      "Date": "25 Aug 2025",
+      "Description": "Funds Transfer Charges TOC-UAE-015275838-250825233931 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W250825960352INF",
+      "Reference Number": "033DBFC252373451",
+      "Debit": "40.00",
+      "Credit": "",
+      "Balance": "31,130.91"
+    },
+    {
+      "Date": "26 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01-TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_85812021-T_17FBE31B0712444D99731 3202ABB451F",
+      "Reference Number": "033IPPD25238B26L",
+      "Debit": "400.00",
+      "Credit": "",
+      "Balance": "30,730.91"
+    },
+    {
+      "Date": "27 Aug 2025",
+      "Description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 27-AUG-25 072436",
+      "Reference Number": "030VCAW2523900Cq",
+      "Debit": "1,800.00",
+      "Credit": "",
+      "Balance": "28,930.91"
+    },
+    {
+      "Date": "27 Aug 2025",
+      "Description": "Inward Clearing Cheque INWARD CLEARINGOO0002",
+      "Reference Number": "033INCG252391658",
+      "Debit": "3,091.51",
+      "Credit": "",
+      "Balance": "25,839.40"
+    },
+    {
+      "Date": "27 Aug 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE680030012568867920 001 SECUREVERSE TECHNICAL SERVICES LLC /REF/PAYMENT SRN:T529087391 //REC/1032508270065172 000001/SHA",
+      "Reference Number": "033ICLB252393954",
+      "Debit": "",
+      "Credit": "3,977.00",
+      "Balance": "29,816.40"
+    },
+    {
+      "Date": "27 Aug 2025",
+      "Description": "IPP TRANSFER AE460400000332352628 001-AAG ADVERTISING LLC -/REF/COMMERCIAL INVESTMENTS - BOMLAEAD_86087307-T_9E0829DF5AEA415891E4 159A690D21D0",
+      "Reference Number": "033IPPD25239A7GB",
+      "Debit": "488.00",
+      "Credit": "",
+      "Balance": "29,328.40"
+    },
+    {
+      "Date": "27 Aug 2025",
+      "Description": "Visa Purchase 259 0825 617254 BOMBAY SWEETS&BAKERIES AED DUBAI AED 540825",
+      "Reference Number": "030POSB252390Vfp",
+      "Debit": "54.00",
+      "Credit": "",
+      "Balance": "29,274.40"
+    },
+    {
+      "Date": "28 Aug 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 27AUG2025-AUTH-ID 422407",
+      "Reference Number": "006ATMF252407213",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "29,272.40"
+    },
+    {
+      "Date": "28 Aug 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 27AUG2025 - AUTH-ID 422407",
+      "Reference Number": "006ATMF252407213",
+      "Debit": "0.10",
+      "Credit": "",
+      "Balance": "29,272.30"
+    },
+    {
+      "Date": "28 Aug 2025",
+      "Description": "Visa Purchase 259 0825 592800 SMART DUBAI GOVERNMENT AED DUBAI AED 250 0825",
+      "Reference Number": "030POSB252401aW1",
+      "Debit": "250.00",
+      "Credit": "",
+      "Balance": "29,022.30"
+    },
+    {
+      "Date": "29 Aug 2025",
+      "Description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 29-AUG-25 140853",
+      "Reference Number": "030VCAW252410AIU",
+      "Debit": "3,500.00",
+      "Credit": "",
+      "Balance": "25,522.30"
+    },
+    {
+      "Date": "29 Aug 2025",
+      "Description": "Acct to Acct transfer FUND TRANSFER - 019010139958-HUZEFA SHOPURWALA ANWAR HUSSAINTOC-UAE-015275838-250829141340 COMMISSION PAYMENT /AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC /REF/SRN: M29082523045WAM",
+      "Reference Number": "033AACT252418000",
+      "Debit": "1,000.00",
+      "Credit": "",
+      "Balance": "24,522.30"
+    },
+    {
+      "Date": "29 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_86752139-T_F5314F3BFC274CB8A20D A2DC8D08C878",
+      "Reference Number": "033IPPD25241B61Z",
+      "Debit": "300.00",
+      "Credit": "",
+      "Balance": "24,222.30"
+    },
+    {
+      "Date": "30 Aug 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 29AUG2025 - AUTH-ID 659301",
+      "Reference Number": "006ATMF252425940",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "24,220.30"
+    },
+    {
+      "Date": "30 Aug 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 29AUG2025 - AUTH-ID 659301",
+      "Reference Number": "006ATMF252425940",
+      "Debit": "-0.10",
+      "Credit": "",
+      "Balance": "24,220.20"
+    },
+    {
+      "Date": "30 Aug 2025",
+      "Description": "Acct to Acct transfer FUND TRANSFER - 019101571687- MOHAMMED HAFIZTOC- UAE-015275838- 250830135236 LEGAL AND TRANSLATION SERVICES /AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M30082538227WAM",
+      "Reference Number": "033AACT252427573",
+      "Debit": "-1,240.00",
+      "Credit": "",
+      "Balance": "22,980.20"
+    },
+    {
+      "Date": "30 Aug 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_8713019- T_C3A905657B9F47E1BBE4 DBEE5EE581F5",
+      "Reference Number": "033IPPD25242D066",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "22,780.20"
+    },
+    {
+      "Date": "01 Sep 2025",
+      "Description": "Value Added Tax - Output 019101513951",
+      "Reference Number": "099REFEAED 00002",
+      "Debit": "-10.00",
+      "Credit": "",
+      "Balance": "22,770.20"
+    },
+    {
+      "Date": "01 Sep 2025",
+      "Description": "Monthly Maintenance Fee 019101513951",
+      "Reference Number": "099REFEAED 00001",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "22,570.20"
+    },
+    {
+      "Date": "01 Sep 2025",
+      "Description": "Visa Purchase 259 0829 705460 FAT*PAYD TECH AED DUBAI AED 653.10829",
+      "Reference Number": "030POSB252440TYm",
+      "Debit": "-653.10",
+      "Credit": "",
+      "Balance": "21,917.10"
+    },
+    {
+      "Date": "01 Sep 2025",
+      "Description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 01-SEP- 25 073911",
+      "Reference Number": "030VCAW2524404FY",
+      "Debit": "-1,000.00",
+      "Credit": "",
+      "Balance": "20,917.10"
+    },
+    {
+      "Date": "01 Sep 2025",
+      "Description": "Visa Purchase 259 0829 712709 SMART DUBAI GOVERNMENT AED DUBAI AED 465 0829",
+      "Reference Number": "030POSB252442CRq",
+      "Debit": "-465.00",
+      "Credit": "",
+      "Balance": "20,452.10"
+    },
+    {
+      "Date": "01 Sep 2025",
+      "Description": "Visa Purchase 259 0829 695794 AG VEHICLE TESTING CENTER AED DUBAI AED 170 0829",
+      "Reference Number": "030POSB2524433TT",
+      "Debit": "-170.00",
+      "Credit": "",
+      "Balance": "20,282.10"
+    },
+    {
+      "Date": "01 Sep 2025",
+      "Description": "IPP TRANSFER AE58003001141758482000 1-KAPS GLOBAL FURNITURES LLC - /REF/ GOODS BOUGHT - BOMLAEAD_87674975- T_840D9C897CF94D60BB7 426C63B5596DE",
+      "Reference Number": "033IPPD25244H21C",
+      "Debit": "-6,000.00",
+      "Credit": "",
+      "Balance": "14,282.10"
+    },
+    {
+      "Date": "01 Sep 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 01SEP2025 – AUTH-ID 155039",
+      "Reference Number": "006ATMF252450768",
+      "Debit": "-2.00",
+      "Credit": "",
+      "Balance": "14,280.10"
+    },
+    {
+      "Date": "02 Sep 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 01SEP2025-AUTH-ID 155039",
+      "Reference Number": "006ATMF252450768",
+      "Debit": "-0.10",
+      "Credit": "",
+      "Balance": "14,280.00"
+    },
+    {
+      "Date": "03 Sep 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_88338415- T_DOBA2AF006954167862 OB624CB8A496D",
+      "Reference Number": "033IPPD25246B6T6",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "14,080.00"
+    },
+    {
+      "Date": "03 Sep 2025",
+      "Description": "IPP TRANSFER AE5803400037075484439 01 - EXCEL TRADING COMPANY LLC - /REF/ COMMERCIAL INVESTMENTS - BOMLAEAD_88358842- T_OB8D85B4F74B4BF58BA BE3E5F710AA96",
+      "Reference Number": "033IPPD25246C22H",
+      "Debit": "-955.00",
+      "Credit": "",
+      "Balance": "13,125.00"
+    },
+    {
+      "Date": "04 Sep 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE1302600010158352569 01 SUPPLY AND DESIGN DECORATION DESIGN /REF/50 PERCENT ADVANCE TOWARDS WAL LPAPER INSTALLATION AT LE REVE SRN:EPHCOP24707L3EMV //REC/103250904025450 6000001/OUR",
+      "Reference Number": "033|CLB25247B4SN",
+      "Debit": "",
+      "Credit": "+3,436.13",
+      "Balance": "16,561.13"
+    },
+    {
+      "Date": "06 Sep 2025",
+      "Description": "Visa Purchase 259 0902 009702 RIVIERE MINERAL WATER AED SHARJAH AED 70 0902",
+      "Reference Number": "030POSB252490MbN",
+      "Debit": "-70.00",
+      "Credit": "",
+      "Balance": "16,491.13"
+    },
+    {
+      "Date": "06 Sep 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_89035417 - T_784F09A41A7A403C820 BB8303059320D",
+      "Reference Number": "033IPPD25249C1KZ",
+      "Debit": "-300.00",
+      "Credit": "",
+      "Balance": "16,191.13"
+    },
+    {
+      "Date": "06 Sep 2025",
+      "Description": "ATM Cash Withdrawal 0757 INDEX EXCG HORALANZ0757 DUBAI AE AED ATM CASH WITHDRAWAL 06-SEP-25 132803",
+      "Reference Number": "030VCAW252490JPE",
+      "Debit": "-1,000.00",
+      "Credit": "",
+      "Balance": "15,191.13"
+    },
+    {
+      "Date": "08 Sep 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 06SEP2025 - AUTH-ID 060629",
+      "Reference Number": "006ATMF252512211",
+      "Debit": "-2.00",
+      "Credit": "",
+      "Balance": "15,189.13"
+    },
+    {
+      "Date": "08 Sep 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 06SEP2025 - AUTH-ID 060629",
+      "Reference Number": "006ATMF252512211",
+      "Debit": "-0.10",
+      "Credit": "",
+      "Balance": "15,189.03"
+    },
+    {
+      "Date": "08 Sep 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_89402943- T_E23FBOB743ED4E0E89B D3A1E1B25F02B",
+      "Reference Number": "033IPPD25251A38J",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "14,989.03"
+    },
+    {
+      "Date": "08 Sep 2025",
+      "Description": "Visa Purchase 259 0905 834654 DAY TO DAY AL NAHDA 2 DUB AED DUBAI AED 151.33 0905",
+      "Reference Number": "030POSB2525130Sy",
+      "Debit": "-151.33",
+      "Credit": "",
+      "Balance": "14,837.70"
+    },
+    {
+      "Date": "08 Sep 2025",
+      "Description": "Visa Purchase 259 0905 863384 SHEIN.COM AED DUBAI AED 124.08 0905",
+      "Reference Number": "030POSB252513310",
+      "Debit": "-124.08",
+      "Credit": "",
+      "Balance": "14,713.62"
+    },
+    {
+      "Date": "08 Sep 2025",
+      "Description": "Visa Purchase 259 0906 059507 NGC NAFEES WALL PAPE AED DUBAI AED 1732.5 0906",
+      "Reference Number": "030POSB2525133YI",
+      "Debit": "-1,732.50",
+      "Credit": "",
+      "Balance": "12,981.12"
+    },
+    {
+      "Date": "08 Sep 2025",
+      "Description": "IPP TRANSFER AE5803400037075484439 01-EXCEL TRADING COMPANY LLC - /REF/ COMMERCIAL INVESTMENTS - BOMLAEAD_89677015- T_E611D384C23848B7BD8B CC17A9A53227",
+      "Reference Number": "033IPPD25251F2ER",
+      "Debit": "-315.00",
+      "Credit": "",
+      "Balance": "12,666.12"
+    },
+    {
+      "Date": "08 Sep 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_89760269- T_F81E73021F9D4F74B4D2 96E9019A4CD5",
+      "Reference Number": "033IPPD25251G68B",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "12,466.12"
+    },
+    {
+      "Date": "09 Sep 2025",
+      "Description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 09- SEP-25122917",
+      "Reference Number": "030VCAW2525200rb",
+      "Debit": "-4,500.00",
+      "Credit": "",
+      "Balance": "7,966.12"
+    },
+    {
+      "Date": "09 Sep 2025",
+      "Description": "IPP TRANSFER AE6402000000311458400 01-MR AKASH PATEL - WEBI",
+      "Reference Number": "033IPPC25252D79Z",
+      "Debit": "",
+      "Credit": "+2,805.00",
+      "Balance": "10,771.12"
+    },
+    {
+      "Date": "09 Sep 2025",
+      "Description": "ENIPA2509091948094446 5D4C16CD6E0 - 250909IBAB59612 Acct to Acct transfer FUND TRANSFER - 019010139958- HUZEFA SHOPURWALA ANWAR HUSSAINTOC-UAE- 015275838-25090922165 COMMISSION PAYMENT /AE7203300000191015139 51",
+      "Reference Number": "033AACT25252A7OA",
+      "Debit": "-1,500.00",
+      "Credit": "",
+      "Balance": "9,271.12"
+    },
+    {
+      "Date": "10 Sep 2025",
+      "Description": "DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M090925190958WAM ATM Usage Fees FOR CARD 494111******6797 ON 09SEP2025 - AUTH-ID 592770",
+      "Reference Number": "006ATMF252533364",
+      "Debit": "-2.00",
+      "Credit": "",
+      "Balance": "9,269.12"
+    },
+    {
+      "Date": "10 Sep 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 09SEP2025-AUTH-ID 592770",
+      "Reference Number": "006ATMF252533364",
+      "Debit": "-0.10",
+      "Credit": "",
+      "Balance": "9,269.02"
+    },
+    {
+      "Date": "10 Sep 2025",
+      "Description": "Acct to Acct transfer FUND TRANSFER - 019101571687- MOHAMMED HAFIZTOC- UAE-015275838- 250910121513 LEGAL AND TRANSLATION SERVICES /AE7203300000191015139 51",
+      "Reference Number": "033AACT252535204",
+      "Debit": "-3,272.00",
+      "Credit": "",
+      "Balance": "5,997.02"
+    },
+    {
+      "Date": "10 Sep 2025",
+      "Description": "DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M100925197599WAM Visa Purchase 259 0908 174016 EMARAT 6311 AL MADARES AED DUBAI AED 70 0908",
+      "Reference Number": "030POSB252530RBh",
+      "Debit": "-70.00",
+      "Credit": "",
+      "Balance": "5,927.02"
+    },
+    {
+      "Date": "10 Sep 2025",
+      "Description": "Visa Purchase 259 0907 667449 KARMA CLASSIC LADIES SALO AED DUBAI AED 36.75 0907",
+      "Reference Number": "030POSB252531L1e",
+      "Debit": "-36.75",
+      "Credit": "",
+      "Balance": "5,890.27"
+    },
+    {
+      "Date": "10 Sep 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE680030012568867920 001 SECUREVERSE TECHNICAL SERVICES LLC /REF/PAYMENT SRN:T536449155 //REC/1032509100179991 000001/SHA",
+      "Reference Number": "033ICLB25253B40F",
+      "Debit": "",
+      "Credit": "+5,000.00",
+      "Balance": "10,890.27"
+    },
+    {
+      "Date": "11 Sep 2025",
+      "Description": "Visa Purchase 259 0908 242702 SMART DUBAI GOVERNMENT AED DUBAI AED 50 0908",
+      "Reference Number": "030POSB252540Lhd",
+      "Debit": "-50.00",
+      "Credit": "",
+      "Balance": "10,840.27"
+    },
+    {
+      "Date": "11 Sep 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_90638732- T_8D09551AB3C848CDB6D 7EA0D4A9302E4",
+      "Reference Number": "033IPPD25254C3A1",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "10,640.27"
+    },
+    {
+      "Date": "11 Sep 2025",
+      "Description": "IPP TRANSFER AE58003001141758482000 1-KAPS GLOBAL FURNITURES LLC - /REF/ COMMERCIAL INVESTMENTS - BOMLAEAD_90704585- T_E4676630E8D6496E8CA A52EC5F3E9F54",
+      "Reference Number": "033IPPD25254D3ST",
+      "Debit": "-4,800.00",
+      "Credit": "",
+      "Balance": "5,840.27"
+    },
+    {
+      "Date": "13 Sep 2025",
+      "Description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 13-SEP- 25 101910",
+      "Reference Number": "030VCAW2525600UR",
+      "Debit": "-1,200.00",
+      "Credit": "",
+      "Balance": "4,640.27"
+    },
+    {
+      "Date": "13 Sep 2025",
+      "Description": "IPP TRANSFER AE5803400037075484439 01 - EXCEL TRADING COMPANY LLC - /REF/ COMMERCIAL INVESTMENTS - BOMLAEAD_91115681- T_469D6694D6994ADFB9 BF7F21A3D9344D",
+      "Reference Number": "033IPPD25256A32V",
+      "Debit": "155.00",
+      "Credit": "",
+      "Balance": "4,485.27"
+    },
+    {
+      "Date": "13 Sep 2025",
+      "Description": "Visa Purchase 259 0911 692388 ADNOC DUBAI HILLS 2 52 AED DUBAI AED 70 0911",
+      "Reference Number": "030POSB252560HhX",
+      "Debit": "70.00",
+      "Credit": "",
+      "Balance": "4,415.27"
+    },
+    {
+      "Date": "13 Sep 2025",
+      "Description": "Visa Purchase 259 0911 697816 ADNOC DUBAI HILLS 252 AED DUBAI AED 6 0911",
+      "Reference Number": "030POSB252560db1",
+      "Debit": "6.00",
+      "Credit": "",
+      "Balance": "4,409.27"
+    },
+    {
+      "Date": "13 Sep 2025",
+      "Description": "Visa Purchase 259 0911 816281 FUSION FLOORS BUILDING AED DUBAI AED 2406.06 0911",
+      "Reference Number": "030POSB252561KGj",
+      "Debit": "2,406.06",
+      "Credit": "",
+      "Balance": "2,003.21"
+    },
+    {
+      "Date": "15 Sep 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 13SEP2025 - AUTH-ID 675051",
+      "Reference Number": "006ATMF252585391",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "2,001.21"
+    },
+    {
+      "Date": "15 Sep 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 13SEP2025 - AUTH-ID 675051",
+      "Reference Number": "006ATMF252585391",
+      "Debit": "0.10",
+      "Credit": "",
+      "Balance": "2,001.11"
+    },
+    {
+      "Date": "15 Sep 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_91420604- T_D39F159892284F439A8 9DC90DC970D49",
+      "Reference Number": "033IPPD25258B02H",
+      "Debit": "200.00",
+      "Credit": "",
+      "Balance": "1,801.11"
+    },
+    {
+      "Date": "15 Sep 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE680030012568867920 001 SECUREVERSE TECHNICAL SERVICES LLC /REF/PAYMENT SRN:T538086095 //REC/1032509150012293 000001/SHA",
+      "Reference Number": "033ICLB252582725",
+      "Debit": "",
+      "Credit": "7,000.00",
+      "Balance": "8,801.11"
+    },
+    {
+      "Date": "15 Sep 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_91523197- T_FF7201F7EE4F41CDAC140 57D89C99ED7",
+      "Reference Number": "033IPPD25258C5AK",
+      "Debit": "800.00",
+      "Credit": "",
+      "Balance": "8,001.11"
+    },
+    {
+      "Date": "15 Sep 2025",
+      "Description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 15-SEP- 25 123840",
+      "Reference Number": "030VCAW2525803vM",
+      "Debit": "1,500.00",
+      "Credit": "",
+      "Balance": "6,501.11"
+    },
+    {
+      "Date": "15 Sep 2025",
+      "Description": "Visa Purchase 259 0913 858220 FUSION FLOORS BUILDING AED DUBAI AED 742.61 0913",
+      "Reference Number": "030POSB252582qUN",
+      "Debit": "742.61",
+      "Credit": "",
+      "Balance": "5,758.50"
+    },
+    {
+      "Date": "16 Sep 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 15SEP2025 - AUTH-ID 759975",
+      "Reference Number": "006ATMF252591934",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "5,756.50"
+    },
+    {
+      "Date": "16 Sep 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 15SEP2025 - AUTH-ID 759975",
+      "Reference Number": "006ATMF252591934",
+      "Debit": "0.10",
+      "Credit": "",
+      "Balance": "5,756.40"
+    },
+    {
+      "Date": "16 Sep 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE68020000003502983 4001 FOOD SPECIALITIES LIMITED /REF/AEH16095BANNHA68 SRN:OIG1210038549158 //REC/1022509160000165 000007/OUR",
+      "Reference Number": "033ICLB252591196",
+      "Debit": "",
+      "Credit": "4,650.00",
+      "Balance": "10,406.40"
+    },
+    {
+      "Date": "16 Sep 2025",
+      "Description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 16-SEP-25120848",
+      "Reference Number": "030VCAW25259000S",
+      "Debit": "-1,500.00",
+      "Credit": "",
+      "Balance": "8,906.40"
+    },
+    {
+      "Date": "16 Sep 2025",
+      "Description": "Visa Purchase 259 0914 246441 PAY FAIR MART SMKT AED SHARJAH AED 46.62 0914",
+      "Reference Number": "030POSB2525906yc",
+      "Debit": "-46.62",
+      "Credit": "",
+      "Balance": "8,859.78"
+    },
+    {
+      "Date": "17 Sep 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 16SEP2025 - AUTH-ID 263592",
+      "Reference Number": "006ATMF252601204",
+      "Debit": "-2.00",
+      "Credit": "",
+      "Balance": "8,857.78"
+    },
+    {
+      "Date": "17 Sep 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 16SEP2025 - AUTH-ID 263592",
+      "Reference Number": "006ATMF252601204",
+      "Debit": "-0.10",
+      "Credit": "",
+      "Balance": "8,857.68"
+    },
+    {
+      "Date": "17 Sep 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE240260001015036067 301 CLASSIC HOME INTERIOR DECORATION LL/REF/PO NUMBER 2500923 SRN:EPHCOP260070JOHI //REC/10325091701219130 00001/OUR",
+      "Reference Number": "033|CLB25260A7OP",
+      "Debit": "",
+      "Credit": "+6,756.75",
+      "Balance": "15,614.43"
+    },
+    {
+      "Date": "17 Sep 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_92212668- T_CDCC8836A66A44AFBA A332BABCE1529A",
+      "Reference Number": "033IPPD25260A69R",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "15,414.43"
+    },
+    {
+      "Date": "17 Sep 2025",
+      "Description": "Acct to Acct transfer FUND TRANSFER - 019010139958- HUZEFA SHOPURWALA ANWAR HUSSAINTOC-UAE- 015275838-250917135453 COMMISSION PAYMENT /AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M170925300882WAM",
+      "Reference Number": "033AACT252607376",
+      "Debit": "-1,500.00",
+      "Credit": "",
+      "Balance": "13,914.43"
+    },
+    {
+      "Date": "17 Sep 2025",
+      "Description": "Visa Purchase 259 0915 751172 FUSION FLOORS BUILDING AED DUBAI AED 1420.87 0915",
+      "Reference Number": "030POSB25260117b",
+      "Debit": "-1,420.87",
+      "Credit": "",
+      "Balance": "12,493.56"
+    },
+    {
+      "Date": "17 Sep 2025",
+      "Description": "Visa Purchase 259 0915 691247 E& DIGITAL APP AED ABU DHABI AED 349.910915",
+      "Reference Number": "030POSB252601ShO",
+      "Debit": "-349.91",
+      "Credit": "",
+      "Balance": "12,143.65"
+    },
+    {
+      "Date": "18 Sep 2025",
+      "Description": "Visa Purchase 259 0916 281731 FUSION FLOORS BUILDING AED DUBAI AED 123.77 0916",
+      "Reference Number": "030POSB2526110TN",
+      "Debit": "-123.77",
+      "Credit": "",
+      "Balance": "12,019.88"
+    },
+    {
+      "Date": "18 Sep 2025",
+      "Description": "Visa Purchase 259 0916 238014 ZENDA*CRESCENT ENGLISH AED DUBAI AED 1628.8 0916",
+      "Reference Number": "030POSB252611kYA",
+      "Debit": "-1,628.80",
+      "Credit": "",
+      "Balance": "10,391.08"
+    },
+    {
+      "Date": "19 Sep 2025",
+      "Description": "Visa Purchase 259 0916 566394 DAS REST AED SHARJAH AED 118 0916",
+      "Reference Number": "030POSB252620pXO",
+      "Debit": "-118.00",
+      "Credit": "",
+      "Balance": "10,273.08"
+    },
+    {
+      "Date": "19 Sep 2025",
+      "Description": "Visa Purchase 259 0916 581973 QASER AL MUHAISNAH MOBILE AED DUBAI AED 75 0916",
+      "Reference Number": "030POSB252621Xwt",
+      "Debit": "-75.00",
+      "Credit": "",
+      "Balance": "10,198.08"
+    },
+    {
+      "Date": "20 Sep 2025",
+      "Description": "Visa Purchase 259 0917 813309 MAHMOUD MOHAMMED SALAH TRAED DUBAI AED 130 0917",
+      "Reference Number": "030POSB252630aOG",
+      "Debit": "-130.00",
+      "Credit": "",
+      "Balance": "10,068.08"
+    },
+    {
+      "Date": "20 Sep 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_93171989- T_962BB6C178EB48028F0 CA2F17350F94F",
+      "Reference Number": "033IPPD25263C4M1",
+      "Debit": "200.00",
+      "Credit": "",
+      "Balance": "9,868.08"
+    },
+    {
+      "Date": "22 Sep 2025",
+      "Description": "IPP TRANSFER AE5803400037075484439 01-EXCEL TRADING COMPANY LLC - /REF/ COMMERCIAL INVESTMENTS - BOMLAEAD_93432153- T_63COFBB6CC1443B79C1 A8B291A27805F",
+      "Reference Number": "033IPPD25265C63S",
+      "Debit": "1,500.00",
+      "Credit": "",
+      "Balance": "8,368.08"
+    },
+    {
+      "Date": "22 Sep 2025",
+      "Description": "Visa Purchase 259 0919 705057 SHAKLAN MARKET 5 LLC AED DUBAI AED 700919",
+      "Reference Number": "030POSB252652nVA",
+      "Debit": "70.00",
+      "Credit": "",
+      "Balance": "8,298.08"
+    },
+    {
+      "Date": "22 Sep 2025",
+      "Description": "Visa Purchase 259 0920 461762 A VO STUDIO LLCD AED UBAID AED 300920",
+      "Reference Number": "030POSB2526533LX",
+      "Debit": "30.00",
+      "Credit": "",
+      "Balance": "8,268.08"
+    },
+    {
+      "Date": "22 Sep 2025",
+      "Description": "Value Added Tax - Output TOC-UAE-015275838- 25092220435 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W220925372551INF",
+      "Reference Number": "033DBFC252653227",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "8,266.08"
+    },
+    {
+      "Date": "22 Sep 2025",
+      "Description": "Value Added Tax - Output TOC-UAE-015275838- 25092220435 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W220925372551INF",
+      "Reference Number": "033DBFC252653227",
+      "Debit": "1.25",
+      "Credit": "",
+      "Balance": "8,264.83"
+    },
+    {
+      "Date": "22 Sep 2025",
+      "Description": "Corr.Bank.Charges TOC- UAE-015275838- 25092220435 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W220925372551INF",
+      "Reference Number": "033DBFC252653227",
+      "Debit": "25.00",
+      "Credit": "",
+      "Balance": "8,239.83"
+    },
+    {
+      "Date": "22 Sep 2025",
+      "Description": "Online International Money Transfer TOC-UAE- 015275838-25092220435 PURCHASE OF HOME DECOR ITEMS/192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W220925372551INF",
+      "Reference Number": "033DBFC252653227",
+      "Debit": "2,754.95",
+      "Credit": "",
+      "Balance": "5,484.88"
+    },
+    {
+      "Date": "22 Sep 2025",
+      "Description": "Funds Transfer Charges TOC-UAE-015275838- 25092220435 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W220925372551INF",
+      "Reference Number": "033DBFC252653227",
+      "Debit": "40.00",
+      "Credit": "",
+      "Balance": "5,444.88"
+    },
+    {
+      "Date": "23 Sep 2025",
+      "Description": "Visa Purchase 259 0920 545091 KARACHI DARBAR RESTAUR AED DUBAI AED 42 0920",
+      "Reference Number": "030POSB252660dyX",
+      "Debit": "42.00",
+      "Credit": "",
+      "Balance": "5,402.88"
+    },
+    {
+      "Date": "23 Sep 2025",
+      "Description": "IPP TRANSFER AE0305300000188279530 01-UMMA HANI GULAM ABBAS-MP2P - REF230920251944492203 5- REF230920251944492203 5",
+      "Reference Number": "033IPPC25266C7HJ",
+      "Debit": "",
+      "Credit": "3,420.00",
+      "Balance": "8,822.88"
+    },
+    {
+      "Date": "24 Sep 2025",
+      "Description": "Inward Remittance FUND TRANSFER /AE680030012568867920001 SECUREVERSE TECHNICAL SERVICES LLC /REF/PAYMENT SRN:T541919388 //REC/1032509240175565000001/SHA",
+      "Reference Number": "033|CLB25267A7EZ",
+      "Debit": "",
+      "Credit": "4,000.00",
+      "Balance": "12,822.88"
+    },
+    {
+      "Date": "24 Sep 2025",
+      "Description": "Visa Purchase 259 0921 876363 DAY TO DAY ALNAHDA DXB AED DUBAI AED 113.35 0921",
+      "Reference Number": "030POSB252670Rww",
+      "Debit": "113.35",
+      "Credit": "",
+      "Balance": "12,709.53"
+    },
+    {
+      "Date": "24 Sep 2025",
+      "Description": "IPP TRANSFER AE560030011944874920001 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_94052331-T_18D126E9E2ED4B39A61C161A6C17B5AB",
+      "Reference Number": "033IPPD25267B2CO",
+      "Debit": "200.00",
+      "Credit": "",
+      "Balance": "12,509.53"
+    },
+    {
+      "Date": "25 Sep 2025",
+      "Description": "ATM Cash Withdrawal 00000275 DIB EASY PICK SUPERMKTB DUBAI AE AED ATM CASH WITHDRAWAL 25-SEP-25 172857",
+      "Reference Number": "030VCAW25268022N",
+      "Debit": "3,000.00",
+      "Credit": "",
+      "Balance": "9,509.53"
+    },
+    {
+      "Date": "25 Sep 2025",
+      "Description": "Acct to Acct transfer FUND TRANSFER - 019010139958-HUZEFA SHOPURWALA ANWAR HUSSAINTOC-UAE-015275838-250925223120 COMMISSION PAYMENT /AE720330000019101513951 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN:M250925426333WAM",
+      "Reference Number": "033AACT25268BOCT",
+      "Debit": "1,500.00",
+      "Credit": "",
+      "Balance": "8,009.53"
+    },
+    {
+      "Date": "26 Sep 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 25SEP2025 - AUTH-ID 900527",
+      "Reference Number": "006ATMF252690945",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "8,007.53"
+    },
+    {
+      "Date": "26 Sep 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 25SEP2025-AUTH-ID 900527",
+      "Reference Number": "006ATMF252690945",
+      "Debit": "0.10",
+      "Credit": "",
+      "Balance": "8,007.43"
+    },
+    {
+      "Date": "26 Sep 2025",
+      "Description": "IPP TRANSFER AE560030011944874920001 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_94651706-T_2B6C95A8F0764C85A72D366358AE5F75",
+      "Reference Number": "033IPPD25269B4PD",
+      "Debit": "200.00",
+      "Credit": "",
+      "Balance": "7,807.43"
+    },
+    {
+      "Date": "26 Sep 2025",
+      "Description": "Outward Clearing Cheque OUTWARD CLEARING008268",
+      "Reference Number": "033CCOU252692045",
+      "Debit": "",
+      "Credit": "15,935.53",
+      "Balance": "23,742.96"
+    },
+    {
+      "Date": "26 Sep 2025",
+      "Description": "ATM Cash Withdrawal E4011396 EMIRATES BANK INTL DUBAID AE AED ATM CASH WITHDRAWAL 26-SEP-25165558",
+      "Reference Number": "030VCAW2526902Fm",
+      "Debit": "1,500.00",
+      "Credit": "",
+      "Balance": "22,242.96"
+    },
+    {
+      "Date": "26 Sep 2025",
+      "Description": "Value Added Tax - Output TOC-UAE-015275838-250926174738 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W260925441136INF",
+      "Reference Number": "033DBFC252692301",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "22,240.96"
+    },
+    {
+      "Date": "26 Sep 2025",
+      "Description": "Value Added Tax - Output TOC-UAE-015275838-250926174738 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W260925441136INF",
+      "Reference Number": "033DBFC252692301",
+      "Debit": "1.25",
+      "Credit": "",
+      "Balance": "22,239.71"
+    },
+    {
+      "Date": "26 Sep 2025",
+      "Description": "Corr.Bank.Charges TOC-UAE-015275838-250926174738 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W260925441136INF",
+      "Reference Number": "033DBFC252692301",
+      "Debit": "25.00",
+      "Credit": "",
+      "Balance": "22,214.71"
+    },
+    {
+      "Date": "26 Sep 2025",
+      "Description": "Online International Money Transfer TOC-UAE-015275838-250926174738 PURCHASE OF HOME DECOR ITEMS/192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W260925441136INF",
+      "Reference Number": "033DBFC252692301",
+      "Debit": "8,459.80",
+      "Credit": "",
+      "Balance": "13,754.91"
+    },
+    {
+      "Date": "26 Sep 2025",
+      "Description": "Funds Transfer Charges TOC-UAE-015275838-250926174738 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W260925441136INF",
+      "Reference Number": "033DBFC252692301",
+      "Debit": "40.00",
+      "Credit": "",
+      "Balance": "13,714.91"
+    },
+    {
+      "Date": "27 Sep 2025",
+      "Description": "IPP TRANSFER AE04026000101577884710 1-JUZER UJJAINWALA - /REF/TRAVEL EXPENSES - BOMLAEAD_94869983-T_7C8D057B12D14C2F99FF AA6A1972B76B",
+      "Reference Number": "033IPPD252704309",
+      "Debit": "185.00",
+      "Credit": "",
+      "Balance": "13,529.91"
+    },
+    {
+      "Date": "27 Sep 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 26SEP2025 – AUTH-ID 440902",
+      "Reference Number": "006ATMF252704716",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "13,527.91"
+    },
+    {
+      "Date": "27 Sep 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 26SEP2025 - AUTH-ID 440902",
+      "Reference Number": "006ATMF252704716",
+      "Debit": "0.10",
+      "Credit": "",
+      "Balance": "13,527.81"
+    },
+    {
+      "Date": "27 Sep 2025",
+      "Description": "Visa Purchase 259 0925 763190 FUSION FLOORS BUILDING AED DUBAI AED 618.840925",
+      "Reference Number": "030POSB252701304",
+      "Debit": "618.84",
+      "Credit": "",
+      "Balance": "12,908.97"
+    },
+    {
+      "Date": "27 Sep 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_94991934-T_55B1FF6DC7E94417AF2C 6BE7B9A91CE9",
+      "Reference Number": "033IPPD25270B1ZQ",
+      "Debit": "800.00",
+      "Credit": "",
+      "Balance": "12,108.97"
+    },
+    {
+      "Date": "27 Sep 2025",
+      "Description": "Visa Purchase 259 0925 748758 ADNOC NAHDA 1 463 AED DUBAI AED 80 0925",
+      "Reference Number": "030POSB252701cR9",
+      "Debit": "80.00",
+      "Credit": "",
+      "Balance": "12,028.97"
+    },
+    {
+      "Date": "29 Sep 2025",
+      "Description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_95166741-T_1053D2EB02584446847 024F89A9B09A0",
+      "Reference Number": "033IPPD252725803",
+      "Debit": "300.00",
+      "Credit": "",
+      "Balance": "11,728.97"
+    },
+    {
+      "Date": "29 Sep 2025",
+      "Description": "Visa Purchase 259 0926 654564 MARA LOUNGE RESTAURANT AED DUBAI AED 89 0926",
+      "Reference Number": "030POSB2527205lq",
+      "Debit": "89.00",
+      "Credit": "",
+      "Balance": "11,639.97"
+    },
+    {
+      "Date": "29 Sep 2025",
+      "Description": "Visa Purchase 259 0925 715826 SMART DUBAI GOVERNMENT AED DUBAI AED 700 0925",
+      "Reference Number": "030POSB252720BQy",
+      "Debit": "700.00",
+      "Credit": "",
+      "Balance": "10,939.97"
+    },
+    {
+      "Date": "29 Sep 2025",
+      "Description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 29-SEP-25123238",
+      "Reference Number": "030VCAW2527204hR",
+      "Debit": "300.00",
+      "Credit": "",
+      "Balance": "10,639.97"
+    },
+    {
+      "Date": "30 Sep 2025",
+      "Description": "ATM Usage Fees FOR CARD 494111******6797 ON 29SEP2025 - AUTH-ID 990239",
+      "Reference Number": "006ATMF252732964",
+      "Debit": "2.00",
+      "Credit": "",
+      "Balance": "10,637.97"
+    },
+    {
+      "Date": "30 Sep 2025",
+      "Description": "Value Added Tax - Output FOR CARD 494111******6797 ON 29SEP2025 - AUTH-ID 990239",
+      "Reference Number": "006ATMF252732964",
+      "Debit": "-0.10",
+      "Credit": "",
+      "Balance": "10,637.87"
+    },
+    {
+      "Date": "30 Sep 2025",
+      "Description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 30-SEP-25 140035",
+      "Reference Number": "030VCAW2527301aT",
+      "Debit": "-5,000.00",
+      "Credit": "",
+      "Balance": "5,637.87"
+    },
+    {
+      "Date": "30 Sep 2025",
+      "Description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 30-SEP-25 140129",
+      "Reference Number": "030VCAW2527301ac",
+      "Debit": "-2,000.00",
+      "Credit": "",
+      "Balance": "3,637.87"
+    },
+    {
+      "Date": "30 Sep 2025",
+      "Description": "Visa Purchase 259 0927 253818 ARDENE AED SHARJAH AED 84 0927",
+      "Reference Number": "030POSB252730y06",
+      "Debit": "-84.00",
+      "Credit": "",
+      "Balance": "3,553.87"
+    },
+    {
+      "Date": "30 Sep 2025",
+      "Description": "Value Added Tax - Output 019101513951",
+      "Reference Number": "099REFEAED 00002",
+      "Debit": "-10.00",
+      "Credit": "",
+      "Balance": "3,543.87"
+    },
+    {
+      "Date": "30 Sep 2025",
+      "Description": "Monthly Maintenance Fee 019101513951",
+      "Reference Number": "099REFEAED 00001",
+      "Debit": "-200.00",
+      "Credit": "",
+      "Balance": "3,343.87"
+    }
+  ],
+  "summary": {
+    "Account Holder Name": "DECOWALLS TECHNICAL",
+    "Account Number": "019101513951",
+    "Statement Period From": "01 Jul 2025",
+    "Statement Period To": "30 Sep 2025",
+    "Statement Date": "24-10-2025",
+    "Opening Balance": "13,766.03",
+    "Closing Balance": "3,343.87",
+    "Currency": "AED",
+    "Bank Name": "Mashreq",
+    "Account Type": "SMEZER",
+    "Customer Number": "015275838"
+  }
+}

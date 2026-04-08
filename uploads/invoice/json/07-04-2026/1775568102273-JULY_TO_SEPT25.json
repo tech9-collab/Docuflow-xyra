@@ -1,0 +1,2817 @@
+{
+  "source": "JULY TO SEPT25.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "24-10-2025",
+      "invoice_number": null,
+      "vendor_name": "mashreq",
+      "customer_name": "DECOWALLS TECHNICAL",
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "Account Statement",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company's name (TRAVEL MEDIA MIDDLE EAST - FZCO) nor TRN (104165761800003) found as vendor or customer on the document.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_73428257-T_5E449682AB6C4932B9D B1FCD83811837",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 3500
+        },
+        {
+          "description": "ATM Cash Withdrawal ITM69117846911-SAHARA CENTRE BSHARJAH AE AED ATM CASH WITHDRAWAL 07-JUL-25 190636",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1800
+        },
+        {
+          "description": "ATM Cash Withdrawal SDU82267848226-BAY AVENUE MALLDUBAI AE AED ATM CASH WITHDRAWAL 08-JUL-25 143600",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 200
+        },
+        {
+          "description": "Outward Clearing Cheque OUTWARD CLEARING002071",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 6262.73
+        },
+        {
+          "description": "Visa Purchase 259 0707 752600 NGC NAFEES WALL PAPE AED DUBAI AED 173.25 0707",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 173.25
+        },
+        {
+          "description": "Visa Purchase 259 0708 258152 SKY POOL CLEANING AED ABU DHABI AED 400 0708",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 400
+        },
+        {
+          "description": "Visa Purchase 259 0708 342257 KARMA CLASSIC LADIES SALO AED DUBAI AED 126 0708",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 126
+        },
+        {
+          "description": "Visa Purchase 259 0709 681299 EMARAT 6470 TAQNIYA S AED DUBAI AED 100 0709",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 100
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name or TRN not found on the document for either vendor or customer role.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "2",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "IPP TRANSFER AE560030011944874920001 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_74979876-T_8D4D7381549345CEA66CEDDB59EADAOC",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1000
+        },
+        {
+          "description": "Visa Purchase 259 0710 195014 DAY TO DAY ALNAHDA DXB AED DUBAI AED 139.40710",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 139.4
+        },
+        {
+          "description": "Visa Purchase 259 0710 179110 FAKHRI SWEETS AED DUBAI AED 97 0710",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 97
+        },
+        {
+          "description": "Visa Purchase 259 0711 806726 LULUHYPERMARKET QUSAIS AED DUBAI AED 71.05 0711",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 71.05
+        },
+        {
+          "description": "IPP TRANSFER AE560030011944874920001 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_75617890-T_58639E25B0B34872BDC860A0C44694C2",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 300
+        },
+        {
+          "description": "IPP TRANSFER AE460400000332352628001-AAG ADVERTISING LLC -/REF/COMMERCIAL INVESTMENTS - BOMLAEAD_75749327-T_255DD541C55F4D0E9205337A70831AC2",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 157.5
+        },
+        {
+          "description": "ATM Cash Withdrawal SDU82267848226-BAY AVENUE MALLDUBAI AE AED ATM CASH WITHDRAWAL 17-JUL-25 134433",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 700
+        },
+        {
+          "description": "Visa Purchase 259 0715 669612 ETISALAT DIGITAL APP AED ABU DHABI AED 50 0715",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 50
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 0.9,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name/TRN 'TRAVEL MEDIA MIDDLE EAST - FZCO'/'104165761800003' not found as vendor or customer on this statement page. The statement itself is from Mashreq Online.",
+      "overall_confidence": 0.8,
+      "confidence_notes": [],
+      "pages_covered": "3",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Visa Purchase 259 0715 596101NG CNAFEES WALL PAPE AED DUBAI AED 714 0715",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 714
+        },
+        {
+          "description": "Visa Purchase 259 0715 664449 FALAK TAYYEB CAR CARE AED DUBAI AED 52 0715",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 52
+        },
+        {
+          "description": "Visa Purchase 259 0716 968536 ETISALAT DIGITAL APP AED ABU DHABI AED 350.3 0716",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 350.3
+        },
+        {
+          "description": "IPP TRANSFER AE5803400037075484439 01-EXCEL TRADING COMPANY LLC - /REF/ COMMERCIAL INVESTMENTS - BOMLAEAD_76450030- T_E3C8968DD4EF4B69A1A 4380D4B8276D1",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 600
+        },
+        {
+          "description": "ATM Cash Withdrawal 0757 INDEX EXCG HORALANZO757DUBAI AE AED ATM CASH WITHDRAWAL 21-JUL-25 151026",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 2200
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 21JUL2025 – AUTH-ID 392934",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 2
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 21JUL2025 - AUTH-ID 392934",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0.1,
+          "net_amount": 0.1
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_77004937- T_04F28605325E414FAA8 8CA8A42967152",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 100
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "currency_evidence": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "system generated statement issued",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company's name or TRN not found as vendor or customer on the document.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "4",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 0.9
+      },
+      "field_confidence": {
+        "document_category": 0.9,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 0.9,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company identity (TRAVEL MEDIA MIDDLE EAST - FZCO, TRN 104165761800003) not found as vendor or customer on document.",
+      "overall_confidence": 0.8,
+      "confidence_notes": [],
+      "pages_covered": "5",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company's name or TRN not found on the document as either vendor or customer.",
+      "overall_confidence": 0.7,
+      "confidence_notes": [
+        "Document is a bank statement/transaction log, not a typical invoice, so many invoice-specific fields like total amounts and detailed line items are not applicable to the document as a whole and are set to null.",
+        "The 'date' field is set to null because the document lists multiple transaction dates rather than a single overarching document date.",
+        "Vendor is identified as 'Mashreq Online' based on the explicit statement 'issued through Mashreq Online' at the footer."
+      ],
+      "pages_covered": "6",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 29JUL2025 - AUTH-ID 120923",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -0.1
+        },
+        {
+          "description": "Visa Purchase 259 0729 309178 TIM HORTONS AED DUBAI AE AED 36 0729",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -36
+        },
+        {
+          "description": "Visa Purchase 259 0728 951361 FEDERAL TAX AUTHORITY AED DUBAI AED 129.13 0728",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -129.13
+        },
+        {
+          "description": "Outward Clearing Cheque OUTWARD CLEARING006149",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 17000
+        },
+        {
+          "description": "Visa Purchase 259 0728 828662 THE VAT CONSULTANT AED ABU DHABI AED 525 0728",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -525
+        },
+        {
+          "description": "Visa Purchase 259 0729 122257 NGC NAFEES WALL PAPE AED DUBAI AED 315 0729",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -315
+        },
+        {
+          "description": "ATM Cash Withdrawal 00005961 DIB AL NAHDA BRANCH DUBAI AE AED ATM CASH WITHDRAWAL 31-JUL-25 224929",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -1000
+        },
+        {
+          "description": "Value Added Tax - Output 019101513951",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -10
+        },
+        {
+          "description": "Monthly Maintenance Fee 019101513951",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -200
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 31JUL2025 – AUTH-ID 514403",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -2
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 31JUL2025-AUTH-ID 514403",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -0.1
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "This is a system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name/TRN not found as vendor or customer.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "7",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "ATM Cash Withdrawal 4508388 ADIB NESTO AL NAHDA DUBAI AE AED ATM CASH WITHDRAWAL 01-AUG-25 121026",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": null
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 01AUG2025 – AUTH-ID 710474",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": null
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 01AUG2025 - AUTH-ID 710474",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0.1,
+          "net_amount": null
+        },
+        {
+          "description": "ATM Cash Withdrawal 00005961 DIB AL NAHDA BRANCH DUBAI AE AED ATM CASH WITHDRAWAL 02-AUG-25 151747",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": null
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_80067431-T_A200C9E1CDBB4E57B7214B6E3B4E72C8",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": null
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 02AUG2025 - AUTH-ID 368880",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": null
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 02AUG2025 - AUTH-ID 368880",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0.1,
+          "net_amount": null
+        },
+        {
+          "description": "Visa Purchase 259 0801 106610 SMART DUBAI GOVERNMENT AED DUBAI AED 310 0801",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": null
+        },
+        {
+          "description": "Visa Purchase 259 0802 613716 ΑΜΑΖΟΝ.ΑΕ ΑED DUBAI AED 379 0802",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": null
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "currency_evidence": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither the uploading company's name 'TRAVEL MEDIA MIDDLE EAST - FZCO' nor TRN '104165761800003' was found as vendor or customer on the document.",
+      "overall_confidence": 0.75,
+      "confidence_notes": [
+        "The document is a 'Statement of Accounts' which does not fully align with the invoice-centric schema. Many fields are null because they are not applicable in an invoice context.",
+        "Overall document type, vendor identification, and currency are highly confident."
+      ],
+      "pages_covered": "8",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Visa Purchase 259 0801 105629 SMART DUBAI GOVERNMENT AED DUBAI AED 1020 0801",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1020
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_80853575- T_F1435DC5BB954FC4AB4 3650139B5BFF8",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 200
+        },
+        {
+          "description": "Inward Remittance FUND TRANSFER /AE1302600010158352569 01 SUPPLY AND DESIGN DECORATION DESIGN /REF/PAY DECOWALLS ADV. 50PERC K47 WALLPAPER INSTALLATION SRN:EPHCOP21807BLKFB //REC/1032508060081250 000001/OUR",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1155
+        },
+        {
+          "description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 06-AUG-25125855",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1000
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 06AUG2025-AUTH-ID 340733",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 2
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 06AUG2025-AUTH-ID 340733",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 0.1
+        },
+        {
+          "description": "Visa Purchase 259 0806 477754 SKY POOL CLEANING AED ABU DHABI AED 350 0806",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 350
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "This is a system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company name 'TRAVEL MEDIA MIDDLE EAST - FZCO' nor TRN '104165761800003' found as vendor or customer on the document.",
+      "overall_confidence": 0.8,
+      "confidence_notes": [
+        "Document classified as 'Statement of Accounts' based on footer text and table structure. Not an invoice, hence many fields like document-level amounts, TRNs, invoice number, and customer name are null.",
+        "Line items are extracted from transaction rows, with 'Debit' or 'Credit' amounts mapped to 'net_amount' and 'Description' to 'description'. Other line item fields (quantity, unit_price, tax_amount) are null as they are not present for statement transactions."
+      ],
+      "pages_covered": "9",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name 'TRAVEL MEDIA MIDDLE EAST - FZCO' or TRN '104165761800003' not found as vendor or customer on the statement.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "10",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 11AUG2025 – AUTH-ID 787114",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 2
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 11AUG2025-AUTH-ID 787114",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 0.1
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_82633063-T_B7C84E56BD11494C9C4E BACEOFA2B203",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 200
+        },
+        {
+          "description": "Visa Purchase 259 0810 320298 NOON FOOD FOOD DELIVERY AED DUBAI AED 45.5 0810",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 45.5
+        },
+        {
+          "description": "Visa Purchase 259 0810 548942 NOON FOOD FOOD DELIVERY AED DUBAI AED 53.09 0810",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 53.09
+        },
+        {
+          "description": "IPP TRANSFER AE3302300000010054668 73-NAZIM FIXER -/REF/ COMMISSIONPAYMENT - BOMLAEAD_82943457-T_5BE9A428811E407BB4F8 C8D94A91DCD9",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 500
+        },
+        {
+          "description": "IPP TRANSFER AE6903400037074499823 01 - DAVIS INTERIORS-/REF/ COMMISSION PAYMENT - BOMLAEAD_82943967-T_A310589B39D446F48B7 E535268CCAC2B",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 2018
+        },
+        {
+          "description": "Visa Purchase 259 0812 450060 LULUHYPERMARKET QUSAIS AED DUBAI AED 69 0812",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 69
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name/TRN not found as vendor or customer on the document. Document is a bank statement, not a sales/purchase invoice.",
+      "overall_confidence": 0.85,
+      "confidence_notes": [],
+      "pages_covered": "11",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Inward Remittance FUND TRANSFER /AE240260001015036067 301 CLASSIC HOME INTERIOR DECORATION LL /REF/2500288 5000AED 2500355 5000AE D SRN:EPHCOP22707E99KS //REC/1032508150144970 000001/OUR",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 10000
+        },
+        {
+          "description": "Visa Purchase 259 0813 767841NG CNAFEES WALL PAPE AED DUBAI AED 556.5 0813",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -556.5
+        },
+        {
+          "description": "IPP TRANSFER AE3302300000010054668 73-NAZIM FIXER -/REF/ COMMISSION PAYMENT - BOMLAEAD_83429404- T_8B5505EA0917447BB9C 42C17221D17C3",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -500
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_83593055 - T_B7F20143EBCF428F9405 7B7EF2CCB832",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -400
+        },
+        {
+          "description": "Visa Purchase 259 0814 596331 ETISALAT DIGITAL APP AED ABU DHABI AED 404.78 0814",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -404.78
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_83975861- T_9CEC0395E2C34D3A8F5 D32CA4634C95A",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -200
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company's name or TRN not found on document.",
+      "overall_confidence": 0.8,
+      "confidence_notes": [
+        "This document is a bank statement, not a typical invoice, which affects the applicability of several invoice-specific fields.",
+        "Overall document date, invoice number, and customer name are not present."
+      ],
+      "pages_covered": "12",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": "TRAVEL MEDIA MIDDLE EAST - FZCO",
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Visa Purchase 259 0817 803173 NOVO CINEMAS GULF FILM LL AED SHARJAH AE AED 150 0817",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 150
+        },
+        {
+          "description": "Acct to Acct transfer FUND TRANSFER - 019101571687- MOHAMMED HAFIZTOC-UAE-015275838- 250820125929 LEGAL AND TRANSLATION SERVICES /AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M200825890237WAM",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 3000
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_8444087- T_F35D35EA72C54FA5B67 DB885C0337264",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 200
+        },
+        {
+          "description": "Visa Purchase 259 0817 989208 RAND B DCC AED SHARJAH AED 50 0817",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 50
+        },
+        {
+          "description": "Acct to Acct transfer FUND TRANSFER - 019010139958- HUZEFA SHOPURWALA ANWAR HUSSAINTOC-UAE-015275838-250820183821 COMMISSION PAYMENT /AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M200825896812WAM",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 600
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "This is a system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 0.9
+      },
+      "field_confidence": {
+        "document_category": 0.9,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 0.7,
+        "customer_name": 0.6,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Document is a Statement of Accounts, which lists various transactions, not a single sales or purchase invoice. Relationship to uploading company as vendor/customer is ambiguous in this context.",
+      "overall_confidence": 0.7,
+      "confidence_notes": [
+        "Vendor name 'Mashreq Online' inferred from statement footer 'issued through Mashreq Online'.",
+        "Customer name 'TRAVEL MEDIA MIDDLE EAST - FZCO' inferred as the account holder from the uploading company identity.",
+        "No single date or invoice number found for the statement as a whole.",
+        "Before tax, VAT, and net amounts are not applicable for a total statement amount."
+      ],
+      "pages_covered": "13",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Inward Remittance FUND TRANSFER /AE68020000003502983 4001 FOOD SPECIALITIES LIMITED /REF/AEH210855QLAI2WW QTN-655/25 SRN:OHL0520038042736 //REC/1022508210000093 000016/OUR",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 11625
+        },
+        {
+          "description": "ATM Cash Withdrawal SDU82267848226-BAY AVENUE MALLDUBAI AE AED ATM CASH WITHDRAWAL 21-AUG-25 124433",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -3000
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_84793876-T_9D59EAFA66AC44829C CDD9C9CB55A6FE",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -300
+        },
+        {
+          "description": "Visa Purchase 259 0820 106025 EMARAT 1275 AL AL DANA AED DUBAI AED 50 0820",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -50
+        },
+        {
+          "description": "ATM Cash Withdrawal 00001235 DIB LULU HYPER MARKET U DUBAI AE AED ATM CASH WITHDRAWAL 23-AUG-25 111155",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -300
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 23AUG2025 – AUTH-ID 526926",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -2
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 23AUG2025-AUTH-ID 526926",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -0.1
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company name 'TRAVEL MEDIA MIDDLE EAST - FZCO' nor TRN '104165761800003' found as vendor or customer on this bank statement.",
+      "overall_confidence": 0.85,
+      "confidence_notes": [],
+      "pages_covered": "14",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": null,
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": null,
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 0,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company 'TRAVEL MEDIA MIDDLE EAST - FZCO' (TRN '104165761800003') not found as vendor or customer on document.",
+      "overall_confidence": 0.7,
+      "confidence_notes": [
+        "Document is a statement, not an invoice; many invoice-specific fields are null.",
+        "Transaction details are present but do not map to line_items schema."
+      ],
+      "pages_covered": "15",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "25 Aug 2025",
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Value Added Tax - Output TOC-UAE-015275838-250825233931 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W250825960352INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 2,
+          "net_amount": 2
+        },
+        {
+          "description": "Value Added Tax - Output TOC-UAE-015275838-250825233931 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W250825960352INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 1.25,
+          "net_amount": 1.25
+        },
+        {
+          "description": "Corr.Bank.Charges TOC-UAE-015275838-250825233931 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W250825960352INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 25
+        },
+        {
+          "description": "Online International Money Transfer TOC-UAE-015275838-250825233931 PURCHASE OF HOME DECOR ITEMS/192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W250825960352INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 5870.61
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": null,
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "This is a system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 0,
+        "vendor_name": 0.8,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 0,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither the uploading company name 'TRAVEL MEDIA MIDDLE EAST - FZCO' nor TRN '104165761800003' appear as vendor or customer on the document.",
+      "overall_confidence": 0.75,
+      "confidence_notes": [
+        "Document is a statement, not an invoice, so many invoice-specific fields are null.",
+        "Customer name is not explicitly stated on the document.",
+        "TRN numbers for both vendor and customer are not present.",
+        "Currency symbol is not explicitly present, hence null."
+      ],
+      "pages_covered": "16",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Funds Transfer Charges TOC-UAE-015275838-250825233931 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W250825960352INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -40
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01-TAHA MAHUWALA -/REF/COMMISSION PAYMENT -BOMLAEAD_85812021-T_17FBE31B0712444D99731 3202ABB451F",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -400
+        },
+        {
+          "description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 27-AUG-25 072436",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -1800
+        },
+        {
+          "description": "Inward Clearing Cheque INWARD CLEARINGOO0002",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -3091.51
+        },
+        {
+          "description": "Inward Remittance FUND TRANSFER /AE680030012568867920 001 SECUREVERSE TECHNICAL SERVICES LLC /REF/PAYMENT SRN:T529087391 //REC/1032508270065172 000001/SHA",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 3977
+        },
+        {
+          "description": "IPP TRANSFER AE460400000332352628 001-AAG ADVERTISING LLC -/REF/COMMERCIAL INVESTMENTS -BOMLAEAD_86087307 -T_9E0829DF5AEA415891E4 159A690D21D0",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -488
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 0.9,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name 'TRAVEL MEDIA MIDDLE EAST - FZCO' and TRN '104165761800003' not found on document as vendor or customer.",
+      "overall_confidence": 0.8,
+      "confidence_notes": [
+        "Document is a bank statement, not an invoice, leading to many null fields for invoice-specific data.",
+        "Currency inferred from 'AED ATM CASH WITHDRAWAL' in one of the transaction descriptions."
+      ],
+      "pages_covered": "17",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "30 Aug 2025",
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Visa Purchase 259 0825 617254 BOMBAY SWEETS&BAKERIES AED DUBAI AED 540825",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 54
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 27AUG2025-AUTH-ID 422407",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 2
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 27AUG2025 - AUTH-ID 422407",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 0.1
+        },
+        {
+          "description": "Visa Purchase 259 0825 592800 SMART DUBAI GOVERNMENT AED DUBAI AED 250 0825",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 250
+        },
+        {
+          "description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 29-AUG-25 140853",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 3500
+        },
+        {
+          "description": "Acct to Acct transfer FUND TRANSFER - 019010139958-HUZEFA SHOPURWALA ANWAR HUSSAINTOC-UAE-015275838-250829141340 COMMISSION PAYMENT /AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M29082523045WAM",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1000
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT -BOMLAEAD_86752139-T_F5314F3BFC274CB8A20D A2DC8D08C878",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 300
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 29AUG2025 - AUTH-ID 659301",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 2
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0.9,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "The document is a bank statement. The account holder is not explicitly identified, therefore, it is not possible to determine if the uploading company is the vendor or customer of this statement.",
+      "overall_confidence": 0.7,
+      "confidence_notes": [],
+      "pages_covered": "18",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 29AUG2025 - AUTH-ID 659301",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0.1,
+          "net_amount": 0.1
+        },
+        {
+          "description": "Acct to Acct transfer FUND TRANSFER - 019101571687- MOHAMMED HAFIZTOC- UAE-015275838- 250830135236 LEGAL AND TRANSLATION SERVICES /AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M30082538227WAM",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1240
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_87139019- T_C3A905657B9F47E1BBE4 DBEE5EE581F5",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 200
+        },
+        {
+          "description": "Value Added Tax - Output 019101513951",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 10,
+          "net_amount": 10
+        },
+        {
+          "description": "Monthly Maintenance Fee 019101513951",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 200
+        },
+        {
+          "description": "Visa Purchase 259 0829 705460 FAT*PAYD TECH AED DUBAI AED 653.10829",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 653.1
+        },
+        {
+          "description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 01-SEP-25 073911",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1000
+        },
+        {
+          "description": "Visa Purchase 259 0829 712709 SMART DUBAI GOVERNMENT AED DUBAI AED 465 0829",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 465
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement issued",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 0.9,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company's TRN/name not found on document as vendor or customer. Document is a statement issued by Mashreq Online.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [
+        "Only debit transactions extracted as line items' net_amount.",
+        "Document is a financial statement, not an invoice, so overall document amount fields (before_tax_amount, vat, net_amount) are null."
+      ],
+      "pages_covered": "19",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "03 Sep 2025",
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "currency_evidence": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0.8,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 0.9,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company's name or TRN not found as vendor or customer on document.",
+      "overall_confidence": 0.7,
+      "confidence_notes": [
+        "Document is a statement of accounts, not an invoice. Fields like invoice_number, before_tax_amount, vat, net_amount, and line_items are not applicable in the requested invoice context and are set to null/empty array.",
+        "Date extracted is the latest transaction date as no single 'statement date' is explicitly provided."
+      ],
+      "pages_covered": "20",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Inward Remittance FUND TRANSFER /AE1302600010158352569 01 SUPPLY AND DESIGN DECORATION DESIGN /REF/50 PERCENT ADVANCE TOWARDS WAL LPAPER INSTALLATION AT LE REVE SRN:EPHCOP24707L3EMV //REC/103250904025450 6000001/OUR",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 3436.13
+        },
+        {
+          "description": "Visa Purchase 259 0902 009702 RIVIERE MINERAL WATER AED SHARJAH AED 70 0902",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -70
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_89035417 - T_784F09A41A7A403C820 BB8303059320D",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -300
+        },
+        {
+          "description": "ATM Cash Withdrawal 0757 INDEX EXCG HORALANZ0757 DUBAI AE AED ATM CASH WITHDRAWAL 06-SEP-25 132803",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -1000
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 06SEP2025 - AUTH-ID 060629",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -2
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 06SEP2025 - AUTH-ID 060629",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0.1,
+          "net_amount": null
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "This is a system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 0.9,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Customer name/TRN not found on document to match against uploading company identity.",
+      "overall_confidence": 0.85,
+      "confidence_notes": [],
+      "pages_covered": "21",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_89402943- T_E23FBOB743ED4E0E89B D3A1E1B25F02B",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 200
+        },
+        {
+          "description": "Visa Purchase 259 0905 834654 DAY TO DAY AL NAHDA 2 DUB AED DUBAI AED 151.33 0905",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 151.33
+        },
+        {
+          "description": "Visa Purchase 259 0905 863384 SHEIN.COM AED DUBAI AED 124.08 0905",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 124.08
+        },
+        {
+          "description": "Visa Purchase 259 0906 059507 NGC NAFEES WALL PAPE AED DUBAI AED 1732.5 0906",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1732.5
+        },
+        {
+          "description": "IPP TRANSFER AE5803400037075484439 01-EXCEL TRADING COMPANY LLC - /REF/ COMMERCIAL INVESTMENTS - BOMLAEAD_89677015- T_E611D384C23848B7BD8B CC17A9A53227",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 315
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_89760269- T_F81E73021F9D4F74B4D2 96E9019A4CD5",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 200
+        },
+        {
+          "description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 09- SEP-25122917",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 4500
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name and TRN not found on document.",
+      "overall_confidence": 1,
+      "confidence_notes": [],
+      "pages_covered": "22",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "10 Sep 2025",
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "IPP TRANSFER AE6402000000311458400 01-MR AKASH PATEL - WEBI",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 2805
+        },
+        {
+          "description": "ENIPA2509091948094446 5D4C16CD6E0 - 250909IBAB59612 Acct to Acct transfer FUND TRANSFER - 019010139958-HUZEFA SHOPURWALA ANWAR HUSSAINTOC-UAE-015275838-25090922165 COMMISSION PAYMENT /AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M090925190958WAM",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -1500
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 09SEP2025 - AUTH-ID 592770",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -2
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 09SEP2025-AUTH-ID 592770",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -0.1
+        },
+        {
+          "description": "Acct to Acct transfer FUND TRANSFER - 019101571687-MOHAMMED HAFIZTOC-UAE-015275838-250910121513 LEGAL AND TRANSLATION SERVICES /AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M100925197599WAM",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -3272
+        },
+        {
+          "description": "Visa Purchase 259 0908 174016 EMARAT 6311 AL MADARES AED DUBAI AED 70 0908",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -70
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name and TRN not found as vendor or customer on the document.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "23",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name/TRN not found on document. Document is a bank statement, not an invoice for goods/services.",
+      "overall_confidence": 0.7,
+      "confidence_notes": [
+        "Document identified as a bank statement, not a typical invoice, leading to many null fields for invoice-specific data.",
+        "No single document date found, only transaction dates."
+      ],
+      "pages_covered": "24",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": "TRAVEL MEDIA MIDDLE EAST - FZCO",
+      "vendor_trn": null,
+      "customer_trn": "104165761800003",
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 0,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "purchase",
+      "transaction_type_reason": "Uploading company's TRN '104165761800003' matches customer_trn.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [
+        "Document identified as a Statement of Accounts.",
+        "Vendor 'Mashreq Online' is explicitly stated as the issuer.",
+        "Customer 'TRAVEL MEDIA MIDDLE EAST - FZCO' inferred from uploading company identity as the account holder.",
+        "Customer TRN '104165761800003' provided as uploading company TRN.",
+        "Currency 'AED' is explicitly present in multiple transaction descriptions.",
+        "Date, Invoice Number, Before Tax Amount, VAT, Net Amount, Tax Registered, Tax Type, Tax Rate, and Place of Supply are not applicable or not present for the document as a whole and are confidently null."
+      ],
+      "pages_covered": "25",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Inward Remittance FUND TRANSFER /AE680030012568867920001 SECUREVERSE TECHNICAL SERVICES LLC /REF/PAYMENT SRN:T538086095 //REC/1032509150012293000001/SHA",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 7000
+        },
+        {
+          "description": "IPP TRANSFER AE560030011944874920001 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_91523197-T_FF7201F7EE4F41CDAC14057D89C99ED7",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 800
+        },
+        {
+          "description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 15-SEP-25 123840",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1500
+        },
+        {
+          "description": "Visa Purchase 259 0913 858220 FUSION FLOORS BUILDING AED DUBAI AED 742.610913",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 742.61
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 15SEP2025 - AUTH-ID 759975",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 2
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 15SEP2025 - AUTH-ID 759975",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0.1,
+          "net_amount": null
+        },
+        {
+          "description": "Inward Remittance FUND TRANSFER /AE680200000035029834001 FOOD SPECIALITIES LIMITED /REF/AEH16095BANNHA68 SRN:OIG1210038549158 //REC/1022509160000165000007/OUR",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 4650
+        }
+      ],
+      "tax_registered": "No",
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement issued",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 0.9,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "No explicit customer name or TRN on the statement to match with the uploading company 'TRAVEL MEDIA MIDDLE EAST - FZCO'.",
+      "overall_confidence": 0.85,
+      "confidence_notes": [
+        "Date and Invoice Number are null because this is a financial statement with transaction dates/references, not a single-date invoice.",
+        "Currency inferred from 'AED' mentioned in line item descriptions."
+      ],
+      "pages_covered": "26",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 16-SEP-25120848",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -1500
+        },
+        {
+          "description": "Visa Purchase 259 0914 246441 PAY FAIR MART SMKT AED SHARJAH AED 46.62 0914",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -46.62
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 16SEP2025 - AUTH-ID 263592",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -2
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 16SEP2025 - AUTH-ID 263592",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -0.1
+        },
+        {
+          "description": "Inward Remittance FUND TRANSFER /AE240260001015036067 301 CLASSIC HOME INTERIOR DECORATION LL/REF/PO NUMBER 2500923 SRN:EPHCOP260070JOHI //REC/10325091701219130 00001/OUR",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 6756.75
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_92212668-T_CDCC8836A66A44AFBA A332BABCE1529A",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -200
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name/TRN 'TRAVEL MEDIA MIDDLE EAST - FZCO' / '104165761800003' not found as vendor or customer on the document.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [
+        "This document is classified as a Statement of Accounts based on the explicit text in the footer.",
+        "Line item net_amount is derived from Debit/Credit columns as individual transaction amounts.",
+        "No single statement date is present; individual transaction dates are available in line items but not extracted to the document-level date field.",
+        "Customer name and TRN are not explicitly stated on the document."
+      ],
+      "pages_covered": "27",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Acct to Acct transfer FUND TRANSFER - 019010139958- HUZEFA SHOPURWALA ANWAR HUSSAINTOC-UAE- 015275838-250917135453 COMMISSION PAYMENT /AE7203300000191015139 51 DECOWALLS TECHNICAL SERVICES LLC/REF/SRN: M170925300882WAM",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1500
+        },
+        {
+          "description": "Visa Purchase 259 0915 751172 FUSION FLOORS BUILDING AED DUBAI AED 1420.87 0915",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1420.87
+        },
+        {
+          "description": "Visa Purchase 259 0915 691247 E& DIGITAL APP AED ABU DHABI AED 349.910915",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 349.91
+        },
+        {
+          "description": "Visa Purchase 259 0916 281731 FUSION FLOORS BUILDING AED DUBAI AED 123.77 0916",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 123.77
+        },
+        {
+          "description": "Visa Purchase 259 0916 238014 ZENDA*CRESCENT ENGLISH AED DUBAI AED 1628.8 0916",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1628.8
+        },
+        {
+          "description": "Visa Purchase 259 0916 566394 DAS REST AED SHARJAH AED 118 0916",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 118
+        },
+        {
+          "description": "Visa Purchase 259 0916 581973 QASER AL MUHAISNAH MOBILE AED DUBAI AED 75 0916",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 75
+        },
+        {
+          "description": "Visa Purchase 259 0917 813309 MAHMOUD MOHAMMED SALAH TRAED DUBAI AED 130 0917",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 130
+        }
+      ],
+      "tax_registered": "No",
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "currency_evidence": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "This is a system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "uploading company name/TRN not found on document",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "28"
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_93171989- T_962BB6C178EB48028F0 CA2F17350F94F",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 200
+        },
+        {
+          "description": "IPP TRANSFER AE5803400037075484439 01-EXCEL TRADING COMPANY LLC - /REF/ COMMERCIAL INVESTMENTS - BOMLAEAD_93432153- T_63COFBB6CC1443B79C1 A8B291A27805F",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 1500
+        },
+        {
+          "description": "Visa Purchase 259 0919 705057 SHAKLAN MARKET 5 LLC AED DUBAI AED 700919",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 70
+        },
+        {
+          "description": "Visa Purchase 259 0920 461762 A VO STUDIO LLCD AED UBAID AED 300920",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 30
+        },
+        {
+          "description": "Value Added Tax - Output TOC-UAE-015275838- 25092220435 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W220925372551INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 2,
+          "net_amount": null
+        },
+        {
+          "description": "Value Added Tax - Output TOC-UAE-015275838- 25092220435 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W220925372551INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 1.25,
+          "net_amount": null
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "currency_evidence": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 0.9,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company's name 'TRAVEL MEDIA MIDDLE EAST - FZCO' and TRN '104165761800003' are not found on the document as either vendor or customer. Document is a bank statement from Mashreq Online.",
+      "overall_confidence": 0.8,
+      "confidence_notes": [],
+      "pages_covered": "29",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Corr.Bank.Charges TOC-UAE-015275838-25092220435 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W220925372551INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 25
+        },
+        {
+          "description": "Online International Money Transfer TOC-UAE-015275838-25092220435 PURCHASE OF HOME DECOR ITEMS/192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W220925372551INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 2754.95
+        },
+        {
+          "description": "Funds Transfer Charges TOC-UAE-015275838-25092220435 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W220925372551INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 40
+        },
+        {
+          "description": "Visa Purchase 259 0920 545091 KARACHI DARBAR RESTAUR AED DUBAI AED 42 0920",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 42
+        },
+        {
+          "description": "IPP TRANSFER AE0305300000188279530 01-UMMA HANI GULAM ABBAS-MP2P -REF230920251944492203 5- REF230920251944492203 5",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 3420
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company identity (TRAVEL MEDIA MIDDLE EAST - FZCO) not found as vendor or customer on document.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "30",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "currency_evidence": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 0.9,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name/TRN (TRAVEL MEDIA MIDDLE EAST - FZCO / 104165761800003) not found as vendor or customer on this statement.",
+      "overall_confidence": 0.8,
+      "confidence_notes": [
+        "Document is a bank statement, not a typical invoice. Many invoice-specific fields are intentionally null.",
+        "Currency inferred from 'AED' mentioned in transaction descriptions."
+      ],
+      "pages_covered": "31",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "currency_evidence": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "This is a system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name/TRN not found on document.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "32"
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Corr.Bank.Charges TOC-UAE-015275838-250926174738 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W260925441136INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 25
+        },
+        {
+          "description": "Online International Money Transfer TOC-UAE-015275838-250926174738 PURCHASE OF HOME DECOR ITEMS/192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W260925441136INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 8459.8
+        },
+        {
+          "description": "Funds Transfer Charges TOC-UAE-015275838-250926174738 PURCHASE OF HOME DECOR ITEMS /192112 US VINYL MANUFACTURING CORPORATION /FW084000026 SRN: W260925441136INF",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 40
+        },
+        {
+          "description": "IPP TRANSFER AE04026000101577884710 1-JUZER UJJAINWALA - /REF/TRAVEL EXPENSES - BOMLAEAD_94869983-T_7C8D057B12D14C2F99FF AA6A1972B76B",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 185
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 26SEP2025 – AUTH-ID 440902",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 2
+        },
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 26SEP2025 - AUTH-ID 440902",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 0.1
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": null,
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "This is a system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 0.5,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company's name or TRN not found as vendor or customer on the document.",
+      "overall_confidence": 0.8,
+      "confidence_notes": [],
+      "pages_covered": "33",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Visa Purchase 259 0925 763190 FUSION FLOORS BUILDING AED DUBAI AED 618.840925",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 618.84
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_94991934-T_55B1FF6DC7E94417AF2C 6BE7B9A91CE9",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 800
+        },
+        {
+          "description": "Visa Purchase 259 0925 748758 ADNOC NAHDA 1 463 AED DUBAI AED 80 0925",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 80
+        },
+        {
+          "description": "IPP TRANSFER AE5600300119448749200 01 - TAHA MAHUWALA - /REF/COMMISSION PAYMENT - BOMLAEAD_95166741-T_1053D2EB02584446847 024F89A9B09A0",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 300
+        },
+        {
+          "description": "Visa Purchase 259 0926 654564 MARA LOUNGE RESTAURANT AED DUBAI AED 89 0926",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 89
+        },
+        {
+          "description": "Visa Purchase 259 0925 715826 SMART DUBAI GOVERNMENT AED DUBAI AED 700 0925",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 700
+        },
+        {
+          "description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 29-SEP-25123238",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 300
+        },
+        {
+          "description": "ATM Usage Fees FOR CARD 494111******6797 ON 29SEP2025 - AUTH-ID 990239",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 2
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "currency_evidence": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "This is a system generated statement issued through Mashreq Online",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 0.9,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company's TRN and Name not found on document.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "34",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "Mashreq Online",
+      "customer_name": null,
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "Value Added Tax - Output FOR CARD 494111******6797 ON 29SEP2025 - AUTH-ID 990239",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -0.1
+        },
+        {
+          "description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 30-SEP-25 140035",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -5000
+        },
+        {
+          "description": "ATM Cash Withdrawal 00005901 DIB AL NAHDA BRANCH AJMAN AE AED ATM CASH WITHDRAWAL 30-SEP-25 140129",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -2000
+        },
+        {
+          "description": "Visa Purchase 259 0927 253818 ARDENE AED SHARJAH AED 84 0927",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -84
+        },
+        {
+          "description": "Value Added Tax - Output 019101513951",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -10
+        },
+        {
+          "description": "Monthly Maintenance Fee 019101513951",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": -200
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Statement of Accounts",
+      "document_category_evidence": {
+        "matched_text": "statement",
+        "page_region": "footer",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 1,
+        "customer_name": 0,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company name 'TRAVEL MEDIA MIDDLE EAST - FZCO' nor TRN '104165761800003' found on document as vendor or customer.",
+      "overall_confidence": 0.8,
+      "confidence_notes": [
+        "The document is a statement of accounts, not an invoice. Main 'date', 'invoice_number', 'before_tax_amount', 'vat', 'net_amount' are not applicable to the document as a whole and are set to null."
+      ],
+      "pages_covered": "35",
+      "invoice_key_hint": null
+    }
+  ]
+}
