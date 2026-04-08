@@ -18,7 +18,6 @@ const REQUIRED_FIELD_LABELS = [
   ["licenseIssueDate", "License Issue Date"],
   ["licenseExpiryDate", "License Expiry Date"],
   ["businessActivity", "Business Activity Details"],
-  ["isFreezone", "Is the company located in a Freezone/Designated Freezone?"],
   ["vatTaxTreatment", "VAT Tax Treatment"],
   ["vatTrn", "Tax Registration Number"],
   ["vatRegisteredDate", "VAT Registered Date"],
@@ -48,9 +47,6 @@ function getMissingRequiredFields(form) {
       return false;
     }
 
-    if (field === "isFreezone") {
-      return typeof form.isFreezone !== "boolean";
-    }
     return String(form[field] ?? "").trim() === "";
   }).map(([, label]) => label);
 }
@@ -690,7 +686,7 @@ export default function AddCustomer() {
                     onChange={handleCheckboxChange}
                   />
                   <span>
-                    Is the company located in a Freezone/Designated Freezone? *
+                    Is the company located in a Freezone/Designated Freezone?
                   </span>
                 </label>
               </div>

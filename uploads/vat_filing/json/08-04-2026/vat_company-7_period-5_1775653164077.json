@@ -1,0 +1,477 @@
+{
+  "companyId": "7",
+  "companyName": "TRAVEL MEDIA MIDDLE EAST - FZCO",
+  "companyTRN": "",
+  "periodId": 5,
+  "customerId": 7,
+  "bankData": {
+    "columns": [],
+    "rows": [],
+    "summary": {}
+  },
+  "invoiceData": {
+    "uaeSalesRows": [
+      {
+        "DATE": "07-Jul-2025",
+        "INVOICE NUMBER": "013737",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC Nafees Wallpaper Co. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE L.LC",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 165,
+        "VAT": 8.25,
+        "NET AMOUNT": 173.25,
+        "LINE_ITEMS": [
+          {
+            "description": "EARTH (1.06 X 15.6 M) - REPEAT 64CM",
+            "quantity": 1,
+            "unit_price": 165,
+            "tax_amount": 8.25,
+            "net_amount": 173.25
+          }
+        ],
+        "SOURCE": "07.07.2025 NGC INV 013737 AED 173.25.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/08-04-2026/1775652024871-07.07.2025_NGC_INV_013737_AED_173.25.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 98,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 165,
+        "VAT (AED)": 8.25,
+        "NET AMOUNT (AED)": 173.25,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing",
+        "TYPE": "Sales"
+      }
+    ],
+    "uaePurchaseRows": [
+      {
+        "DATE": "3 SEP 2025",
+        "INVOICE NUMBER": "155-1",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "DECOWALLS TECHNICAL SERVICES LLC (DUBAI)",
+        "PARTY": "EXCEL TRADING CO, LLC",
+        "SUPPLIER TRN": "104043212400001",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE, Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 150,
+        "VAT": 7.5,
+        "NET AMOUNT": 157.5,
+        "LINE_ITEMS": [
+          {
+            "description": "DARAE VOL. 5-1816-5 81 Lot 240131",
+            "quantity": 1,
+            "unit_price": 150,
+            "tax_amount": 7.5,
+            "net_amount": 157.5
+          }
+        ],
+        "SOURCE": "13.09.2025 EXCEL INV 134056 AED 157.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/08-04-2026/1775653059820-13.09.2025_EXCEL_INV_134056_AED_157.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 150,
+        "VAT (AED)": 7.5,
+        "NET AMOUNT (AED)": 157.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing",
+        "TYPE": "Purchase"
+      }
+    ],
+    "othersRows": [
+      {
+        "DATE": "11-Aug 2025",
+        "INVOICE NUMBER": "013921",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC Nafees Wallpaper Co. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE L.LC",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": null,
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 530,
+        "VAT": 26.5,
+        "NET AMOUNT": 556.5,
+        "LINE_ITEMS": [
+          {
+            "description": "WALL TEXTURES XL VOL. 3 \"PLAIN ROLL (106 X 10 00 M)\"",
+            "quantity": null,
+            "unit_price": null,
+            "tax_amount": 26.5,
+            "net_amount": 556.5
+          }
+        ],
+        "SOURCE": "11.08.2025 NGC INV 013921 AED 556.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/08-04-2026/1775653059808-11.08.2025_NGC_INV_013921_AED_556.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 530,
+        "VAT (AED)": 26.5,
+        "NET AMOUNT (AED)": 556.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "15-Jul-2025",
+        "INVOICE NUMBER": "013785",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC NAFEES WALLPAPER CO. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE L.L.C",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 680,
+        "VAT": 34,
+        "NET AMOUNT": 714,
+        "LINE_ITEMS": [
+          {
+            "description": "ALTAGAMMA FIBERS \"PLAIN ROLL\" - (053 X 10.00 M)",
+            "quantity": 400,
+            "unit_price": 170,
+            "tax_amount": 34,
+            "net_amount": 714
+          }
+        ],
+        "SOURCE": "15.07.2025 NGC INV 013785 AED 714.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/08-04-2026/1775653079118-15.07.2025_NGC_INV_013785_AED_714.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 98,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 680,
+        "VAT (AED)": 34,
+        "NET AMOUNT (AED)": 714,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      }
+    ],
+    "totals": {
+      "purchase": {
+        "beforeTax": 1360,
+        "vat": 68,
+        "zero": 0,
+        "net": 1428
+      },
+      "sales": {
+        "beforeTax": 0,
+        "vat": 0,
+        "zero": 0,
+        "net": 0
+      }
+    },
+    "__explicitBuckets": true,
+    "uaeOtherRows": [
+      {
+        "DATE": "11-Aug 2025",
+        "INVOICE NUMBER": "013921",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC Nafees Wallpaper Co. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE L.LC",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": null,
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 530,
+        "VAT": 26.5,
+        "NET AMOUNT": 556.5,
+        "LINE_ITEMS": [
+          {
+            "description": "WALL TEXTURES XL VOL. 3 \"PLAIN ROLL (106 X 10 00 M)\"",
+            "quantity": null,
+            "unit_price": null,
+            "tax_amount": 26.5,
+            "net_amount": 556.5
+          }
+        ],
+        "SOURCE": "11.08.2025 NGC INV 013921 AED 556.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/08-04-2026/1775653059808-11.08.2025_NGC_INV_013921_AED_556.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 530,
+        "VAT (AED)": 26.5,
+        "NET AMOUNT (AED)": 556.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "15-Jul-2025",
+        "INVOICE NUMBER": "013785",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC NAFEES WALLPAPER CO. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE L.L.C",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 680,
+        "VAT": 34,
+        "NET AMOUNT": 714,
+        "LINE_ITEMS": [
+          {
+            "description": "ALTAGAMMA FIBERS \"PLAIN ROLL\" - (053 X 10.00 M)",
+            "quantity": 400,
+            "unit_price": 170,
+            "tax_amount": 34,
+            "net_amount": 714
+          }
+        ],
+        "SOURCE": "15.07.2025 NGC INV 013785 AED 714.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/08-04-2026/1775653079118-15.07.2025_NGC_INV_013785_AED_714.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 98,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 680,
+        "VAT (AED)": 34,
+        "NET AMOUNT (AED)": 714,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      }
+    ],
+    "placeOfSupplyRows": [
+      {
+        "DATE": "07-Jul-2025",
+        "INVOICE NUMBER": "013737",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC Nafees Wallpaper Co. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE L.LC",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 165,
+        "VAT": 8.25,
+        "NET AMOUNT": 173.25,
+        "LINE_ITEMS": [
+          {
+            "description": "EARTH (1.06 X 15.6 M) - REPEAT 64CM",
+            "quantity": 1,
+            "unit_price": 165,
+            "tax_amount": 8.25,
+            "net_amount": 173.25
+          }
+        ],
+        "SOURCE": "07.07.2025 NGC INV 013737 AED 173.25.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/08-04-2026/1775652024871-07.07.2025_NGC_INV_013737_AED_173.25.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 98,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 165,
+        "VAT (AED)": 8.25,
+        "NET AMOUNT (AED)": 173.25,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing",
+        "TYPE": "Sales"
+      },
+      {
+        "DATE": "3 SEP 2025",
+        "INVOICE NUMBER": "155-1",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "DECOWALLS TECHNICAL SERVICES LLC (DUBAI)",
+        "PARTY": "EXCEL TRADING CO, LLC",
+        "SUPPLIER TRN": "104043212400001",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE, Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 150,
+        "VAT": 7.5,
+        "NET AMOUNT": 157.5,
+        "LINE_ITEMS": [
+          {
+            "description": "DARAE VOL. 5-1816-5 81 Lot 240131",
+            "quantity": 1,
+            "unit_price": 150,
+            "tax_amount": 7.5,
+            "net_amount": 157.5
+          }
+        ],
+        "SOURCE": "13.09.2025 EXCEL INV 134056 AED 157.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/08-04-2026/1775653059820-13.09.2025_EXCEL_INV_134056_AED_157.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 150,
+        "VAT (AED)": 7.5,
+        "NET AMOUNT (AED)": 157.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing",
+        "TYPE": "Purchase"
+      },
+      {
+        "DATE": "11-Aug 2025",
+        "INVOICE NUMBER": "013921",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC Nafees Wallpaper Co. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE L.LC",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": null,
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 530,
+        "VAT": 26.5,
+        "NET AMOUNT": 556.5,
+        "LINE_ITEMS": [
+          {
+            "description": "WALL TEXTURES XL VOL. 3 \"PLAIN ROLL (106 X 10 00 M)\"",
+            "quantity": null,
+            "unit_price": null,
+            "tax_amount": 26.5,
+            "net_amount": 556.5
+          }
+        ],
+        "SOURCE": "11.08.2025 NGC INV 013921 AED 556.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/08-04-2026/1775653059808-11.08.2025_NGC_INV_013921_AED_556.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 530,
+        "VAT (AED)": 26.5,
+        "NET AMOUNT (AED)": 556.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "15-Jul-2025",
+        "INVOICE NUMBER": "013785",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC NAFEES WALLPAPER CO. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE L.L.C",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 680,
+        "VAT": 34,
+        "NET AMOUNT": 714,
+        "LINE_ITEMS": [
+          {
+            "description": "ALTAGAMMA FIBERS \"PLAIN ROLL\" - (053 X 10.00 M)",
+            "quantity": 400,
+            "unit_price": 170,
+            "tax_amount": 34,
+            "net_amount": 714
+          }
+        ],
+        "SOURCE": "15.07.2025 NGC INV 013785 AED 714.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/08-04-2026/1775653079118-15.07.2025_NGC_INV_013785_AED_714.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 98,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 680,
+        "VAT (AED)": 34,
+        "NET AMOUNT (AED)": 714,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      }
+    ]
+  },
+  "bankReconData": {
+    "columns": [],
+    "rows": []
+  },
+  "salesTotal": [
+    {
+      "METRIC": "STANDARDRATEDSUPPLIES",
+      "AMOUNT": "165.00"
+    },
+    {
+      "METRIC": "OUTPUTTAX",
+      "AMOUNT": "8.25"
+    },
+    {
+      "METRIC": "ZERORATEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "EXEMPTEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "TOTALAMOUNTINCLUDINGVAT",
+      "AMOUNT": "173.25"
+    }
+  ],
+  "purchaseTotal": [
+    {
+      "METRIC": "STANDARDRATEDEXPENSES",
+      "AMOUNT": "150.00"
+    },
+    {
+      "METRIC": "INPUTTAX",
+      "AMOUNT": "7.50"
+    },
+    {
+      "METRIC": "ZERORATEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "EXEMPTEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "TOTALAMOUNTINCLUDINGVAT",
+      "AMOUNT": "157.50"
+    }
+  ],
+  "vatSummary": [
+    {
+      "PARTICULAR": "STANDARDRATEDSUPPLIES/EXPENSES",
+      "SALES": "165.00",
+      "PURCHASES": "150.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "OUTPUTTAX",
+      "SALES": "8.25",
+      "PURCHASES": "",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "INPUTTAX",
+      "SALES": "",
+      "PURCHASES": "7.50",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "ZERORATEDSUPPLIES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "EXEMPTEDSUPPLIES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "TOTALAMOUNTINCLUDINGVAT",
+      "SALES": "173.25",
+      "PURCHASES": "157.50",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "NETVATPAYABLEFORTHEPERIOD",
+      "SALES": "",
+      "PURCHASES": "",
+      "NET_VAT": "0.75"
+    }
+  ],
+  "vatReturnOverrides": null,
+  "savedAt": "2026-04-08T12:59:24.077Z"
+}

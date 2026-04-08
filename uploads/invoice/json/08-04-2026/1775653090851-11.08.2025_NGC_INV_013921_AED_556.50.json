@@ -1,0 +1,56 @@
+{
+  "source": "11.08.2025 NGC INV 013921 AED 556.50.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "11-Aug 2025",
+      "invoice_number": "013921",
+      "vendor_name": "NGC Nafees Wallpaper Co. LLC",
+      "customer_name": "DECOWALLS TECHNICAL SERVICE L.LC",
+      "vendor_trn": "100295968000003",
+      "customer_trn": "104643212400003",
+      "before_tax_amount": 530,
+      "vat": 26.5,
+      "net_amount": 556.5,
+      "line_items": [
+        {
+          "description": "WALL TEXTURES XL VOL. 3 \"PLAIN ROLL (106 X 10 00 M)\"",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 26.5,
+          "net_amount": 556.5
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company's TRN and name do not match vendor or customer details on the document.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": "013921"
+    }
+  ]
+}
