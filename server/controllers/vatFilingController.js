@@ -1572,6 +1572,10 @@ function ensureDirSync(dir) {
 export async function saveDraftForPeriod(req, res) {
   try {
     const userId = req.user.id;
+    const isAdmin =
+      req.user.type === "admin" ||
+      req.user.type === "super_admin" ||
+      req.user.role === "super_admin";
     const { periodId } = req.params;
     const {
       companyId,
@@ -1600,13 +1604,14 @@ export async function saveDraftForPeriod(req, res) {
 
     // get customer_id from vat_filing_periods
     const [periodRows] = await pool.query(
-      `SELECT customer_id FROM vat_filing_periods WHERE id = ?`,
+      `SELECT customer_id, user_id FROM vat_filing_periods WHERE id = ?`,
       [periodId],
     );
     if (!periodRows.length) {
       return res.status(404).json({ message: "Filing period not found" });
     }
     const customerId = periodRows[0].customer_id;
+    const effectiveUserId = isAdmin ? (periodRows[0].user_id ?? null) : userId;
 
     const now = new Date();
     const payload = {
@@ -1654,7 +1659,7 @@ export async function saveDraftForPeriod(req, res) {
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `,
       [
-        userId,
+        effectiveUserId,
         customerId,
         periodId,
         status,
@@ -1670,7 +1675,7 @@ export async function saveDraftForPeriod(req, res) {
       [runId],
     );
 
-    res.status(201).json({ run: runRows[0] });
+    res.status(201).json({ run: runRows[0], payload });
   } catch (err) {
     console.error("saveDraftForPeriod error:", err);
     res.status(500).json({ message: "Failed to save VAT filing draft" });
@@ -1681,15 +1686,29 @@ export async function saveDraftForPeriod(req, res) {
 export async function listRunsForPeriod(req, res) {
   try {
     const userId = req.user.id;
+    const isAdmin =
+      req.user.type === "admin" ||
+      req.user.type === "super_admin" ||
+      req.user.role === "super_admin";
     const { periodId } = req.params;
-    const [rows] = await pool.query(
-      `SELECT id, status, company_name, company_trn,
-              combined_json_path, created_at, updated_at
-       FROM vat_filing_runs
-       WHERE vat_period_id = ? AND user_id = ?
-       ORDER BY created_at DESC`,
-      [periodId, userId],
-    );
+    let sql;
+    let params;
+    if (isAdmin) {
+      sql = `SELECT id, status, company_name, company_trn,
+                    combined_json_path, created_at, updated_at
+             FROM vat_filing_runs
+             WHERE vat_period_id = ?
+             ORDER BY created_at DESC`;
+      params = [periodId];
+    } else {
+      sql = `SELECT id, status, company_name, company_trn,
+                    combined_json_path, created_at, updated_at
+             FROM vat_filing_runs
+             WHERE vat_period_id = ? AND user_id = ?
+             ORDER BY created_at DESC`;
+      params = [periodId, userId];
+    }
+    const [rows] = await pool.query(sql, params);
     res.json({ runs: rows });
   } catch (err) {
     console.error("listRunsForPeriod error:", err);
@@ -1701,10 +1720,16 @@ export async function listRunsForPeriod(req, res) {
 export async function getRunById(req, res) {
   try {
     const userId = req.user.id;
+    const isAdmin =
+      req.user.type === "admin" ||
+      req.user.type === "super_admin" ||
+      req.user.role === "super_admin";
     const { runId } = req.params;
     const [rows] = await pool.query(
-      `SELECT * FROM vat_filing_runs WHERE id = ? AND user_id = ? LIMIT 1`,
-      [runId, userId],
+      isAdmin
+        ? `SELECT * FROM vat_filing_runs WHERE id = ? LIMIT 1`
+        : `SELECT * FROM vat_filing_runs WHERE id = ? AND user_id = ? LIMIT 1`,
+      isAdmin ? [runId] : [runId, userId],
     );
     if (!rows.length) {
       return res.status(404).json({ message: "VAT filing run not found" });
@@ -1731,6 +1756,10 @@ export async function getRunById(req, res) {
 export async function updateRunById(req, res) {
   try {
     const userId = req.user.id;
+    const isAdmin =
+      req.user.type === "admin" ||
+      req.user.type === "super_admin" ||
+      req.user.role === "super_admin";
     const { runId } = req.params;
     const {
       status,
@@ -1748,8 +1777,10 @@ export async function updateRunById(req, res) {
 
     // 1) Load the run row (only for this user)
     const [rows] = await pool.query(
-      `SELECT * FROM vat_filing_runs WHERE id = ? AND user_id = ? LIMIT 1`,
-      [runId, userId],
+      isAdmin
+        ? `SELECT * FROM vat_filing_runs WHERE id = ? LIMIT 1`
+        : `SELECT * FROM vat_filing_runs WHERE id = ? AND user_id = ? LIMIT 1`,
+      isAdmin ? [runId] : [runId, userId],
     );
 
     if (!rows.length) {
@@ -1822,10 +1853,16 @@ export async function updateRunById(req, res) {
       companyTRN ?? run.company_trn ?? updatedPayload.companyTRN ?? "";
 
     await pool.query(
-      `UPDATE vat_filing_runs
-       SET status = ?, company_name = ?, company_trn = ?, updated_at = NOW()
-       WHERE id = ? AND user_id = ?`,
-      [newStatus, newCompanyName, newCompanyTRN, runId, userId],
+      isAdmin
+        ? `UPDATE vat_filing_runs
+           SET status = ?, company_name = ?, company_trn = ?, updated_at = NOW()
+           WHERE id = ?`
+        : `UPDATE vat_filing_runs
+           SET status = ?, company_name = ?, company_trn = ?, updated_at = NOW()
+           WHERE id = ? AND user_id = ?`,
+      isAdmin
+        ? [newStatus, newCompanyName, newCompanyTRN, runId]
+        : [newStatus, newCompanyName, newCompanyTRN, runId, userId],
     );
 
     const [fresh] = await pool.query(
@@ -1846,15 +1883,24 @@ export async function updateRunById(req, res) {
 export async function deleteRunById(req, res) {
   try {
     const userId = req.user.id;
+    const isAdmin =
+      req.user.type === "admin" ||
+      req.user.type === "super_admin" ||
+      req.user.role === "super_admin";
     const { runId } = req.params;
 
     // 1) Load run row for this user
     const [rows] = await pool.query(
-      `SELECT id, combined_json_path
-       FROM vat_filing_runs
-       WHERE id = ? AND user_id = ?
-       LIMIT 1`,
-      [runId, userId],
+      isAdmin
+        ? `SELECT id, combined_json_path
+           FROM vat_filing_runs
+           WHERE id = ?
+           LIMIT 1`
+        : `SELECT id, combined_json_path
+           FROM vat_filing_runs
+           WHERE id = ? AND user_id = ?
+           LIMIT 1`,
+      isAdmin ? [runId] : [runId, userId],
     );
 
     if (!rows.length) {
@@ -1878,8 +1924,10 @@ export async function deleteRunById(req, res) {
 
     // 3) Delete DB row
     await pool.query(
-      `DELETE FROM vat_filing_runs WHERE id = ? AND user_id = ?`,
-      [runId, userId],
+      isAdmin
+        ? `DELETE FROM vat_filing_runs WHERE id = ?`
+        : `DELETE FROM vat_filing_runs WHERE id = ? AND user_id = ?`,
+      isAdmin ? [runId] : [runId, userId],
     );
 
     return res.json({ message: "VAT filing run deleted successfully" });

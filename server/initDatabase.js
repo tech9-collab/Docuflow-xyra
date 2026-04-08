@@ -530,7 +530,7 @@ export async function initializeDatabase() {
     await pool.query(`
 CREATE TABLE IF NOT EXISTS vat_filing_runs (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
+  user_id INT NULL,
   customer_id INT NOT NULL,
   vat_period_id INT NOT NULL,
   status ENUM('draft','final') DEFAULT 'draft',
@@ -921,6 +921,16 @@ CREATE TABLE IF NOT EXISTS vat_filing_runs (
         await pool.query("SET FOREIGN_KEY_CHECKS = 1");
       }
     } catch (e) { console.warn("vat_filing_periods user_id migration skipped:", e.message); }
+
+    // Make user_id nullable in vat_filing_runs (admin users may not have users-table rows)
+    try {
+      const [vfrUserCol] = await pool.query("SHOW COLUMNS FROM vat_filing_runs LIKE 'user_id'");
+      if (vfrUserCol.length && vfrUserCol[0].Null === 'NO') {
+        await pool.query("SET FOREIGN_KEY_CHECKS = 0");
+        await pool.query("ALTER TABLE vat_filing_runs MODIFY COLUMN user_id INT NULL");
+        await pool.query("SET FOREIGN_KEY_CHECKS = 1");
+      }
+    } catch (e) { console.warn("vat_filing_runs user_id migration skipped:", e.message); }
 
     // Make user_id nullable in ct_filing_periods
     try {

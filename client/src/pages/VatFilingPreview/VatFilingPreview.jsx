@@ -884,20 +884,29 @@ export default function VatFillingPreview() {
 
     try {
       setLoading(true);
+      const latestBankReconData =
+        previewData.bankReconData && Array.isArray(previewData.bankReconData.rows)
+          ? previewData.bankReconData
+          : buildBankReconciliationDisplay(
+              previewData.bankData,
+              salesRows,
+              purchaseRows
+            );
       const savedSnapshot = clonePreviewSnapshot({
         ...previewData,
         invoiceData: normalizedInvoiceData,
+        bankReconData: latestBankReconData,
       });
 
       if (isExistingRun && runId) {
-        await updateVatRun(runId, {
+        const updated = await updateVatRun(runId, {
           status: previewData.status || "draft",
           companyId: previewData.companyId || companyId,
           companyName: previewData.companyName || "",
           companyTRN: previewData.companyTRN || "",
           bankData: previewData.bankData,
           invoiceData: normalizedInvoiceData,
-          bankReconData: previewData.bankReconData,
+          bankReconData: latestBankReconData,
           salesTotal: previewData.salesTotal,
           purchaseTotal: previewData.purchaseTotal,
           vatSummary: previewData.vatSummary,
@@ -906,9 +915,15 @@ export default function VatFillingPreview() {
           ),
         });
 
+        const persistedSnapshot = clonePreviewSnapshot(
+          updated?.payload || savedSnapshot
+        );
+
         toast.success("Conversion updated successfully.");
-        setCommittedPreviewData(savedSnapshot);
-        exitEditMode(savedSnapshot);
+        setPreviewData(persistedSnapshot);
+        setCommittedPreviewData(persistedSnapshot);
+        setDraftSaved(true);
+        exitEditMode(persistedSnapshot);
       } else {
         // 🆕 CREATE FIRST DRAFT (same behavior as before)
         if (draftSaved) {
@@ -916,25 +931,39 @@ export default function VatFillingPreview() {
           return;
         }
 
-        const run = await saveVatFilingDraft(periodId, {
+        const created = await saveVatFilingDraft(periodId, {
           companyId: previewData.companyId || companyId,
           companyName: previewData.companyName || "",
           companyTRN: previewData.companyTRN || "",
           bankData: previewData.bankData,
           invoiceData: normalizedInvoiceData,
           status: "draft",
-          bankReconData: previewData.bankReconData,
+          bankReconData: latestBankReconData,
           salesTotal: previewData.salesTotal,
           purchaseTotal: previewData.purchaseTotal,
           vatSummary: previewData.vatSummary,
           vatReturnOverrides: previewData.vatReturnOverrides,
         });
 
+        const createdRun = created?.run;
+        const persistedSnapshot = clonePreviewSnapshot(
+          created?.payload || savedSnapshot
+        );
+
         setDraftSaved(true);
         toast.success("VAT filing draft saved successfully.");
-        setCommittedPreviewData(savedSnapshot);
-        exitEditMode(savedSnapshot);
-        // (Optional) you can navigate to conversions list or stay here
+        setPreviewData(persistedSnapshot);
+        setCommittedPreviewData(persistedSnapshot);
+
+        const nextParams = new URLSearchParams(location.search);
+        if (createdRun?.id) nextParams.set("runId", String(createdRun.id));
+        nextParams.set("periodId", String(periodId));
+        navigate(
+          `${location.pathname}${nextParams.toString() ? `?${nextParams.toString()}` : ""}`,
+          { replace: true }
+        );
+
+        exitEditMode(persistedSnapshot);
       }
     } catch (err) {
       console.error(err);
@@ -971,11 +1000,20 @@ export default function VatFillingPreview() {
         return;
       }
 
+      const latestBankReconData =
+        previewData.bankReconData && Array.isArray(previewData.bankReconData.rows)
+          ? previewData.bankReconData
+          : buildBankReconciliationDisplay(
+              previewData.bankData,
+              salesRows,
+              purchaseRows
+            );
+
       const blob = await generateVatFilingExcel(companyId, {
         bankData: previewData.bankData,
         invoiceData: normalizedInvoiceData,
         companyName: previewData.companyName || `Company ${companyId}`,
-        bankReconData: previewData.bankReconData,
+        bankReconData: latestBankReconData,
         salesTotal: previewData.salesTotal,
         purchaseTotal: previewData.purchaseTotal,
         vatSummary: previewData.vatSummary,
@@ -1053,6 +1091,7 @@ export default function VatFillingPreview() {
 
         rows[rowIndex] = row;
         next.bankData = { ...next.bankData, rows };
+        next.bankReconData = null;
         return next;
       }
 
@@ -1135,6 +1174,7 @@ export default function VatFillingPreview() {
         inv[keyName] = newRows;
         inv.__explicitBuckets = true;
         next.invoiceData = inv;
+        next.bankReconData = null;
 
         // unlock totals so they recalc
         if (
@@ -1161,6 +1201,7 @@ export default function VatFillingPreview() {
         if (viewName === "others") inv.uaeOtherRows = rowsArr;
         inv.__explicitBuckets = true;
         next.invoiceData = inv;
+        next.bankReconData = null;
         return next;
       }
 
@@ -1192,6 +1233,7 @@ export default function VatFillingPreview() {
         if (rowIndex < 0 || rowIndex >= rows.length) return prev;
         rows.splice(rowIndex, 1);
         next.bankData = { ...(next.bankData || {}), rows };
+        next.bankReconData = null;
         return next;
       }
 
@@ -1205,6 +1247,7 @@ export default function VatFillingPreview() {
         inv[keyName] = rowsArr;
         inv.__explicitBuckets = true;
         next.invoiceData = inv;
+        next.bankReconData = null;
         return next;
       }
 
@@ -1218,6 +1261,7 @@ export default function VatFillingPreview() {
         if (viewName === "others") inv.uaeOtherRows = rowsArr;
         inv.__explicitBuckets = true;
         next.invoiceData = inv;
+        next.bankReconData = null;
         return next;
       }
 
@@ -1278,6 +1322,7 @@ export default function VatFillingPreview() {
       return {
         ...prev,
         invoiceData: inv,
+        bankReconData: null,
       };
     });
   };
@@ -1305,6 +1350,7 @@ export default function VatFillingPreview() {
           ? [...next.bankData.rows, newRow]
           : [newRow];
         next.bankData = { ...(next.bankData || {}), rows };
+        next.bankReconData = null;
         return next;
       }
 
@@ -1323,6 +1369,7 @@ export default function VatFillingPreview() {
         inv[keyName] = rowsArr;
         inv.__explicitBuckets = true;
         next.invoiceData = inv;
+        next.bankReconData = null;
         return next;
       }
 
@@ -1349,6 +1396,7 @@ export default function VatFillingPreview() {
         if (viewName === "others") inv.uaeOtherRows = rowsArr;
         inv.__explicitBuckets = true;
         next.invoiceData = inv;
+        next.bankReconData = null;
         return next;
       }
 
@@ -1605,11 +1653,8 @@ export default function VatFillingPreview() {
       ...(Array.isArray(inv.uaeOtherRows) ? inv.uaeOtherRows : []),
     ]);
 
-    // ✅ Place of Supply: Populate from Sales, Purchase, and Others to ensure data consistency
-    let posInit = Array.isArray(inv.placeOfSupplyRows) ? inv.placeOfSupplyRows : [];
-
-    // Combine everything into a pool for PoS if requested or as a master view
-    let posCombined = [...posInit, ...sales, ...purch, ...others];
+    // Keep Place of Supply derived from the live source buckets so edits stay in sync.
+    const posCombined = [...sales, ...purch, ...others];
 
     return {
       salesRows: dedupeRows(sales),
@@ -1630,7 +1675,7 @@ export default function VatFillingPreview() {
       placeOfSupplyRows: Array.isArray(placeOfSupplyRowsView) ? placeOfSupplyRowsView : [],
       __explicitBuckets: true,
     };
-  }, [previewData?.invoiceData, salesRows, purchaseRows, othersRowsView]);
+  }, [previewData?.invoiceData, salesRows, purchaseRows, othersRowsView, placeOfSupplyRowsView]);
 
   // ===== Totals (same formula as backend generateCombinedExcel) =====
   const computedSales = useMemo(() => {

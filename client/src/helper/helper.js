@@ -749,7 +749,7 @@ export async function saveVatFilingDraft(periodId, payload) {
       payload,
       { headers: { ...getAuthHeader(), "Content-Type": "application/json" } },
     );
-    return data.run;
+    return data;
   } catch (err) {
     rethrow(err, "Failed to save VAT filing draft");
   }
