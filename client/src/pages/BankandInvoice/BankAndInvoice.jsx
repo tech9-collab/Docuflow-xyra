@@ -36,14 +36,23 @@ export default function BankAndInvoice() {
   return <VatFilingComposer />;
 }
 
-function VatFilingComposer() {
+export function VatFilingComposer({
+  embedded = false,
+  initialCompanyId = null,
+  initialPeriodId = null,
+  initialRunId = null,
+  initialExistingPayload = null,
+  onClose = null,
+  onCombinedPreviewReady = null,
+} = {}) {
   // Get company ID from URL params
-  const { companyId } = useParams();
+  const { companyId: routeCompanyId } = useParams();
   const location = useLocation();
 
   const searchParams = new URLSearchParams(location.search);
-  const periodId = searchParams.get("periodId");
-  const runId = searchParams.get("runId");
+  const companyId = initialCompanyId || routeCompanyId;
+  const periodId = initialPeriodId ?? searchParams.get("periodId");
+  const runId = initialRunId ?? searchParams.get("runId");
 
   // identity
   const [country] = useState("uae");
@@ -564,6 +573,8 @@ function VatFilingComposer() {
       if (runId) {
         const res = await fetchVatRun(runId);
         existingPayload = res.payload;
+      } else if (initialExistingPayload) {
+        existingPayload = initialExistingPayload;
       }
 
       // BANK: coerce columns to {key,label}
@@ -858,6 +869,12 @@ function VatFilingComposer() {
         runId: runId || null,
       };
 
+      if (onCombinedPreviewReady) {
+        setResultsModal(null);
+        onCombinedPreviewReady(combined);
+        return;
+      }
+
       // Navigate to the preview page with the combined data
       const targetQuery = `periodId=${combined.periodId}${runId ? `&runId=${runId}` : ""}`;
       navigate(`/vat-filing-preview/${companyId}?${targetQuery}`, {
@@ -889,6 +906,10 @@ function VatFilingComposer() {
             type="button"
             className="prj-btn prj-btn-outline vf-back-btn"
             onClick={() => {
+              if (embedded && onClose) {
+                onClose();
+                return;
+              }
               if (runId && periodId) {
                 navigate(
                   `/projects/vat-filing/periods/${companyId}/runs/${periodId}`
@@ -1179,7 +1200,7 @@ function VatFilingComposer() {
                     className="btn btn-black"
                     onClick={gotoCombinedPreview}
                   >
-                    View Combined Preview
+                    {onCombinedPreviewReady ? "Update Preview" : "View Combined Preview"}
                   </button>
                 </div>
               ) : (

@@ -1,0 +1,56 @@
+{
+  "source": "03.09.2025 EXCEL INC 1334887 AED 157.50.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": null,
+      "invoice_number": null,
+      "vendor_name": "EXBEL TRADING CO LLC",
+      "customer_name": "DECOWALLS TECHNICAL SERVICES LLC (DUBAI)",
+      "vendor_trn": null,
+      "customer_trn": "104643212400001",
+      "before_tax_amount": 150,
+      "vat": 7.5,
+      "net_amount": 157.5,
+      "line_items": [
+        {
+          "description": "DARAE VOL. 5-1816-5",
+          "quantity": 1,
+          "unit_price": 150,
+          "tax_amount": 7.5,
+          "net_amount": 157.5
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "place_of_supply": "UAE, Dubai",
+      "document_category": "Invoice",
+      "document_category_evidence": {
+        "matched_text": "Amount Chargeable (in words) VAT Amount (in words) Total Incl. VAT(DHS)",
+        "page_region": "body",
+        "confidence": 0.7
+      },
+      "field_confidence": {
+        "document_category": 0.7,
+        "date": 0,
+        "invoice_number": 0,
+        "vendor_name": 0.9,
+        "customer_name": 1,
+        "vendor_trn": 0,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither the uploading company's name 'TRAVEL MEDIA MIDDLE EAST - FZCO' nor TRN '104165761800003' appears on the document as either vendor or customer.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    }
+  ]
+}

@@ -660,6 +660,11 @@
   flex-direction: column;
 }
 
+.add-files-dialog {
+  width: min(1280px, 100%);
+  height: min(92vh, 960px);
+}
+
 .invoice-preview-header {
   padding: 12px 14px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
@@ -688,4 +693,9 @@
   flex: 1;
   min-height: 0;
   padding: 8px;
+}
+
+.add-files-body {
+  overflow: auto;
+  padding: 16px;
 }

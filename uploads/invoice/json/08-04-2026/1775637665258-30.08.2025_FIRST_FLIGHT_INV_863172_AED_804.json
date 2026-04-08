@@ -1,0 +1,77 @@
+{
+  "source": "30.08.2025 FIRST FLIGHT INV 863172 AED 804.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "30 August 2025",
+      "invoice_number": "IMP5780214",
+      "vendor_name": "FIRST FLIGHT COURIERS (MIDDLE EAST) LLC",
+      "customer_name": "DECOWALLS TECHNICAL SERVICES L.L.",
+      "vendor_trn": "100074584200003",
+      "customer_trn": "104643212400003",
+      "before_tax_amount": 495,
+      "vat": 309,
+      "net_amount": 804,
+      "line_items": [
+        {
+          "description": "CUSTOMS DUTY",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 309
+        },
+        {
+          "description": "BILL OF ENTRY PROCESSING/CHA FEE",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 10
+        },
+        {
+          "description": "ADMIN FEE",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 131
+        },
+        {
+          "description": "CUSTOMS REGISTRATION CHARGES",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": 45
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Invoice",
+      "document_category_evidence": {
+        "matched_text": "Invoice Date",
+        "page_region": "header",
+        "confidence": 0.9
+      },
+      "field_confidence": {
+        "document_category": 0.9,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company name 'TRAVEL MEDIA MIDDLE EAST - FZCO' nor TRN '104165761800003' found as vendor or customer on the document.",
+      "overall_confidence": 0.98,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    }
+  ]
+}

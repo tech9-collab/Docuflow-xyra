@@ -14,6 +14,7 @@ import "./VatFilingPreview.css";
 import toast from "react-hot-toast";
 import PdfViewer from "../../components/PdfViewer/PdfViewer";
 import ImageViewer from "../../components/ImageViewer/ImageViewer";
+import { VatFilingComposer } from "../BankandInvoice/BankAndInvoice";
 import { X } from "lucide-react";
 
 const RAW_API_BASE =
@@ -622,6 +623,7 @@ export default function VatFillingPreview() {
   const [committedPreviewData, setCommittedPreviewData] = useState(
     clonePreviewSnapshot(location.state || null)
   );
+  const [showAddFilesModal, setShowAddFilesModal] = useState(false);
   const editablePaneRef = useRef(null);
 
   const searchParams = new URLSearchParams(location.search);
@@ -673,6 +675,18 @@ export default function VatFillingPreview() {
         navigate(`/projects/vat-filing/periods/${companyId}`);
       }
     }
+  };
+
+  const handleAddMoreFiles = () => {
+    setShowAddFilesModal(true);
+  };
+
+  const handleInlinePreviewRefresh = (combined) => {
+    const snapshot = clonePreviewSnapshot(combined);
+    setPreviewData(snapshot);
+    setCommittedPreviewData(snapshot);
+    setShowAddFilesModal(false);
+    toast.success("Preview updated with additional files.");
   };
 
   const [draftSaved, setDraftSaved] = useState(isExistingRun);
@@ -2959,6 +2973,9 @@ export default function VatFillingPreview() {
           <button className="btn btn-black" onClick={handleDownload}>
             Download Excel
           </button>
+          <button className="btn btn-black" onClick={handleAddMoreFiles}>
+            Add More Files
+          </button>
         </div>
       </header>
 
@@ -3110,6 +3127,33 @@ export default function VatFillingPreview() {
                   step={0.2}
                 />
               )}
+            </div>
+          </div>
+        </div>
+      )}
+      {showAddFilesModal && (
+        <div className="invoice-preview-overlay">
+          <div className="invoice-preview-dialog add-files-dialog">
+            <div className="invoice-preview-header">
+              <span className="preview-title">Add More Files</span>
+              <button
+                className="preview-close-btn"
+                onClick={() => setShowAddFilesModal(false)}
+                aria-label="Close add files"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="invoice-preview-body add-files-body">
+              <VatFilingComposer
+                embedded
+                initialCompanyId={companyId}
+                initialPeriodId={periodIdFromQuery || previewData?.periodId}
+                initialRunId={runId}
+                initialExistingPayload={previewData}
+                onClose={() => setShowAddFilesModal(false)}
+                onCombinedPreviewReady={handleInlinePreviewRefresh}
+              />
             </div>
           </div>
         </div>

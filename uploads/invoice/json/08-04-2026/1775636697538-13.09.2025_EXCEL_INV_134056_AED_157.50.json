@@ -1,0 +1,56 @@
+{
+  "source": "13.09.2025 EXCEL INV 134056 AED 157.50.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "3 SEP 2025",
+      "invoice_number": "155-1",
+      "vendor_name": "DECOWALLS TECHNICAL SERVICES LLC (DUBAI)",
+      "customer_name": "EXCEL TRADING CO, LLC",
+      "vendor_trn": "104043212400001",
+      "customer_trn": null,
+      "before_tax_amount": 150,
+      "vat": 7.5,
+      "net_amount": 157.5,
+      "line_items": [
+        {
+          "description": "DARAE VOL. 5-1816-5 81 Lot 240131",
+          "quantity": 1,
+          "unit_price": 150,
+          "tax_amount": 7.5,
+          "net_amount": 150
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "place_of_supply": "UAE, Dubai",
+      "document_category": "Invoice",
+      "document_category_evidence": {
+        "matched_text": "Amount Chargeable (in words), VAT Amount (in words)",
+        "page_region": "body",
+        "confidence": 0.8
+      },
+      "field_confidence": {
+        "document_category": 0.8,
+        "date": 1,
+        "invoice_number": 0.85,
+        "vendor_name": 1,
+        "customer_name": 0.95,
+        "vendor_trn": 1,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company TRN/Name not found as vendor or customer on the document.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    }
+  ]
+}

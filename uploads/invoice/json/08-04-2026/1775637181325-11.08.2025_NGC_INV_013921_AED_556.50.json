@@ -1,0 +1,60 @@
+{
+  "source": "11.08.2025 NGC INV 013921 AED 556.50.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "11-Aug 2025",
+      "invoice_number": "013921",
+      "vendor_name": "NGC Nafees Wallpaper Co. LLC",
+      "customer_name": "DECOWALLS TECHNICAL SERVICE L.LC",
+      "vendor_trn": "100295968000003",
+      "customer_trn": "104643212400003",
+      "before_tax_amount": 500,
+      "vat": 26.5,
+      "net_amount": 556.5,
+      "line_items": [
+        {
+          "description": "WALL TEXTURES XL VOL. 3 \"PLAIN ROLL (106 X 10 00 M)",
+          "quantity": 8,
+          "unit_price": 265,
+          "tax_amount": 26.5,
+          "net_amount": 556.5
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "place_of_supply": "Dubai",
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 0.9,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 0.8,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company's TRN and Name not found as Vendor or Customer on the document.",
+      "overall_confidence": 0.85,
+      "confidence_notes": [
+        "Arithmetic inconsistency detected in summary: before_tax_amount (500.00) + vat (26.50) does not equal net_amount (556.50). Values extracted as printed.",
+        "Arithmetic inconsistency detected in line item: quantity (8) * unit_price (265.00) = 2120.00, which does not match the 'AMOUNT' column (510.00) for the line.",
+        "Arithmetic inconsistency detected in line item: AMOUNT (510.00) + TAX(5%) (26.50) = 536.50, which does not equal NET AMT (556.50) for the line. Values extracted as printed."
+      ],
+      "pages_covered": "1",
+      "invoice_key_hint": "NGC Nafees Wallpaper Co. LLC-013921"
+    }
+  ]
+}
