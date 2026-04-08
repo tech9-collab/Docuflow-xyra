@@ -541,8 +541,12 @@ const formatAED = (value) => {
 
 const sanitizeVatReturnOverrides = (o) => {
   if (!o) return {};
-  const v = o.ftaFund;
-  return v === undefined || v === null || v === "" ? {} : { ftaFund: v };
+  return Object.entries(o).reduce((acc, [key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
 };
 
 const DEFAULT_TAB_VISIBILITY = {
@@ -656,6 +660,7 @@ export default function VatFillingPreview() {
   const editablePaneRef = useRef(null);
   const columnFilterRef = useRef(null);
   const [openColumnFilterView, setOpenColumnFilterView] = useState(null);
+  const [vatReturnEditKey, setVatReturnEditKey] = useState(null);
   const [visibleColumnKeysByView, setVisibleColumnKeysByView] = useState({
     sales: [],
     purchase: [],
@@ -673,6 +678,7 @@ export default function VatFillingPreview() {
 
   const exitEditMode = (nextData = committedPreviewData) => {
     const snapshot = clonePreviewSnapshot(nextData);
+    setVatReturnEditKey(null);
     if (snapshot) {
       setPreviewData(snapshot);
       setCommittedPreviewData(snapshot);
@@ -1242,13 +1248,52 @@ export default function VatFillingPreview() {
       }
 
       // 5) Sales Total / Purchase Total / VAT Summary (NOT editable now)
-      // (keep this block harmless; it won't run because inputs are disabled in UI)
       if (
         viewName === "salesTotal" ||
         viewName === "purchaseTotal" ||
         viewName === "vatSummary"
       ) {
-        return prev;
+        const next = { ...prev };
+
+        if (viewName === "salesTotal" || viewName === "purchaseTotal") {
+          const targetKey = viewName;
+          const rowsArr = Array.isArray(next[targetKey]) ? [...next[targetKey]] : [];
+          if (rowIndex < 0 || rowIndex >= rowsArr.length) return prev;
+          const row = { ...(rowsArr[rowIndex] || {}) };
+          row[colKey] = newValue;
+          rowsArr[rowIndex] = row;
+          next[targetKey] = rowsArr;
+
+          const metricName = row?.METRIC;
+          if (metricName && String(colKey).toUpperCase() === "AMOUNT") {
+            setMetricLocks((prevLocks) => ({
+              ...prevLocks,
+              [targetKey]: {
+                ...(prevLocks[targetKey] || {}),
+                [metricKey(metricName)]: true,
+              },
+            }));
+          }
+
+          return next;
+        }
+
+        const rowsArr = Array.isArray(next.vatSummary) ? [...next.vatSummary] : [];
+        if (rowIndex < 0 || rowIndex >= rowsArr.length) return prev;
+        const row = { ...(rowsArr[rowIndex] || {}) };
+        row[colKey] = newValue;
+        rowsArr[rowIndex] = row;
+        next.vatSummary = rowsArr;
+
+        const particular = row?.PARTICULAR;
+        if (particular) {
+          setVatSummaryLocks((prevLocks) => ({
+            ...prevLocks,
+            [makeVatSummaryLockKey(particular, colKey)]: true,
+          }));
+        }
+
+        return next;
       }
 
       return prev;
@@ -1321,6 +1366,53 @@ export default function VatFillingPreview() {
       return;
     }
 
+    if (action === "delete") {
+      const displayedOthersRows = Array.isArray(othersRowsView) ? othersRowsView : [];
+
+      setPreviewData((prev) => {
+        if (!prev) return prev;
+
+        const deletedRow = displayedOthersRows[rowIndex];
+        if (!deletedRow) return prev;
+
+        const deletedRowKey = getInvoiceRowMatchKey(deletedRow);
+        const removeMatchingRow = (rows = []) => {
+          let removed = false;
+          return rows.filter((row) => {
+            if (removed) return true;
+            const isMatch = getInvoiceRowMatchKey(row) === deletedRowKey;
+            if (isMatch) {
+              removed = true;
+              return false;
+            }
+            return true;
+          });
+        };
+
+        const next = { ...prev };
+        const inv = { ...(next.invoiceData || {}) };
+        const othersRows = removeMatchingRow(
+          Array.isArray(inv.othersRows) ? [...inv.othersRows] : []
+        );
+        const uaeOtherRows = removeMatchingRow(
+          Array.isArray(inv.uaeOtherRows) ? [...inv.uaeOtherRows] : []
+        );
+
+        inv.othersRows = othersRows;
+        inv.uaeOtherRows = uaeOtherRows;
+        inv.__explicitBuckets = true;
+        next.invoiceData = inv;
+        next.bankReconData = null;
+
+        setSelectedRecord(null);
+        setActiveDocumentId(null);
+        toast.success("Others record deleted.");
+
+        return next;
+      });
+      return;
+    }
+
     if (action !== "moveToSales" && action !== "moveToPurchase") return;
 
     const targetView = action === "moveToSales" ? "sales" : "purchase";
@@ -1382,6 +1474,124 @@ export default function VatFillingPreview() {
         bankReconData: null,
       };
     });
+  };
+
+  const handleSalesPurchaseRowAction = (viewName, rowIndex, action) => {
+    if (!action || !["sales", "purchase"].includes(viewName)) return;
+
+    if (action === "edit") {
+      setSelectedRecord({ view: viewName, rowIndex });
+
+      if (!isEditMode) {
+        const nextParams = new URLSearchParams(location.search);
+        nextParams.set("mode", "edit");
+        navigate(
+          `${location.pathname}${nextParams.toString() ? `?${nextParams.toString()}` : ""}`
+        );
+      }
+      return;
+    }
+
+    if (action !== "delete" && action !== "moveToOthers") return;
+
+    const displayedRows =
+      viewName === "sales"
+        ? Array.isArray(salesRows)
+          ? salesRows
+          : []
+        : Array.isArray(purchaseRows)
+          ? purchaseRows
+          : [];
+
+    setPreviewData((prev) => {
+      if (!prev) return prev;
+
+      const movedRow = displayedRows[rowIndex];
+      if (!movedRow) return prev;
+
+      const rowKey = getInvoiceRowMatchKey(movedRow);
+      const removeMatchingRow = (rows = []) => {
+        let removed = false;
+        return rows.filter((row) => {
+          if (removed) return true;
+          const isMatch = getInvoiceRowMatchKey(row) === rowKey;
+          if (isMatch) {
+            removed = true;
+            return false;
+          }
+          return true;
+        });
+      };
+
+      const next = { ...prev };
+      const inv = { ...(next.invoiceData || {}) };
+      const sourceKey =
+        viewName === "sales" ? "uaeSalesRows" : "uaePurchaseRows";
+      const sourceRows = removeMatchingRow(
+        Array.isArray(inv[sourceKey]) ? [...inv[sourceKey]] : []
+      );
+
+      inv[sourceKey] = sourceRows;
+
+      if (action === "moveToOthers") {
+        const othersBase = Array.isArray(inv.othersRows) ? [...inv.othersRows] : [];
+        const nextOthers = [
+          ...othersBase,
+          {
+            ...movedRow,
+            TYPE: "Others",
+          },
+        ];
+        inv.othersRows = nextOthers;
+        inv.uaeOtherRows = nextOthers;
+      }
+
+      inv.__explicitBuckets = true;
+      next.invoiceData = inv;
+      next.bankReconData = null;
+
+      if (action === "moveToOthers") {
+        setView("others");
+        const nextOthersIndex = Math.max((inv.othersRows || []).length - 1, 0);
+        setSelectedRecord({ view: "others", rowIndex: nextOthersIndex });
+        setActiveDocumentId(null);
+        toast.success(
+          `Record moved to Others from ${viewName === "sales" ? "Sales" : "Purchase"}.`
+        );
+      } else {
+        setSelectedRecord(null);
+        setActiveDocumentId(null);
+        toast.success(
+          `${viewName === "sales" ? "Sales" : "Purchase"} record deleted.`
+        );
+      }
+
+      return next;
+    });
+  };
+
+  const handleMetricRowEdit = (viewName, rowIndex) => {
+    setSelectedRecord({ view: viewName, rowIndex });
+
+    if (!isEditMode) {
+      const nextParams = new URLSearchParams(location.search);
+      nextParams.set("mode", "edit");
+      navigate(
+        `${location.pathname}${nextParams.toString() ? `?${nextParams.toString()}` : ""}`
+      );
+    }
+  };
+
+  const handleVatReturnRowEdit = (rowKey) => {
+    setVatReturnEditKey(rowKey);
+
+    if (!isEditMode) {
+      const nextParams = new URLSearchParams(location.search);
+      nextParams.set("mode", "edit");
+      navigate(
+        `${location.pathname}${nextParams.toString() ? `?${nextParams.toString()}` : ""}`
+      );
+    }
   };
 
   const handleAddRow = (viewName) => {
@@ -1490,8 +1700,6 @@ export default function VatFillingPreview() {
 
   // === VAT Return overrides helpers ===
   const handleVatReturnInputChange = (key, rawValue) => {
-    if (key !== "ftaFund") return; // ✅ block everything except FTA fund
-
     setPreviewData((prev) => {
       if (!prev) return prev;
       const next = { ...prev };
@@ -1920,24 +2128,24 @@ export default function VatFillingPreview() {
     // ===== Apply overrides on top of VAT SUMMARY base values =====
 
     // Outputs (VAT on sales & outputs)
-    const standardAmount = baseStdSuppliesAmount;
-    const standardVat = baseOutputTaxAmount;
+    const standardAmount = readNum("outputs.standard.amount", baseStdSuppliesAmount);
+    const standardVat = readNum("outputs.standard.vat", baseOutputTaxAmount);
     const standardTotal = standardAmount + standardVat;
 
-    const reverseSupAmount = 0;
-    const reverseSupVat = 0;
+    const reverseSupAmount = readNum("outputs.reverseCharge.amount", 0);
+    const reverseSupVat = readNum("outputs.reverseCharge.vat", 0);
     const reverseSupTotal = reverseSupAmount + reverseSupVat;
 
-    const zeroAmount = baseZeroRatedAmount;
-    const zeroVat = 0;
+    const zeroAmount = readNum("outputs.zeroRated.amount", baseZeroRatedAmount);
+    const zeroVat = readNum("outputs.zeroRated.vat", 0);
     const zeroTotal = zeroAmount + zeroVat;
 
-    const exemptAmount = 0;
-    const exemptVat = 0;
+    const exemptAmount = readNum("outputs.exempt.amount", 0);
+    const exemptVat = readNum("outputs.exempt.vat", 0);
     const exemptTotal = exemptAmount + exemptVat;
 
-    const goodsAmount = 0;
-    const goodsVat = 0;
+    const goodsAmount = readNum("outputs.goodsImport.amount", 0);
+    const goodsVat = readNum("outputs.goodsImport.vat", 0);
     const goodsTotal = goodsAmount + goodsVat;
 
     const outputs = {
@@ -1973,12 +2181,12 @@ export default function VatFillingPreview() {
     outputsTotals.total = outputsTotals.amount + outputsTotals.vat;
 
     // Inputs (VAT on expenses & inputs)
-    const stdExpAmount = baseStdExpensesAmount;
-    const stdExpVat = baseInputTaxAmount;
+    const stdExpAmount = readNum("inputs.standard.amount", baseStdExpensesAmount);
+    const stdExpVat = readNum("inputs.standard.vat", baseInputTaxAmount);
     const stdExpTotal = stdExpAmount + stdExpVat;
 
-    const revExpAmount = 0;
-    const revExpVat = 0;
+    const revExpAmount = readNum("inputs.reverseCharge.amount", 0);
+    const revExpVat = readNum("inputs.reverseCharge.vat", 0);
     const revExpTotal = revExpAmount + revExpVat;
 
     const inputs = {
@@ -2542,9 +2750,8 @@ export default function VatFillingPreview() {
       .trim();
 
     const showActionColumn =
-      viewName === "others" ||
-      (isEditMode &&
-        ["bank", "sales", "purchase", "placeOfSupply"].includes(viewName));
+      ["sales", "purchase", "others", "salesTotal", "purchaseTotal", "vatSummary"].includes(viewName) ||
+      (isEditMode && ["bank", "placeOfSupply"].includes(viewName));
 
     const showAddRowButton =
       isEditMode &&
@@ -2741,7 +2948,13 @@ export default function VatFillingPreview() {
                           ? `${val}%`
                           : text;
 
-                      let editable = isCellEditable(viewName);
+                      const isMetricRowEditing =
+                        isEditMode &&
+                        ["salesTotal", "purchaseTotal", "vatSummary"].includes(viewName) &&
+                        selectedRecord?.view === viewName &&
+                        selectedRecord?.rowIndex === rowIndex;
+
+                      let editable = isCellEditable(viewName) || isMetricRowEditing;
 
                       if (
                         (viewName === "salesTotal" ||
@@ -2846,20 +3059,44 @@ export default function VatFillingPreview() {
                     })}
                     {showActionColumn && (
                       <td className="actions-col">
-                        {viewName === "others" ? (
+                        {["others", "sales", "purchase", "salesTotal", "purchaseTotal", "vatSummary"].includes(viewName) ? (
                           <select
                             className="inline-edit-input action-select"
                             value=""
                             onClick={(e) => e.stopPropagation()}
                             onChange={(e) => {
                               e.stopPropagation();
-                              handleOthersRowAction(rowIndex, e.target.value);
+                              if (viewName === "others") {
+                                handleOthersRowAction(rowIndex, e.target.value);
+                              } else if (
+                                ["salesTotal", "purchaseTotal", "vatSummary"].includes(viewName)
+                              ) {
+                                if (e.target.value === "edit") {
+                                  handleMetricRowEdit(viewName, rowIndex);
+                                }
+                              } else {
+                                handleSalesPurchaseRowAction(
+                                  viewName,
+                                  rowIndex,
+                                  e.target.value
+                                );
+                              }
                             }}
                           >
                             <option value="">Actions</option>
                             <option value="edit">Edit</option>
-                            <option value="moveToSales">Move to Sales</option>
-                            <option value="moveToPurchase">Move to Purchase</option>
+                            {viewName === "others" ? (
+                              <>
+                                <option value="delete">Delete</option>
+                                <option value="moveToSales">Move to Sales</option>
+                                <option value="moveToPurchase">Move to Purchase</option>
+                              </>
+                            ) : ["salesTotal", "purchaseTotal", "vatSummary"].includes(viewName) ? null : (
+                              <>
+                                <option value="delete">Delete</option>
+                                <option value="moveToOthers">Move to Others</option>
+                              </>
+                            )}
                           </select>
                         ) : (
                           <button
@@ -2885,6 +3122,25 @@ export default function VatFillingPreview() {
       </div>
     );
   };
+
+  const renderVatReturnActionCell = (rowKey) => (
+    <td className="actions-col">
+      <select
+        className="inline-edit-input action-select"
+        value=""
+        onClick={(e) => e.stopPropagation()}
+        onChange={(e) => {
+          e.stopPropagation();
+          if (e.target.value === "edit") {
+            handleVatReturnRowEdit(rowKey);
+          }
+        }}
+      >
+        <option value="">Actions</option>
+        <option value="edit">Edit</option>
+      </select>
+    </td>
+  );
 
   if (loading) {
     return (
@@ -2914,6 +3170,26 @@ export default function VatFillingPreview() {
       netVatPayableAfterFund,
     } = vatReturnData;
 
+    const isVatReturnRowEditing = (rowKey) =>
+      isEditMode && view === "vatReturn" && vatReturnEditKey === rowKey;
+
+    const renderVatReturnEditableCell = (rowKey, fieldKey, value) =>
+      isVatReturnRowEditing(rowKey) ? (
+        <input
+          type="text"
+          inputMode="decimal"
+          className="inline-edit-input"
+          value={getVatReturnInputValue(fieldKey, value)}
+          onChange={(e) => handleVatReturnInputChange(fieldKey, e.target.value)}
+          onBlur={(e) => {
+            const n = parseReconAmount(e.target.value);
+            handleVatReturnInputChange(fieldKey, n == null ? "" : n.toFixed(2));
+          }}
+        />
+      ) : (
+        formatAED(value)
+      );
+
     return (
       // ⬇️ use the same scroller class used by other tabs
       <div className="tbl-scroller tbl-scroller-vatReturn">
@@ -2933,44 +3209,51 @@ export default function VatFillingPreview() {
                   <th>AMOUNT</th>
                   <th>VAT AMOUNT</th>
                   <th>TOTAL AMOUNT</th>
+                  <th className="actions-col">Action</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>STANDARD RATED SUPPLIES</td>
-                  <td>{formatAED(outputs.standard.amount)}</td>
-                  <td>{formatAED(outputs.standard.vat)}</td>
+                  <td>{renderVatReturnEditableCell("outputs.standard", "outputs.standard.amount", outputs.standard.amount)}</td>
+                  <td>{renderVatReturnEditableCell("outputs.standard", "outputs.standard.vat", outputs.standard.vat)}</td>
                   <td>{formatAED(outputs.standard.total)}</td>
+                  {renderVatReturnActionCell("outputs.standard")}
                 </tr>
                 <tr>
                   <td>Reverse Charge Provisions (Supplies)</td>
-                  <td>{formatAED(outputs.reverseCharge.amount)}</td>
-                  <td>{formatAED(outputs.reverseCharge.vat)}</td>
+                  <td>{renderVatReturnEditableCell("outputs.reverseCharge", "outputs.reverseCharge.amount", outputs.reverseCharge.amount)}</td>
+                  <td>{renderVatReturnEditableCell("outputs.reverseCharge", "outputs.reverseCharge.vat", outputs.reverseCharge.vat)}</td>
                   <td>{formatAED(outputs.reverseCharge.total)}</td>
+                  {renderVatReturnActionCell("outputs.reverseCharge")}
                 </tr>
                 <tr>
                   <td>ZERO RATED SUPPLIES</td>
-                  <td>{formatAED(outputs.zeroRated.amount)}</td>
-                  <td>{formatAED(outputs.zeroRated.vat)}</td>
+                  <td>{renderVatReturnEditableCell("outputs.zeroRated", "outputs.zeroRated.amount", outputs.zeroRated.amount)}</td>
+                  <td>{renderVatReturnEditableCell("outputs.zeroRated", "outputs.zeroRated.vat", outputs.zeroRated.vat)}</td>
                   <td>{formatAED(outputs.zeroRated.total)}</td>
+                  {renderVatReturnActionCell("outputs.zeroRated")}
                 </tr>
                 <tr>
                   <td>EXEMPTED SUPPLIES</td>
-                  <td>{formatAED(outputs.exempt.amount)}</td>
-                  <td>{formatAED(outputs.exempt.vat)}</td>
+                  <td>{renderVatReturnEditableCell("outputs.exempt", "outputs.exempt.amount", outputs.exempt.amount)}</td>
+                  <td>{renderVatReturnEditableCell("outputs.exempt", "outputs.exempt.vat", outputs.exempt.vat)}</td>
                   <td>{formatAED(outputs.exempt.total)}</td>
+                  {renderVatReturnActionCell("outputs.exempt")}
                 </tr>
                 <tr>
                   <td>Goods imported into UAE</td>
-                  <td>{formatAED(outputs.goodsImport.amount)}</td>
-                  <td>{formatAED(outputs.goodsImport.vat)}</td>
+                  <td>{renderVatReturnEditableCell("outputs.goodsImport", "outputs.goodsImport.amount", outputs.goodsImport.amount)}</td>
+                  <td>{renderVatReturnEditableCell("outputs.goodsImport", "outputs.goodsImport.vat", outputs.goodsImport.vat)}</td>
                   <td>{formatAED(outputs.goodsImport.total)}</td>
+                  {renderVatReturnActionCell("outputs.goodsImport")}
                 </tr>
                 <tr className="vat-return-total-row">
                   <td>TOTAL AMOUNT</td>
                   <td>{formatAED(outputsTotals.amount)}</td>
                   <td>{formatAED(outputsTotals.vat)}</td>
                   <td>{formatAED(outputsTotals.total)}</td>
+                  {renderVatReturnActionCell("outputs.total")}
                 </tr>
               </tbody>
             </table>
@@ -2990,26 +3273,30 @@ export default function VatFillingPreview() {
                   <th>AMOUNT</th>
                   <th>VAT AMOUNT</th>
                   <th>TOTAL AMOUNT</th>
+                  <th className="actions-col">Action</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>STANDARD RATED EXPENSES</td>
-                  <td>{formatAED(inputs.standard.amount)}</td>
-                  <td>{formatAED(inputs.standard.vat)}</td>
+                  <td>{renderVatReturnEditableCell("inputs.standard", "inputs.standard.amount", inputs.standard.amount)}</td>
+                  <td>{renderVatReturnEditableCell("inputs.standard", "inputs.standard.vat", inputs.standard.vat)}</td>
                   <td>{formatAED(inputs.standard.total)}</td>
+                  {renderVatReturnActionCell("inputs.standard")}
                 </tr>
                 <tr>
                   <td>Reverse Charge Provisions (Expenses)</td>
-                  <td>{formatAED(inputs.reverseCharge.amount)}</td>
-                  <td>{formatAED(inputs.reverseCharge.vat)}</td>
+                  <td>{renderVatReturnEditableCell("inputs.reverseCharge", "inputs.reverseCharge.amount", inputs.reverseCharge.amount)}</td>
+                  <td>{renderVatReturnEditableCell("inputs.reverseCharge", "inputs.reverseCharge.vat", inputs.reverseCharge.vat)}</td>
                   <td>{formatAED(inputs.reverseCharge.total)}</td>
+                  {renderVatReturnActionCell("inputs.reverseCharge")}
                 </tr>
                 <tr className="vat-return-total-row">
                   <td>TOTAL AMOUNT</td>
                   <td>{formatAED(inputsTotals.amount)}</td>
                   <td>{formatAED(inputsTotals.vat)}</td>
                   <td>{formatAED(inputsTotals.total)}</td>
+                  {renderVatReturnActionCell("inputs.total")}
                 </tr>
               </tbody>
             </table>
@@ -3023,25 +3310,29 @@ export default function VatFillingPreview() {
                 <tr>
                   <th>NET VAT VALUE</th>
                   <th>AMOUNT (AED)</th>
+                  <th className="actions-col">Action</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>Total Value of due tax for the period</td>
                   <td>{formatAED(totalDueTax)}</td>
+                  {renderVatReturnActionCell("net.totalDueTax")}
                 </tr>
                 <tr>
                   <td>Total Value of recoverable tax for the period</td>
                   <td>{formatAED(totalRecoverableTax)}</td>
+                  {renderVatReturnActionCell("net.totalRecoverableTax")}
                 </tr>
                 <tr>
                   <td>VAT PAYABLE FOR THE PERIOD</td>
                   <td>{formatAED(vatPayableForPeriod)}</td>
+                  {renderVatReturnActionCell("net.vatPayable")}
                 </tr>
                 <tr>
                   <td>FUND AVAILABLE FTA</td>
                   <td>
-                    {isEditMode ? (
+                    {isVatReturnRowEditing("ftaFund") ? (
                       <input
                         type="text"
                         inputMode="decimal"
@@ -3062,10 +3353,12 @@ export default function VatFillingPreview() {
                       formatAED(ftaFund)
                     )}
                   </td>
+                  {renderVatReturnActionCell("ftaFund")}
                 </tr>
                 <tr className="vat-return-total-row">
                   <td>NET VAT PAYABLE FOR THE PERIOD</td>
                   <td>{formatAED(netVatPayableAfterFund)}</td>
+                  {renderVatReturnActionCell("net.afterFund")}
                 </tr>
               </tbody>
             </table>
