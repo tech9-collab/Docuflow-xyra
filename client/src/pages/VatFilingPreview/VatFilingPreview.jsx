@@ -1727,6 +1727,11 @@ export default function VatFillingPreview() {
     return String(raw);
   };
 
+  const getVatReturnChoiceValue = (key) => {
+    const raw = previewData?.vatReturnOverrides?.[key];
+    return raw === "yes" || raw === "no" ? raw : "";
+  };
+
   const isRTL = (text) =>
     /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0590-\u05FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(
       String(text ?? "")
@@ -3190,6 +3195,36 @@ export default function VatFillingPreview() {
         formatAED(value)
       );
 
+    const renderVatReturnYesNoCell = (rowKey, fieldKey) => {
+      const value = getVatReturnChoiceValue(fieldKey);
+      const editable = isVatReturnRowEditing(rowKey);
+
+      return editable ? (
+        <div className="vat-return-choice-group">
+          <label className="vat-return-choice">
+            <input
+              type="radio"
+              name={fieldKey}
+              checked={value === "yes"}
+              onChange={() => handleVatReturnInputChange(fieldKey, "yes")}
+            />
+            <span>Yes</span>
+          </label>
+          <label className="vat-return-choice">
+            <input
+              type="radio"
+              name={fieldKey}
+              checked={value === "no"}
+              onChange={() => handleVatReturnInputChange(fieldKey, "no")}
+            />
+            <span>No</span>
+          </label>
+        </div>
+      ) : (
+        <span>{value === "yes" ? "Yes" : value === "no" ? "No" : "-"}</span>
+      );
+    };
+
     return (
       // ⬇️ use the same scroller class used by other tabs
       <div className="tbl-scroller tbl-scroller-vatReturn">
@@ -3359,6 +3394,27 @@ export default function VatFillingPreview() {
                   <td>NET VAT PAYABLE FOR THE PERIOD</td>
                   <td>{formatAED(netVatPayableAfterFund)}</td>
                   {renderVatReturnActionCell("net.afterFund")}
+                </tr>
+                <tr>
+                  <td>
+                    Do you wish to request a refund for the above amount of excess
+                    recoverable tax?
+                  </td>
+                  <td>{renderVatReturnYesNoCell("refundRequest", "refundRequest")}</td>
+                  {renderVatReturnActionCell("refundRequest")}
+                </tr>
+                <tr>
+                  <td>
+                    Did you apply the profit margin scheme in respect of any
+                    supplies made during the tax period?
+                  </td>
+                  <td>
+                    {renderVatReturnYesNoCell(
+                      "profitMarginScheme",
+                      "profitMarginScheme"
+                    )}
+                  </td>
+                  {renderVatReturnActionCell("profitMarginScheme")}
                 </tr>
               </tbody>
             </table>

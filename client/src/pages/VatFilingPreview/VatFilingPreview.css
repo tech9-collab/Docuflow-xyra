@@ -657,6 +657,27 @@
   text-align: right;
 }
 
+.vat-return-choice-group {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.vat-return-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.vat-return-choice input {
+  margin: 0;
+}
+
 .vat-return-main-header {
   background: #f0f0f0;
   font-weight: 700;
@@ -673,9 +694,15 @@
 
 .vat-return-net th:nth-child(2),
 .vat-return-net td:nth-child(2) {
-  width: 70%; /* take remaining space */
-  max-width: 70%;
-  text-align: right;
+  width: 30%;
+  max-width: 30%;
+  text-align: left;
+}
+
+.vat-return-net th:nth-child(3),
+.vat-return-net td:nth-child(3) {
+  width: 15%;
+  max-width: 15%;
 }
 
 .src-link {
