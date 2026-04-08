@@ -57,6 +57,7 @@ const toNumberLoose = (v) => {
 };
 
 const fmt2 = (n) => round2(n).toFixed(2);
+const COLUMN_FILTER_VIEWS = new Set(["sales", "purchase", "others"]);
 
 const normalizeInvoiceRowToken = (v) =>
   String(v ?? "")
@@ -653,6 +654,13 @@ export default function VatFillingPreview() {
   );
   const [showAddFilesModal, setShowAddFilesModal] = useState(false);
   const editablePaneRef = useRef(null);
+  const columnFilterRef = useRef(null);
+  const [openColumnFilterView, setOpenColumnFilterView] = useState(null);
+  const [visibleColumnKeysByView, setVisibleColumnKeysByView] = useState({
+    sales: [],
+    purchase: [],
+    others: [],
+  });
 
   const searchParams = new URLSearchParams(location.search);
   const runId = searchParams.get("runId");
@@ -1781,6 +1789,32 @@ export default function VatFillingPreview() {
     };
   }, [purchaseRows]);
 
+  const othersData = useMemo(() => {
+    const rows = othersRowsView || [];
+    const keys = rows.length ? Object.keys(rows[0]) : [];
+    const baseOrder = UAE_OTHERS_ORDER.filter(
+      (k) =>
+        String(k).toUpperCase() !== "SOURCE_URL" &&
+        String(k).toUpperCase() !== "SOURCE_TYPE"
+    );
+    const extraKeys = keys.filter(
+      (k) =>
+        !baseOrder.includes(k) &&
+        String(k).toUpperCase() !== "SOURCE_URL" &&
+        String(k).toUpperCase() !== "SOURCE_TYPE"
+    );
+    const orderedKeys = baseOrder.concat(extraKeys);
+    const columns = orderedKeys.map((k) => ({
+      key: k,
+      label: k,
+    }));
+
+    return {
+      rows,
+      columns: columns.length ? columns : [{ key: "NoData", label: "No Data" }],
+    };
+  }, [othersRowsView]);
+
   const placeOfSupplyData = useMemo(() => {
     const rows = (placeOfSupplyRowsView || []).map((r) => {
       const out = {};
@@ -2313,32 +2347,8 @@ export default function VatFillingPreview() {
         return purchaseTotalData;
       case "vatSummary":
         return vatSummaryData;
-      case "others": {
-        const rows = othersRowsView || [];
-        const keys = rows.length ? Object.keys(rows[0]) : [];
-        const baseOrder = UAE_OTHERS_ORDER.filter(
-          (k) =>
-            String(k).toUpperCase() !== "SOURCE_URL" &&
-            String(k).toUpperCase() !== "SOURCE_TYPE"
-        );
-        const extraKeys = keys.filter(
-          (k) =>
-            !baseOrder.includes(k) &&
-            String(k).toUpperCase() !== "SOURCE_URL" &&
-            String(k).toUpperCase() !== "SOURCE_TYPE"
-        );
-        const orderedKeys = baseOrder.concat(extraKeys);
-        const columns = orderedKeys.map((k) => ({
-          key: k,
-          label: k,
-        }));
-        return {
-          rows,
-          columns: columns.length
-            ? columns
-            : [{ key: "NoData", label: "No Data" }],
-        };
-      }
+      case "others":
+        return othersData;
       case "placeOfSupply":
         return placeOfSupplyData;
       default:
@@ -2353,7 +2363,7 @@ export default function VatFillingPreview() {
     salesTotalData,
     purchaseTotalData,
     vatSummaryData,
-    othersRowsView,
+    othersData,
     placeOfSupplyData,
   ]);
 
@@ -2414,6 +2424,59 @@ export default function VatFillingPreview() {
     }
   }, [activeDocumentId, contextualDocuments]);
 
+  useEffect(() => {
+    const syncVisibleColumns = (viewName, columns) => {
+      if (!COLUMN_FILTER_VIEWS.has(viewName)) return;
+      const availableKeys = (columns || []).map((col) => String(col.key));
+
+      setVisibleColumnKeysByView((prev) => {
+        const currentKeys = Array.isArray(prev[viewName]) ? prev[viewName] : [];
+        const normalizedCurrentKeys = currentKeys.filter((key) =>
+          availableKeys.includes(String(key))
+        );
+        const nextKeys =
+          normalizedCurrentKeys.length === 0
+            ? availableKeys
+            : [
+                ...normalizedCurrentKeys,
+                ...availableKeys.filter(
+                  (key) => !normalizedCurrentKeys.includes(key)
+                ),
+              ];
+
+        if (
+          nextKeys.length === currentKeys.length &&
+          nextKeys.every((key, index) => key === currentKeys[index])
+        ) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          [viewName]: nextKeys,
+        };
+      });
+    };
+
+    syncVisibleColumns("sales", salesData.columns);
+    syncVisibleColumns("purchase", purchaseData.columns);
+    syncVisibleColumns("others", othersData.columns);
+  }, [othersData.columns, purchaseData.columns, salesData.columns]);
+
+  useEffect(() => {
+    if (!openColumnFilterView) return;
+
+    const handleDocumentClick = (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (columnFilterRef.current?.contains(target)) return;
+      setOpenColumnFilterView(null);
+    };
+
+    document.addEventListener("click", handleDocumentClick);
+    return () => document.removeEventListener("click", handleDocumentClick);
+  }, [openColumnFilterView]);
+
   const activeDocument =
     contextualDocuments.find((doc) => doc.id === activeDocumentId) ||
     contextualDocuments[0] ||
@@ -2444,6 +2507,21 @@ export default function VatFillingPreview() {
     emptyText = "No rows to display",
     viewName = ""
   ) => {
+    const supportsColumnFilter = COLUMN_FILTER_VIEWS.has(viewName);
+    const availableColumnKeys = cols.map((c) => String(c.key));
+    const selectedColumnKeys = supportsColumnFilter
+      ? visibleColumnKeysByView[viewName]?.filter((key) =>
+          availableColumnKeys.includes(String(key))
+        ) || []
+      : availableColumnKeys;
+    const resolvedColumnKeys =
+      supportsColumnFilter && selectedColumnKeys.length
+        ? selectedColumnKeys
+        : availableColumnKeys;
+    const filteredCols = supportsColumnFilter
+      ? cols.filter((c) => resolvedColumnKeys.includes(String(c.key)))
+      : cols;
+
     if (!cols.length) {
       return (
         <div className="muted" style={{ padding: 12 }}>
@@ -2474,22 +2552,89 @@ export default function VatFillingPreview() {
 
     return (
       <div className="tbl-wrap">
-        {showAddRowButton && (
+        {(showAddRowButton || supportsColumnFilter) && (
           <div className="tbl-actions">
-            <button
-              type="button"
-              className="row-add-btn"
-              onClick={() => handleAddRow(viewName)}
-            >
-              Add Row
-            </button>
+            {supportsColumnFilter && (
+              <div className="column-filter" ref={openColumnFilterView === viewName ? columnFilterRef : null}>
+                <button
+                  type="button"
+                  className="row-add-btn column-filter-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenColumnFilterView((prev) =>
+                      prev === viewName ? null : viewName
+                    );
+                  }}
+                >
+                  Columns
+                </button>
+                {openColumnFilterView === viewName && (
+                  <div
+                    className="column-filter-menu"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {cols.map((col) => {
+                      const colKey = String(col.key);
+                      const isChecked = resolvedColumnKeys.includes(colKey);
+
+                      return (
+                        <label key={colKey} className="column-filter-option">
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={(e) => {
+                              const checked = e.target.checked;
+                              setVisibleColumnKeysByView((prev) => {
+                                const previousKeys = Array.isArray(prev[viewName])
+                                  ? prev[viewName].filter((key) =>
+                                      availableColumnKeys.includes(String(key))
+                                    )
+                                  : availableColumnKeys;
+                                const nextKeys = checked
+                                  ? [
+                                      ...previousKeys,
+                                      ...(!previousKeys.includes(colKey)
+                                        ? [colKey]
+                                        : []),
+                                    ]
+                                  : previousKeys.filter((key) => key !== colKey);
+
+                                return {
+                                  ...prev,
+                                  [viewName]: nextKeys,
+                                };
+                              });
+                            }}
+                          />
+                          <span>{col.label ?? col.key}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+            {showAddRowButton && (
+              <button
+                type="button"
+                className="row-add-btn"
+                onClick={() => handleAddRow(viewName)}
+              >
+                Add Row
+              </button>
+            )}
           </div>
         )}
+        {supportsColumnFilter && filteredCols.length === 0 ? (
+          <div className="muted" style={{ padding: 12 }}>
+            No columns selected.
+          </div>
+        ) : (
         <div className={scrollerClassName}>
           <table className={tableClassName}>
             <thead>
               <tr>
-                {cols.map((c) => {
+                {filteredCols.map((c) => {
                   const label = c.label ?? "";
 
                   const isNumericHeader =
@@ -2524,7 +2669,7 @@ export default function VatFillingPreview() {
               {!rows || rows.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={cols.length + (showActionColumn ? 1 : 0)}
+                    colSpan={filteredCols.length + (showActionColumn ? 1 : 0)}
                     className="muted"
                     style={{ textAlign: "center", padding: 18 }}
                   >
@@ -2543,7 +2688,7 @@ export default function VatFillingPreview() {
                     }
                     onClick={() => setSelectedRecord({ view: viewName, rowIndex })}
                   >
-                    {cols.map((c) => {
+                    {filteredCols.map((c) => {
                       const val = row?.[c.key] ?? "";
                       const isDateCol = String(c.key).toUpperCase().includes("DATE");
                       const formattedDate = isDateCol ? formatDateDisplay(val) : null;
@@ -2736,6 +2881,7 @@ export default function VatFillingPreview() {
             </tbody>
           </table>
         </div>
+        )}
       </div>
     );
   };
