@@ -2906,13 +2906,6 @@ export default function VatFillingPreview() {
               Others
             </button>
             <button
-              className={`seg-btn ${view === "placeOfSupply" ? "active" : ""}`}
-              onClick={() => setView("placeOfSupply")}
-              title="Show Place of Supply"
-            >
-              Place of Supply
-            </button>
-            <button
               className={`seg-btn ${view === "salesTotal" ? "active" : ""}`}
               onClick={() => setView("salesTotal")}
               title="Show Sales Total sheet"
