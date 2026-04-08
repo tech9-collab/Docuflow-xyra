@@ -58,6 +58,34 @@ const toNumberLoose = (v) => {
 
 const fmt2 = (n) => round2(n).toFixed(2);
 
+const normalizeInvoiceRowToken = (v) =>
+  String(v ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+
+const getInvoiceRowMatchKey = (row) =>
+  [
+    row?.SOURCE,
+    row?.DATE,
+    row?.["INVOICE NUMBER"],
+    row?.["SUPPLIER/VENDOR"],
+    row?.PARTY,
+    row?.["SUPPLIER TRN"],
+    row?.["CUSTOMER TRN"],
+    row?.CURRENCY,
+    row?.["BEFORE TAX AMOUNT"],
+    row?.VAT,
+    row?.["NET AMOUNT"],
+    row?.["BEFORE TAX (AED)"],
+    row?.["VAT (AED)"],
+    row?.["ZERO RATED (AED)"],
+    row?.["NET AMOUNT (AED)"],
+    row?.["PLACE OF SUPPLY"],
+  ]
+    .map(normalizeInvoiceRowToken)
+    .join("|");
+
 /* --- DATE FORMATTING UTILS --- */
 const parseFlexibleDate = (s) => {
   if (!s) return null;
@@ -1289,14 +1317,35 @@ export default function VatFillingPreview() {
 
     const targetView = action === "moveToSales" ? "sales" : "purchase";
 
+    const displayedOthersRows = Array.isArray(othersRowsView) ? othersRowsView : [];
+
     setPreviewData((prev) => {
       if (!prev) return prev;
 
       const inv = { ...(prev.invoiceData || {}) };
-      const othersRows = Array.isArray(inv.othersRows) ? [...inv.othersRows] : [];
-      if (rowIndex < 0 || rowIndex >= othersRows.length) return prev;
+      const movedRow = displayedOthersRows[rowIndex];
+      if (!movedRow) return prev;
 
-      const [movedRow] = othersRows.splice(rowIndex, 1);
+      const movedRowKey = getInvoiceRowMatchKey(movedRow);
+      const removeMatchingRow = (rows = []) => {
+        let removed = false;
+        return rows.filter((row) => {
+          if (removed) return true;
+          const isMatch = getInvoiceRowMatchKey(row) === movedRowKey;
+          if (isMatch) {
+            removed = true;
+            return false;
+          }
+          return true;
+        });
+      };
+
+      const othersRows = removeMatchingRow(
+        Array.isArray(inv.othersRows) ? [...inv.othersRows] : []
+      );
+      const uaeOtherRows = removeMatchingRow(
+        Array.isArray(inv.uaeOtherRows) ? [...inv.uaeOtherRows] : []
+      );
       const targetKey =
         targetView === "sales" ? "uaeSalesRows" : "uaePurchaseRows";
       const targetRows = Array.isArray(inv[targetKey]) ? [...inv[targetKey]] : [];
@@ -1307,7 +1356,7 @@ export default function VatFillingPreview() {
       });
 
       inv.othersRows = othersRows;
-      inv.uaeOtherRows = othersRows;
+      inv.uaeOtherRows = uaeOtherRows;
       inv[targetKey] = targetRows;
       inv.__explicitBuckets = true;
 
@@ -1598,41 +1647,15 @@ export default function VatFillingPreview() {
       !!inv.__explicitBuckets || hasSalesKey || hasPurchKey || hasOthersKey || hasPlaceOfSupplyKey;
 
     // Start with explicit arrays (or empty)
-    const normalizeRowToken = (v) =>
-      String(v ?? "")
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, " ");
     const confidenceScore = (row) => {
       const n = Number(String(row?.CONFIDENCE ?? "").replace(/%/g, ""));
       return Number.isFinite(n) ? n : -1;
     };
-    const invoiceRowKey = (row) =>
-      [
-        row?.SOURCE,
-        row?.DATE,
-        row?.["INVOICE NUMBER"],
-        row?.["SUPPLIER/VENDOR"],
-        row?.PARTY,
-        row?.["SUPPLIER TRN"],
-        row?.["CUSTOMER TRN"],
-        row?.CURRENCY,
-        row?.["BEFORE TAX AMOUNT"],
-        row?.VAT,
-        row?.["NET AMOUNT"],
-        row?.["BEFORE TAX (AED)"],
-        row?.["VAT (AED)"],
-        row?.["ZERO RATED (AED)"],
-        row?.["NET AMOUNT (AED)"],
-        row?.["PLACE OF SUPPLY"],
-      ]
-        .map(normalizeRowToken)
-        .join("|");
     const dedupeRows = (rows = []) => {
       const byKey = new Map();
       rows.forEach((row) => {
         if (!row || typeof row !== "object") return;
-        const key = invoiceRowKey(row);
+        const key = getInvoiceRowMatchKey(row);
         if (!byKey.has(key)) {
           byKey.set(key, row);
           return;
@@ -1978,15 +2001,6 @@ export default function VatFillingPreview() {
     const fallback = vatReturnData?.ftaFund ?? 0;
     return Number(fallback).toFixed(2);
   })();
-
-  // Auto-switch away from an empty tab (keep previous logic for raw tables)
-  useEffect(() => {
-    const hasSales = (salesData.rows || []).length > 0;
-    const hasPurch = (purchaseData.rows || []).length > 0;
-
-    if (view === "sales" && !hasSales && hasPurch) setView("purchase");
-    if (view === "purchase" && !hasPurch && hasSales) setView("sales");
-  }, [view, salesData.rows, purchaseData.rows]);
 
   useEffect(() => {
     if (view === "bank" && !tabVisibility.bank) {
