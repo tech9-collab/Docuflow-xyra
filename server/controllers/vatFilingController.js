@@ -547,6 +547,265 @@ function vatReturnSheetFromTotals(computedSales, computedPurchase) {
 
   return ws;
 }
+
+function vatReturnSheetFromTotalsWithOverrides(
+  computedSales,
+  computedPurchase,
+  overrides = {},
+) {
+  const readNum = (key, fallback = 0) => {
+    const raw = overrides?.[key];
+    if (raw === undefined || raw === null || raw === "") return fallback;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : fallback;
+  };
+  const adjustment = (key) => readNum(`${key}.adjustment`, 0);
+
+  const salesAmount = readNum(
+    "outputs.standard.amount",
+    Number(computedSales.beforeTax || 0),
+  );
+  const salesVat = readNum(
+    "outputs.standard.vat",
+    Number(computedSales.vat || 0),
+  );
+  const salesTotal = salesAmount + salesVat;
+  const reverseSalesAmount = readNum("outputs.reverseCharge.amount", 0);
+  const reverseSalesVat = readNum("outputs.reverseCharge.vat", 0);
+  const reverseSalesTotal = reverseSalesAmount + reverseSalesVat;
+  const zeroSalesAmount = readNum(
+    "outputs.zeroRated.amount",
+    Number(computedSales.zero || 0),
+  );
+  const zeroSalesVat = readNum("outputs.zeroRated.vat", 0);
+  const zeroSalesTotal = zeroSalesAmount + zeroSalesVat;
+  const exemptSalesAmount = readNum("outputs.exempt.amount", 0);
+  const exemptSalesVat = readNum("outputs.exempt.vat", 0);
+  const exemptSalesTotal = exemptSalesAmount + exemptSalesVat;
+  const goodsAmount = readNum("outputs.goodsImport.amount", 0);
+  const goodsVat = readNum("outputs.goodsImport.vat", 0);
+  const goodsTotal = goodsAmount + goodsVat;
+
+  const inputsAmount = readNum(
+    "inputs.standard.amount",
+    Number(computedPurchase.beforeTax || 0),
+  );
+  const inputsVat = readNum(
+    "inputs.standard.vat",
+    Number(computedPurchase.vat || 0),
+  );
+  const inputsTotal = inputsAmount + inputsVat;
+  const reverseInputsAmount = readNum("inputs.reverseCharge.amount", 0);
+  const reverseInputsVat = readNum("inputs.reverseCharge.vat", 0);
+  const reverseInputsTotal = reverseInputsAmount + reverseInputsVat;
+
+  const outputsAmountTotal =
+    salesAmount +
+    reverseSalesAmount +
+    zeroSalesAmount +
+    exemptSalesAmount +
+    goodsAmount;
+  const outputsVatTotal =
+    salesVat + reverseSalesVat + zeroSalesVat + exemptSalesVat + goodsVat;
+  const outputsGrandTotal = outputsAmountTotal + outputsVatTotal;
+
+  const inputsAmountTotal = inputsAmount + reverseInputsAmount;
+  const inputsVatTotal = inputsVat + reverseInputsVat;
+  const inputsGrandTotal = inputsAmountTotal + inputsVatTotal;
+
+  const totalDueTax = outputsVatTotal;
+  const totalRecoverableTax = inputsVatTotal;
+  const vatPayable = totalDueTax - totalRecoverableTax;
+  const ftaFund = readNum("ftaFund", 0);
+  const netVatPayable = vatPayable - ftaFund;
+
+  const data = [
+    ["VAT ON SALES AND ALL OTHER OUTPUTS", "", "", "", ""],
+    [
+      "VAT ON SALES AND ALL OTHER OUTPUTS",
+      "AMOUNT",
+      "VAT AMOUNT",
+      "TOTAL AMOUNT",
+      "ADJUSTMENT (AED)",
+    ],
+    [
+      "STANDARD RATED SUPPLIES",
+      salesAmount,
+      salesVat,
+      salesTotal,
+      adjustment("outputs.standard"),
+    ],
+    [
+      "Reverse Charge Provisions (Supplies)",
+      reverseSalesAmount,
+      reverseSalesVat,
+      reverseSalesTotal,
+      adjustment("outputs.reverseCharge"),
+    ],
+    [
+      "ZERO RATED SUPPLIES",
+      zeroSalesAmount,
+      zeroSalesVat,
+      zeroSalesTotal,
+      adjustment("outputs.zeroRated"),
+    ],
+    [
+      "EXEMPTED SUPPLIES",
+      exemptSalesAmount,
+      exemptSalesVat,
+      exemptSalesTotal,
+      adjustment("outputs.exempt"),
+    ],
+    [
+      "Goods imported into UAE",
+      goodsAmount,
+      goodsVat,
+      goodsTotal,
+      adjustment("outputs.goodsImport"),
+    ],
+    [
+      "TOTAL AMOUNT",
+      outputsAmountTotal,
+      outputsVatTotal,
+      outputsGrandTotal,
+      adjustment("outputs.total"),
+    ],
+    [""],
+    ["VAT ON EXPENSES AND ALL OTHER INPUTS", "", "", "", ""],
+    [
+      "VAT ON EXPENSES AND ALL OTHER INPUTS",
+      "AMOUNT",
+      "VAT AMOUNT",
+      "TOTAL AMOUNT",
+      "ADJUSTMENT (AED)",
+    ],
+    [
+      "STANDARD RATED EXPENSES",
+      inputsAmount,
+      inputsVat,
+      inputsTotal,
+      adjustment("inputs.standard"),
+    ],
+    [
+      "Reverse Charge Provisions (Expenses)",
+      reverseInputsAmount,
+      reverseInputsVat,
+      reverseInputsTotal,
+      adjustment("inputs.reverseCharge"),
+    ],
+    [
+      "TOTAL AMOUNT",
+      inputsAmountTotal,
+      inputsVatTotal,
+      inputsGrandTotal,
+      adjustment("inputs.total"),
+    ],
+    ["", ""],
+    ["NET VAT VALUE", "", "", "", ""],
+    ["NET VAT VALUE", "AMOUNT (AED)", "ADJUSTMENT (AED)", "", ""],
+    [
+      "Total Value of due tax for the period",
+      totalDueTax,
+      adjustment("net.totalDueTax"),
+      "",
+      "",
+    ],
+    [
+      "Total Value of recoverable tax for the period",
+      totalRecoverableTax,
+      adjustment("net.totalRecoverableTax"),
+      "",
+      "",
+    ],
+    [
+      "VAT PAYABLE FOR THE PERIOD",
+      vatPayable,
+      adjustment("net.vatPayable"),
+      "",
+      "",
+    ],
+    ["FUND AVAILABLE FTA", ftaFund, adjustment("ftaFund"), "", ""],
+    [
+      "NET VAT PAYABLE FOR THE PERIOD",
+      netVatPayable,
+      adjustment("net.afterFund"),
+      "",
+      "",
+    ],
+    [
+      "Do you wish to request a refund for the above amount of excess recoverable tax?",
+      overrides?.refundRequest === "yes"
+        ? "Yes"
+        : overrides?.refundRequest === "no"
+          ? "No"
+          : "-",
+      adjustment("refundRequest"),
+      "",
+      "",
+    ],
+    [
+      "Did you apply the profit margin scheme in respect of any supplies made during the tax period?",
+      overrides?.profitMarginScheme === "yes"
+        ? "Yes"
+        : overrides?.profitMarginScheme === "no"
+          ? "No"
+          : "-",
+      adjustment("profitMarginScheme"),
+      "",
+      "",
+    ],
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+
+  ws["!cols"] = [{ wch: 52 }, { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 18 }];
+  ws["!merges"] = (ws["!merges"] || []).concat([
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } },
+    { s: { r: 9, c: 0 }, e: { r: 9, c: 4 } },
+    { s: { r: 15, c: 0 }, e: { r: 15, c: 4 } },
+  ]);
+
+  const headerRows = [0, 1, 9, 10, 15, 16];
+  headerRows.forEach((r) => {
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+    for (let c = 0; c <= range.e.c; c++) {
+      const addr = XLSX.utils.encode_cell({ r, c });
+      const cell = ws[addr] || (ws[addr] = {});
+      cell.s = {
+        ...(cell.s || {}),
+        font: { ...(cell.s?.font || {}), bold: true },
+        alignment: {
+          ...(cell.s?.alignment || {}),
+          horizontal: "center",
+          vertical: "center",
+          wrapText: true,
+        },
+        fill: { patternType: "solid", fgColor: { rgb: "F2F2F2" } },
+      };
+    }
+  });
+
+  const range = XLSX.utils.decode_range(ws["!ref"]);
+  for (let r = 0; r <= range.e.r; r++) {
+    for (let c = 1; c <= 4; c++) {
+      const addr = XLSX.utils.encode_cell({ r, c });
+      const cell = ws[addr];
+      if (cell && typeof cell.v === "number") {
+        cell.t = "n";
+        cell.z = "#,##0.00";
+        cell.s = {
+          ...(cell.s || {}),
+          alignment: {
+            ...(cell.s?.alignment || {}),
+            horizontal: "right",
+          },
+        };
+      }
+    }
+  }
+
+  return ws;
+}
 // ---------- Bank Reconciliation helpers Start----------
 
 // parse "1,234.50" / 1234.5 / "  " → number or null
@@ -1421,9 +1680,10 @@ export async function generateCombinedExcel(req, res) {
           );
         }
 
-        const vatReturnSheet = vatReturnSheetFromTotals(
+        const vatReturnSheet = vatReturnSheetFromTotalsWithOverrides(
           computedSales,
           computedPurchase,
+          vatReturnOverrides,
         );
         XLSX.utils.book_append_sheet(wb, vatReturnSheet, "Vat Return");
 

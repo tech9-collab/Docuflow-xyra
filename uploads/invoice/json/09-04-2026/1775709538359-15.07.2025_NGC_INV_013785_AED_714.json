@@ -1,0 +1,56 @@
+{
+  "source": "15.07.2025 NGC INV 013785 AED 714.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "15-Jul-2025",
+      "invoice_number": "013785",
+      "vendor_name": "NGC Nafees Wallpaper Co. LLC",
+      "customer_name": "DECOWALLS TECHNICAL SERVICE L.L.C",
+      "vendor_trn": "100295968000003",
+      "customer_trn": "104643212400003",
+      "before_tax_amount": 680,
+      "vat": 34,
+      "net_amount": 714,
+      "line_items": [
+        {
+          "description": "ALTAGAMMA FIBERS \"PLAIN ROLL\" - (053 X 10.00 M)",
+          "quantity": 400,
+          "unit_price": 170,
+          "tax_amount": 34,
+          "net_amount": 714
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "place_of_supply": "DUBAI",
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company's TRN and name do not match either vendor or customer information.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": "013785"
+    }
+  ]
+}

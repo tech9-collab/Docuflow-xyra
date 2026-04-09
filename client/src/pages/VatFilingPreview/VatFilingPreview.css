@@ -541,7 +541,7 @@
 }
 
 .tbl-scroller-vatReturn .vat-return-wrapper {
-  min-width: 1400px; /* same as other tables */
+  min-width: 1680px;
 }
 
 .vat-return-section {
@@ -588,25 +588,42 @@
    col4 = TOTAL AMOUNT (15%)
    Net VAT table only has 2 columns, but col1 + col2 follow same start positions,
    so "Amount ( AED )" aligns vertically under the AMOUNT column above. */
-.vat-return-table th:nth-child(1),
-.vat-return-table td:nth-child(1) {
+.vat-return-table:not(.vat-return-net) th:nth-child(1),
+.vat-return-table:not(.vat-return-net) td:nth-child(1) {
+  width: 40%;
+  text-align: left;
+}
+.vat-return-table:not(.vat-return-net) th:nth-child(2),
+.vat-return-table:not(.vat-return-net) td:nth-child(2),
+.vat-return-table:not(.vat-return-net) th:nth-child(3),
+.vat-return-table:not(.vat-return-net) td:nth-child(3),
+.vat-return-table:not(.vat-return-net) th:nth-child(4),
+.vat-return-table:not(.vat-return-net) td:nth-child(4),
+.vat-return-table:not(.vat-return-net) th:nth-child(5),
+.vat-return-table:not(.vat-return-net) td:nth-child(5) {
+  width: 12%;
+  text-align: right;
+}
+.vat-return-table:not(.vat-return-net) th:nth-child(6),
+.vat-return-table:not(.vat-return-net) td:nth-child(6) {
+  width: 12%;
+}
+
+.vat-return-net th:nth-child(1),
+.vat-return-net td:nth-child(1) {
   width: 55%;
   text-align: left;
 }
-.vat-return-table th:nth-child(2),
-.vat-return-table td:nth-child(2) {
+.vat-return-net th:nth-child(2),
+.vat-return-net td:nth-child(2),
+.vat-return-net th:nth-child(3),
+.vat-return-net td:nth-child(3) {
   width: 15%;
   text-align: right;
 }
-.vat-return-table th:nth-child(3),
-.vat-return-table td:nth-child(3) {
+.vat-return-net th:nth-child(4),
+.vat-return-net td:nth-child(4) {
   width: 15%;
-  text-align: right;
-}
-.vat-return-table th:nth-child(4),
-.vat-return-table td:nth-child(4) {
-  width: 15%;
-  text-align: right;
 }
 
 /* Total rows bold */
@@ -634,9 +651,17 @@
 }
 
 /* Right align all numeric columns (2nd and onwards) */
-.vat-return-table td:nth-child(n + 2),
-.vat-return-table th:nth-child(n + 2) {
+.vat-return-table td:nth-child(n + 2):not(.actions-col),
+.vat-return-table th:nth-child(n + 2):not(.actions-col) {
   text-align: right;
+}
+
+.vat-return-table .actions-col {
+  text-align: center;
+}
+
+.vat-return-no-action-cell {
+  background: #fff;
 }
 
 .vat-return-total-label {
@@ -703,6 +728,32 @@
 .vat-return-net td:nth-child(3) {
   width: 15%;
   max-width: 15%;
+}
+
+.vat-return-net th:nth-child(1),
+.vat-return-net td:nth-child(1) {
+  width: 54%;
+  max-width: 54%;
+}
+
+.vat-return-net th:nth-child(2),
+.vat-return-net td:nth-child(2) {
+  width: 15%;
+  max-width: 15%;
+  text-align: right;
+}
+
+.vat-return-net th:nth-child(3),
+.vat-return-net td:nth-child(3) {
+  width: 15%;
+  max-width: 15%;
+  text-align: right;
+}
+
+.vat-return-net th:nth-child(4),
+.vat-return-net td:nth-child(4) {
+  width: 16%;
+  max-width: 16%;
 }
 
 .src-link {

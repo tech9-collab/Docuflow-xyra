@@ -2136,37 +2136,59 @@ export default function VatFillingPreview() {
     const standardAmount = readNum("outputs.standard.amount", baseStdSuppliesAmount);
     const standardVat = readNum("outputs.standard.vat", baseOutputTaxAmount);
     const standardTotal = standardAmount + standardVat;
+    const standardAdjustment = readNum("outputs.standard.adjustment", 0);
 
     const reverseSupAmount = readNum("outputs.reverseCharge.amount", 0);
     const reverseSupVat = readNum("outputs.reverseCharge.vat", 0);
     const reverseSupTotal = reverseSupAmount + reverseSupVat;
+    const reverseSupAdjustment = readNum("outputs.reverseCharge.adjustment", 0);
 
     const zeroAmount = readNum("outputs.zeroRated.amount", baseZeroRatedAmount);
     const zeroVat = readNum("outputs.zeroRated.vat", 0);
     const zeroTotal = zeroAmount + zeroVat;
+    const zeroAdjustment = readNum("outputs.zeroRated.adjustment", 0);
 
     const exemptAmount = readNum("outputs.exempt.amount", 0);
     const exemptVat = readNum("outputs.exempt.vat", 0);
     const exemptTotal = exemptAmount + exemptVat;
+    const exemptAdjustment = readNum("outputs.exempt.adjustment", 0);
 
     const goodsAmount = readNum("outputs.goodsImport.amount", 0);
     const goodsVat = readNum("outputs.goodsImport.vat", 0);
     const goodsTotal = goodsAmount + goodsVat;
+    const goodsAdjustment = readNum("outputs.goodsImport.adjustment", 0);
 
     const outputs = {
       standard: {
         amount: standardAmount,
         vat: standardVat,
         total: standardTotal,
+        adjustment: standardAdjustment,
       },
       reverseCharge: {
         amount: reverseSupAmount,
         vat: reverseSupVat,
         total: reverseSupTotal,
+        adjustment: reverseSupAdjustment,
       },
-      zeroRated: { amount: zeroAmount, vat: zeroVat, total: zeroTotal },
-      exempt: { amount: exemptAmount, vat: exemptVat, total: exemptTotal },
-      goodsImport: { amount: goodsAmount, vat: goodsVat, total: goodsTotal },
+      zeroRated: {
+        amount: zeroAmount,
+        vat: zeroVat,
+        total: zeroTotal,
+        adjustment: zeroAdjustment,
+      },
+      exempt: {
+        amount: exemptAmount,
+        vat: exemptVat,
+        total: exemptTotal,
+        adjustment: exemptAdjustment,
+      },
+      goodsImport: {
+        amount: goodsAmount,
+        vat: goodsVat,
+        total: goodsTotal,
+        adjustment: goodsAdjustment,
+      },
     };
 
     const outputsTotals = {
@@ -2182,6 +2204,7 @@ export default function VatFillingPreview() {
         outputs.zeroRated.vat +
         outputs.exempt.vat +
         outputs.goodsImport.vat,
+      adjustment: readNum("outputs.total.adjustment", 0),
     };
     outputsTotals.total = outputsTotals.amount + outputsTotals.vat;
 
@@ -2189,23 +2212,32 @@ export default function VatFillingPreview() {
     const stdExpAmount = readNum("inputs.standard.amount", baseStdExpensesAmount);
     const stdExpVat = readNum("inputs.standard.vat", baseInputTaxAmount);
     const stdExpTotal = stdExpAmount + stdExpVat;
+    const stdExpAdjustment = readNum("inputs.standard.adjustment", 0);
 
     const revExpAmount = readNum("inputs.reverseCharge.amount", 0);
     const revExpVat = readNum("inputs.reverseCharge.vat", 0);
     const revExpTotal = revExpAmount + revExpVat;
+    const revExpAdjustment = readNum("inputs.reverseCharge.adjustment", 0);
 
     const inputs = {
-      standard: { amount: stdExpAmount, vat: stdExpVat, total: stdExpTotal },
+      standard: {
+        amount: stdExpAmount,
+        vat: stdExpVat,
+        total: stdExpTotal,
+        adjustment: stdExpAdjustment,
+      },
       reverseCharge: {
         amount: revExpAmount,
         vat: revExpVat,
         total: revExpTotal,
+        adjustment: revExpAdjustment,
       },
     };
 
     const inputsTotals = {
       amount: inputs.standard.amount + inputs.reverseCharge.amount,
       vat: inputs.standard.vat + inputs.reverseCharge.vat,
+      adjustment: readNum("inputs.total.adjustment", 0),
     };
     inputsTotals.total = inputsTotals.amount + inputsTotals.vat;
 
@@ -2216,6 +2248,22 @@ export default function VatFillingPreview() {
 
     const ftaFundNum = readNum("ftaFund", 0);
     const netVatPayableAfterFund = vatPayableForPeriod - ftaFundNum;
+    const totalDueTaxAdjustment = readNum("net.totalDueTax.adjustment", 0);
+    const totalRecoverableTaxAdjustment = readNum(
+      "net.totalRecoverableTax.adjustment",
+      0
+    );
+    const vatPayableForPeriodAdjustment = readNum("net.vatPayable.adjustment", 0);
+    const ftaFundAdjustment = readNum("ftaFund.adjustment", 0);
+    const netVatPayableAfterFundAdjustment = readNum(
+      "net.afterFund.adjustment",
+      0
+    );
+    const refundRequestAdjustment = readNum("refundRequest.adjustment", 0);
+    const profitMarginSchemeAdjustment = readNum(
+      "profitMarginScheme.adjustment",
+      0
+    );
 
     return {
       outputs,
@@ -2227,6 +2275,13 @@ export default function VatFillingPreview() {
       vatPayableForPeriod,
       ftaFund: ftaFundNum,
       netVatPayableAfterFund,
+      totalDueTaxAdjustment,
+      totalRecoverableTaxAdjustment,
+      vatPayableForPeriodAdjustment,
+      ftaFundAdjustment,
+      netVatPayableAfterFundAdjustment,
+      refundRequestAdjustment,
+      profitMarginSchemeAdjustment,
     };
   }, [
     previewData?.vatReturnOverrides,
@@ -3173,6 +3228,13 @@ export default function VatFillingPreview() {
       vatPayableForPeriod,
       ftaFund,
       netVatPayableAfterFund,
+      totalDueTaxAdjustment,
+      totalRecoverableTaxAdjustment,
+      vatPayableForPeriodAdjustment,
+      ftaFundAdjustment,
+      netVatPayableAfterFundAdjustment,
+      refundRequestAdjustment,
+      profitMarginSchemeAdjustment,
     } = vatReturnData;
 
     const isVatReturnRowEditing = (rowKey) =>
@@ -3195,11 +3257,20 @@ export default function VatFillingPreview() {
         formatAED(value)
       );
 
+    const renderVatReturnAdjustmentCell = (
+      rowKey,
+      value = 0,
+      { dashWhenZeroInView = false } = {}
+    ) => {
+      if (!isVatReturnRowEditing(rowKey) && dashWhenZeroInView && Number(value || 0) === 0) {
+        return "-";
+      }
+      return renderVatReturnEditableCell(rowKey, `${rowKey}.adjustment`, value);
+    };
+
     const renderVatReturnYesNoCell = (rowKey, fieldKey) => {
       const value = getVatReturnChoiceValue(fieldKey);
-      const editable = isVatReturnRowEditing(rowKey);
-
-      return editable ? (
+      return (
         <div className="vat-return-choice-group">
           <label className="vat-return-choice">
             <input
@@ -3220,8 +3291,6 @@ export default function VatFillingPreview() {
             <span>No</span>
           </label>
         </div>
-      ) : (
-        <span>{value === "yes" ? "Yes" : value === "no" ? "No" : "-"}</span>
       );
     };
 
@@ -3244,6 +3313,7 @@ export default function VatFillingPreview() {
                   <th>AMOUNT</th>
                   <th>VAT AMOUNT</th>
                   <th>TOTAL AMOUNT</th>
+                  <th>ADJUSTMENT (AED)</th>
                   <th className="actions-col">Action</th>
                 </tr>
               </thead>
@@ -3253,6 +3323,7 @@ export default function VatFillingPreview() {
                   <td>{renderVatReturnEditableCell("outputs.standard", "outputs.standard.amount", outputs.standard.amount)}</td>
                   <td>{renderVatReturnEditableCell("outputs.standard", "outputs.standard.vat", outputs.standard.vat)}</td>
                   <td>{formatAED(outputs.standard.total)}</td>
+                  <td>{renderVatReturnAdjustmentCell("outputs.standard", outputs.standard.adjustment)}</td>
                   {renderVatReturnActionCell("outputs.standard")}
                 </tr>
                 <tr>
@@ -3260,6 +3331,7 @@ export default function VatFillingPreview() {
                   <td>{renderVatReturnEditableCell("outputs.reverseCharge", "outputs.reverseCharge.amount", outputs.reverseCharge.amount)}</td>
                   <td>{renderVatReturnEditableCell("outputs.reverseCharge", "outputs.reverseCharge.vat", outputs.reverseCharge.vat)}</td>
                   <td>{formatAED(outputs.reverseCharge.total)}</td>
+                  <td>{renderVatReturnAdjustmentCell("outputs.reverseCharge", outputs.reverseCharge.adjustment)}</td>
                   {renderVatReturnActionCell("outputs.reverseCharge")}
                 </tr>
                 <tr>
@@ -3267,6 +3339,7 @@ export default function VatFillingPreview() {
                   <td>{renderVatReturnEditableCell("outputs.zeroRated", "outputs.zeroRated.amount", outputs.zeroRated.amount)}</td>
                   <td>{renderVatReturnEditableCell("outputs.zeroRated", "outputs.zeroRated.vat", outputs.zeroRated.vat)}</td>
                   <td>{formatAED(outputs.zeroRated.total)}</td>
+                  <td>{renderVatReturnAdjustmentCell("outputs.zeroRated", outputs.zeroRated.adjustment)}</td>
                   {renderVatReturnActionCell("outputs.zeroRated")}
                 </tr>
                 <tr>
@@ -3274,6 +3347,7 @@ export default function VatFillingPreview() {
                   <td>{renderVatReturnEditableCell("outputs.exempt", "outputs.exempt.amount", outputs.exempt.amount)}</td>
                   <td>{renderVatReturnEditableCell("outputs.exempt", "outputs.exempt.vat", outputs.exempt.vat)}</td>
                   <td>{formatAED(outputs.exempt.total)}</td>
+                  <td>{renderVatReturnAdjustmentCell("outputs.exempt", outputs.exempt.adjustment)}</td>
                   {renderVatReturnActionCell("outputs.exempt")}
                 </tr>
                 <tr>
@@ -3281,6 +3355,7 @@ export default function VatFillingPreview() {
                   <td>{renderVatReturnEditableCell("outputs.goodsImport", "outputs.goodsImport.amount", outputs.goodsImport.amount)}</td>
                   <td>{renderVatReturnEditableCell("outputs.goodsImport", "outputs.goodsImport.vat", outputs.goodsImport.vat)}</td>
                   <td>{formatAED(outputs.goodsImport.total)}</td>
+                  <td>{renderVatReturnAdjustmentCell("outputs.goodsImport", outputs.goodsImport.adjustment)}</td>
                   {renderVatReturnActionCell("outputs.goodsImport")}
                 </tr>
                 <tr className="vat-return-total-row">
@@ -3288,6 +3363,7 @@ export default function VatFillingPreview() {
                   <td>{formatAED(outputsTotals.amount)}</td>
                   <td>{formatAED(outputsTotals.vat)}</td>
                   <td>{formatAED(outputsTotals.total)}</td>
+                  <td>{renderVatReturnAdjustmentCell("outputs.total", outputsTotals.adjustment)}</td>
                   {renderVatReturnActionCell("outputs.total")}
                 </tr>
               </tbody>
@@ -3308,6 +3384,7 @@ export default function VatFillingPreview() {
                   <th>AMOUNT</th>
                   <th>VAT AMOUNT</th>
                   <th>TOTAL AMOUNT</th>
+                  <th>ADJUSTMENT (AED)</th>
                   <th className="actions-col">Action</th>
                 </tr>
               </thead>
@@ -3317,6 +3394,7 @@ export default function VatFillingPreview() {
                   <td>{renderVatReturnEditableCell("inputs.standard", "inputs.standard.amount", inputs.standard.amount)}</td>
                   <td>{renderVatReturnEditableCell("inputs.standard", "inputs.standard.vat", inputs.standard.vat)}</td>
                   <td>{formatAED(inputs.standard.total)}</td>
+                  <td>{renderVatReturnAdjustmentCell("inputs.standard", inputs.standard.adjustment)}</td>
                   {renderVatReturnActionCell("inputs.standard")}
                 </tr>
                 <tr>
@@ -3324,6 +3402,7 @@ export default function VatFillingPreview() {
                   <td>{renderVatReturnEditableCell("inputs.reverseCharge", "inputs.reverseCharge.amount", inputs.reverseCharge.amount)}</td>
                   <td>{renderVatReturnEditableCell("inputs.reverseCharge", "inputs.reverseCharge.vat", inputs.reverseCharge.vat)}</td>
                   <td>{formatAED(inputs.reverseCharge.total)}</td>
+                  <td>{renderVatReturnAdjustmentCell("inputs.reverseCharge", inputs.reverseCharge.adjustment)}</td>
                   {renderVatReturnActionCell("inputs.reverseCharge")}
                 </tr>
                 <tr className="vat-return-total-row">
@@ -3331,6 +3410,7 @@ export default function VatFillingPreview() {
                   <td>{formatAED(inputsTotals.amount)}</td>
                   <td>{formatAED(inputsTotals.vat)}</td>
                   <td>{formatAED(inputsTotals.total)}</td>
+                  <td>{renderVatReturnAdjustmentCell("inputs.total", inputsTotals.adjustment)}</td>
                   {renderVatReturnActionCell("inputs.total")}
                 </tr>
               </tbody>
@@ -3345,6 +3425,7 @@ export default function VatFillingPreview() {
                 <tr>
                   <th>NET VAT VALUE</th>
                   <th>AMOUNT (AED)</th>
+                  <th>ADJUSTMENT (AED)</th>
                   <th className="actions-col">Action</th>
                 </tr>
               </thead>
@@ -3352,16 +3433,19 @@ export default function VatFillingPreview() {
                 <tr>
                   <td>Total Value of due tax for the period</td>
                   <td>{formatAED(totalDueTax)}</td>
+                  <td>{renderVatReturnAdjustmentCell("net.totalDueTax", totalDueTaxAdjustment)}</td>
                   {renderVatReturnActionCell("net.totalDueTax")}
                 </tr>
                 <tr>
                   <td>Total Value of recoverable tax for the period</td>
                   <td>{formatAED(totalRecoverableTax)}</td>
+                  <td>{renderVatReturnAdjustmentCell("net.totalRecoverableTax", totalRecoverableTaxAdjustment)}</td>
                   {renderVatReturnActionCell("net.totalRecoverableTax")}
                 </tr>
                 <tr>
                   <td>VAT PAYABLE FOR THE PERIOD</td>
                   <td>{formatAED(vatPayableForPeriod)}</td>
+                  <td>{renderVatReturnAdjustmentCell("net.vatPayable", vatPayableForPeriodAdjustment)}</td>
                   {renderVatReturnActionCell("net.vatPayable")}
                 </tr>
                 <tr>
@@ -3388,11 +3472,13 @@ export default function VatFillingPreview() {
                       formatAED(ftaFund)
                     )}
                   </td>
+                  <td>{renderVatReturnAdjustmentCell("ftaFund", ftaFundAdjustment)}</td>
                   {renderVatReturnActionCell("ftaFund")}
                 </tr>
                 <tr className="vat-return-total-row">
                   <td>NET VAT PAYABLE FOR THE PERIOD</td>
                   <td>{formatAED(netVatPayableAfterFund)}</td>
+                  <td>{renderVatReturnAdjustmentCell("net.afterFund", netVatPayableAfterFundAdjustment)}</td>
                   {renderVatReturnActionCell("net.afterFund")}
                 </tr>
                 <tr>
@@ -3401,7 +3487,12 @@ export default function VatFillingPreview() {
                     recoverable tax?
                   </td>
                   <td>{renderVatReturnYesNoCell("refundRequest", "refundRequest")}</td>
-                  {renderVatReturnActionCell("refundRequest")}
+                  <td>
+                    {renderVatReturnAdjustmentCell("refundRequest", refundRequestAdjustment, {
+                      dashWhenZeroInView: true,
+                    })}
+                  </td>
+                  <td className="actions-col vat-return-no-action-cell" aria-hidden="true" />
                 </tr>
                 <tr>
                   <td>
@@ -3414,7 +3505,14 @@ export default function VatFillingPreview() {
                       "profitMarginScheme"
                     )}
                   </td>
-                  {renderVatReturnActionCell("profitMarginScheme")}
+                  <td>
+                    {renderVatReturnAdjustmentCell(
+                      "profitMarginScheme",
+                      profitMarginSchemeAdjustment,
+                      { dashWhenZeroInView: true }
+                    )}
+                  </td>
+                  <td className="actions-col vat-return-no-action-cell" aria-hidden="true" />
                 </tr>
               </tbody>
             </table>
