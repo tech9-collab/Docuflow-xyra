@@ -4,6 +4,11 @@ import { ArrowLeft, Save, Plus, Trash2, UploadCloud, Loader2 } from "lucide-reac
 import "./AddCustomer.css";
 import { createCustomer, extractTradeLicense } from "../../helper/helper";
 import { TRADE_LICENSE_AUTHORITIES } from "../../constants/authorities";
+import {
+  DATE_FIELD_NAMES,
+  dateDisplayToIso,
+  normalizeDateDisplay,
+} from "./dateUtils";
 
 const REQUIRED_FIELD_LABELS = [
   ["customerName", "Customer Name"],
@@ -106,6 +111,11 @@ export default function AddCustomer() {
   const [showCustomAuthority, setShowCustomAuthority] = useState(false);
   const [isExtractingVat, setIsExtractingVat] = useState(false);
 
+  const getDisplayDateValue = (fieldName) =>
+    DATE_FIELD_NAMES.has(fieldName)
+      ? normalizeDateDisplay(form[fieldName])
+      : form[fieldName];
+
   // Business documents (single upload + document type, multiple rows)
   const [businessDocuments, setBusinessDocuments] = useState([
     { docType: "", file: null, isExtracting: false },
@@ -119,7 +129,10 @@ export default function AddCustomer() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => {
-      const next = { ...prev, [name]: value };
+      const next = {
+        ...prev,
+        [name]: DATE_FIELD_NAMES.has(name) ? normalizeDateDisplay(value) : value,
+      };
 
       if (name === "vatTaxTreatment") {
         const isVatReg = ["vat_registered", "vat_registered_dz", "gcc_vat_registered"].includes(value);
@@ -196,9 +209,15 @@ export default function AddCustomer() {
         setForm((prev) => ({
           ...prev,
           vatTrn: data.VAT_TRN || prev.vatTrn || "",
-          vatRegisteredDate: data.VAT_REGISTERED_DATE || prev.vatRegisteredDate || "",
+          vatRegisteredDate:
+            normalizeDateDisplay(data.VAT_REGISTERED_DATE) ||
+            prev.vatRegisteredDate ||
+            "",
           firstVatFilingPeriod: data.FIRST_VAT_PERIOD || prev.firstVatFilingPeriod || "",
-          vatReturnDueDate: data.VAT_RETURN_DUE_DATE || prev.vatReturnDueDate || "",
+          vatReturnDueDate:
+            normalizeDateDisplay(data.VAT_RETURN_DUE_DATE) ||
+            prev.vatReturnDueDate ||
+            "",
         }));
         console.log("VAT fields populated.");
       }
@@ -242,11 +261,15 @@ export default function AddCustomer() {
           customerName: data.COMPANY_NAME || prev.customerName,
           address: data.ADDRESS || prev.address,
           entityType: eType || prev.entityType,
-          dateOfIncorporation: data.LICENSE_FORMATION_DATE || prev.dateOfIncorporation,
+          dateOfIncorporation:
+            normalizeDateDisplay(data.LICENSE_FORMATION_DATE) ||
+            prev.dateOfIncorporation,
           tradeLicenseAuthority: (matchedAuthority || prev.tradeLicenseAuthority),
           tradeLicenseNumber: data.LICENSE_NUMBER || prev.tradeLicenseNumber,
-          licenseIssueDate: data.ISSUE_DATE || prev.licenseIssueDate,
-          licenseExpiryDate: data.EXPIRY_DATE || prev.licenseExpiryDate,
+          licenseIssueDate:
+            normalizeDateDisplay(data.ISSUE_DATE) || prev.licenseIssueDate,
+          licenseExpiryDate:
+            normalizeDateDisplay(data.EXPIRY_DATE) || prev.licenseExpiryDate,
           businessActivity: data.ACTIVITIES || prev.businessActivity,
           isFreezone: data.IS_FREEZONE ?? prev.isFreezone,
         }));
@@ -323,7 +346,10 @@ export default function AddCustomer() {
       if (value instanceof File) {
         if (value) fd.append(key, value);
       } else {
-        fd.append(key, value ?? "");
+        fd.append(
+          key,
+          DATE_FIELD_NAMES.has(key) ? dateDisplayToIso(value) : value ?? ""
+        );
       }
     });
 
@@ -580,10 +606,11 @@ export default function AddCustomer() {
               <div className="field">
                 <label>Date of Incorporation *</label>
                 <input
-                  type="date"
+                  type="text"
                   name="dateOfIncorporation"
                   value={form.dateOfIncorporation}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                   required
                 />
               </div>
@@ -645,10 +672,11 @@ export default function AddCustomer() {
               <div className="field">
                 <label>License Issue Date *</label>
                 <input
-                  type="date"
+                  type="text"
                   name="licenseIssueDate"
                   value={form.licenseIssueDate}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                   required
                 />
               </div>
@@ -656,10 +684,11 @@ export default function AddCustomer() {
               <div className="field">
                 <label>License Expiry Date *</label>
                 <input
-                  type="date"
+                  type="text"
                   name="licenseExpiryDate"
                   value={form.licenseExpiryDate}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                   required
                 />
               </div>
@@ -920,10 +949,11 @@ export default function AddCustomer() {
                   <div className="field">
                     <label>VAT Registered Date {showVatCertificateUpload && "*"}</label>
                     <input
-                      type="date"
+                      type="text"
                       name="vatRegisteredDate"
-                      value={form.vatRegisteredDate}
+                      value={getDisplayDateValue("vatRegisteredDate")}
                       onChange={handleInputChange}
+                      placeholder="dd/mm/yyyy"
                       required={showVatCertificateUpload}
                     />
                   </div>
@@ -941,10 +971,11 @@ export default function AddCustomer() {
                   <div className="field">
                     <label>VAT Return Due Date {showVatCertificateUpload && "*"}</label>
                     <input
-                      type="date"
+                      type="text"
                       name="vatReturnDueDate"
-                      value={form.vatReturnDueDate}
+                      value={getDisplayDateValue("vatReturnDueDate")}
                       onChange={handleInputChange}
+                      placeholder="dd/mm/yyyy"
                       required={showVatCertificateUpload}
                     />
                   </div>
@@ -1028,10 +1059,11 @@ export default function AddCustomer() {
               <div className="field">
                 <label>CT Registered Date</label>
                 <input
-                  type="date"
+                  type="text"
                   name="ctRegisteredDate"
-                  value={form.ctRegisteredDate}
+                  value={getDisplayDateValue("ctRegisteredDate")}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                 />
               </div>
 
@@ -1049,30 +1081,33 @@ export default function AddCustomer() {
               <div className="field">
                 <label>First Corporate Tax Period Start Date</label>
                 <input
-                  type="date"
+                  type="text"
                   name="firstCtPeriodStartDate"
-                  value={form.firstCtPeriodStartDate}
+                  value={getDisplayDateValue("firstCtPeriodStartDate")}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                 />
               </div>
 
               <div className="field">
                 <label>First Corporate Tax Period End Date</label>
                 <input
-                  type="date"
+                  type="text"
                   name="firstCtPeriodEndDate"
-                  value={form.firstCtPeriodEndDate}
+                  value={getDisplayDateValue("firstCtPeriodEndDate")}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                 />
               </div>
 
               <div className="field">
                 <label>First Corporate Tax Return Filing Due Date</label>
                 <input
-                  type="date"
+                  type="text"
                   name="firstCtReturnDueDate"
-                  value={form.firstCtReturnDueDate}
+                  value={getDisplayDateValue("firstCtReturnDueDate")}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                 />
               </div>
             </div>

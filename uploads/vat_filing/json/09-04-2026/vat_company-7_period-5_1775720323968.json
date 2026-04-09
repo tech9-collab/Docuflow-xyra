@@ -1,0 +1,209 @@
+{
+  "companyId": "7",
+  "companyName": "TRAVEL MEDIA MIDDLE EAST - FZCO",
+  "companyTRN": "",
+  "periodId": 5,
+  "customerId": 7,
+  "bankData": {
+    "columns": [],
+    "rows": [],
+    "summary": {}
+  },
+  "invoiceData": {
+    "uaeSalesRows": [],
+    "uaePurchaseRows": [],
+    "othersRows": [
+      {
+        "DATE": "09/04/2025",
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Others",
+        "SUPPLIER/VENDOR": "FEDERAL TAX AUTHORITY",
+        "PARTY": "Technihub FZE",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": "104165761800003",
+        "PLACE OF SUPPLY": "UAE, Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": null,
+        "LINE_ITEMS": [],
+        "SOURCE": "VAT  Registration Certificate (2).pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775720264010-VAT_Registration_Certificate_2_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "GEMINI_CLASSIFIED: Uploading company TRN '104165761800003' matches the document's customer_trn (Technihub FZE's TRN) '104165761800003'.",
+        "CLASSIFICATION_CONFIDENCE": 0.95,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 0,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      }
+    ],
+    "totals": {
+      "purchase": {
+        "beforeTax": 0,
+        "vat": 0,
+        "zero": 0,
+        "net": 0
+      },
+      "sales": {
+        "beforeTax": 0,
+        "vat": 0,
+        "zero": 0,
+        "net": 0
+      }
+    },
+    "__explicitBuckets": true,
+    "uaeOtherRows": [
+      {
+        "DATE": "09/04/2025",
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Others",
+        "SUPPLIER/VENDOR": "FEDERAL TAX AUTHORITY",
+        "PARTY": "Technihub FZE",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": "104165761800003",
+        "PLACE OF SUPPLY": "UAE, Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": null,
+        "LINE_ITEMS": [],
+        "SOURCE": "VAT  Registration Certificate (2).pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775720264010-VAT_Registration_Certificate_2_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "GEMINI_CLASSIFIED: Uploading company TRN '104165761800003' matches the document's customer_trn (Technihub FZE's TRN) '104165761800003'.",
+        "CLASSIFICATION_CONFIDENCE": 0.95,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 0,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      }
+    ],
+    "placeOfSupplyRows": [
+      {
+        "DATE": "09/04/2025",
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Others",
+        "SUPPLIER/VENDOR": "FEDERAL TAX AUTHORITY",
+        "PARTY": "Technihub FZE",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": "104165761800003",
+        "PLACE OF SUPPLY": "UAE, Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": null,
+        "LINE_ITEMS": [],
+        "SOURCE": "VAT  Registration Certificate (2).pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775720264010-VAT_Registration_Certificate_2_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "GEMINI_CLASSIFIED: Uploading company TRN '104165761800003' matches the document's customer_trn (Technihub FZE's TRN) '104165761800003'.",
+        "CLASSIFICATION_CONFIDENCE": 0.95,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 0,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      }
+    ]
+  },
+  "bankReconData": {
+    "columns": [],
+    "rows": []
+  },
+  "salesTotal": [
+    {
+      "METRIC": "STANDARDRATEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "OUTPUTTAX",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "ZERORATEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "EXEMPTEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "TOTALAMOUNTINCLUDINGVAT",
+      "AMOUNT": "0.00"
+    }
+  ],
+  "purchaseTotal": [
+    {
+      "METRIC": "STANDARDRATEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "INPUTTAX",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "ZERORATEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "EXEMPTEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "TOTALAMOUNTINCLUDINGVAT",
+      "AMOUNT": "0.00"
+    }
+  ],
+  "vatSummary": [
+    {
+      "PARTICULAR": "STANDARDRATEDSUPPLIES/EXPENSES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "OUTPUTTAX",
+      "SALES": "0.00",
+      "PURCHASES": "",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "INPUTTAX",
+      "SALES": "",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "ZERORATEDSUPPLIES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "EXEMPTEDSUPPLIES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "TOTALAMOUNTINCLUDINGVAT",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "NETVATPAYABLEFORTHEPERIOD",
+      "SALES": "",
+      "PURCHASES": "",
+      "NET_VAT": "0.00"
+    }
+  ],
+  "vatReturnOverrides": null,
+  "savedAt": "2026-04-09T07:38:43.968Z"
+}

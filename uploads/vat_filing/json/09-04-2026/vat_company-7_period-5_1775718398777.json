@@ -1,0 +1,437 @@
+{
+  "companyId": "7",
+  "companyName": "TRAVEL MEDIA MIDDLE EAST - FZCO",
+  "companyTRN": "",
+  "periodId": 5,
+  "customerId": 7,
+  "bankData": {
+    "columns": [],
+    "rows": [],
+    "summary": {}
+  },
+  "invoiceData": {
+    "uaeSalesRows": [],
+    "uaePurchaseRows": [],
+    "othersRows": [
+      {
+        "DATE": "3 SEP 2025",
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "DECOWALLS TECHNICAL SERVICES LLC (DUBAI)",
+        "PARTY": "EXCEL TRADING CO, LLC",
+        "SUPPLIER TRN": "104043212400001",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE, Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 150,
+        "VAT": 7.5,
+        "NET AMOUNT": 157.5,
+        "LINE_ITEMS": [
+          {
+            "description": "DARAE VOL. 5-1816-5 81 Lot 240131",
+            "quantity": 1,
+            "unit_price": 150,
+            "tax_amount": 7.5,
+            "net_amount": 150
+          }
+        ],
+        "SOURCE": "13.09.2025 EXCEL INV 134056 AED 157.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775709506542-13.09.2025_EXCEL_INV_134056_AED_157.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 150,
+        "VAT (AED)": 7.5,
+        "NET AMOUNT (AED)": 157.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "15-Jul-2025",
+        "INVOICE NUMBER": "013785",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC Nafees Wallpaper Co. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE L.L.C",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 680,
+        "VAT": 34,
+        "NET AMOUNT": 714,
+        "LINE_ITEMS": [
+          {
+            "description": "ALTAGAMMA FIBERS \"PLAIN ROLL\" - (053 X 10.00 M)",
+            "quantity": 400,
+            "unit_price": 170,
+            "tax_amount": 34,
+            "net_amount": 714
+          }
+        ],
+        "SOURCE": "15.07.2025 NGC INV 013785 AED 714.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775709506585-15.07.2025_NGC_INV_013785_AED_714.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 680,
+        "VAT (AED)": 34,
+        "NET AMOUNT (AED)": 714,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": null,
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "EXCEL TRADING CO. LLC",
+        "PARTY": null,
+        "SUPPLIER TRN": "104643212400001",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE, Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 300,
+        "VAT": 15,
+        "NET AMOUNT": 315,
+        "LINE_ITEMS": [
+          {
+            "description": "DARAE VOL. 5-1816-4 77 Lot 220516",
+            "quantity": 2,
+            "unit_price": 150,
+            "tax_amount": 15,
+            "net_amount": 300
+          }
+        ],
+        "SOURCE": "15.09.2025 EXCEL INV 134087 AED 315.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775709532516-15.09.2025_EXCEL_INV_134087_AED_315.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 300,
+        "VAT (AED)": 15,
+        "NET AMOUNT (AED)": 315,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      }
+    ],
+    "totals": {
+      "purchase": {
+        "beforeTax": 1130,
+        "vat": 56.5,
+        "zero": 0,
+        "net": 1186.5
+      },
+      "sales": {
+        "beforeTax": 0,
+        "vat": 0,
+        "zero": 0,
+        "net": 0
+      }
+    },
+    "__explicitBuckets": true,
+    "uaeOtherRows": [
+      {
+        "DATE": "3 SEP 2025",
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "DECOWALLS TECHNICAL SERVICES LLC (DUBAI)",
+        "PARTY": "EXCEL TRADING CO, LLC",
+        "SUPPLIER TRN": "104043212400001",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE, Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 150,
+        "VAT": 7.5,
+        "NET AMOUNT": 157.5,
+        "LINE_ITEMS": [
+          {
+            "description": "DARAE VOL. 5-1816-5 81 Lot 240131",
+            "quantity": 1,
+            "unit_price": 150,
+            "tax_amount": 7.5,
+            "net_amount": 150
+          }
+        ],
+        "SOURCE": "13.09.2025 EXCEL INV 134056 AED 157.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775709506542-13.09.2025_EXCEL_INV_134056_AED_157.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 150,
+        "VAT (AED)": 7.5,
+        "NET AMOUNT (AED)": 157.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "15-Jul-2025",
+        "INVOICE NUMBER": "013785",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC Nafees Wallpaper Co. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE L.L.C",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 680,
+        "VAT": 34,
+        "NET AMOUNT": 714,
+        "LINE_ITEMS": [
+          {
+            "description": "ALTAGAMMA FIBERS \"PLAIN ROLL\" - (053 X 10.00 M)",
+            "quantity": 400,
+            "unit_price": 170,
+            "tax_amount": 34,
+            "net_amount": 714
+          }
+        ],
+        "SOURCE": "15.07.2025 NGC INV 013785 AED 714.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775709506585-15.07.2025_NGC_INV_013785_AED_714.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 680,
+        "VAT (AED)": 34,
+        "NET AMOUNT (AED)": 714,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": null,
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "EXCEL TRADING CO. LLC",
+        "PARTY": null,
+        "SUPPLIER TRN": "104643212400001",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE, Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 300,
+        "VAT": 15,
+        "NET AMOUNT": 315,
+        "LINE_ITEMS": [
+          {
+            "description": "DARAE VOL. 5-1816-4 77 Lot 220516",
+            "quantity": 2,
+            "unit_price": 150,
+            "tax_amount": 15,
+            "net_amount": 300
+          }
+        ],
+        "SOURCE": "15.09.2025 EXCEL INV 134087 AED 315.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775709532516-15.09.2025_EXCEL_INV_134087_AED_315.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 300,
+        "VAT (AED)": 15,
+        "NET AMOUNT (AED)": 315,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      }
+    ],
+    "placeOfSupplyRows": [
+      {
+        "DATE": "3 SEP 2025",
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "DECOWALLS TECHNICAL SERVICES LLC (DUBAI)",
+        "PARTY": "EXCEL TRADING CO, LLC",
+        "SUPPLIER TRN": "104043212400001",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE, Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 150,
+        "VAT": 7.5,
+        "NET AMOUNT": 157.5,
+        "LINE_ITEMS": [
+          {
+            "description": "DARAE VOL. 5-1816-5 81 Lot 240131",
+            "quantity": 1,
+            "unit_price": 150,
+            "tax_amount": 7.5,
+            "net_amount": 150
+          }
+        ],
+        "SOURCE": "13.09.2025 EXCEL INV 134056 AED 157.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775709506542-13.09.2025_EXCEL_INV_134056_AED_157.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 150,
+        "VAT (AED)": 7.5,
+        "NET AMOUNT (AED)": 157.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "15-Jul-2025",
+        "INVOICE NUMBER": "013785",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC Nafees Wallpaper Co. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE L.L.C",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 680,
+        "VAT": 34,
+        "NET AMOUNT": 714,
+        "LINE_ITEMS": [
+          {
+            "description": "ALTAGAMMA FIBERS \"PLAIN ROLL\" - (053 X 10.00 M)",
+            "quantity": 400,
+            "unit_price": 170,
+            "tax_amount": 34,
+            "net_amount": 714
+          }
+        ],
+        "SOURCE": "15.07.2025 NGC INV 013785 AED 714.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775709506585-15.07.2025_NGC_INV_013785_AED_714.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 680,
+        "VAT (AED)": 34,
+        "NET AMOUNT (AED)": 714,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": null,
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "EXCEL TRADING CO. LLC",
+        "PARTY": null,
+        "SUPPLIER TRN": "104643212400001",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE, Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 300,
+        "VAT": 15,
+        "NET AMOUNT": 315,
+        "LINE_ITEMS": [
+          {
+            "description": "DARAE VOL. 5-1816-4 77 Lot 220516",
+            "quantity": 2,
+            "unit_price": 150,
+            "tax_amount": 15,
+            "net_amount": 300
+          }
+        ],
+        "SOURCE": "15.09.2025 EXCEL INV 134087 AED 315.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775709532516-15.09.2025_EXCEL_INV_134087_AED_315.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 300,
+        "VAT (AED)": 15,
+        "NET AMOUNT (AED)": 315,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      }
+    ]
+  },
+  "bankReconData": {
+    "columns": [],
+    "rows": []
+  },
+  "salesTotal": [
+    {
+      "METRIC": "STANDARDRATEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "OUTPUTTAX",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "ZERORATEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "EXEMPTEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "TOTALAMOUNTINCLUDINGVAT",
+      "AMOUNT": "0.00"
+    }
+  ],
+  "purchaseTotal": [
+    {
+      "METRIC": "STANDARDRATEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "INPUTTAX",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "ZERORATEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "EXEMPTEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "TOTALAMOUNTINCLUDINGVAT",
+      "AMOUNT": "0.00"
+    }
+  ],
+  "vatSummary": [
+    {
+      "PARTICULAR": "STANDARDRATEDSUPPLIES/EXPENSES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "OUTPUTTAX",
+      "SALES": "0.00",
+      "PURCHASES": "",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "INPUTTAX",
+      "SALES": "",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "ZERORATEDSUPPLIES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "EXEMPTEDSUPPLIES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "TOTALAMOUNTINCLUDINGVAT",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "NETVATPAYABLEFORTHEPERIOD",
+      "SALES": "",
+      "PURCHASES": "",
+      "NET_VAT": "0.00"
+    }
+  ],
+  "vatReturnOverrides": {},
+  "savedAt": "2026-04-09T07:07:17.821Z"
+}

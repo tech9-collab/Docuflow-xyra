@@ -5,17 +5,13 @@ import { ArrowLeft, Save, Plus, Trash2, UploadCloud } from "lucide-react";
 import "./EditCustomer.css";
 import { fetchCustomerById, updateCustomer } from "../../helper/helper";
 import { TRADE_LICENSE_AUTHORITIES } from "../../constants/authorities";
+import {
+  DATE_FIELD_NAMES,
+  dateDisplayToIso,
+  normalizeDateDisplay,
+} from "./dateUtils";
 
 /* --- Utility: Convert backend DATE → <input type="date"> format --- */
-function toDateInput(value) {
-  if (!value) return "";
-  try {
-    return new Date(value).toISOString().substring(0, 10);
-  } catch {
-    return "";
-  }
-}
-
 export default function EditCustomer() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -103,11 +99,11 @@ export default function EditCustomer() {
 
           entityType: c.entity_type || "",
           entitySubType: c.entity_sub_type || "",
-          dateOfIncorporation: toDateInput(c.date_of_incorporation),
+          dateOfIncorporation: normalizeDateDisplay(c.date_of_incorporation),
           tradeLicenseAuthority: c.trade_license_authority || "",
           tradeLicenseNumber: c.trade_license_number || "",
-          licenseIssueDate: toDateInput(c.license_issue_date),
-          licenseExpiryDate: toDateInput(c.license_expiry_date),
+          licenseIssueDate: normalizeDateDisplay(c.license_issue_date),
+          licenseExpiryDate: normalizeDateDisplay(c.license_expiry_date),
           businessActivity: c.business_activity || "",
           isFreezone: Boolean(c.is_freezone),
           freezoneName: c.freezone_name || "",
@@ -121,19 +117,19 @@ export default function EditCustomer() {
           vatTaxTreatment: c.vat_tax_treatment || "",
           vatInfoCertificate: null, // cannot prefill file from server
           vatTrn: c.vat_trn || "",
-          vatRegisteredDate: toDateInput(c.vat_registered_date),
+          vatRegisteredDate: normalizeDateDisplay(c.vat_registered_date),
           firstVatFilingPeriod: c.first_vat_filing_period || "",
-          vatReturnDueDate: toDateInput(c.vat_return_due_date),
+          vatReturnDueDate: normalizeDateDisplay(c.vat_return_due_date),
           vatReportingPeriod: c.vat_reporting_period || "",
           placeOfSupply: c.place_of_supply || "",
 
           ctTaxTreatment: c.ct_tax_treatment || "",
           ctTrn: c.ct_trn || "",
-          ctRegisteredDate: toDateInput(c.ct_registered_date),
+          ctRegisteredDate: normalizeDateDisplay(c.ct_registered_date),
           coporateTaxPeriod: c.corporate_tax_period || "",
-          firstCtPeriodStartDate: toDateInput(c.first_ct_period_start_date),
-          firstCtPeriodEndDate: toDateInput(c.first_ct_period_end_date),
-          firstCtReturnDueDate: toDateInput(c.first_ct_return_due_date),
+          firstCtPeriodStartDate: normalizeDateDisplay(c.first_ct_period_start_date),
+          firstCtPeriodEndDate: normalizeDateDisplay(c.first_ct_period_end_date),
+          firstCtReturnDueDate: normalizeDateDisplay(c.first_ct_return_due_date),
           ctCertificateTax: null, // cannot prefill file
         });
 
@@ -166,7 +162,10 @@ export default function EditCustomer() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => {
-      const next = { ...prev, [name]: value };
+      const next = {
+        ...prev,
+        [name]: DATE_FIELD_NAMES.has(name) ? normalizeDateDisplay(value) : value,
+      };
       if (name === "vatTaxTreatment") {
         const isVatReg = ["vat_registered", "vat_registered_dz", "gcc_vat_registered"].includes(value);
         if (!isVatReg) {
@@ -253,7 +252,7 @@ export default function EditCustomer() {
       } else if (typeof v === "boolean") {
         fd.append(k, v ? "true" : "false");
       } else {
-        fd.append(k, v ?? "");
+        fd.append(k, DATE_FIELD_NAMES.has(k) ? dateDisplayToIso(v) : v ?? "");
       }
     });
 
@@ -520,10 +519,11 @@ export default function EditCustomer() {
               <div className="field">
                 <label>Date of Incorporation</label>
                 <input
-                  type="date"
+                  type="text"
                   name="dateOfIncorporation"
                   value={form.dateOfIncorporation}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                 />
               </div>
 
@@ -581,20 +581,22 @@ export default function EditCustomer() {
               <div className="field">
                 <label>License Issue Date</label>
                 <input
-                  type="date"
+                  type="text"
                   name="licenseIssueDate"
                   value={form.licenseIssueDate}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                 />
               </div>
 
               <div className="field">
                 <label>License Expiry Date</label>
                 <input
-                  type="date"
+                  type="text"
                   name="licenseExpiryDate"
                   value={form.licenseExpiryDate}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                 />
               </div>
 
@@ -837,10 +839,11 @@ export default function EditCustomer() {
                   <div className="field">
                     <label>VAT Registered Date</label>
                     <input
-                      type="date"
+                      type="text"
                       name="vatRegisteredDate"
                       value={form.vatRegisteredDate}
                       onChange={handleInputChange}
+                      placeholder="dd/mm/yyyy"
                     />
                   </div>
 
@@ -857,10 +860,11 @@ export default function EditCustomer() {
                   <div className="field">
                     <label>VAT Return Due Date</label>
                     <input
-                      type="date"
+                      type="text"
                       name="vatReturnDueDate"
                       value={form.vatReturnDueDate}
                       onChange={handleInputChange}
+                      placeholder="dd/mm/yyyy"
                     />
                   </div>
                   <div className="field">
@@ -937,10 +941,11 @@ export default function EditCustomer() {
               <div className="field">
                 <label>CT Registered Date</label>
                 <input
-                  type="date"
+                  type="text"
                   name="ctRegisteredDate"
                   value={form.ctRegisteredDate}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                 />
               </div>
 
@@ -957,30 +962,33 @@ export default function EditCustomer() {
               <div className="field">
                 <label>First Corporate Tax Period Start Date</label>
                 <input
-                  type="date"
+                  type="text"
                   name="firstCtPeriodStartDate"
                   value={form.firstCtPeriodStartDate}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                 />
               </div>
 
               <div className="field">
                 <label>First Corporate Tax Period End Date</label>
                 <input
-                  type="date"
+                  type="text"
                   name="firstCtPeriodEndDate"
                   value={form.firstCtPeriodEndDate}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                 />
               </div>
 
               <div className="field">
                 <label>First Corporate Tax Return Filing Due Date</label>
                 <input
-                  type="date"
+                  type="text"
                   name="firstCtReturnDueDate"
                   value={form.firstCtReturnDueDate}
                   onChange={handleInputChange}
+                  placeholder="dd/mm/yyyy"
                 />
               </div>
             </div>

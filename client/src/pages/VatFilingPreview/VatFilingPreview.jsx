@@ -669,7 +669,9 @@ export default function VatFillingPreview() {
   });
 
   const searchParams = new URLSearchParams(location.search);
-  const runId = searchParams.get("runId");
+  const runIdFromQuery = searchParams.get("runId");
+  const [currentRunId, setCurrentRunId] = useState(runIdFromQuery);
+  const runId = currentRunId || runIdFromQuery;
   const isExistingRun = !!runId;
 
   const periodIdFromQuery = searchParams.get("periodId");
@@ -733,6 +735,12 @@ export default function VatFillingPreview() {
   };
 
   const [draftSaved, setDraftSaved] = useState(isExistingRun);
+
+  useEffect(() => {
+    if (runIdFromQuery) {
+      setCurrentRunId(runIdFromQuery);
+    }
+  }, [runIdFromQuery]);
 
   // views:
   // "bank" | "bankRecon" | "sales" | "purchase" | "others" | "placeOfSupply" | "salesTotal" | "purchaseTotal" | "vatSummary" | "vatReturn"
@@ -962,18 +970,13 @@ export default function VatFillingPreview() {
           updated?.payload || savedSnapshot
         );
 
-        toast.success("Conversion updated successfully.");
+        toast.success("Changes saved successfully.");
         setPreviewData(persistedSnapshot);
         setCommittedPreviewData(persistedSnapshot);
         setDraftSaved(true);
         exitEditMode(persistedSnapshot);
       } else {
         // 🆕 CREATE FIRST DRAFT (same behavior as before)
-        if (draftSaved) {
-          toast.success("Draft already saved for this run.");
-          return;
-        }
-
         const created = await saveVatFilingDraft(periodId, {
           companyId: previewData.companyId || companyId,
           companyName: previewData.companyName || "",
@@ -993,8 +996,11 @@ export default function VatFillingPreview() {
           created?.payload || savedSnapshot
         );
 
+        if (createdRun?.id) {
+          setCurrentRunId(String(createdRun.id));
+        }
         setDraftSaved(true);
-        toast.success("VAT filing draft saved successfully.");
+        toast.success("Changes saved successfully.");
         setPreviewData(persistedSnapshot);
         setCommittedPreviewData(persistedSnapshot);
 
@@ -2095,6 +2101,26 @@ export default function VatFillingPreview() {
       rows: Array.isArray(b.rows) ? b.rows : [],
     };
   }, [previewData]);
+
+  const hasMissingPlaceOfSupplyForVatReturn = useMemo(() => {
+    const hasBlankPlaceOfSupply = (row) =>
+      String(row?.["PLACE OF SUPPLY"] ?? "").trim() === "";
+
+    return [...(salesRows || []), ...(purchaseRows || []), ...(othersRowsView || [])].some(
+      hasBlankPlaceOfSupply
+    );
+  }, [salesRows, purchaseRows, othersRowsView]);
+
+  const handleVatReturnTabClick = () => {
+    if (hasMissingPlaceOfSupplyForVatReturn) {
+      toast.error(
+        "Please fill the Place of Supply field for all Sales, Purchase, and Others records before opening VAT Return."
+      );
+      return;
+    }
+
+    setView("vatReturn");
+  };
 
   // ===== NEW: Sales Total / Purchase Total tables (UI version of Excel sheets) =====
   const salesTotalData = useMemo(() => {
@@ -3639,7 +3665,7 @@ export default function VatFillingPreview() {
             </button>
             <button
               className={`seg-btn ${view === "vatReturn" ? "active" : ""}`}
-              onClick={() => setView("vatReturn")}
+              onClick={handleVatReturnTabClick}
               title="Show VAT Return"
             >
               VAT Return
