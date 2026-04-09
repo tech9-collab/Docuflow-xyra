@@ -2050,7 +2050,19 @@ export default function VatFillingPreview() {
   }, [purchaseRows]);
 
   const othersData = useMemo(() => {
-    const rows = othersRowsView || [];
+    const rows = (othersRowsView || []).map((row) => {
+      const vatAed = Number(row?.["VAT (AED)"] || 0);
+      const beforeTaxAed = row?.["BEFORE TAX (AED)"];
+
+      if (vatAed === 0) {
+        return {
+          ...row,
+          "ZERO RATED (AED)": beforeTaxAed ?? row?.["ZERO RATED (AED)"] ?? 0,
+        };
+      }
+
+      return row;
+    });
     const keys = rows.length ? Object.keys(rows[0]) : [];
     const baseOrder = UAE_OTHERS_ORDER.filter(
       (k) =>

@@ -38,14 +38,184 @@
         "NET AMOUNT (AED)": 0,
         "ZERO RATED (AED)": 0,
         "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": null,
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "EXBEL TRADING CO LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICES LLC (DUBAI)",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": "104643212400001",
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 150,
+        "VAT": 7.5,
+        "NET AMOUNT": 157.5,
+        "LINE_ITEMS": [
+          {
+            "description": "DARAE VOL. 5-1816-5 81 Lot 240131",
+            "quantity": 1,
+            "unit_price": 150,
+            "tax_amount": 7.5,
+            "net_amount": 157.5
+          }
+        ],
+        "SOURCE": "03.09.2025 EXCEL INC 1334887 AED 157.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721397728-03.09.2025_EXCEL_INC_1334887_AED_157.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 150,
+        "VAT (AED)": 7.5,
+        "NET AMOUNT (AED)": 157.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "06-Sep-2025",
+        "INVOICE NUMBER": "014048",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC Nafees Wallpaper Co. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE LLC",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": "DUBAI",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 1650,
+        "VAT": 82.5,
+        "NET AMOUNT": 1732.5,
+        "LINE_ITEMS": [
+          {
+            "description": "HOTSPOTS \"PLAIN ROLL-053 X 10 05 M",
+            "quantity": 11,
+            "unit_price": 150,
+            "tax_amount": 82.5,
+            "net_amount": 1732.5
+          }
+        ],
+        "SOURCE": "06.09.2025 NGC INV 014048 AED 1732.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721397760-06.09.2025_NGC_INV_014048_AED_1732.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 98,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 1650,
+        "VAT (AED)": 82.5,
+        "NET AMOUNT (AED)": 1732.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "15 Sep 2024",
+        "INVOICE NUMBER": "ALT/108/0824",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "Active Minds Global Solutions L.L.C",
+        "PARTY": "ALTOKK Software Solutions Private Limited",
+        "SUPPLIER TRN": "104165301300003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 19365.19,
+        "VAT": 0,
+        "NET AMOUNT": 19365.19,
+        "LINE_ITEMS": [
+          {
+            "description": "BOLAND Power BI Support Services - Aug 24 (16th Aug – 15th Sep)",
+            "quantity": 181,
+            "unit_price": 106.99,
+            "tax_amount": 0,
+            "net_amount": 19365.19
+          }
+        ],
+        "SOURCE": "Altokk_AMGS_Aug_Sep24_INVOICE-ALT_108_0924.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721416409-Altokk_AMGS_Aug_Sep24_INVOICE-ALT_108_0924.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 98,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 19365.19,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 19365.19,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "15 Oct 2024",
+        "INVOICE NUMBER": "ALT/109/1024",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "Active Minds Global Solutions L.L.C",
+        "PARTY": "ALTOKK Software Solutions Private Limited",
+        "SUPPLIER TRN": "104165301300003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 18669.76,
+        "VAT": 0,
+        "NET AMOUNT": 18669.76,
+        "LINE_ITEMS": [
+          {
+            "description": "BOLAND Power BI Support Services – Sep 24 (16th Sep - 15th Oct)",
+            "quantity": 174.5,
+            "unit_price": 106.99,
+            "tax_amount": 0,
+            "net_amount": 18669.76
+          }
+        ],
+        "SOURCE": "Altokk_AMGS_Sep_Oct24_INVOICE-ALT_109_1024.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721422623-Altokk_AMGS_Sep_Oct24_INVOICE-ALT_109_1024.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 18669.76,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 18669.76,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "18 Dec 2024",
+        "INVOICE NUMBER": "ALT/112/1224",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "Active Minds Global Solutions L.L.C",
+        "PARTY": "ALTOKK Software Solutions Private Limited",
+        "SUPPLIER TRN": "104165301300003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 14069.19,
+        "VAT": 0,
+        "NET AMOUNT": 14069.19,
+        "LINE_ITEMS": [
+          {
+            "description": "BOLAND Power BI Support Services - Nov-Dec 24",
+            "quantity": 131.5,
+            "unit_price": 106.99,
+            "tax_amount": 0,
+            "net_amount": 14069.19
+          }
+        ],
+        "SOURCE": "Altokk_AMGS_Nov-Dec-24_INVOICE-ALT_112_1224.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721435558-Altokk_AMGS_Nov-Dec-24_INVOICE-ALT_112_1224.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 14069.19,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 14069.19,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
       }
     ],
     "totals": {
       "purchase": {
-        "beforeTax": 0,
-        "vat": 0,
+        "beforeTax": 53904.14,
+        "vat": 90,
         "zero": 0,
-        "net": 0
+        "net": 53994.14
       },
       "sales": {
         "beforeTax": 0,
@@ -81,6 +251,176 @@
         "NET AMOUNT (AED)": 0,
         "ZERO RATED (AED)": 0,
         "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": null,
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "EXBEL TRADING CO LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICES LLC (DUBAI)",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": "104643212400001",
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 150,
+        "VAT": 7.5,
+        "NET AMOUNT": 157.5,
+        "LINE_ITEMS": [
+          {
+            "description": "DARAE VOL. 5-1816-5 81 Lot 240131",
+            "quantity": 1,
+            "unit_price": 150,
+            "tax_amount": 7.5,
+            "net_amount": 157.5
+          }
+        ],
+        "SOURCE": "03.09.2025 EXCEL INC 1334887 AED 157.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721397728-03.09.2025_EXCEL_INC_1334887_AED_157.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 150,
+        "VAT (AED)": 7.5,
+        "NET AMOUNT (AED)": 157.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "06-Sep-2025",
+        "INVOICE NUMBER": "014048",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC Nafees Wallpaper Co. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE LLC",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": "DUBAI",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 1650,
+        "VAT": 82.5,
+        "NET AMOUNT": 1732.5,
+        "LINE_ITEMS": [
+          {
+            "description": "HOTSPOTS \"PLAIN ROLL-053 X 10 05 M",
+            "quantity": 11,
+            "unit_price": 150,
+            "tax_amount": 82.5,
+            "net_amount": 1732.5
+          }
+        ],
+        "SOURCE": "06.09.2025 NGC INV 014048 AED 1732.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721397760-06.09.2025_NGC_INV_014048_AED_1732.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 98,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 1650,
+        "VAT (AED)": 82.5,
+        "NET AMOUNT (AED)": 1732.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "15 Sep 2024",
+        "INVOICE NUMBER": "ALT/108/0824",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "Active Minds Global Solutions L.L.C",
+        "PARTY": "ALTOKK Software Solutions Private Limited",
+        "SUPPLIER TRN": "104165301300003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 19365.19,
+        "VAT": 0,
+        "NET AMOUNT": 19365.19,
+        "LINE_ITEMS": [
+          {
+            "description": "BOLAND Power BI Support Services - Aug 24 (16th Aug – 15th Sep)",
+            "quantity": 181,
+            "unit_price": 106.99,
+            "tax_amount": 0,
+            "net_amount": 19365.19
+          }
+        ],
+        "SOURCE": "Altokk_AMGS_Aug_Sep24_INVOICE-ALT_108_0924.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721416409-Altokk_AMGS_Aug_Sep24_INVOICE-ALT_108_0924.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 98,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 19365.19,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 19365.19,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "15 Oct 2024",
+        "INVOICE NUMBER": "ALT/109/1024",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "Active Minds Global Solutions L.L.C",
+        "PARTY": "ALTOKK Software Solutions Private Limited",
+        "SUPPLIER TRN": "104165301300003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 18669.76,
+        "VAT": 0,
+        "NET AMOUNT": 18669.76,
+        "LINE_ITEMS": [
+          {
+            "description": "BOLAND Power BI Support Services – Sep 24 (16th Sep - 15th Oct)",
+            "quantity": 174.5,
+            "unit_price": 106.99,
+            "tax_amount": 0,
+            "net_amount": 18669.76
+          }
+        ],
+        "SOURCE": "Altokk_AMGS_Sep_Oct24_INVOICE-ALT_109_1024.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721422623-Altokk_AMGS_Sep_Oct24_INVOICE-ALT_109_1024.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 18669.76,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 18669.76,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "18 Dec 2024",
+        "INVOICE NUMBER": "ALT/112/1224",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "Active Minds Global Solutions L.L.C",
+        "PARTY": "ALTOKK Software Solutions Private Limited",
+        "SUPPLIER TRN": "104165301300003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 14069.19,
+        "VAT": 0,
+        "NET AMOUNT": 14069.19,
+        "LINE_ITEMS": [
+          {
+            "description": "BOLAND Power BI Support Services - Nov-Dec 24",
+            "quantity": 131.5,
+            "unit_price": 106.99,
+            "tax_amount": 0,
+            "net_amount": 14069.19
+          }
+        ],
+        "SOURCE": "Altokk_AMGS_Nov-Dec-24_INVOICE-ALT_112_1224.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721435558-Altokk_AMGS_Nov-Dec-24_INVOICE-ALT_112_1224.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 14069.19,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 14069.19,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
       }
     ],
     "placeOfSupplyRows": [
@@ -107,6 +447,176 @@
         "BEFORE TAX (AED)": 0,
         "VAT (AED)": 0,
         "NET AMOUNT (AED)": 0,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": null,
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "EXBEL TRADING CO LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICES LLC (DUBAI)",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": "104643212400001",
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 150,
+        "VAT": 7.5,
+        "NET AMOUNT": 157.5,
+        "LINE_ITEMS": [
+          {
+            "description": "DARAE VOL. 5-1816-5 81 Lot 240131",
+            "quantity": 1,
+            "unit_price": 150,
+            "tax_amount": 7.5,
+            "net_amount": 157.5
+          }
+        ],
+        "SOURCE": "03.09.2025 EXCEL INC 1334887 AED 157.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721397728-03.09.2025_EXCEL_INC_1334887_AED_157.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 150,
+        "VAT (AED)": 7.5,
+        "NET AMOUNT (AED)": 157.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "06-Sep-2025",
+        "INVOICE NUMBER": "014048",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "NGC Nafees Wallpaper Co. LLC",
+        "PARTY": "DECOWALLS TECHNICAL SERVICE LLC",
+        "SUPPLIER TRN": "100295968000003",
+        "CUSTOMER TRN": "104643212400003",
+        "PLACE OF SUPPLY": "DUBAI",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 1650,
+        "VAT": 82.5,
+        "NET AMOUNT": 1732.5,
+        "LINE_ITEMS": [
+          {
+            "description": "HOTSPOTS \"PLAIN ROLL-053 X 10 05 M",
+            "quantity": 11,
+            "unit_price": 150,
+            "tax_amount": 82.5,
+            "net_amount": 1732.5
+          }
+        ],
+        "SOURCE": "06.09.2025 NGC INV 014048 AED 1732.50.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721397760-06.09.2025_NGC_INV_014048_AED_1732.50.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 98,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 1650,
+        "VAT (AED)": 82.5,
+        "NET AMOUNT (AED)": 1732.5,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "15 Sep 2024",
+        "INVOICE NUMBER": "ALT/108/0824",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "Active Minds Global Solutions L.L.C",
+        "PARTY": "ALTOKK Software Solutions Private Limited",
+        "SUPPLIER TRN": "104165301300003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 19365.19,
+        "VAT": 0,
+        "NET AMOUNT": 19365.19,
+        "LINE_ITEMS": [
+          {
+            "description": "BOLAND Power BI Support Services - Aug 24 (16th Aug – 15th Sep)",
+            "quantity": 181,
+            "unit_price": 106.99,
+            "tax_amount": 0,
+            "net_amount": 19365.19
+          }
+        ],
+        "SOURCE": "Altokk_AMGS_Aug_Sep24_INVOICE-ALT_108_0924.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721416409-Altokk_AMGS_Aug_Sep24_INVOICE-ALT_108_0924.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 98,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 19365.19,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 19365.19,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "15 Oct 2024",
+        "INVOICE NUMBER": "ALT/109/1024",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "Active Minds Global Solutions L.L.C",
+        "PARTY": "ALTOKK Software Solutions Private Limited",
+        "SUPPLIER TRN": "104165301300003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 18669.76,
+        "VAT": 0,
+        "NET AMOUNT": 18669.76,
+        "LINE_ITEMS": [
+          {
+            "description": "BOLAND Power BI Support Services – Sep 24 (16th Sep - 15th Oct)",
+            "quantity": 174.5,
+            "unit_price": 106.99,
+            "tax_amount": 0,
+            "net_amount": 18669.76
+          }
+        ],
+        "SOURCE": "Altokk_AMGS_Sep_Oct24_INVOICE-ALT_109_1024.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721422623-Altokk_AMGS_Sep_Oct24_INVOICE-ALT_109_1024.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 18669.76,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 18669.76,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "18 Dec 2024",
+        "INVOICE NUMBER": "ALT/112/1224",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "Active Minds Global Solutions L.L.C",
+        "PARTY": "ALTOKK Software Solutions Private Limited",
+        "SUPPLIER TRN": "104165301300003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "Dubai",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 14069.19,
+        "VAT": 0,
+        "NET AMOUNT": 14069.19,
+        "LINE_ITEMS": [
+          {
+            "description": "BOLAND Power BI Support Services - Nov-Dec 24",
+            "quantity": 131.5,
+            "unit_price": 106.99,
+            "tax_amount": 0,
+            "net_amount": 14069.19
+          }
+        ],
+        "SOURCE": "Altokk_AMGS_Nov-Dec-24_INVOICE-ALT_112_1224.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775721435558-Altokk_AMGS_Nov-Dec-24_INVOICE-ALT_112_1224.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 14069.19,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 14069.19,
         "ZERO RATED (AED)": 0,
         "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
       }
@@ -204,6 +714,6 @@
       "NET_VAT": "0.00"
     }
   ],
-  "vatReturnOverrides": null,
-  "savedAt": "2026-04-09T07:38:43.968Z"
+  "vatReturnOverrides": {},
+  "savedAt": "2026-04-09T08:08:52.583Z"
 }
