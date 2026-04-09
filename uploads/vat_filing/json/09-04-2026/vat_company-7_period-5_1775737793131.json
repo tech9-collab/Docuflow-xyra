@@ -1,0 +1,196 @@
+{
+  "companyId": "7",
+  "companyName": "TRAVEL MEDIA MIDDLE EAST - FZCO",
+  "companyTRN": "",
+  "periodId": 5,
+  "customerId": 7,
+  "bankData": {
+    "columns": [],
+    "rows": [],
+    "summary": {}
+  },
+  "invoiceData": {
+    "uaeSalesRows": [],
+    "uaePurchaseRows": [
+      {
+        "DATE": "01/17/2024",
+        "INVOICE NUMBER": "INVFD2304330ME",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "FielDAQ Universal Data Acquisition LLC FZ",
+        "PARTY": "SGS INSPECTION AND TESTING SERVICES SPC.",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "USD",
+        "BEFORE TAX AMOUNT": 8560,
+        "VAT": 0,
+        "NET AMOUNT": 8560,
+        "LINE_ITEMS": [
+          {
+            "description": "ScanDas Software License - New Modbus/ WITS/ ASCII Import Export Protocols - Auto Backup - Reporting - Recalculation - WITSML - Remote Server",
+            "quantity": 2,
+            "unit_price": 5350,
+            "tax_amount": 0,
+            "net_amount": 8560
+          }
+        ],
+        "SOURCE": "INVFD2304330ME.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775737721693-INVFD2304330ME.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 31436.6,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 31436.6,
+        "ZERO RATED (AED)": 0
+      }
+    ],
+    "othersRows": [],
+    "totals": {
+      "purchase": {
+        "beforeTax": 31436.6,
+        "vat": 0,
+        "zero": 0,
+        "net": 31436.6
+      },
+      "sales": {
+        "beforeTax": 0,
+        "vat": 0,
+        "zero": 0,
+        "net": 0
+      }
+    },
+    "__explicitBuckets": true,
+    "uaeOtherRows": [],
+    "placeOfSupplyRows": [
+      {
+        "DATE": "01/17/2024",
+        "INVOICE NUMBER": "INVFD2304330ME",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "FielDAQ Universal Data Acquisition LLC FZ",
+        "PARTY": "SGS INSPECTION AND TESTING SERVICES SPC.",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "USD",
+        "BEFORE TAX AMOUNT": 8560,
+        "VAT": 0,
+        "NET AMOUNT": 8560,
+        "LINE_ITEMS": [
+          {
+            "description": "ScanDas Software License - New Modbus/ WITS/ ASCII Import Export Protocols - Auto Backup - Reporting - Recalculation - WITSML - Remote Server",
+            "quantity": 2,
+            "unit_price": 5350,
+            "tax_amount": 0,
+            "net_amount": 8560
+          }
+        ],
+        "SOURCE": "INVFD2304330ME.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/09-04-2026/1775737721693-INVFD2304330ME.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 31436.6,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 31436.6,
+        "ZERO RATED (AED)": 0
+      }
+    ]
+  },
+  "bankReconData": {
+    "columns": [],
+    "rows": []
+  },
+  "salesTotal": [
+    {
+      "METRIC": "STANDARDRATEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "OUTPUTTAX",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "ZERORATEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "EXEMPTEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "TOTALAMOUNTINCLUDINGVAT",
+      "AMOUNT": "0.00"
+    }
+  ],
+  "purchaseTotal": [
+    {
+      "METRIC": "STANDARDRATEDEXPENSES",
+      "AMOUNT": "31436.60"
+    },
+    {
+      "METRIC": "INPUTTAX",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "ZERORATEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "EXEMPTEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "TOTALAMOUNTINCLUDINGVAT",
+      "AMOUNT": "31436.60"
+    }
+  ],
+  "vatSummary": [
+    {
+      "PARTICULAR": "STANDARDRATEDSUPPLIES/EXPENSES",
+      "SALES": "0.00",
+      "PURCHASES": "31436.60",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "OUTPUTTAX",
+      "SALES": "0.00",
+      "PURCHASES": "",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "INPUTTAX",
+      "SALES": "",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "ZERORATEDSUPPLIES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "EXEMPTEDSUPPLIES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "TOTALAMOUNTINCLUDINGVAT",
+      "SALES": "0.00",
+      "PURCHASES": "31436.60",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "NETVATPAYABLEFORTHEPERIOD",
+      "SALES": "",
+      "PURCHASES": "",
+      "NET_VAT": "0.00"
+    }
+  ],
+  "vatReturnOverrides": null,
+  "savedAt": "2026-04-09T12:29:53.131Z"
+}

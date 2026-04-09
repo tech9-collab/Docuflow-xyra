@@ -94,26 +94,46 @@ const parseFlexibleDate = (s) => {
   const str = String(s).trim();
   if (!str) return null;
 
-  // 1. Try standard parse (YYYY-MM-DD or MM/DD/YYYY)
-  let d = new Date(str);
-  if (!isNaN(d.getTime())) {
-    // Check if it's DD/MM/YYYY format which JS might misinterpret as MM/DD/YYYY
-    // e.g. 05/01/2024 (Jan 5 in UAE) -> JS might say May 1.
-    // If it has slashes, we'll favor the explicit parse below for DD/MM/YYYY.
-    if (str.includes("/") && !str.includes("-") && str.split("/")[0].length <= 2) {
-      // Continue to explicit parse
-    } else {
-      return d;
+  const makeDate = (year, month, day) => {
+    const d = new Date(year, month - 1, day);
+    if (
+      d.getFullYear() !== year ||
+      d.getMonth() !== month - 1 ||
+      d.getDate() !== day
+    ) {
+      return null;
     }
+    return d;
+  };
+
+  // 1. ISO-like YYYY-MM-DD / YYYY/MM/DD
+  const isoMatch = str.match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})$/);
+  if (isoMatch) {
+    const year = parseInt(isoMatch[1], 10);
+    const month = parseInt(isoMatch[2], 10);
+    const day = parseInt(isoMatch[3], 10);
+    return makeDate(year, month, day);
   }
 
-  // 2. Explicit DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY
-  const ddmmMatch = str.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);
-  if (ddmmMatch) {
-    const day = parseInt(ddmmMatch[1], 10);
-    const month = parseInt(ddmmMatch[2], 10) - 1;
-    const year = parseInt(ddmmMatch[3], 10);
-    return new Date(year, month, day);
+  // 2. Numeric dates with format detection.
+  // Slash dates default to MM/DD/YYYY unless the first token cannot be a month.
+  // Dash/dot dates default to DD/MM/YYYY unless the second token cannot be a month.
+  const numericMatch = str.match(/^(\d{1,2})([\/\-.])(\d{1,2})\2(\d{4})$/);
+  if (numericMatch) {
+    const first = parseInt(numericMatch[1], 10);
+    const sep = numericMatch[2];
+    const second = parseInt(numericMatch[3], 10);
+    const year = parseInt(numericMatch[4], 10);
+
+    if (sep === "/") {
+      if (first > 12) return makeDate(year, second, first);
+      if (second > 12) return makeDate(year, first, second);
+      return makeDate(year, first, second);
+    }
+
+    if (second > 12) return makeDate(year, first, second);
+    if (first > 12) return makeDate(year, second, first);
+    return makeDate(year, second, first);
   }
 
   // 3. Handle "03 SEP 2025" or "3 Sep 2025" or "06-Sep-2025"
@@ -125,9 +145,11 @@ const parseFlexibleDate = (s) => {
     const monthStr = alphaMatch[2].toLowerCase();
     const monthIndex = monthNames.indexOf(monthStr);
     const year = parseInt(alphaMatch[3], 10);
-    if (monthIndex !== -1) return new Date(year, monthIndex, day);
+    if (monthIndex !== -1) return makeDate(year, monthIndex + 1, day);
   }
 
+  // 4. Final fallback to native parsing for long-form dates like "Mar 28, 2024"
+  const d = new Date(str);
   return isNaN(d.getTime()) ? null : d;
 };
 
@@ -140,6 +162,22 @@ const formatDateDisplay = (val) => {
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const year = d.getFullYear();
   return `${day}/${month}/${year}`;
+};
+
+const resolveInvoiceDateDisplayValue = (row, colKey) => {
+  const upperKey = String(colKey || "").trim().toUpperCase();
+  if (upperKey === "DATE" || upperKey === "INVOICE DATE") {
+    return (
+      readRowValueByAliases(row, [
+        "invoice_date",
+        "INVOICE DATE",
+        "INVOICE_DATE",
+        "date",
+        "DATE",
+      ]) ?? row?.[colKey]
+    );
+  }
+  return row?.[colKey];
 };
 
 // Normalize bank rows → one object per row with debit/credit & basic info
@@ -2210,39 +2248,290 @@ export default function VatFillingPreview() {
       getVatReturnOverrideNumber(overrides, key, fallback);
 
     // ===== Apply overrides on top of VAT SUMMARY base values =====
+    const sumRowField = (rows, key) =>
+      (rows || []).reduce((sum, row) => sum + (Number(row?.[key]) || 0), 0);
+
+    const readAdjustmentValue = (row) =>
+      Number(
+        readRowValueByAliases(row, [
+          "ADJUSTMENT (AED)",
+          "ADJUSTMENT AED",
+          "ADJUSTMENT",
+        ])
+      ) || 0;
+
+    const getRowText = (row) =>
+      [
+        row?.TYPE,
+        row?.["INVOICE CATEGORY"],
+        row?.["PLACE OF SUPPLY"],
+        row?.["VAT ELIGIBILTY"],
+        row?.["VAT ELIGIBILITY"],
+        row?.["SUPPLIER/VENDOR"],
+        row?.PARTY,
+        row?.DESCRIPTION,
+      ]
+        .map(lower)
+        .join(" | ");
+
+    const salesLiveRows = Array.isArray(salesRows) ? salesRows : [];
+    const purchaseAndOtherRows = [
+      ...(Array.isArray(purchaseRows) ? purchaseRows : []),
+      ...(Array.isArray(othersRowsView) ? othersRowsView : []),
+    ];
+    const allVatSourceRows = [...salesLiveRows, ...purchaseAndOtherRows];
+
+    const isTouristRefundRow = (row) => {
+      const text = getRowText(row);
+      return text.includes("tourist") && text.includes("refund");
+    };
+
+    const isExemptRow = (row) => getRowText(row).includes("exempt");
+
+    const isImportRow = (row) => {
+      const text = getRowText(row);
+      return text.includes("import");
+    };
+
+    const isReverseChargeRow = (row) => {
+      const text = getRowText(row);
+      return text.includes("reverse charge") || text.includes("reversecharge");
+    };
+
+    const isZeroRatedRow = (row) => {
+      const vatAmount = Number(row?.["VAT (AED)"] || 0);
+      return (
+        vatAmount === 0 &&
+        !isExemptRow(row) &&
+        !isTouristRefundRow(row) &&
+        !isImportRow(row)
+      );
+    };
+
+    const isStandardRatedPlaceRow = (row) =>
+      String(row?.["PLACE OF SUPPLY"] ?? "").trim() !== "" &&
+      !isTouristRefundRow(row) &&
+      !isExemptRow(row) &&
+      !isImportRow(row) &&
+      !isReverseChargeRow(row) &&
+      !isZeroRatedRow(row);
+
+    const sumVatBucket = (rows) => ({
+      amount: sumRowField(rows, "BEFORE TAX (AED)"),
+      vat: sumRowField(rows, "VAT (AED)"),
+      adjustment: (rows || []).reduce(
+        (sum, row) => sum + readAdjustmentValue(row),
+        0
+      ),
+    });
 
     // Outputs (VAT on sales & outputs)
-    const standardAmount = readNum("outputs.standard.amount", baseStdSuppliesAmount);
-    const standardVat = readNum("outputs.standard.vat", baseOutputTaxAmount);
+    const standardLocations = [
+      "abuDhabi",
+      "dubai",
+      "sharjah",
+      "ajman",
+      "ummAlQuwain",
+      "rasAlKhaimah",
+      "fujairah",
+    ];
+    const locationMatchers = {
+      abuDhabi: ["abu dhabi", "abudhabi"],
+      dubai: ["dubai"],
+      sharjah: ["sharjah"],
+      ajman: ["ajman"],
+      ummAlQuwain: ["umm al quwain", "ummalquwain"],
+      rasAlKhaimah: ["ras al khaimah", "rasalkhaimah"],
+      fujairah: ["fujairah"],
+    };
+
+    const standardPlaceRows = allVatSourceRows.filter(isStandardRatedPlaceRow);
+    const standardBaseByLocation = standardLocations.reduce((acc, location) => {
+      const matches = locationMatchers[location] || [];
+      const locationRows = standardPlaceRows.filter((row) => {
+        const place = lower(row?.["PLACE OF SUPPLY"]);
+        return matches.some((token) => place.includes(token));
+      });
+      const bucket = sumVatBucket(locationRows);
+      acc[location] = {
+        amount: bucket.amount,
+        vat: bucket.vat,
+        adjustment: bucket.adjustment,
+      };
+      return acc;
+    }, {});
+
+    const touristRefundRows = salesLiveRows.filter(isTouristRefundRow);
+    const touristRefundBase = sumVatBucket(touristRefundRows);
+
+    const reverseChargeRows = purchaseAndOtherRows.filter(
+      (row) => isReverseChargeRow(row) && !isImportRow(row)
+    );
+    const reverseChargeBase = sumVatBucket(reverseChargeRows);
+
+    const zeroRatedRows = salesLiveRows.filter(isZeroRatedRow);
+    const zeroRatedBase = {
+      amount: sumRowField(zeroRatedRows, "BEFORE TAX (AED)"),
+      vat: sumRowField(zeroRatedRows, "VAT (AED)"),
+      adjustment: zeroRatedRows.reduce(
+        (sum, row) => sum + readAdjustmentValue(row),
+        0
+      ),
+    };
+
+    const exemptRows = salesLiveRows.filter(isExemptRow);
+    const exemptBase = {
+      amount: sumRowField(exemptRows, "BEFORE TAX (AED)"),
+      vat: sumRowField(exemptRows, "VAT (AED)"),
+      adjustment: exemptRows.reduce(
+        (sum, row) => sum + readAdjustmentValue(row),
+        0
+      ),
+    };
+
+    const importRows = purchaseAndOtherRows.filter(isImportRow);
+    const goodsImportBase = sumVatBucket(importRows);
+    const goodsImportAdjustmentsBase = importRows.reduce(
+      (sum, row) => sum + readAdjustmentValue(row),
+      0
+    );
+
+    const hasDetailedStandardOverride = standardLocations.some((location) => {
+      const prefix = `outputs.standard.${location}`;
+      return (
+        overrides?.[`${prefix}.amount`] !== undefined ||
+        overrides?.[`${prefix}.vat`] !== undefined ||
+        overrides?.[`${prefix}.adjustment`] !== undefined
+      );
+    });
+
+    const standardByLocation = standardLocations.reduce((acc, location, index) => {
+      const prefix = `outputs.standard.${location}`;
+      const liveFallback = standardBaseByLocation[location] || {
+        amount: 0,
+        vat: 0,
+        adjustment: 0,
+      };
+      const fallbackAmount =
+        hasDetailedStandardOverride
+          ? liveFallback.amount
+          : liveFallback.amount || (index === 0 ? baseStdSuppliesAmount : 0);
+      const fallbackVat =
+        hasDetailedStandardOverride
+          ? liveFallback.vat
+          : liveFallback.vat || (index === 0 ? baseOutputTaxAmount : 0);
+      const fallbackAdjustment = liveFallback.adjustment;
+
+      const amount = readNum(`${prefix}.amount`, fallbackAmount);
+      const vat = readNum(`${prefix}.vat`, fallbackVat);
+      const adjustment = readNum(`${prefix}.adjustment`, fallbackAdjustment);
+
+      acc[location] = {
+        amount,
+        vat,
+        total: amount + vat,
+        adjustment,
+      };
+      return acc;
+    }, {});
+
+    const standardAmount = standardLocations.reduce(
+      (sum, location) => sum + standardByLocation[location].amount,
+      0
+    );
+    const standardVat = standardLocations.reduce(
+      (sum, location) => sum + standardByLocation[location].vat,
+      0
+    );
+    const standardAdjustment = standardLocations.reduce(
+      (sum, location) => sum + standardByLocation[location].adjustment,
+      0
+    );
     const standardTotal = standardAmount + standardVat;
-    const standardAdjustment = readNum("outputs.standard.adjustment", 0);
 
-    const reverseSupAmount = readNum("outputs.reverseCharge.amount", 0);
-    const reverseSupVat = readNum("outputs.reverseCharge.vat", 0);
+    const touristRefundsAmount = readNum(
+      "outputs.touristRefunds.amount",
+      touristRefundBase.amount
+    );
+    const touristRefundsVat = readNum(
+      "outputs.touristRefunds.vat",
+      touristRefundBase.vat
+    );
+    const touristRefundsAdjustment = readNum(
+      "outputs.touristRefunds.adjustment",
+      touristRefundBase.adjustment
+    );
+    const touristRefundsTotal = touristRefundsAmount + touristRefundsVat;
+
+    const reverseSupAmount = readNum(
+      "outputs.reverseCharge.amount",
+      reverseChargeBase.amount
+    );
+    const reverseSupVat = readNum(
+      "outputs.reverseCharge.vat",
+      reverseChargeBase.vat
+    );
     const reverseSupTotal = reverseSupAmount + reverseSupVat;
-    const reverseSupAdjustment = readNum("outputs.reverseCharge.adjustment", 0);
+    const reverseSupAdjustment = readNum(
+      "outputs.reverseCharge.adjustment",
+      reverseChargeBase.adjustment
+    );
 
-    const zeroAmount = readNum("outputs.zeroRated.amount", baseZeroRatedAmount);
-    const zeroVat = readNum("outputs.zeroRated.vat", 0);
+    const zeroAmount = readNum(
+      "outputs.zeroRated.amount",
+      zeroRatedBase.amount || baseZeroRatedAmount
+    );
+    const zeroVat = readNum("outputs.zeroRated.vat", zeroRatedBase.vat);
     const zeroTotal = zeroAmount + zeroVat;
-    const zeroAdjustment = readNum("outputs.zeroRated.adjustment", 0);
+    const zeroAdjustment = readNum(
+      "outputs.zeroRated.adjustment",
+      zeroRatedBase.adjustment
+    );
 
-    const exemptAmount = readNum("outputs.exempt.amount", 0);
-    const exemptVat = readNum("outputs.exempt.vat", 0);
+    const exemptAmount = readNum(
+      "outputs.exempt.amount",
+      exemptBase.amount || baseExemptAmount
+    );
+    const exemptVat = readNum("outputs.exempt.vat", exemptBase.vat);
     const exemptTotal = exemptAmount + exemptVat;
-    const exemptAdjustment = readNum("outputs.exempt.adjustment", 0);
+    const exemptAdjustment = readNum(
+      "outputs.exempt.adjustment",
+      exemptBase.adjustment
+    );
 
-    const goodsAmount = readNum("outputs.goodsImport.amount", 0);
-    const goodsVat = readNum("outputs.goodsImport.vat", 0);
+    const goodsAmount = readNum("outputs.goodsImport.amount", goodsImportBase.amount);
+    const goodsVat = readNum("outputs.goodsImport.vat", goodsImportBase.vat);
     const goodsTotal = goodsAmount + goodsVat;
-    const goodsAdjustment = readNum("outputs.goodsImport.adjustment", 0);
+    const goodsAdjustment = readNum(
+      "outputs.goodsImport.adjustment",
+      goodsImportBase.adjustment
+    );
+
+    const goodsImportAdjustmentsAmount = readNum(
+      "outputs.goodsImportAdjustments.amount",
+      goodsImportAdjustmentsBase
+    );
+    const goodsImportAdjustmentsVat = readNum("outputs.goodsImportAdjustments.vat", 0);
+    const goodsImportAdjustmentsAdjustment = readNum(
+      "outputs.goodsImportAdjustments.adjustment",
+      0
+    );
+    const goodsImportAdjustmentsTotal =
+      goodsImportAdjustmentsAmount + goodsImportAdjustmentsVat;
 
     const outputs = {
       standard: {
+        locations: standardByLocation,
         amount: standardAmount,
         vat: standardVat,
         total: standardTotal,
         adjustment: standardAdjustment,
+      },
+      touristRefunds: {
+        amount: touristRefundsAmount,
+        vat: touristRefundsVat,
+        total: touristRefundsTotal,
+        adjustment: touristRefundsAdjustment,
       },
       reverseCharge: {
         amount: reverseSupAmount,
@@ -2268,22 +2557,39 @@ export default function VatFillingPreview() {
         total: goodsTotal,
         adjustment: goodsAdjustment,
       },
+      goodsImportAdjustments: {
+        amount: goodsImportAdjustmentsAmount,
+        vat: goodsImportAdjustmentsVat,
+        total: goodsImportAdjustmentsTotal,
+        adjustment: goodsImportAdjustmentsAdjustment,
+      },
     };
 
     const outputsTotals = {
       amount:
         outputs.standard.amount +
+        outputs.touristRefunds.amount +
         outputs.reverseCharge.amount +
         outputs.zeroRated.amount +
         outputs.exempt.amount +
-        outputs.goodsImport.amount,
+        outputs.goodsImport.amount +
+        outputs.goodsImportAdjustments.amount,
       vat:
         outputs.standard.vat +
+        outputs.touristRefunds.vat +
         outputs.reverseCharge.vat +
         outputs.zeroRated.vat +
         outputs.exempt.vat +
-        outputs.goodsImport.vat,
-      adjustment: readNum("outputs.total.adjustment", 0),
+        outputs.goodsImport.vat +
+        outputs.goodsImportAdjustments.vat,
+      adjustment:
+        outputs.standard.adjustment +
+        outputs.touristRefunds.adjustment +
+        outputs.reverseCharge.adjustment +
+        outputs.zeroRated.adjustment +
+        outputs.exempt.adjustment +
+        outputs.goodsImport.adjustment +
+        outputs.goodsImportAdjustments.adjustment,
     };
     outputsTotals.total = outputsTotals.amount + outputsTotals.vat;
 
@@ -2370,6 +2676,9 @@ export default function VatFillingPreview() {
     baseExemptAmount,
     baseStdExpensesAmount,
     baseInputTaxAmount,
+    salesRows,
+    purchaseRows,
+    othersRowsView,
   ]);
 
   const ftaFundInputValue = (() => {
@@ -3035,7 +3344,8 @@ export default function VatFillingPreview() {
                     onClick={() => setSelectedRecord({ view: viewName, rowIndex })}
                   >
                     {filteredCols.map((c) => {
-                      const val = row?.[c.key] ?? "";
+                      const rawCellValue = resolveInvoiceDateDisplayValue(row, c.key);
+                      const val = rawCellValue ?? "";
                       const isDateCol = String(c.key).toUpperCase().includes("DATE");
                       const formattedDate = isDateCol ? formatDateDisplay(val) : null;
                       const text = isDateCol ? formattedDate : String(val ?? "");
@@ -3373,6 +3683,114 @@ export default function VatFillingPreview() {
       );
     };
 
+    const vatOutputRows = [
+      {
+        rowKey: "outputs.standard.abuDhabi",
+        label: "Standard rated supplies in Abu Dhabi",
+        amount: outputs.standard.locations.abuDhabi.amount,
+        vat: outputs.standard.locations.abuDhabi.vat,
+        total: outputs.standard.locations.abuDhabi.total,
+        adjustment: outputs.standard.locations.abuDhabi.adjustment,
+      },
+      {
+        rowKey: "outputs.standard.dubai",
+        label: "Standard rated supplies in Dubai",
+        amount: outputs.standard.locations.dubai.amount,
+        vat: outputs.standard.locations.dubai.vat,
+        total: outputs.standard.locations.dubai.total,
+        adjustment: outputs.standard.locations.dubai.adjustment,
+      },
+      {
+        rowKey: "outputs.standard.sharjah",
+        label: "Standard rated supplies in Sharjah",
+        amount: outputs.standard.locations.sharjah.amount,
+        vat: outputs.standard.locations.sharjah.vat,
+        total: outputs.standard.locations.sharjah.total,
+        adjustment: outputs.standard.locations.sharjah.adjustment,
+      },
+      {
+        rowKey: "outputs.standard.ajman",
+        label: "Standard rated supplies in Ajman",
+        amount: outputs.standard.locations.ajman.amount,
+        vat: outputs.standard.locations.ajman.vat,
+        total: outputs.standard.locations.ajman.total,
+        adjustment: outputs.standard.locations.ajman.adjustment,
+      },
+      {
+        rowKey: "outputs.standard.ummAlQuwain",
+        label: "Standard rated supplies in Umm Al Quwain",
+        amount: outputs.standard.locations.ummAlQuwain.amount,
+        vat: outputs.standard.locations.ummAlQuwain.vat,
+        total: outputs.standard.locations.ummAlQuwain.total,
+        adjustment: outputs.standard.locations.ummAlQuwain.adjustment,
+      },
+      {
+        rowKey: "outputs.standard.rasAlKhaimah",
+        label: "Standard rated supplies in Ras Al Khaimah",
+        amount: outputs.standard.locations.rasAlKhaimah.amount,
+        vat: outputs.standard.locations.rasAlKhaimah.vat,
+        total: outputs.standard.locations.rasAlKhaimah.total,
+        adjustment: outputs.standard.locations.rasAlKhaimah.adjustment,
+      },
+      {
+        rowKey: "outputs.standard.fujairah",
+        label: "Standard rated supplies in Fujairah",
+        amount: outputs.standard.locations.fujairah.amount,
+        vat: outputs.standard.locations.fujairah.vat,
+        total: outputs.standard.locations.fujairah.total,
+        adjustment: outputs.standard.locations.fujairah.adjustment,
+      },
+      {
+        rowKey: "outputs.touristRefunds",
+        label:
+          "Tax refunds provided to tourists under the Tax Refunds for Tourists Scheme",
+        amount: outputs.touristRefunds.amount,
+        vat: outputs.touristRefunds.vat,
+        total: outputs.touristRefunds.total,
+        adjustment: outputs.touristRefunds.adjustment,
+      },
+      {
+        rowKey: "outputs.reverseCharge",
+        label: "Supplies subject to the reverse charge provisions",
+        amount: outputs.reverseCharge.amount,
+        vat: outputs.reverseCharge.vat,
+        total: outputs.reverseCharge.total,
+        adjustment: outputs.reverseCharge.adjustment,
+      },
+      {
+        rowKey: "outputs.zeroRated",
+        label: "Zero rated supplies",
+        amount: outputs.zeroRated.amount,
+        vat: outputs.zeroRated.vat,
+        total: outputs.zeroRated.total,
+        adjustment: outputs.zeroRated.adjustment,
+      },
+      {
+        rowKey: "outputs.exempt",
+        label: "Exempt supplies",
+        amount: outputs.exempt.amount,
+        vat: outputs.exempt.vat,
+        total: outputs.exempt.total,
+        adjustment: outputs.exempt.adjustment,
+      },
+      {
+        rowKey: "outputs.goodsImport",
+        label: "Goods imported into the UAE",
+        amount: outputs.goodsImport.amount,
+        vat: outputs.goodsImport.vat,
+        total: outputs.goodsImport.total,
+        adjustment: outputs.goodsImport.adjustment,
+      },
+      {
+        rowKey: "outputs.goodsImportAdjustments",
+        label: "Adjustments to goods imported into the UAE",
+        amount: outputs.goodsImportAdjustments.amount,
+        vat: outputs.goodsImportAdjustments.vat,
+        total: outputs.goodsImportAdjustments.total,
+        adjustment: outputs.goodsImportAdjustments.adjustment,
+      },
+    ];
+
     return (
       // ⬇️ use the same scroller class used by other tabs
       <div className="tbl-scroller tbl-scroller-vatReturn">
@@ -3397,48 +3815,47 @@ export default function VatFillingPreview() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>STANDARD RATED SUPPLIES</td>
-                  <td>{renderVatReturnEditableCell("outputs.standard", "outputs.standard.amount", outputs.standard.amount)}</td>
-                  <td>{renderVatReturnEditableCell("outputs.standard", "outputs.standard.vat", outputs.standard.vat)}</td>
-                  <td>{formatAED(outputs.standard.total)}</td>
-                  <td>{renderVatReturnAdjustmentCell("outputs.standard", outputs.standard.adjustment)}</td>
-                  {renderVatReturnActionCell("outputs.standard")}
-                </tr>
-                <tr>
-                  <td>Reverse Charge Provisions (Supplies)</td>
-                  <td>{renderVatReturnEditableCell("outputs.reverseCharge", "outputs.reverseCharge.amount", outputs.reverseCharge.amount)}</td>
-                  <td>{renderVatReturnEditableCell("outputs.reverseCharge", "outputs.reverseCharge.vat", outputs.reverseCharge.vat)}</td>
-                  <td>{formatAED(outputs.reverseCharge.total)}</td>
-                  <td>{renderVatReturnAdjustmentCell("outputs.reverseCharge", outputs.reverseCharge.adjustment)}</td>
-                  {renderVatReturnActionCell("outputs.reverseCharge")}
-                </tr>
-                <tr>
-                  <td>ZERO RATED SUPPLIES</td>
-                  <td>{renderVatReturnEditableCell("outputs.zeroRated", "outputs.zeroRated.amount", outputs.zeroRated.amount)}</td>
-                  <td>{renderVatReturnEditableCell("outputs.zeroRated", "outputs.zeroRated.vat", outputs.zeroRated.vat)}</td>
-                  <td>{formatAED(outputs.zeroRated.total)}</td>
-                  <td>{renderVatReturnAdjustmentCell("outputs.zeroRated", outputs.zeroRated.adjustment)}</td>
-                  {renderVatReturnActionCell("outputs.zeroRated")}
-                </tr>
-                <tr>
-                  <td>EXEMPTED SUPPLIES</td>
-                  <td>{renderVatReturnEditableCell("outputs.exempt", "outputs.exempt.amount", outputs.exempt.amount)}</td>
-                  <td>{renderVatReturnEditableCell("outputs.exempt", "outputs.exempt.vat", outputs.exempt.vat)}</td>
-                  <td>{formatAED(outputs.exempt.total)}</td>
-                  <td>{renderVatReturnAdjustmentCell("outputs.exempt", outputs.exempt.adjustment)}</td>
-                  {renderVatReturnActionCell("outputs.exempt")}
-                </tr>
-                <tr>
-                  <td>Goods imported into UAE</td>
-                  <td>{renderVatReturnEditableCell("outputs.goodsImport", "outputs.goodsImport.amount", outputs.goodsImport.amount)}</td>
-                  <td>{renderVatReturnEditableCell("outputs.goodsImport", "outputs.goodsImport.vat", outputs.goodsImport.vat)}</td>
-                  <td>{formatAED(outputs.goodsImport.total)}</td>
-                  <td>{renderVatReturnAdjustmentCell("outputs.goodsImport", outputs.goodsImport.adjustment)}</td>
-                  {renderVatReturnActionCell("outputs.goodsImport")}
-                </tr>
+                {vatOutputRows.map((row) => {
+                  const actionKey = row.rowKey;
+                  const canEdit = true;
+
+                  return (
+                    <tr key={row.rowKey}>
+                      <td>{row.label}</td>
+                      <td>
+                        {canEdit
+                          ? renderVatReturnEditableCell(
+                              actionKey,
+                              `${actionKey}.amount`,
+                              row.amount
+                            )
+                          : formatAED(row.amount)}
+                      </td>
+                      <td>
+                        {canEdit
+                          ? renderVatReturnEditableCell(
+                              actionKey,
+                              `${actionKey}.vat`,
+                              row.vat
+                            )
+                          : formatAED(row.vat)}
+                      </td>
+                      <td>{formatAED(row.total)}</td>
+                      <td>
+                        {canEdit
+                          ? renderVatReturnAdjustmentCell(actionKey, row.adjustment)
+                          : formatAED(row.adjustment)}
+                      </td>
+                      {canEdit ? (
+                        renderVatReturnActionCell(actionKey)
+                      ) : (
+                        <td className="actions-col vat-return-no-action-cell" aria-hidden="true" />
+                      )}
+                    </tr>
+                  );
+                })}
                 <tr className="vat-return-total-row">
-                  <td>TOTAL AMOUNT</td>
+                  <td>Totals</td>
                   <td>{formatAED(outputsTotals.amount)}</td>
                   <td>{formatAED(outputsTotals.vat)}</td>
                   <td>{formatAED(outputsTotals.total)}</td>

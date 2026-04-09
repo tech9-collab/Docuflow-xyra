@@ -6,6 +6,7 @@
   gap: 16px;
   padding: 16px;
   background: #f9fafb;
+  zoom: 0.7;
 }
 .result-head {
   display: grid;
@@ -255,7 +256,7 @@
 .tbl-scroller-salesTotal .tbl,
 .tbl-scroller-purchaseTotal .tbl,
 .tbl-scroller-vatSummary .tbl {
-  min-width: 1400px;
+  min-width: 980px;
 }
 
 .result-card {
@@ -278,19 +279,25 @@
 }
 
 .result-card-body {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(320px, 3fr);
   gap: 14px;
   align-items: stretch;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .result-main-pane {
-  flex: 1 1 auto;
   min-width: 0;
+  max-width: none;
+  overflow: hidden;
 }
 
 .result-doc-pane {
-  width: 360px;
-  min-width: 360px;
+  width: 100%;
+  min-width: 320px;
+  max-width: 420px;
+  justify-self: end;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   background: #f8fafc;
@@ -478,14 +485,17 @@
   word-break: break-word;
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1024px) {
   .result-card-body {
     flex-direction: column;
+    display: flex;
   }
 
   .result-doc-pane {
     width: 100%;
     min-width: 0;
+    max-width: none;
+    justify-self: stretch;
   }
 }
 
