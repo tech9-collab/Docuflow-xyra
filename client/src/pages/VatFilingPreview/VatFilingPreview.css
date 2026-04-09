@@ -684,23 +684,31 @@
 
 .vat-return-choice-group {
   display: flex;
-  gap: 14px;
-  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
   justify-content: flex-start;
-  flex-wrap: wrap;
 }
 
 .vat-return-choice {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 6px;
   font-size: 13px;
+  line-height: 1.2;
   color: #111827;
   white-space: nowrap;
 }
 
 .vat-return-choice input {
   margin: 0;
+  flex: 0 0 auto;
+}
+
+.vat-return-choice input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  accent-color: #111827;
 }
 
 .vat-return-main-header {

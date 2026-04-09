@@ -9,6 +9,7 @@ import {
 import {
   getVatFilingPreview,
   generateVatFilingExcel,
+  downloadVatReturnTemplate,
 } from "../../helper/helper";
 import "./VatFilingPreview.css";
 import toast from "react-hot-toast";
@@ -1073,6 +1074,46 @@ export default function VatFillingPreview() {
     } catch (err) {
       console.error("Failed to download Excel file:", err);
       alert("Failed to download Excel file");
+    }
+  }
+
+  async function handleDownloadVatReturnTemplate() {
+    try {
+      if (!previewData) {
+        alert("No data to download");
+        return;
+      }
+
+      const latestBankReconData =
+        previewData.bankReconData && Array.isArray(previewData.bankReconData.rows)
+          ? previewData.bankReconData
+          : buildBankReconciliationDisplay(
+              previewData.bankData,
+              salesRows,
+              purchaseRows
+            );
+
+      const blob = await downloadVatReturnTemplate(companyId, {
+        bankData: previewData.bankData,
+        invoiceData: normalizedInvoiceData,
+        companyName: previewData.companyName || `Company ${companyId}`,
+        bankReconData: latestBankReconData,
+        salesTotal: previewData.salesTotal,
+        purchaseTotal: previewData.purchaseTotal,
+        vatSummary: previewData.vatSummary,
+        vatReturnOverrides: previewData.vatReturnOverrides,
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "VAT_Return_Template.xlsx";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Failed to download VAT Return template:", err);
+      alert("Failed to download VAT Return template");
     }
   }
 
@@ -3614,7 +3655,13 @@ export default function VatFillingPreview() {
             ← {isExistingRun ? "Back to conversions" : "Back to filing"}
           </button>
 
-          {/* 3️⃣ Download Excel on the far right */}
+          <button
+            className="btn btn-black"
+            onClick={handleDownloadVatReturnTemplate}
+          >
+            Download VAT Return Template
+          </button>
+
           <button className="btn btn-black" onClick={handleDownload}>
             Download Excel
           </button>

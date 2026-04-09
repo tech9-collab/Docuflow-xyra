@@ -806,6 +806,315 @@ function vatReturnSheetFromTotalsWithOverrides(
 
   return ws;
 }
+
+function vatReturnTemplateSheet(computedSales = {}, computedPurchase = {}, overrides = {}) {
+  const readNum = (key, fallback = 0) => {
+    const raw = overrides?.[key];
+    if (raw === undefined || raw === null || raw === "") return fallback;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : fallback;
+  };
+
+  const outputs = {
+    standard: {
+      amount: readNum("outputs.standard.amount", Number(computedSales.beforeTax || 0)),
+      vat: readNum("outputs.standard.vat", Number(computedSales.vat || 0)),
+      adjustment: readNum("outputs.standard.adjustment", 0),
+    },
+    reverseCharge: {
+      amount: readNum("outputs.reverseCharge.amount", 0),
+      vat: readNum("outputs.reverseCharge.vat", 0),
+      adjustment: readNum("outputs.reverseCharge.adjustment", 0),
+    },
+    zeroRated: {
+      amount: readNum("outputs.zeroRated.amount", Number(computedSales.zero || 0)),
+      vat: readNum("outputs.zeroRated.vat", 0),
+      adjustment: readNum("outputs.zeroRated.adjustment", 0),
+    },
+    exempt: {
+      amount: readNum("outputs.exempt.amount", 0),
+      vat: readNum("outputs.exempt.vat", 0),
+      adjustment: readNum("outputs.exempt.adjustment", 0),
+    },
+    goodsImport: {
+      amount: readNum("outputs.goodsImport.amount", 0),
+      vat: readNum("outputs.goodsImport.vat", 0),
+      adjustment: readNum("outputs.goodsImport.adjustment", 0),
+    },
+  };
+
+  const inputs = {
+    standard: {
+      amount: readNum("inputs.standard.amount", Number(computedPurchase.beforeTax || 0)),
+      vat: readNum("inputs.standard.vat", Number(computedPurchase.vat || 0)),
+      adjustment: readNum("inputs.standard.adjustment", 0),
+    },
+    reverseCharge: {
+      amount: readNum("inputs.reverseCharge.amount", 0),
+      vat: readNum("inputs.reverseCharge.vat", 0),
+      adjustment: readNum("inputs.reverseCharge.adjustment", 0),
+    },
+  };
+
+  const outputsVatTotal =
+    outputs.standard.vat +
+    outputs.reverseCharge.vat +
+    outputs.zeroRated.vat +
+    outputs.exempt.vat +
+    outputs.goodsImport.vat;
+  const inputsVatTotal = inputs.standard.vat + inputs.reverseCharge.vat;
+  const vatPayableForPeriod = outputsVatTotal - inputsVatTotal;
+  const refundYes = overrides?.refundRequest === "yes";
+  const refundNo = overrides?.refundRequest === "no";
+  const marginYes = overrides?.profitMarginScheme === "yes";
+  const marginNo = overrides?.profitMarginScheme === "no";
+
+  const rows = [
+    ["VAT Return", "", "", ""],
+    [""],
+    ["VAT on Sales and All Other Outputs", "", "", ""],
+    ["Description", "Amount\n[AED]", "VAT Amount\n[AED]", "Adjustment\n[AED]"],
+    ["1a    Standard rated supplies in Abu Dhabi*", outputs.standard.amount, outputs.standard.vat, outputs.standard.adjustment],
+    ["1b    Standard rated supplies in Dubai*", 0, 0, 0],
+    ["1c    Standard rated supplies in Sharjah*", 0, 0, 0],
+    ["1d    Standard rated supplies in Ajman*", 0, 0, 0],
+    ["1e    Standard rated supplies in Umm Al Quwain*", 0, 0, 0],
+    ["1f    Standard rated supplies in Ras Al Khaimah*", 0, 0, 0],
+    ["1g    Standard rated supplies in Fujairah*", 0, 0, 0],
+    ["2    Tax Refunds provided to Tourists under the Tax Refunds for Tourists Scheme*", 0, 0, 0],
+    ["3    Supplies subject to the reverse charge provisions*", outputs.reverseCharge.amount, outputs.reverseCharge.vat, outputs.reverseCharge.adjustment],
+    ["4    Zero rated supplies*", outputs.zeroRated.amount, outputs.zeroRated.vat, outputs.zeroRated.adjustment],
+    ["5    Exempt supplies*", outputs.exempt.amount, outputs.exempt.vat, outputs.exempt.adjustment],
+    ["6    Goods imported into the UAE*", outputs.goodsImport.amount, outputs.goodsImport.vat, 0],
+    ["7    Adjustments to goods imported into the UAE*", 0, 0, outputs.goodsImport.adjustment],
+    ["8    Totals",
+      outputs.standard.amount + outputs.reverseCharge.amount + outputs.zeroRated.amount + outputs.exempt.amount + outputs.goodsImport.amount,
+      outputsVatTotal,
+      readNum("outputs.total.adjustment", 0),
+    ],
+    [""],
+    ["VAT on Expenses and All Other Inputs", "", "", ""],
+    ["Description", "Amount\n[AED]", "VAT Amount\n[AED]", "Adjustment\n[AED]"],
+    ["9    Standard rated expenses*", inputs.standard.amount, inputs.standard.vat, inputs.standard.adjustment],
+    ["10    Supplies subject to the reverse charge provisions*", inputs.reverseCharge.amount, inputs.reverseCharge.vat, inputs.reverseCharge.adjustment],
+    ["11    Totals",
+      inputs.standard.amount + inputs.reverseCharge.amount,
+      inputsVatTotal,
+      readNum("inputs.total.adjustment", 0),
+    ],
+    [""],
+    ["Net VAT Due", "", "", ""],
+    ["12    Total value of due tax for the period", outputsVatTotal, "", ""],
+    ["13    Total value of recoverable tax for the period", inputsVatTotal, "", ""],
+    ["14    Payable tax for the period", vatPayableForPeriod, "", ""],
+    [""],
+    ["Do you wish to request a refund for the above amount of excess recoverable tax ?", "", "", ""],
+    [`    ${refundYes ? "\u25c9" : "\u25ef"} Yes`, "", "", ""],
+    [`    ${refundNo ? "\u25c9" : "\u25ef"} No`, "", "", ""],
+    [""],
+    ["Profit Margin Scheme", "", "", ""],
+    ["Did you apply the profit margin scheme in respect of any supplies made during the tax period?", "", "", ""],
+    [`    ${marginYes ? "\u25c9" : "\u25ef"} Yes`, "", "", ""],
+    [`    ${marginNo ? "\u25c9" : "\u25ef"} No`, "", "", ""],
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws["!cols"] = [
+    { wch: 78 },
+    { wch: 18 },
+    { wch: 18 },
+    { wch: 18 },
+  ];
+  ws["!rows"] = rows.map((_, idx) => ({
+    hpt: [0, 2, 19, 24, 22, 22, 22, 22, 22, 22, 22, 28, 22, 22, 22, 22, 22, 22, 10, 19, 24, 22, 22, 22, 10, 19, 22, 22, 22, 10, 28, 18, 18, 10, 19, 24, 18, 18][idx] || 22,
+  }));
+  ws["!merges"] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } },
+    { s: { r: 2, c: 0 }, e: { r: 2, c: 3 } },
+    { s: { r: 19, c: 0 }, e: { r: 19, c: 3 } },
+    { s: { r: 25, c: 0 }, e: { r: 25, c: 3 } },
+    { s: { r: 30, c: 0 }, e: { r: 30, c: 3 } },
+    { s: { r: 34, c: 0 }, e: { r: 34, c: 3 } },
+    { s: { r: 35, c: 0 }, e: { r: 35, c: 3 } },
+  ];
+
+  const range = XLSX.utils.decode_range(ws["!ref"]);
+  const titleRows = new Set([0]);
+  const sectionRows = new Set([2, 19, 25, 34]);
+  const headerRows = new Set([3, 20]);
+  const questionRows = new Set([30, 35]);
+  const optionRows = new Set([31, 32, 36, 37]);
+  const boxedPanelRows = new Set([30, 31, 32, 35, 36, 37]);
+  const numericRows = new Set([
+    4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+    21, 22, 23, 26, 27, 28,
+  ]);
+
+  const thinGray = { style: "thin", color: { rgb: "BFBFBF" } };
+  const strongBlue = { style: "thin", color: { rgb: "4472C4" } };
+  const darkLine = { style: "medium", color: { rgb: "000000" } };
+
+  for (let r = 0; r <= range.e.r; r++) {
+    for (let c = 0; c <= range.e.c; c++) {
+      const addr = XLSX.utils.encode_cell({ r, c });
+      const cell = ws[addr] || (ws[addr] = { t: "s", v: "" });
+      const isNumericColumn = c > 0;
+      const isNumericTemplateRow = numericRows.has(r);
+
+      cell.s = {
+        ...(cell.s || {}),
+        font: {
+          ...(cell.s?.font || {}),
+          name: "Arial",
+          sz: titleRows.has(r) ? 12 : 10,
+          bold: titleRows.has(r) || sectionRows.has(r) || headerRows.has(r) || questionRows.has(r),
+        },
+        alignment: {
+          ...(cell.s?.alignment || {}),
+          vertical: "center",
+          wrapText: true,
+          horizontal:
+            titleRows.has(r)
+              ? "center"
+              : headerRows.has(r)
+                ? "center"
+                : isNumericColumn
+                  ? "right"
+                  : "left",
+        },
+        border: {
+          top:
+            titleRows.has(r) || sectionRows.has(r)
+              ? darkLine
+              : boxedPanelRows.has(r) && (r === 30 || r === 35)
+                ? darkLine
+                : thinGray,
+          bottom:
+            titleRows.has(r) || sectionRows.has(r)
+              ? darkLine
+              : boxedPanelRows.has(r) && (r === 32 || r === 37)
+                ? darkLine
+                : thinGray,
+          left:
+            boxedPanelRows.has(r)
+              ? darkLine
+              : (headerRows.has(r) || (isNumericTemplateRow && c >= 0))
+                ? (isNumericColumn ? strongBlue : thinGray)
+                : thinGray,
+          right:
+            boxedPanelRows.has(r)
+              ? darkLine
+              : (headerRows.has(r) || (isNumericTemplateRow && c >= 0))
+                ? (isNumericColumn ? strongBlue : thinGray)
+                : thinGray,
+        },
+        fill:
+          headerRows.has(r) || boxedPanelRows.has(r)
+            ? { patternType: "solid", fgColor: { rgb: "E7E6E6" } }
+            : undefined,
+      };
+
+      if (isNumericTemplateRow && isNumericColumn) {
+        if (typeof cell.v !== "number") {
+          cell.t = "n";
+          cell.v = 0;
+        }
+        cell.z = "#,##0.00";
+      }
+
+      if ([26, 27, 28].includes(r) && c > 1) {
+        cell.v = "";
+        cell.t = "s";
+      }
+
+      if ([31, 32, 36, 37].includes(r) && c > 0) {
+        cell.v = "";
+        cell.t = "s";
+      }
+
+      if (optionRows.has(r) && c === 0) {
+        cell.s = {
+          ...cell.s,
+          font: { ...(cell.s?.font || {}), bold: false, name: "Arial", sz: 10 },
+          alignment: { ...(cell.s?.alignment || {}), horizontal: "left" },
+        };
+      }
+
+      if (questionRows.has(r) && c === 0) {
+        cell.s = {
+          ...cell.s,
+          font: { ...(cell.s?.font || {}), bold: true, name: "Arial", sz: 10 },
+        };
+      }
+    }
+  }
+
+  ws["!protect"] = {
+    password: "xyrabooks",
+    selectLockedCells: true,
+    selectUnlockedCells: false,
+    formatCells: false,
+    formatColumns: false,
+    formatRows: false,
+    insertColumns: false,
+    insertRows: false,
+    insertHyperlinks: false,
+    deleteColumns: false,
+    deleteRows: false,
+    sort: false,
+    autoFilter: false,
+    pivotTables: false,
+    objects: true,
+    scenarios: true,
+  };
+
+  return ws;
+}
+
+export async function downloadVatReturnTemplate(req, res) {
+  try {
+    const {
+      invoiceData,
+      salesTotal: editedSalesTotal,
+      purchaseTotal: editedPurchaseTotal,
+      vatReturnOverrides,
+    } = req.body || {};
+
+    const { uaeSalesRows, uaePurchaseRows } = strictSplitInvoice(invoiceData || {});
+
+    let computedSales = totalsFromUiRows(uaeSalesRows);
+    let computedPurchase = totalsFromUiRows(uaePurchaseRows);
+
+    if (Array.isArray(editedSalesTotal) && editedSalesTotal.length) {
+      computedSales = totalsFromMetricRows(editedSalesTotal, "sales");
+    }
+    if (Array.isArray(editedPurchaseTotal) && editedPurchaseTotal.length) {
+      computedPurchase = totalsFromMetricRows(editedPurchaseTotal, "purchase");
+    }
+
+    const wb = XLSX.utils.book_new();
+    const ws = vatReturnTemplateSheet(
+      computedSales,
+      computedPurchase,
+      vatReturnOverrides || {},
+    );
+    XLSX.utils.book_append_sheet(wb, ws, "Vat Return Template");
+
+    const buf = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    );
+    res.setHeader(
+      "Content-Disposition",
+      'attachment; filename="VAT_Return_Template.xlsx"',
+    );
+    res.send(buf);
+  } catch (error) {
+    console.error("Error generating VAT Return template:", error);
+    res.status(500).json({ message: "Failed to download VAT Return template" });
+  }
+}
 // ---------- Bank Reconciliation helpers Start----------
 
 // parse "1,234.50" / 1234.5 / "  " → number or null

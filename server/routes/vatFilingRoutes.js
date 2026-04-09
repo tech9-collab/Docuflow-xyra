@@ -44,6 +44,11 @@ router.post(
   vatFilingController.generateCombinedExcel
 );
 
+router.post(
+  "/companies/:companyId/vat-return-template",
+  vatFilingController.downloadVatReturnTemplate
+);
+
 // Get combined preview data
 router.get(
   "/companies/:companyId/preview",
