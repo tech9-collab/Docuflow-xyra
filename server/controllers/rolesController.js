@@ -372,6 +372,69 @@ export const getDepartmentPendingFilings = async (req, res) => {
     }
 };
 
+export const getDepartmentPendingFilingsDetails = async (req, res) => {
+    try {
+        const { departmentId } = req.params;
+        const userRole = await getEffectiveRole(req);
+        const isSuperAdmin = userRole?.name === 'super_admin';
+        const isDepartmentAdmin = userRole?.name === 'admin' && userRole?.department_id;
+
+        if (isDepartmentAdmin) {
+            const [user] = await pool.query("SELECT department_id FROM users WHERE id = ?", [req.user.id]);
+            if (!user.length || parseInt(user[0].department_id) !== parseInt(departmentId)) {
+                return res.status(403).json({ message: "Department admins can only access data in their own department" });
+            }
+        } else if (!isSuperAdmin) {
+            const hasPermission = await checkEffectivePermission(req, 'dashboard.read');
+            if (!hasPermission) {
+                return res.status(403).json({ message: "Insufficient permissions" });
+            }
+
+            const [user] = await pool.query("SELECT department_id FROM users WHERE id = ?", [req.user.id]);
+            if (!user.length || parseInt(user[0].department_id) !== parseInt(departmentId)) {
+                return res.status(403).json({ message: "Insufficient permissions" });
+            }
+        }
+
+        const { start, end } = buildFilingDateRange(req.query);
+        const queryFor = (tableName, serviceLabel) => pool.query(
+            `
+                SELECT
+                    fp.id,
+                    fp.customer_id,
+                    c.customer_name,
+                    c.email,
+                    c.mobile AS phone,
+                    ? AS service_required,
+                    fp.status,
+                    fp.created_at
+                FROM ${tableName} fp
+                JOIN customers c ON fp.customer_id = c.id
+                WHERE c.department_id = ?
+                  AND COALESCE(fp.due_date, fp.period_to) >= ?
+                  AND COALESCE(fp.due_date, fp.period_to) <= ?
+                  AND fp.status IN ('not_started', 'in_progress', 'overdue')
+                ORDER BY fp.created_at DESC
+            `,
+            [serviceLabel, departmentId, start, end]
+        );
+
+        const [[vatRows], [ctRows]] = await Promise.all([
+            queryFor("vat_filing_periods", "VAT Filing"),
+            queryFor("ct_filing_periods", "CT Filing")
+        ]);
+
+        const pendingFilings = [...vatRows, ...ctRows].sort(
+            (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+
+        res.json({ pendingFilings });
+    } catch (error) {
+        console.error("Get department pending filings details error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 // Get total document count across the entire system
 export const getSystemDocumentCount = async (req, res) => {
     try {

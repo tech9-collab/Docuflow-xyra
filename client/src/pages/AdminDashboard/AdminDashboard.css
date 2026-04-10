@@ -161,6 +161,25 @@
     border-radius: 14px;
     padding: 16px;
     box-shadow: var(--shadow);
+    min-height: 96px;
+}
+
+.kpi-card.clickable {
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.kpi-card.clickable:hover {
+    transform: translateY(-1px);
+}
+
+.kpi-card.clickable:focus-visible {
+    outline: 2px solid #111;
+    outline-offset: 2px;
+}
+
+.kpi-card.active {
+    border-color: #111;
 }
 
 .kpi-icon {
@@ -174,26 +193,78 @@
     flex-shrink: 0;
 }
 
+.kpi-meta {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    align-content: center;
+    gap: 2px;
+}
+
 .kpi-value-row {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
+    min-width: 0;
 }
 
 .kpi-value {
     font-size: 26px;
     font-weight: 800;
+    line-height: 1.05;
+    word-break: break-word;
 }
 
 .kpi-title {
     color: var(--ink);
     font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: normal;
 }
 
 .kpi-hint {
     color: var(--muted);
     font-size: 11px;
     margin-top: 2px;
+    line-height: 1.2;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.kpi-card--pending .kpi-value {
+    font-size: 34px;
+    letter-spacing: -.02em;
+}
+
+.kpi-card--pending .kpi-title {
+    font-size: 14px;
+}
+
+.kpi-card--pending .kpi-hint {
+    font-size: 11px;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    margin-top: 2px;
+}
+
+.kpi-card--pending .kpi-meta {
+    gap: 3px;
+}
+
+.kpi-card--pending .kpi-value-row {
+    align-items: center;
+}
+
+.kpi-card--pending .kpi-icon {
+    background: #f2f3f5;
+}
+
+.kpi-card--pending.active {
+    border-color: #111;
 }
 
 .kpi-change {
@@ -240,6 +311,63 @@
     border-bottom: 1px solid var(--line);
     background: #fafafa;
     border-radius: 14px 14px 0 0;
+}
+
+.pending-filings-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.pending-filings-filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.pending-search {
+    min-width: 280px;
+    max-width: 440px;
+    width: 100%;
+    flex: 1 1 320px;
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+}
+
+.pending-customer-select {
+    min-width: 190px;
+    max-width: 260px;
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+}
+
+.pending-search:focus-visible {
+    outline: 2px solid #111;
+    outline-offset: 2px;
+}
+
+.pending-customer-select:focus-visible {
+    outline: 2px solid #111;
+    outline-offset: 2px;
+}
+
+.pending-sort-button {
+    margin-left: auto;
+    flex: 0 0 auto;
 }
 
 .panel-head h2 {
@@ -378,6 +506,56 @@
     font-weight: 700;
 }
 
+.table-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.table-action-btn {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid #111;
+    background: #111;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.table-action-btn.secondary {
+    background: #fff;
+    color: #111;
+}
+
+.table-action-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.empty-cell {
+    text-align: center;
+    color: var(--muted);
+    padding: 20px 14px;
+}
+
+.pending-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px 16px;
+    border-top: 1px solid var(--line);
+    flex-wrap: wrap;
+}
+
+.pagination-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 /* Share bar in cost table */
 .share-bar-wrap {
     display: flex;
@@ -464,6 +642,25 @@
 
     .page-header {
         flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pending-search {
+        min-width: 0;
+    }
+
+    .pending-filings-filters {
+        width: 100%;
+    }
+
+    .pending-customer-select {
+        min-width: 0;
+        max-width: none;
+        width: 100%;
+        flex: 1 1 180px;
+    }
+
+    .pending-pagination {
         align-items: flex-start;
     }
 }

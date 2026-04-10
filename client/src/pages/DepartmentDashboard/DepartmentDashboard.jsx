@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   BarChart3,
@@ -93,6 +93,11 @@ export default function DepartmentDashboard() {
   const [adminDocumentCount, setAdminDocumentCount] = useState([]);
   const [userDocumentCounts, setUserDocumentCounts] = useState({});
   const [pendingFilings, setPendingFilings] = useState(0);
+  const [pendingFilingRows, setPendingFilingRows] = useState([]);
+  const [showPendingFilings, setShowPendingFilings] = useState(false);
+  const [pendingSearch, setPendingSearch] = useState("");
+  const [pendingSortDir, setPendingSortDir] = useState("desc");
+  const [pendingPage, setPendingPage] = useState(1);
   const [monthlySummary, setMonthlySummary] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -114,7 +119,7 @@ export default function DepartmentDashboard() {
       }
 
       if (isDepartmentAdmin() && !isSuperAdmin()) {
-        const [deptRes, usersRes, rolesRes, docCountRes, adminDocCountRes, pendingRes, monthlyRes] =
+        const [deptRes, usersRes, rolesRes, docCountRes, adminDocCountRes, pendingRes, pendingRowsRes, monthlyRes] =
           await Promise.all([
             api.get(`/admin/departments/${departmentId}`),
             api.get(`/admin/departments/${departmentId}/users`),
@@ -122,6 +127,7 @@ export default function DepartmentDashboard() {
             api.get(`/admin/departments/${departmentId}/document-count${qp}`),
             api.get(`/admin/users/${user.id}/document-count${qp}`),
             api.get(`/admin/departments/${departmentId}/pending-filings${qp}`),
+            api.get(`/admin/departments/${departmentId}/pending-filings/details${qp}`),
             api.get(`/admin/departments/${departmentId}/monthly-summary`),
           ]);
 
@@ -134,16 +140,19 @@ export default function DepartmentDashboard() {
         setDocumentCount(docCountRes.data.documentCount || []);
         setAdminDocumentCount(adminDocCountRes.data.documentCount || []);
         setPendingFilings(Number(pendingRes.data.pendingFilings) || 0);
+        setPendingFilingRows(pendingRowsRes.data.pendingFilings || []);
         setMonthlySummary(monthlyRes.data.monthlySummary || []);
+        setPendingPage(1);
 
         await fetchUserDocumentCounts(deptUsers, qp);
       } else {
-        const [deptRes, usersRes, rolesRes, docCountRes, pendingRes, monthlyRes] = await Promise.all([
+        const [deptRes, usersRes, rolesRes, docCountRes, pendingRes, pendingRowsRes, monthlyRes] = await Promise.all([
           api.get(`/admin/departments`),
           api.get(`/admin/employees`),
           api.get(`/admin/roles`),
           api.get(`/admin/departments/${departmentId}/document-count${qp}`),
           api.get(`/admin/departments/${departmentId}/pending-filings${qp}`),
+          api.get(`/admin/departments/${departmentId}/pending-filings/details${qp}`),
           api.get(`/admin/departments/${departmentId}/monthly-summary`),
         ]);
 
@@ -164,7 +173,9 @@ export default function DepartmentDashboard() {
         setRoles((rolesRes.data.roles || []).filter((r) => r.department_id == departmentId));
         setDocumentCount(docCountRes.data.documentCount || []);
         setPendingFilings(Number(pendingRes.data.pendingFilings) || 0);
+        setPendingFilingRows(pendingRowsRes.data.pendingFilings || []);
         setMonthlySummary(monthlyRes.data.monthlySummary || []);
+        setPendingPage(1);
 
         await fetchUserDocumentCounts(deptUsers, qp);
       }
@@ -308,6 +319,41 @@ export default function DepartmentDashboard() {
     return { ...u, docCount, pageCount, cost: calcCost(uInp, uOut) };
   }).sort((a, b) => b.docCount - a.docCount);
 
+  const pendingPageSize = 10;
+  const filteredPendingFilings = useMemo(() => {
+    const term = pendingSearch.trim().toLowerCase();
+    const rows = (pendingFilingRows || []).filter((row) => {
+      if (!term) return true;
+      return [
+        row.customer_name,
+        row.email,
+        row.phone,
+        row.service_required,
+        row.status,
+      ].some((value) => String(value || "").toLowerCase().includes(term));
+    });
+
+    return rows.sort((a, b) => {
+      const aTime = new Date(a.created_at).getTime();
+      const bTime = new Date(b.created_at).getTime();
+      return pendingSortDir === "asc" ? aTime - bTime : bTime - aTime;
+    });
+  }, [pendingFilingRows, pendingSearch, pendingSortDir]);
+
+  const pendingTotalPages = Math.max(1, Math.ceil(filteredPendingFilings.length / pendingPageSize));
+  const currentPendingPage = Math.min(pendingPage, pendingTotalPages);
+  const pendingPageRows = filteredPendingFilings.slice(
+    (currentPendingPage - 1) * pendingPageSize,
+    currentPendingPage * pendingPageSize
+  );
+
+  const formatPendingStatus = (value) =>
+    String(value || "")
+      .split("_")
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ") || "-";
+
   /* ---------- guards ---------- */
   if (loading)
     return (
@@ -418,7 +464,18 @@ export default function DepartmentDashboard() {
           </div>
         </article>
 
-        <article className="kpi">
+        <article
+          className={`kpi pending-clickable${showPendingFilings ? " active" : ""}`}
+          onClick={() => setShowPendingFilings((prev) => !prev)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setShowPendingFilings((prev) => !prev);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+        >
           <div className="kpi-icon"><DollarSign size={18} /></div>
           <div className="kpi-meta">
             <div className="kpi-value">{pendingFilings}</div>
@@ -435,6 +492,108 @@ export default function DepartmentDashboard() {
           </div>
         </article>
       </section>
+
+      {showPendingFilings && (
+        <section className="panel">
+          <div className="panel-head with-meta">
+            <h2>Pending Filings</h2>
+            <div className="panel-meta pending-filings-toolbar">
+              <input
+                type="search"
+                className="pending-search"
+                placeholder="Search by customer, email, phone, service, or status"
+                value={pendingSearch}
+                onChange={(e) => {
+                  setPendingSearch(e.target.value);
+                  setPendingPage(1);
+                }}
+              />
+              <button
+                type="button"
+                className="month-nav pending-sort-btn"
+                onClick={() => {
+                  setPendingSortDir((prev) => (prev === "desc" ? "asc" : "desc"));
+                  setPendingPage(1);
+                }}
+                title="Toggle date sort"
+              >
+                {pendingSortDir === "desc" ? "Newest" : "Oldest"}
+              </button>
+            </div>
+          </div>
+
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Customer Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Service Required</th>
+                  <th>Status</th>
+                  <th>Created Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendingPageRows.length ? (
+                  pendingPageRows.map((row) => (
+                    <tr key={`${row.service_required}-${row.id}`}>
+                      <td className="strong">{row.customer_name || "-"}</td>
+                      <td>{row.email || "-"}</td>
+                      <td>{row.phone || "-"}</td>
+                      <td>{row.service_required}</td>
+                      <td>{formatPendingStatus(row.status)}</td>
+                      <td>{fmtDate(row.created_at)}</td>
+                      <td>
+                        <div className="pending-actions">
+                          <button type="button" className="pending-action-btn" onClick={() => navigate(`/customers/${row.customer_id}`)}>
+                            View
+                          </button>
+                          <button type="button" className="pending-action-btn secondary" onClick={() => navigate(`/customers/${row.customer_id}/edit`)}>
+                            Edit
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="empty">No pending filings available</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="pending-pagination">
+            <span className="muted small">
+              {filteredPendingFilings.length
+                ? `${(currentPendingPage - 1) * pendingPageSize + 1}-${Math.min(currentPendingPage * pendingPageSize, filteredPendingFilings.length)} of ${filteredPendingFilings.length}`
+                : "0 results"}
+            </span>
+            <div className="pending-actions">
+              <button
+                type="button"
+                className="pending-action-btn secondary"
+                onClick={() => setPendingPage((page) => Math.max(1, page - 1))}
+                disabled={currentPendingPage === 1}
+              >
+                Previous
+              </button>
+              <span className="muted small">Page {currentPendingPage} of {pendingTotalPages}</span>
+              <button
+                type="button"
+                className="pending-action-btn secondary"
+                onClick={() => setPendingPage((page) => Math.min(pendingTotalPages, page + 1))}
+                disabled={currentPendingPage === pendingTotalPages}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Dept admin mini KPIs */}
       {isDepartmentAdmin() && user.department_id === parseInt(departmentId) && (

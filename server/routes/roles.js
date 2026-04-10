@@ -31,6 +31,10 @@ router.get(
   "/departments/:departmentId/pending-filings",
   rolesController.getDepartmentPendingFilings
 );
+router.get(
+  "/departments/:departmentId/pending-filings/details",
+  rolesController.getDepartmentPendingFilingsDetails
+);
 
 // User-specific routes
 router.get(

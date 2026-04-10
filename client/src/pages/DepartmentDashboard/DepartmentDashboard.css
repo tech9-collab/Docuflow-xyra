@@ -179,6 +179,24 @@
   box-shadow: var(--shadow)
 }
 
+.kpi.pending-clickable {
+  cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease
+}
+
+.kpi.pending-clickable:hover {
+  transform: translateY(-1px)
+}
+
+.kpi.pending-clickable:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 2px
+}
+
+.kpi.pending-clickable.active {
+  border-color: #111
+}
+
 .kpi-icon {
   width: 46px;
   height: 46px;
@@ -292,6 +310,30 @@
   flex-wrap: wrap
 }
 
+.pending-filings-toolbar {
+  align-items: center
+}
+
+.pending-search {
+  min-width: 280px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--fg)
+}
+
+.pending-search:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 2px
+}
+
+.pending-sort-btn {
+  width: auto;
+  padding: 0 12px
+}
+
 .badge {
   display: inline-block;
   padding: 4px 10px;
@@ -389,6 +431,44 @@
 .strong {
   font-weight: 700;
   color: var(--ink)
+}
+
+.pending-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap
+}
+
+.pending-action-btn {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer
+}
+
+.pending-action-btn.secondary {
+  background: #fff;
+  color: #111
+}
+
+.pending-action-btn:disabled {
+  opacity: .5;
+  cursor: not-allowed
+}
+
+.pending-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px 16px;
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap
 }
 
 /* User inline in table */
@@ -519,6 +599,11 @@
     width: 100%;
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .pending-search {
+    min-width: 0;
+    width: 100%;
   }
 }
 

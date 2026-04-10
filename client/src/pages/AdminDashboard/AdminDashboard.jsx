@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     Users,
     Shield,
@@ -16,7 +17,7 @@ import {
     ArrowDownRight,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import { api } from "../../helper/helper";
+import { api, fetchVatPeriods } from "../../helper/helper";
 import {
     BarChart,
     Bar,
@@ -55,6 +56,7 @@ function fmtCost(cost) {
 
 export default function AdminDashboard() {
     const { user, isSuperAdmin, isDepartmentAdmin } = useAuth();
+    const navigate = useNavigate();
     const canAccess = isSuperAdmin() || isDepartmentAdmin() || user?.role === 'admin';
 
     useEffect(() => {
@@ -81,6 +83,14 @@ export default function AdminDashboard() {
         allDocumentDetails: [],
     });
     const [monthlySummary, setMonthlySummary] = useState([]);
+    const [pendingFilingRows, setPendingFilingRows] = useState([]);
+    const [pendingCustomers, setPendingCustomers] = useState([]);
+    const [showPendingFilings, setShowPendingFilings] = useState(false);
+    const [pendingSearch, setPendingSearch] = useState("");
+    const [selectedPendingCustomer, setSelectedPendingCustomer] = useState("");
+    const [selectedCustomerPendingRows, setSelectedCustomerPendingRows] = useState([]);
+    const [pendingSortDir, setPendingSortDir] = useState("desc");
+    const [pendingPage, setPendingPage] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -110,7 +120,12 @@ export default function AdminDashboard() {
         setLoading(true);
         setError("");
         try {
-            const data = await api.get(`/dashboard/summary?month=${month}&year=${year}`).then(r => r.data);
+            const [summaryRes, pendingRes, customersRes] = await Promise.all([
+                api.get(`/dashboard/summary?month=${month}&year=${year}`),
+                api.get(`/dashboard/pending-filings?month=${month}&year=${year}`),
+                api.get(`/customers`)
+            ]);
+            const data = summaryRes.data;
 
             const users = data.employees || [];
             const roles = data.roles || [];
@@ -135,12 +150,72 @@ export default function AdminDashboard() {
                 allDocumentDetails: allDocs,
             });
             setMonthlySummary(data.monthlySummary || []);
+            setPendingFilingRows(pendingRes.data.pendingFilings || []);
+            setPendingCustomers(customersRes.data.customers || []);
+            setSelectedCustomerPendingRows([]);
+            setPendingPage(1);
         } catch (err) {
             setError(err.message || "Failed to fetch dashboard data");
         } finally {
             setLoading(false);
         }
     }, [selectedMonth, selectedYear]);
+
+    useEffect(() => {
+        let ignore = false;
+
+        const loadSelectedCustomerPeriods = async () => {
+            if (!selectedPendingCustomer) {
+                setSelectedCustomerPendingRows([]);
+                return;
+            }
+
+            const customer = (pendingCustomers || []).find(
+                (item) => String(item.id) === String(selectedPendingCustomer)
+            );
+            if (!customer) {
+                setSelectedCustomerPendingRows([]);
+                return;
+            }
+
+            try {
+                const periods = await fetchVatPeriods(selectedPendingCustomer);
+                if (ignore) return;
+
+                const rows = (periods || [])
+                    .filter((period) =>
+                        period?.status === "not_started" || period?.status === "in_progress"
+                    )
+                    .map((period) => ({
+                        id: period.id,
+                        customer_id: customer.id,
+                        customer_name: customer.customer_name,
+                        email: customer.email || "",
+                        phone: customer.mobile || "",
+                        service_required: "VAT Filing - Period",
+                        status: period.status,
+                        created_at: period.created_at || period.updated_at || period.period_from,
+                        period_from: period.period_from,
+                        period_to: period.period_to,
+                        due_date: period.due_date,
+                        submit_date: period.submit_date,
+                    }));
+
+                setSelectedCustomerPendingRows(rows);
+                setPendingPage(1);
+            } catch {
+                if (!ignore) {
+                    setSelectedCustomerPendingRows([]);
+                }
+            }
+        };
+
+        loadSelectedCustomerPeriods();
+
+        return () => {
+            ignore = true;
+        };
+    }, [selectedPendingCustomer, pendingCustomers]);
 
     // Month navigation
     const goToPrevMonth = () => {
@@ -219,6 +294,66 @@ export default function AdminDashboard() {
             };
         });
     }, [monthlySummary]);
+
+    const pendingPageSize = 10;
+    const pendingCustomerOptions = useMemo(() => {
+        return (pendingCustomers || [])
+            .filter((customer) => customer?.id && customer?.customer_name)
+            .map((customer) => ({
+                id: customer.id,
+                name: customer.customer_name,
+            }))
+            .sort((a, b) => a.name.localeCompare(b.name));
+    }, [pendingCustomers]);
+
+    const filteredPendingFilings = useMemo(() => {
+        const sourceRows = selectedPendingCustomer
+            ? selectedCustomerPendingRows
+            : pendingFilingRows;
+        const term = pendingSearch.trim().toLowerCase();
+        const rows = (sourceRows || []).filter((row) => {
+            if (selectedPendingCustomer && String(row.customer_id) !== selectedPendingCustomer) {
+                return false;
+            }
+            if (!term) return true;
+            return [
+                row.customer_name,
+                row.email,
+                row.phone,
+                row.service_required,
+                row.status,
+            ].some((value) => String(value || "").toLowerCase().includes(term));
+        });
+
+        return rows.sort((a, b) => {
+            const aTime = new Date(a.created_at).getTime();
+            const bTime = new Date(b.created_at).getTime();
+            return pendingSortDir === "asc" ? aTime - bTime : bTime - aTime;
+        });
+    }, [pendingFilingRows, selectedCustomerPendingRows, pendingSearch, selectedPendingCustomer, pendingSortDir]);
+
+    const pendingTotalPages = Math.max(1, Math.ceil(filteredPendingFilings.length / pendingPageSize));
+    const currentPendingPage = Math.min(pendingPage, pendingTotalPages);
+    const pendingPageRows = filteredPendingFilings.slice(
+        (currentPendingPage - 1) * pendingPageSize,
+        currentPendingPage * pendingPageSize
+    );
+
+    const formatDate = (value) => {
+        if (!value) return "-";
+        try {
+            return new Date(value).toLocaleDateString();
+        } catch {
+            return "-";
+        }
+    };
+
+    const formatStatus = (value) =>
+        String(value || "")
+            .split("_")
+            .filter(Boolean)
+            .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+            .join(" ") || "-";
 
 
 
@@ -308,9 +443,129 @@ export default function AdminDashboard() {
                     icon={<DollarSign />}
                     title="Pending Filings"
                     value={stats.pendingFilings}
-                    hint={`${stats.pendingFilings} pending item${stats.pendingFilings === 1 ? "" : "s"}`}
+                    hint="View filing list"
+                    onClick={() => setShowPendingFilings((prev) => !prev)}
+                    active={showPendingFilings}
+                    className="kpi-card--pending"
                 />
             </section>
+
+            {showPendingFilings && (
+                <section className="panel full-width">
+                    <div className="panel-head">
+                        <div>
+                            <h2>Pending Filings</h2>
+                            <p className="muted">{MONTH_NAMES[selectedMonth - 1]} {selectedYear} - pending VAT and CT filings</p>
+                        </div>
+                        <div className="pending-filings-toolbar">
+                            <div className="pending-filings-filters">
+                                <input
+                                    type="search"
+                                    className="pending-search"
+                                    placeholder="Search by customer, email, phone, service, or status"
+                                    value={pendingSearch}
+                                    onChange={(e) => {
+                                        setPendingSearch(e.target.value);
+                                        setPendingPage(1);
+                                    }}
+                                />
+                                <select
+                                    className="pending-customer-select"
+                                    value={selectedPendingCustomer}
+                                    onChange={(e) => {
+                                        setSelectedPendingCustomer(e.target.value);
+                                        setPendingPage(1);
+                                    }}
+                                >
+                                    <option value="">Customer</option>
+                                    {pendingCustomerOptions.map((customer) => (
+                                        <option key={customer.id} value={String(customer.id)}>
+                                            {customer.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <button
+                                type="button"
+                                className="btn-refresh bw pending-sort-button"
+                                onClick={() => {
+                                    setPendingSortDir((prev) => (prev === "desc" ? "asc" : "desc"));
+                                    setPendingPage(1);
+                                }}
+                            >
+                                <span>Sort: {pendingSortDir === "desc" ? "Newest" : "Oldest"}</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="table-wrap">
+                        <table className="table scrolling">
+                            <thead>
+                                <tr>
+                                    <th>Customer Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Service Required</th>
+                                    <th>Status</th>
+                                    <th>Created Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {pendingPageRows.length ? pendingPageRows.map((row) => (
+                                    <tr key={`${row.service_required}-${row.id}`}>
+                                        <td className="strong">{row.customer_name || "-"}</td>
+                                        <td>{row.email || "-"}</td>
+                                        <td>{row.phone || "-"}</td>
+                                        <td>{row.service_required}</td>
+                                        <td>{formatStatus(row.status)}</td>
+                                        <td>{formatDate(row.created_at)}</td>
+                                        <td>
+                                            <div className="table-actions">
+                                                <button type="button" className="table-action-btn" onClick={() => navigate(`/customers/${row.customer_id}`)}>
+                                                    View
+                                                </button>
+                                                <button type="button" className="table-action-btn secondary" onClick={() => navigate(`/customers/${row.customer_id}/edit`)}>
+                                                    Edit
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )) : (
+                                    <tr>
+                                        <td colSpan="7" className="empty-cell">No pending filings available</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="pending-pagination">
+                        <span className="muted">
+                            {filteredPendingFilings.length ? `${(currentPendingPage - 1) * pendingPageSize + 1}-${Math.min(currentPendingPage * pendingPageSize, filteredPendingFilings.length)} of ${filteredPendingFilings.length}` : "0 results"}
+                        </span>
+                        <div className="pagination-actions">
+                            <button
+                                type="button"
+                                className="table-action-btn secondary"
+                                onClick={() => setPendingPage((page) => Math.max(1, page - 1))}
+                                disabled={currentPendingPage === 1}
+                            >
+                                Previous
+                            </button>
+                            <span className="muted">Page {currentPendingPage} of {pendingTotalPages}</span>
+                            <button
+                                type="button"
+                                className="table-action-btn secondary"
+                                onClick={() => setPendingPage((page) => Math.min(pendingTotalPages, page + 1))}
+                                disabled={currentPendingPage === pendingTotalPages}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* Monthly Trend */}
             {monthlyTrendData.length > 1 && (
@@ -582,9 +837,21 @@ export default function AdminDashboard() {
 }
 
 /** Small KPI component (local) */
-function Kpi({ icon, title, value, hint, change }) {
+function Kpi({ icon, title, value, hint, change, onClick, active = false, className = "" }) {
     return (
-        <article className="kpi-card">
+        <article
+            className={`kpi-card${onClick ? " clickable" : ""}${active ? " active" : ""}${className ? ` ${className}` : ""}`}
+            onClick={onClick}
+            onKeyDown={(e) => {
+                if (!onClick) return;
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onClick();
+                }
+            }}
+            role={onClick ? "button" : undefined}
+            tabIndex={onClick ? 0 : undefined}
+        >
             <div className="kpi-icon">{React.cloneElement(icon, { size: 20 })}</div>
             <div className="kpi-meta">
                 <div className="kpi-value-row">

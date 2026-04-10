@@ -41,6 +41,39 @@ function buildFilingDateFilter(query, tableAlias = 'fp') {
     };
 }
 
+function buildPendingFilingsQuery({ tableName, serviceLabel, filingDateFilter, isSuperAdmin, isAdmin, isUser, companyId, departmentId, userId }) {
+    let sql = `
+        SELECT
+            fp.id,
+            fp.customer_id,
+            c.customer_name,
+            c.email,
+            c.mobile AS phone,
+            '${serviceLabel}' AS service_required,
+            fp.status,
+            fp.created_at
+        FROM ${tableName} fp
+        JOIN customers c ON fp.customer_id = c.id
+        WHERE ${filingDateFilter.clause}
+          AND fp.status IN ('not_started', 'in_progress', 'overdue')
+    `;
+    const params = [...filingDateFilter.params];
+
+    if (!isSuperAdmin) {
+        sql += " AND c.company_id = ?";
+        params.push(companyId);
+        if (isAdmin) {
+            sql += " AND c.department_id = ?";
+            params.push(departmentId);
+        } else if (isUser) {
+            sql += " AND fp.user_id = ?";
+            params.push(userId);
+        }
+    }
+
+    return { sql, params };
+}
+
 export const getDashboardStats = async (req, res) => {
     try {
         const user = req.user;
@@ -387,30 +420,18 @@ export const getDashboardSummary = async (req, res) => {
         monthlySql += " GROUP BY YEAR(dc.file_uploaded_date), MONTH(dc.file_uploaded_date) ORDER BY year ASC, month ASC";
 
         // 7. Pending filing counts (VAT + CT)
-        const buildPendingFilingSql = (tableName) => {
-            let sql = `
-                SELECT COUNT(*) as pending_count
-                FROM ${tableName} fp
-                JOIN customers c ON fp.customer_id = c.id
-                WHERE ${filingDateFilter.clause}
-                  AND fp.status IN ('not_started', 'in_progress', 'overdue')
-            `;
-            const params = [...filingDateFilter.params];
-
-            if (!isSuperAdmin) {
-                sql += " AND c.company_id = ?";
-                params.push(companyId);
-                if (isAdmin) {
-                    sql += " AND c.department_id = ?";
-                    params.push(user.department_id);
-                } else if (isUser) {
-                    sql += " AND fp.user_id = ?";
-                    params.push(user.id);
-                }
-            }
-
-            return { sql, params };
-        };
+        const buildPendingFilingSql = (tableName) =>
+            buildPendingFilingsQuery({
+                tableName,
+                serviceLabel: tableName === "vat_filing_periods" ? "VAT Filing" : "CT Filing",
+                filingDateFilter,
+                isSuperAdmin,
+                isAdmin,
+                isUser,
+                companyId,
+                departmentId: user.department_id,
+                userId: user.id
+            });
 
         const vatPending = buildPendingFilingSql("vat_filing_periods");
         const ctPending = buildPendingFilingSql("ct_filing_periods");
@@ -455,6 +476,54 @@ export const getDashboardSummary = async (req, res) => {
         });
     } catch (error) {
         console.error("Dashboard summary error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+export const getPendingFilings = async (req, res) => {
+    try {
+        const user = req.user;
+        const isSuperAdmin = user.role === 'super_admin';
+        const isAdmin = user.role === 'admin';
+        const isUser = !isSuperAdmin && !isAdmin;
+        const filingDateFilter = buildFilingDateFilter(req.query, 'fp');
+        const companyId = user.company_id;
+
+        const vatPending = buildPendingFilingsQuery({
+            tableName: "vat_filing_periods",
+            serviceLabel: "VAT Filing",
+            filingDateFilter,
+            isSuperAdmin,
+            isAdmin,
+            isUser,
+            companyId,
+            departmentId: user.department_id,
+            userId: user.id
+        });
+        const ctPending = buildPendingFilingsQuery({
+            tableName: "ct_filing_periods",
+            serviceLabel: "CT Filing",
+            filingDateFilter,
+            isSuperAdmin,
+            isAdmin,
+            isUser,
+            companyId,
+            departmentId: user.department_id,
+            userId: user.id
+        });
+
+        const [vatRows, ctRows] = await Promise.all([
+            pool.query(`${vatPending.sql} ORDER BY fp.created_at DESC`, vatPending.params),
+            pool.query(`${ctPending.sql} ORDER BY fp.created_at DESC`, ctPending.params)
+        ]);
+
+        const items = [...vatRows[0], ...ctRows[0]].sort(
+            (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+
+        res.json({ pendingFilings: items });
+    } catch (error) {
+        console.error("Pending filings error:", error);
         res.status(500).json({ message: "Server error" });
     }
 };
