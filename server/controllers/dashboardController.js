@@ -19,6 +19,28 @@ function buildDateFilter(query, tableAlias = 'dc') {
     return { clause: `${tableAlias}.file_uploaded_date >= ? AND ${tableAlias}.file_uploaded_date <= ?`, params: [start, end] };
 }
 
+function buildFilingDateFilter(query, tableAlias = 'fp') {
+    const month = parseInt(query.month);
+    const year = parseInt(query.year);
+    if (month >= 1 && month <= 12 && year >= 2000) {
+        const start = `${year}-${String(month).padStart(2, '0')}-01`;
+        const end = new Date(year, month, 0).toISOString().slice(0, 10);
+        return {
+            clause: `COALESCE(${tableAlias}.due_date, ${tableAlias}.period_to) >= ? AND COALESCE(${tableAlias}.due_date, ${tableAlias}.period_to) <= ?`,
+            params: [start, end]
+        };
+    }
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = now.getMonth() + 1;
+    const start = `${y}-${String(m).padStart(2, '0')}-01`;
+    const end = new Date(y, m, 0).toISOString().slice(0, 10);
+    return {
+        clause: `COALESCE(${tableAlias}.due_date, ${tableAlias}.period_to) >= ? AND COALESCE(${tableAlias}.due_date, ${tableAlias}.period_to) <= ?`,
+        params: [start, end]
+    };
+}
+
 export const getDashboardStats = async (req, res) => {
     try {
         const user = req.user;
@@ -186,6 +208,7 @@ export const getDashboardSummary = async (req, res) => {
         const isUser = !isSuperAdmin && !isAdmin;
 
         const dateFilter = buildDateFilter(req.query, 'dc');
+        const filingDateFilter = buildFilingDateFilter(req.query, 'fp');
         const companyId = user.company_id;
 
         // 1. Employees, Roles, Departments
@@ -363,6 +386,35 @@ export const getDashboardSummary = async (req, res) => {
         }
         monthlySql += " GROUP BY YEAR(dc.file_uploaded_date), MONTH(dc.file_uploaded_date) ORDER BY year ASC, month ASC";
 
+        // 7. Pending filing counts (VAT + CT)
+        const buildPendingFilingSql = (tableName) => {
+            let sql = `
+                SELECT COUNT(*) as pending_count
+                FROM ${tableName} fp
+                JOIN customers c ON fp.customer_id = c.id
+                WHERE ${filingDateFilter.clause}
+                  AND fp.status IN ('not_started', 'in_progress', 'overdue')
+            `;
+            const params = [...filingDateFilter.params];
+
+            if (!isSuperAdmin) {
+                sql += " AND c.company_id = ?";
+                params.push(companyId);
+                if (isAdmin) {
+                    sql += " AND c.department_id = ?";
+                    params.push(user.department_id);
+                } else if (isUser) {
+                    sql += " AND fp.user_id = ?";
+                    params.push(user.id);
+                }
+            }
+
+            return { sql, params };
+        };
+
+        const vatPending = buildPendingFilingSql("vat_filing_periods");
+        const ctPending = buildPendingFilingSql("ct_filing_periods");
+
         // Execute all queries in parallel
         const [
             [employees],
@@ -372,7 +424,9 @@ export const getDashboardSummary = async (req, res) => {
             [deptCounts],
             [aggUserCounts],
             [allDocDetails],
-            [monthlySummary]
+            [monthlySummary],
+            [vatPendingRows],
+            [ctPendingRows]
         ] = await Promise.all([
             pool.query(empSql, empParams),
             pool.query(roleSql, roleParams),
@@ -381,7 +435,9 @@ export const getDashboardSummary = async (req, res) => {
             pool.query(deptDocSql, deptDocParams),
             pool.query(aggUserSql, aggUserParams),
             pool.query(allDocSql, allDocParams),
-            pool.query(monthlySql, monthlyParams)
+            pool.query(monthlySql, monthlyParams),
+            pool.query(vatPending.sql, vatPending.params),
+            pool.query(ctPending.sql, ctPending.params)
         ]);
 
         res.json({
@@ -392,7 +448,10 @@ export const getDashboardSummary = async (req, res) => {
             departmentCounts: deptCounts,
             aggregatedCounts: aggUserCounts,
             documentCounts: allDocDetails,
-            monthlySummary
+            monthlySummary,
+            pendingFilings:
+                (Number(vatPendingRows?.[0]?.pending_count) || 0) +
+                (Number(ctPendingRows?.[0]?.pending_count) || 0)
         });
     } catch (error) {
         console.error("Dashboard summary error:", error);

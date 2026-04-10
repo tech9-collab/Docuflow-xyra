@@ -1,6 +1,106 @@
 // controllers/vatFilingPeriodsController.js
 import { pool } from "../db.js";
 
+function startOfDay(value) {
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+function formatIsoDate(value) {
+  const d = startOfDay(value);
+  if (!d) return null;
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function endOfMonth(value) {
+  const d = startOfDay(value);
+  if (!d) return null;
+  return new Date(d.getFullYear(), d.getMonth() + 1, 0);
+}
+
+function calculateExpectedPeriodTo(periodFrom, reportingPeriod) {
+  const from = startOfDay(periodFrom);
+  if (!from) return null;
+  const monthsToCover = reportingPeriod === "quarterly" ? 3 : 1;
+  return endOfMonth(
+    new Date(from.getFullYear(), from.getMonth() + monthsToCover - 1, 1)
+  );
+}
+
+async function fetchCustomerReportingPeriod(customerId) {
+  const [rows] = await pool.query(
+    `SELECT vat_reporting_period FROM customers WHERE id = ? LIMIT 1`,
+    [customerId]
+  );
+  const reportingPeriod = String(rows?.[0]?.vat_reporting_period || "")
+    .trim()
+    .toLowerCase();
+  return reportingPeriod === "quarterly" ? "quarterly" : "monthly";
+}
+
+async function validateVatPeriod({
+  customerId,
+  periodFrom,
+  periodTo,
+  excludeId = null,
+}) {
+  const from = startOfDay(periodFrom);
+  const to = startOfDay(periodTo);
+
+  if (!from || !to) {
+    return "Invalid filing period dates.";
+  }
+
+  if (from > to) {
+    return "Period From cannot be after Period To.";
+  }
+
+  const reportingPeriod = await fetchCustomerReportingPeriod(customerId);
+  const expectedTo = calculateExpectedPeriodTo(from, reportingPeriod);
+  const expectedToIso = formatIsoDate(expectedTo);
+  const actualToIso = formatIsoDate(to);
+
+  if (expectedToIso && actualToIso && expectedToIso !== actualToIso) {
+    return reportingPeriod === "quarterly"
+      ? "Quarterly filing periods must cover exactly 3 months."
+      : "Monthly filing periods must cover exactly 1 month.";
+  }
+
+  const overlapSql = excludeId
+    ? `
+      SELECT id
+      FROM vat_filing_periods
+      WHERE customer_id = ?
+        AND id <> ?
+        AND period_from <= ?
+        AND period_to >= ?
+      LIMIT 1
+    `
+    : `
+      SELECT id
+      FROM vat_filing_periods
+      WHERE customer_id = ?
+        AND period_from <= ?
+        AND period_to >= ?
+      LIMIT 1
+    `;
+
+  const overlapParams = excludeId
+    ? [customerId, excludeId, actualToIso, formatIsoDate(from)]
+    : [customerId, actualToIso, formatIsoDate(from)];
+
+  const [overlapRows] = await pool.query(overlapSql, overlapParams);
+  if (overlapRows.length) {
+    return "This filing period overlaps with an existing period.";
+  }
+
+  return null;
+}
+
 /**
  * GET /api/vat-filing/customers/:customerId/periods
  */
@@ -61,6 +161,15 @@ export async function createPeriod(req, res) {
         .json({ message: "periodFrom and periodTo are required" });
     }
 
+    const validationError = await validateVatPeriod({
+      customerId,
+      periodFrom,
+      periodTo,
+    });
+    if (validationError) {
+      return res.status(400).json({ message: validationError });
+    }
+
     const [result] = await pool.query(
       `
       INSERT INTO vat_filing_periods
@@ -105,6 +214,26 @@ export async function updatePeriod(req, res) {
       submitDate,
       status = "not_started",
     } = req.body;
+
+    const [existingRows] = await pool.query(
+      `SELECT customer_id FROM vat_filing_periods WHERE id = ? LIMIT 1`,
+      [id]
+    );
+    const existingPeriod = existingRows?.[0];
+
+    if (!existingPeriod) {
+      return res.status(404).json({ message: "Filing period not found" });
+    }
+
+    const validationError = await validateVatPeriod({
+      customerId: existingPeriod.customer_id,
+      periodFrom,
+      periodTo,
+      excludeId: id,
+    });
+    if (validationError) {
+      return res.status(400).json({ message: validationError });
+    }
 
     let sql, params;
     if (isAdmin) {

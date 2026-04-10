@@ -36,6 +36,12 @@ export default function VatFilingPeriods() {
     document.title = "Xyra Books - VAT Filing Periods";
   }, []);
 
+  const reportingPeriodType =
+    String(customer?.vat_reporting_period || "").trim().toLowerCase() ===
+    "quarterly"
+      ? "quarterly"
+      : "monthly";
+
   // helper for date input format (YYYY-MM-DD)
   // We use local date components to avoid timezone shifts (June 1 becoming May 31)
   const toDateInput = (value) => {
@@ -107,6 +113,67 @@ export default function VatFilingPeriods() {
     return `${day}/${month}/${year}`;
   };
 
+  const startOfDay = (value) => {
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return null;
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  };
+
+  const addDays = (value, days) => {
+    const d = startOfDay(value);
+    if (!d) return null;
+    d.setDate(d.getDate() + days);
+    return d;
+  };
+
+  const addMonths = (value, months) => {
+    const d = startOfDay(value);
+    if (!d) return null;
+    return new Date(d.getFullYear(), d.getMonth() + months, d.getDate());
+  };
+
+  const endOfMonth = (value) => {
+    const d = startOfDay(value);
+    if (!d) return null;
+    return new Date(d.getFullYear(), d.getMonth() + 1, 0);
+  };
+
+  const calculatePeriodEnd = (periodFromValue, frequency) => {
+    const from = startOfDay(periodFromValue);
+    if (!from) return null;
+    const monthsToCover = frequency === "quarterly" ? 3 : 1;
+    return endOfMonth(addMonths(from, monthsToCover - 1));
+  };
+
+  const buildPeriodRangeFromStart = (periodFromValue, frequency) => {
+    const from = startOfDay(periodFromValue);
+    if (!from) return null;
+    const to = calculatePeriodEnd(from, frequency);
+    if (!to) return null;
+    return { from, to };
+  };
+
+  const getLatestPeriod = (periodList = []) =>
+    [...periodList]
+      .filter((p) => p?.period_to)
+      .sort((a, b) => new Date(b.period_to) - new Date(a.period_to))[0] || null;
+
+  const buildNextPeriodFromLast = (lastPeriod, frequency) => {
+    const nextFrom = addDays(lastPeriod?.period_to, 1);
+    if (!nextFrom) return null;
+    return buildPeriodRangeFromStart(nextFrom, frequency);
+  };
+
+  const applyPeriodRangeToForm = (range, dueDateOverride = "") => {
+    if (!range?.from || !range?.to) {
+      resetAddPeriodDates();
+      return;
+    }
+    setPeriodFrom(toDateInput(range.from));
+    setPeriodTo(toDateInput(range.to));
+    setDueDate(dueDateOverride || calculateDueDate(range.to));
+  };
+
   const prettyStatus = (value) => {
     if (!value) return "-";
     switch (value) {
@@ -131,58 +198,31 @@ export default function VatFilingPeriods() {
 
     // Auto-fill logic
     if (customer) {
-      console.log("Auto-filling for customer:", customer.customer_name);
-      console.log("Current periods count:", periods.length);
       if (periods.length === 0) {
-        // Try First VAT Period from customer profile
-        console.log("Using first period from profile:", customer.first_vat_filing_period);
         if (customer.first_vat_filing_period) {
           const range = parseVatPeriodString(customer.first_vat_filing_period);
           if (range) {
-            console.log("Parsed range:", range);
-            setPeriodFrom(toDateInput(range.from));
-            setPeriodTo(toDateInput(range.to));
-            // Use saved due date if available, else calculate (standard 28th of next month)
-            setDueDate(toDateInput(customer.vat_return_due_date) || calculateDueDate(range.to));
+            applyPeriodRangeToForm(
+              range,
+              toDateInput(customer.vat_return_due_date) || calculateDueDate(range.to)
+            );
           } else {
-            console.warn("Could not parse first_vat_filing_period string");
             resetAddPeriodDates();
           }
         } else if (customer.vat_registered_date && customer.vat_reporting_period) {
-          // Fallback: derive from registration date
-          const from = new Date(customer.vat_registered_date);
-          const to = new Date(from);
-          if (customer.vat_reporting_period === "monthly") {
-            to.setMonth(to.getMonth() + 1);
-            to.setDate(0);
-          } else {
-            to.setMonth(to.getMonth() + 3);
-            to.setDate(0);
-          }
-          setPeriodFrom(toDateInput(from));
-          setPeriodTo(toDateInput(to));
-          setDueDate(calculateDueDate(to));
+          const range = buildPeriodRangeFromStart(
+            customer.vat_registered_date,
+            reportingPeriodType
+          );
+          applyPeriodRangeToForm(range);
         } else {
           resetAddPeriodDates();
         }
       } else {
-        // Suggest next period based on latest period_to
-        const sorted = [...periods].sort((a, b) => new Date(b.period_to) - new Date(a.period_to));
-        const latest = sorted[0];
-        const nextFrom = new Date(latest.period_to);
-        nextFrom.setDate(nextFrom.getDate() + 1);
-
-        const nextTo = new Date(nextFrom);
-        if (customer.vat_reporting_period === "monthly") {
-          nextTo.setMonth(nextTo.getMonth() + 1);
-          nextTo.setDate(0);
-        } else {
-          nextTo.setMonth(nextTo.getMonth() + 3);
-          nextTo.setDate(0);
-        }
-        setPeriodFrom(toDateInput(nextFrom));
-        setPeriodTo(toDateInput(nextTo));
-        setDueDate(calculateDueDate(nextTo));
+        const latest = getLatestPeriod(periods);
+        applyPeriodRangeToForm(
+          buildNextPeriodFromLast(latest, reportingPeriodType)
+        );
       }
     } else {
       resetAddPeriodDates();
@@ -213,26 +253,47 @@ export default function VatFilingPeriods() {
   // Helper to handle DD/MM/YYYY besides standard JS parse
   const parseFlexibleDate = (s) => {
     if (!s) return null;
-    // 1. Try standard parse (handles ISO, "Jan 1, 2024", etc.)
-    const d = new Date(s);
-    if (!isNaN(d.getTime())) {
-      // Check if it looks like DD/MM/YYYY but JS parsed it as MM/DD/YYYY
-      // (e.g. 01/12/2023 parsed as Jan 12)
-      if (s.includes("/") && !s.includes("-") && s.split("/")[0].length <= 2) {
-        // Continue to explicit parse below
-      } else {
-        return d;
+    const str = String(s).trim();
+    const makeDate = (year, month, day) => {
+      const d = new Date(year, month - 1, day);
+      if (
+        d.getFullYear() !== year ||
+        d.getMonth() !== month - 1 ||
+        d.getDate() !== day
+      ) {
+        return null;
       }
+      return d;
+    };
+
+    const iso = str.match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})$/);
+    if (iso) {
+      return makeDate(
+        parseInt(iso[1], 10),
+        parseInt(iso[2], 10),
+        parseInt(iso[3], 10)
+      );
     }
 
-    // 2. Explicitly handle DD/MM/YYYY
-    const ddmm = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-    if (ddmm) {
-      const day = parseInt(ddmm[1], 10);
-      const month = parseInt(ddmm[2], 10) - 1;
-      const year = parseInt(ddmm[3], 10);
-      return new Date(year, month, day);
+    const numeric = str.match(/^(\d{1,2})([\/\-.])(\d{1,2})\2(\d{4})$/);
+    if (numeric) {
+      const first = parseInt(numeric[1], 10);
+      const sep = numeric[2];
+      const second = parseInt(numeric[3], 10);
+      const year = parseInt(numeric[4], 10);
+
+      if (sep === "/") {
+        if (first > 12) return makeDate(year, second, first);
+        if (second > 12) return makeDate(year, first, second);
+        return makeDate(year, first, second);
+      }
+
+      if (second > 12) return makeDate(year, first, second);
+      if (first > 12) return makeDate(year, second, first);
+      return makeDate(year, second, first);
     }
+
+    const d = new Date(str);
     return isNaN(d.getTime()) ? null : d;
   };
 
@@ -246,6 +307,14 @@ export default function VatFilingPeriods() {
     d.setDate(28);
     return toDateInput(d);
   };
+
+  useEffect(() => {
+    if (editingPeriod || !isPeriodModalOpen || !periodFrom) return;
+    const nextTo = calculatePeriodEnd(periodFrom, reportingPeriodType);
+    if (!nextTo) return;
+    setPeriodTo(toDateInput(nextTo));
+    setDueDate(calculateDueDate(nextTo));
+  }, [editingPeriod, isPeriodModalOpen, periodFrom, reportingPeriodType]);
 
   // ✅ Open modal in EDIT mode with values from row
   const openEditPeriodModal = (p) => {

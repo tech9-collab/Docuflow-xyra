@@ -27,6 +27,10 @@ router.get(
   "/departments/:departmentId/document-count",
   rolesController.getDepartmentDocumentCount
 );
+router.get(
+  "/departments/:departmentId/pending-filings",
+  rolesController.getDepartmentPendingFilings
+);
 
 // User-specific routes
 router.get(

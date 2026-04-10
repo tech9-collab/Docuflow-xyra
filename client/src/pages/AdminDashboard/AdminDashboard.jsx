@@ -74,6 +74,7 @@ export default function AdminDashboard() {
         totalDepartments: 0,
         totalRoles: 0,
         totalDocuments: 0,
+        pendingFilings: 0,
         totalSize: 0,
         departmentDocumentCounts: [],
         aggregatedUserDocumentCounts: [],
@@ -124,6 +125,7 @@ export default function AdminDashboard() {
                 totalDepartments: departments.length,
                 totalRoles: roles.length,
                 totalDocuments: Number(docCount.totalFiles) || 0,
+                pendingFilings: Number(data.pendingFilings) || 0,
                 totalPages: Number(docCount.totalPages) || 0,
                 totalSize: Number(docCount.totalSize) || 0,
                 totalInputTokens: Number(docCount.totalInputTokens) || 0,
@@ -203,7 +205,6 @@ export default function AdminDashboard() {
 
     // Use direct API values as the single source of truth for totals
     const totalCost = calcCost(stats.totalInputTokens, stats.totalOutputTokens);
-    const totalTokens = (stats.totalInputTokens || 0) + (stats.totalOutputTokens || 0);
 
     // Monthly trend chart data
     const monthlyTrendData = useMemo(() => {
@@ -305,9 +306,9 @@ export default function AdminDashboard() {
                 />
                 <Kpi
                     icon={<DollarSign />}
-                    title="Gemini Cost"
-                    value={fmtCost(totalCost)}
-                    hint={`${(totalTokens / 1000).toFixed(1)}K tokens`}
+                    title="Pending Filings"
+                    value={stats.pendingFilings}
+                    hint={`${stats.pendingFilings} pending item${stats.pendingFilings === 1 ? "" : "s"}`}
                 />
             </section>
 

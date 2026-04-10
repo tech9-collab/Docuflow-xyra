@@ -50,6 +50,22 @@ function buildDateFilter(query) {
     return { clause: `dc.file_uploaded_date >= '${start}' AND dc.file_uploaded_date <= '${end}'`, start, end };
 }
 
+function buildFilingDateRange(query) {
+    const month = parseInt(query.month);
+    const year = parseInt(query.year);
+    if (month >= 1 && month <= 12 && year >= 2000) {
+        const start = `${year}-${String(month).padStart(2, '0')}-01`;
+        const end = new Date(year, month, 0).toISOString().slice(0, 10);
+        return { start, end };
+    }
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = now.getMonth() + 1;
+    const start = `${y}-${String(m).padStart(2, '0')}-01`;
+    const end = new Date(y, m, 0).toISOString().slice(0, 10);
+    return { start, end };
+}
+
 // ===== DEPARTMENT MANAGEMENT =====
 
 // Get all departments
@@ -299,6 +315,59 @@ export const getDepartmentDocumentCount = async (req, res) => {
         res.json({ documentCount });
     } catch (error) {
         console.error("Get department document count error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+export const getDepartmentPendingFilings = async (req, res) => {
+    try {
+        const { departmentId } = req.params;
+        const userRole = await getEffectiveRole(req);
+        const isSuperAdmin = userRole?.name === 'super_admin';
+        const isDepartmentAdmin = userRole?.name === 'admin' && userRole?.department_id;
+
+        if (isDepartmentAdmin) {
+            const [user] = await pool.query("SELECT department_id FROM users WHERE id = ?", [req.user.id]);
+            if (!user.length || parseInt(user[0].department_id) !== parseInt(departmentId)) {
+                return res.status(403).json({ message: "Department admins can only access data in their own department" });
+            }
+        } else if (!isSuperAdmin) {
+            const hasPermission = await checkEffectivePermission(req, 'dashboard.read');
+            if (!hasPermission) {
+                return res.status(403).json({ message: "Insufficient permissions" });
+            }
+
+            const [user] = await pool.query("SELECT department_id FROM users WHERE id = ?", [req.user.id]);
+            if (!user.length || parseInt(user[0].department_id) !== parseInt(departmentId)) {
+                return res.status(403).json({ message: "Insufficient permissions" });
+            }
+        }
+
+        const { start, end } = buildFilingDateRange(req.query);
+        const countPending = async (tableName) => {
+            const [rows] = await pool.query(
+                `
+                    SELECT COUNT(*) as pending_count
+                    FROM ${tableName} fp
+                    JOIN customers c ON fp.customer_id = c.id
+                    WHERE c.department_id = ?
+                      AND COALESCE(fp.due_date, fp.period_to) >= ?
+                      AND COALESCE(fp.due_date, fp.period_to) <= ?
+                      AND fp.status IN ('not_started', 'in_progress', 'overdue')
+                `,
+                [departmentId, start, end]
+            );
+            return Number(rows?.[0]?.pending_count) || 0;
+        };
+
+        const [vatPending, ctPending] = await Promise.all([
+            countPending("vat_filing_periods"),
+            countPending("ct_filing_periods")
+        ]);
+
+        res.json({ pendingFilings: vatPending + ctPending });
+    } catch (error) {
+        console.error("Get department pending filings error:", error);
         res.status(500).json({ message: "Server error" });
     }
 };

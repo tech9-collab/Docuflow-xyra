@@ -92,6 +92,7 @@ export default function DepartmentDashboard() {
   const [documentCount, setDocumentCount] = useState([]);
   const [adminDocumentCount, setAdminDocumentCount] = useState([]);
   const [userDocumentCounts, setUserDocumentCounts] = useState({});
+  const [pendingFilings, setPendingFilings] = useState(0);
   const [monthlySummary, setMonthlySummary] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -113,13 +114,14 @@ export default function DepartmentDashboard() {
       }
 
       if (isDepartmentAdmin() && !isSuperAdmin()) {
-        const [deptRes, usersRes, rolesRes, docCountRes, adminDocCountRes, monthlyRes] =
+        const [deptRes, usersRes, rolesRes, docCountRes, adminDocCountRes, pendingRes, monthlyRes] =
           await Promise.all([
             api.get(`/admin/departments/${departmentId}`),
             api.get(`/admin/departments/${departmentId}/users`),
             api.get(`/admin/departments/${departmentId}/roles`),
             api.get(`/admin/departments/${departmentId}/document-count${qp}`),
             api.get(`/admin/users/${user.id}/document-count${qp}`),
+            api.get(`/admin/departments/${departmentId}/pending-filings${qp}`),
             api.get(`/admin/departments/${departmentId}/monthly-summary`),
           ]);
 
@@ -131,15 +133,17 @@ export default function DepartmentDashboard() {
         setRoles(rolesRes.data.roles || []);
         setDocumentCount(docCountRes.data.documentCount || []);
         setAdminDocumentCount(adminDocCountRes.data.documentCount || []);
+        setPendingFilings(Number(pendingRes.data.pendingFilings) || 0);
         setMonthlySummary(monthlyRes.data.monthlySummary || []);
 
         await fetchUserDocumentCounts(deptUsers, qp);
       } else {
-        const [deptRes, usersRes, rolesRes, docCountRes, monthlyRes] = await Promise.all([
+        const [deptRes, usersRes, rolesRes, docCountRes, pendingRes, monthlyRes] = await Promise.all([
           api.get(`/admin/departments`),
           api.get(`/admin/employees`),
           api.get(`/admin/roles`),
           api.get(`/admin/departments/${departmentId}/document-count${qp}`),
+          api.get(`/admin/departments/${departmentId}/pending-filings${qp}`),
           api.get(`/admin/departments/${departmentId}/monthly-summary`),
         ]);
 
@@ -159,6 +163,7 @@ export default function DepartmentDashboard() {
         setUsers(deptUsers);
         setRoles((rolesRes.data.roles || []).filter((r) => r.department_id == departmentId));
         setDocumentCount(docCountRes.data.documentCount || []);
+        setPendingFilings(Number(pendingRes.data.pendingFilings) || 0);
         setMonthlySummary(monthlyRes.data.monthlySummary || []);
 
         await fetchUserDocumentCounts(deptUsers, qp);
@@ -230,7 +235,6 @@ export default function DepartmentDashboard() {
     0
   );
   const totalCost = calcCost(totalInputTokens, totalOutputTokens);
-  const totalTokens = totalInputTokens + totalOutputTokens;
 
   const moduleMap = (() => {
     const m = {};
@@ -417,9 +421,9 @@ export default function DepartmentDashboard() {
         <article className="kpi">
           <div className="kpi-icon"><DollarSign size={18} /></div>
           <div className="kpi-meta">
-            <div className="kpi-value">{fmtCost(totalCost)}</div>
-            <div className="kpi-label">Gemini Cost</div>
-            <div className="kpi-hint">{(totalTokens / 1000).toFixed(1)}K tokens</div>
+            <div className="kpi-value">{pendingFilings}</div>
+            <div className="kpi-label">Pending Filings</div>
+            <div className="kpi-hint">{pendingFilings} pending item{pendingFilings === 1 ? "" : "s"}</div>
           </div>
         </article>
 
