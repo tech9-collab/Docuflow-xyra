@@ -1,12 +1,12 @@
 import { useLocation } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./InvoiceTable.css";
 import { API_BASE, BACKEND_ORIGIN } from "../../helper/helper";
 
 import PdfViewer from "../../components/PdfViewer/PdfViewer";
 import ImageViewer from "../../components/ImageViewer/ImageViewer";
-import { X } from "lucide-react";
+import { X, Info } from "lucide-react";
 
 
 const UAE_SALES_ORDER = [
@@ -88,6 +88,32 @@ export default function InvoiceTable() {
   const [view, setView] = useState("purchase");
 
   const [preview, setPreview] = useState(null);
+
+  // --- Place of Supply info tooltip ---
+  const [posTooltipOpen, setPosTooltipOpen] = useState(false);
+  const [posTooltipPos, setPosTooltipPos] = useState({ x: 0, y: 0 });
+  const posIconRef = useRef(null);
+  const posClickLockedRef = useRef(false);
+
+  useEffect(() => {
+    if (!posTooltipOpen) return;
+    const handleOutside = (e) => {
+      if (posIconRef.current && !posIconRef.current.contains(e.target)) {
+        posClickLockedRef.current = false;
+        setPosTooltipOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [posTooltipOpen]);
+
+  function showPosTooltip() {
+    if (posIconRef.current) {
+      const rect = posIconRef.current.getBoundingClientRect();
+      setPosTooltipPos({ x: rect.left, y: rect.bottom + 8 });
+    }
+    setPosTooltipOpen(true);
+  }
 
   const purchaseData = useMemo(() => {
     const fallbackRows = Array.isArray(uaePurchaseRows) ? uaePurchaseRows : [];
@@ -278,9 +304,36 @@ export default function InvoiceTable() {
                   <th
                     key={c.key}
                     className={idx === 0 ? "sticky-col" : undefined}
-                    title={c.label}
+                    title={c.key === "PLACE OF SUPPLY" && view === "sales" ? undefined : c.label}
                   >
-                    {c.label}
+                    {c.key === "PLACE OF SUPPLY" && view === "sales" ? (
+                      <span className="th-with-info">
+                        {c.label}
+                        <button
+                          ref={posIconRef}
+                          type="button"
+                          className="pos-info-btn"
+                          aria-label="Place of supply information"
+                          onMouseEnter={showPosTooltip}
+                          onMouseLeave={() => {
+                            if (!posClickLockedRef.current) setPosTooltipOpen(false);
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            posClickLockedRef.current = !posClickLockedRef.current;
+                            if (posClickLockedRef.current) {
+                              showPosTooltip();
+                            } else {
+                              setPosTooltipOpen(false);
+                            }
+                          }}
+                        >
+                          <Info size={13} />
+                        </button>
+                      </span>
+                    ) : (
+                      c.label
+                    )}
                   </th>
                 ))}
               </tr>
@@ -379,6 +432,26 @@ export default function InvoiceTable() {
           </table>
         </div>
       </div>
+      {posTooltipOpen && (
+        <div
+          className="pos-tooltip-popup"
+          style={{ top: posTooltipPos.y, left: posTooltipPos.x }}
+        >
+          <p>
+            <strong>Domestic (UAE):</strong> Select the Emirate where goods
+            were delivered or services performed.
+          </p>
+          <p>
+            <strong>Exports:</strong> Select &lsquo;Outside UAE&rsquo; (0%
+            VAT). Ensure you have official exit/commercial evidence.
+          </p>
+          <p>
+            <strong>Exceptions:</strong> For Real Estate or Events, POS is
+            always the physical location of the property/activity.
+          </p>
+        </div>
+      )}
+
       {preview && (
         <div className="invoice-preview-overlay">
           <div className="invoice-preview-dialog">

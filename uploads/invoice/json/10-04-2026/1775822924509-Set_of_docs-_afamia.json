@@ -1,0 +1,98 @@
+{
+  "source": "Set of docs- afamia.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "28-March-2024",
+      "invoice_number": "INV 003746/24",
+      "vendor_name": "Sika UAE LLC",
+      "customer_name": "Afamia Sky International General Trading LLC",
+      "vendor_trn": "100053753800003",
+      "customer_trn": null,
+      "before_tax_amount": 229728,
+      "vat": 11486.4,
+      "net_amount": 241214.4,
+      "line_items": [
+        {
+          "description": "Sikaprimer-206 G+P 250ML",
+          "quantity": 150,
+          "unit_price": 86,
+          "tax_amount": null,
+          "net_amount": 12900
+        },
+        {
+          "description": "SikaPrimer-207 black",
+          "quantity": 294,
+          "unit_price": 80,
+          "tax_amount": null,
+          "net_amount": 23520
+        },
+        {
+          "description": "Sikaremover-208 1000ML",
+          "quantity": 87,
+          "unit_price": 90,
+          "tax_amount": null,
+          "net_amount": 7830
+        },
+        {
+          "description": "Sikaflex®-521 UV Black",
+          "quantity": 1,
+          "unit_price": 780,
+          "tax_amount": null,
+          "net_amount": 780
+        },
+        {
+          "description": "Sikaflex®-268 PowerCure Black",
+          "quantity": 143,
+          "unit_price": 966,
+          "tax_amount": null,
+          "net_amount": 138138
+        },
+        {
+          "description": "Sikaflex®-521 UV Light Grey",
+          "quantity": 4,
+          "unit_price": 240,
+          "tax_amount": null,
+          "net_amount": 960
+        },
+        {
+          "description": "Sikaflex-265 black",
+          "quantity": 60,
+          "unit_price": 760,
+          "tax_amount": null,
+          "net_amount": 45600
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Commercial invoice",
+      "document_category_evidence": {
+        "matched_text": "COMMERCIAL INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company name nor TRN found as vendor or customer.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    }
+  ]
+}

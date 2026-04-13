@@ -1,0 +1,58 @@
+{
+  "source": "CNC - Better for you .pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "27/11/2023",
+      "invoice_number": "0101",
+      "vendor_name": "Afamia Sky International General Trading LLC",
+      "customer_name": "Better You Limited",
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": 673188,
+      "vat": 0,
+      "net_amount": 673188,
+      "line_items": [
+        {
+          "description": "CNC Cutting Machine (ALN-400G)",
+          "quantity": 4,
+          "unit_price": 168297,
+          "tax_amount": null,
+          "net_amount": 673188
+        }
+      ],
+      "tax_registered": "No",
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "USD",
+      "place_of_supply": null,
+      "document_category": "Invoice",
+      "document_category_evidence": {
+        "matched_text": "INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0.8,
+        "vat": 0.9,
+        "net_amount": 0.8
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company name or TRN not found as vendor or customer.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [
+        "Before tax amount and net amount inferred from line item total as no explicit subtotal/total fields. VAT amount is 0 as no VAT or TRN mentioned."
+      ],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    }
+  ]
+}

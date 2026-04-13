@@ -5,6 +5,12 @@ import "./Login.css";
 import { loginUser } from "../../helper/helper";
 import { useAuth } from "../../context/AuthContext";
 
+const ERROR_MESSAGES = {
+    session_expired: "Your session has expired. Please sign in again.",
+    invalid_credentials: "Invalid credentials. Please try again.",
+    invalid_token: "Your login link is invalid or has expired. Please try again.",
+};
+
 export default function Login() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -12,12 +18,14 @@ export default function Login() {
     const [form, setForm] = useState({ email: "", password: "" });
     const [msg, setMsg] = useState({ type: "", text: "" });
     const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
+    const { login, clearSession } = useAuth();
 
     const errorMsg = searchParams.get("error");
 
     React.useEffect(() => {
         document.title = "XYRA - Login";
+        // Landing on login means the previous session is no longer valid — wipe it
+        clearSession();
     }, []);
 
     const onChange = (e) => {
@@ -55,10 +63,7 @@ export default function Login() {
 
                 {(msg.text || errorMsg) && (
                     <div className="alert error">
-                        {msg.text ||
-                            (errorMsg === "invalid_credentials"
-                                ? "Invalid credentials. Please try again."
-                                : "A system error occurred.")}
+                        {msg.text || ERROR_MESSAGES[errorMsg] || "A system error occurred."}
                     </div>
                 )}
 

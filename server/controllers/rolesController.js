@@ -22,12 +22,23 @@ async function getRequesterBusinessName(userId) {
     return rows[0]?.business_name?.trim() || "";
 }
 
-// Helper: fetch the requesting user's company_id
+// Helper: fetch the requesting user's numeric company_id (companies.id) via business_id string
 async function getRequesterCompanyId(userId) {
     const [rows] = await pool.query(
-        "SELECT business_id AS company_id FROM users WHERE id = ?", [userId]
+        `SELECT c.id AS company_id
+         FROM users u
+         JOIN companies c ON u.business_id = c.business_id
+         WHERE u.id = ?`, [userId]
     );
     return rows[0]?.company_id || null;
+}
+
+// Helper: fetch the requesting user's string business_id (e.g. 'BIZ-00008')
+async function getRequesterBusinessId(userId) {
+    const [rows] = await pool.query(
+        "SELECT business_id FROM users WHERE id = ?", [userId]
+    );
+    return rows[0]?.business_id || null;
 }
 
 // Helper: build date filter clause from query params (month/year)
@@ -844,13 +855,24 @@ export const getDepartmentUsers = async (req, res) => {
         }
         // Super admins can access any department
 
-        // Get users in this department with their role names
-        const [users] = await pool.query(`
-            SELECT u.id, u.name, u.email, u.role_id, u.department_id, u.created_at, u.updated_at, r.name as role_name
+        // Get requester's string business_id for business isolation
+        const requesterBusinessId = req.user.business_id || await getRequesterBusinessId(req.user.id);
+
+        // Get users in this department with their role names, filtered by business_id
+        let usersQuery = `
+            SELECT u.id, u.name, u.email, u.role_id, u.department_id, u.business_id, u.created_at, u.updated_at, r.name as role_name
             FROM users u
             LEFT JOIN roles r ON u.role_id = r.id
             WHERE u.department_id = ?
-        `, [departmentId]);
+        `;
+        const queryParams = [departmentId];
+
+        if (!isSuperAdmin && requesterBusinessId) {
+            usersQuery += ` AND u.business_id = ?`;
+            queryParams.push(requesterBusinessId);
+        }
+
+        const [users] = await pool.query(usersQuery, queryParams);
 
         res.json({ users });
     } catch (error) {
@@ -1341,25 +1363,26 @@ export const getAllEmployees = async (req, res) => {
 
         const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
-        const requesterCompanyId = user.company_id || await getRequesterCompanyId(user.id);
+        const requesterBusinessId = user.business_id || await getRequesterBusinessId(user.id);
 
         let sql = `
-            SELECT u.id, u.name, u.email, u.phone, u.country_code, u.status, u.business_id AS company_id,
+            SELECT u.id, u.name, u.email, u.phone, u.country_code, u.status, u.business_id,
                    u.created_at, u.updated_at, r.name as role_name, r.id as role_id,
-                   d.name as department_name, d.id as department_id, c.business_name as company_name
+                   d.name as department_name, d.id as department_id, c.business_name as company_name,
+                   c.id as company_id
             FROM users u
             LEFT JOIN roles r ON u.role_id = r.id
             LEFT JOIN departments d ON u.department_id = d.id
-            LEFT JOIN companies c ON u.business_id = c.id
+            LEFT JOIN companies c ON u.business_id = c.business_id
             WHERE 1=1
         `;
 
         const params = [];
         // Non-super admins only see their own company
         if (!isSuperAdmin) {
-            if (requesterCompanyId) {
+            if (requesterBusinessId) {
                 sql += ` AND u.business_id = ?`;
-                params.push(requesterCompanyId);
+                params.push(requesterBusinessId);
             } else {
                 // If they don't have a company assigned, they shouldn't see anyone (unless they are super_admin)
                 return res.json({ employees: [] });
@@ -1394,13 +1417,13 @@ export const updateUserRole = async (req, res) => {
 
         const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
-        const requesterCompanyId = await getRequesterCompanyId(req.user.id);
+        const requesterBusinessId = req.user.business_id || await getRequesterBusinessId(req.user.id);
 
         // Security Check: Non-super admins can only update users in their own company
         if (!isSuperAdmin) {
-            const [targetUser] = await pool.query("SELECT business_id AS company_id FROM users WHERE id = ?", [userId]);
+            const [targetUser] = await pool.query("SELECT business_id FROM users WHERE id = ?", [userId]);
             if (!targetUser.length) return res.status(404).json({ message: "User not found" });
-            if (parseInt(targetUser[0].company_id) !== parseInt(requesterCompanyId)) {
+            if (targetUser[0].business_id !== requesterBusinessId) {
                 return res.status(403).json({ message: "Access denied: User belongs to a different company" });
             }
         }
@@ -1461,9 +1484,11 @@ export const getCurrentUserProfile = async (req, res) => {
         // Employee accounts are stored in users table
         const [user] = await pool.query(`
             SELECT u.id, u.name, u.email, u.phone, u.country_code, u.status, u.type,
-                   u.business_name, u.created_at, u.department_id, u.business_id AS company_id, r.name as role_name, r.id as role_id
+                   u.business_name, u.created_at, u.department_id, u.business_id,
+                   c.id as company_id, r.name as role_name, r.id as role_id
             FROM users u
             LEFT JOIN roles r ON u.role_id = r.id
+            LEFT JOIN companies c ON u.business_id = c.business_id
             WHERE u.id = ?
         `, [req.user.id]);
 
@@ -1515,16 +1540,37 @@ export const createEmployee = async (req, res) => {
         const isSuperAdmin = userRole?.name === 'super_admin';
         const isAdminType = req.user.type === 'admin';
 
-        // For company admin users, use their own company_id directly
-        const requesterCompanyId = isAdminType
-            ? req.user.company_id
-            : await getRequesterCompanyId(req.user.id);
+        // Resolve the string business_id (e.g. 'BIZ-00008') from the logged-in user's company
+        let finalBusinessId = null;
 
-        // Force company_id if not a true super_admin (i.e., admin-type users always use their own company)
-        const finalCompanyId = (isSuperAdmin && !isAdminType) ? (companyId || null) : requesterCompanyId;
+        if (isAdminType) {
+            // Company admin: fetch business_id string from companies table using their company_id
+            const [compRows] = await pool.query(
+                "SELECT business_id FROM companies WHERE id = ? LIMIT 1",
+                [req.user.company_id]
+            );
+            finalBusinessId = compRows[0]?.business_id || null;
+        } else if (isSuperAdmin) {
+            // True super_admin: if companyId provided in body, look up its business_id
+            if (companyId) {
+                const [compRows] = await pool.query(
+                    "SELECT business_id FROM companies WHERE id = ? LIMIT 1",
+                    [companyId]
+                );
+                finalBusinessId = compRows[0]?.business_id || null;
+            }
+            // Fallback: try the super_admin's own business_id
+            if (!finalBusinessId) {
+                finalBusinessId = await getRequesterBusinessId(req.user.id);
+            }
+        } else {
+            // Regular employee: use their own business_id from users table
+            finalBusinessId = req.user.business_id || await getRequesterBusinessId(req.user.id);
+        }
 
-        if (!finalCompanyId && !isSuperAdmin) {
-            return res.status(403).json({ message: "Requester must belong to a company to create users" });
+        // Validate: business_id must be a proper string like 'BIZ-XXXXX'
+        if (!finalBusinessId || !String(finalBusinessId).startsWith('BIZ-')) {
+            return res.status(400).json({ message: "Invalid business_id. Could not resolve a valid business ID (e.g. BIZ-00008) from the logged-in account." });
         }
 
         // Validation
@@ -1565,7 +1611,7 @@ export const createEmployee = async (req, res) => {
                 countryCode || null,
                 roleId || null,
                 departmentId || null,
-                finalCompanyId || null,
+                finalBusinessId,
                 'user' // default type
             ]
         );
@@ -1589,7 +1635,7 @@ export const createEmployee = async (req, res) => {
                 id: result.insertId,
                 name: name.trim(),
                 email: email.toLowerCase(),
-                companyId: finalCompanyId,
+                business_id: finalBusinessId,
                 departmentId,
                 roleId
             }
@@ -1615,19 +1661,19 @@ export const updateEmployee = async (req, res) => {
         // Get user role to determine filtering
         const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
-        const requesterCompanyId = await getRequesterCompanyId(req.user.id);
+        const requesterBusinessId = req.user.business_id || await getRequesterBusinessId(req.user.id);
 
         // If not super admin, check if user is admin and belongs to the same company
         if (!isSuperAdmin) {
             // Get target user's company and department
-            const [targetUser] = await pool.query("SELECT business_id AS company_id, department_id FROM users WHERE id = ?", [userId]);
+            const [targetUser] = await pool.query("SELECT business_id, department_id FROM users WHERE id = ?", [userId]);
             if (!targetUser.length) return res.status(404).json({ message: "User not found" });
 
-            const targetUserCompanyId = targetUser[0].company_id;
+            const targetUserBusinessId = targetUser[0].business_id;
             const targetUserDepartmentId = targetUser[0].department_id;
 
-            // Check company isolation
-            if (parseInt(targetUserCompanyId) !== parseInt(requesterCompanyId)) {
+            // Check company isolation using string business_id
+            if (targetUserBusinessId !== requesterBusinessId) {
                 return res.status(403).json({ message: "Access denied: User belongs to a different company" });
             }
 
@@ -1775,19 +1821,19 @@ export const deleteEmployee = async (req, res) => {
         // Get user role to determine filtering
         const userRole = await getEffectiveRole(req);
         const isSuperAdmin = userRole?.name === 'super_admin';
-        const requesterCompanyId = await getRequesterCompanyId(req.user.id);
+        const requesterBusinessId = req.user.business_id || await getRequesterBusinessId(req.user.id);
 
         // If not super admin, check company and department isolation
         if (!isSuperAdmin) {
             // Get target user's company and department
-            const [targetUser] = await pool.query("SELECT business_id AS company_id, department_id FROM users WHERE id = ?", [userId]);
+            const [targetUser] = await pool.query("SELECT business_id, department_id FROM users WHERE id = ?", [userId]);
             if (!targetUser.length) return res.status(404).json({ message: "User not found" });
 
-            const targetUserCompanyId = targetUser[0].company_id;
+            const targetUserBusinessId = targetUser[0].business_id;
             const targetUserDepartmentId = targetUser[0].department_id;
 
-            // Check company isolation
-            if (parseInt(targetUserCompanyId) !== parseInt(requesterCompanyId)) {
+            // Check company isolation using string business_id
+            if (targetUserBusinessId !== requesterBusinessId) {
                 return res.status(403).json({ message: "Access denied: User belongs to a different company" });
             }
 

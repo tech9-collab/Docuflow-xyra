@@ -88,7 +88,7 @@ export const getDashboardStats = async (req, res) => {
         let deptCountSql = "SELECT COUNT(*) as count FROM departments WHERE company_id = ?";
         let roleCountSql = "SELECT COUNT(*) as count FROM roles WHERE company_id = ?";
 
-        let userParams = [user.company_id];
+        let userParams = [user.business_id];
         let deptParams = [user.company_id];
         let roleParams = [user.company_id];
 
@@ -126,7 +126,7 @@ export const getDashboardStats = async (req, res) => {
             JOIN users u ON dc.user_id = u.id
             WHERE ${dateFilter.clause} AND u.business_id = ?
         `;
-        const docStatsParams = [...dateFilter.params, user.company_id];
+        const docStatsParams = [...dateFilter.params, user.business_id];
 
         if (isAdmin) {
             docStatsSql += " AND u.department_id = ?";
@@ -213,7 +213,7 @@ export const getModuleStats = async (req, res) => {
             LEFT JOIN users u ON dc.user_id = u.id
             WHERE u.business_id = ?
         `;
-        const params = [...dateFilter.params, user.company_id];
+        const params = [...dateFilter.params, user.business_id];
 
         if (isAdmin) {
             sql += " AND u.department_id = ?";
@@ -243,6 +243,7 @@ export const getDashboardSummary = async (req, res) => {
         const dateFilter = buildDateFilter(req.query, 'dc');
         const filingDateFilter = buildFilingDateFilter(req.query, 'fp');
         const companyId = user.company_id;
+        const businessId = user.business_id;
 
         // 1. Employees, Roles, Departments
         let empSql = "SELECT u.id, u.name, u.email, u.role_id, u.department_id, r.name as role_name FROM users u LEFT JOIN roles r ON u.role_id = r.id";
@@ -259,7 +260,7 @@ export const getDashboardSummary = async (req, res) => {
 
         if (!isSuperAdmin) {
             conditions.push("u.business_id = ?");
-            empParams.push(companyId);
+            empParams.push(businessId);
             roleConditions.push("company_id = ?");
             roleParams.push(companyId);
             deptConditions.push("company_id = ?");
@@ -299,7 +300,7 @@ export const getDashboardSummary = async (req, res) => {
         const sysDocParams = [...dateFilter.params];
         if (!isSuperAdmin) {
             sysDocSql += " AND u.business_id = ?";
-            sysDocParams.push(companyId);
+            sysDocParams.push(businessId);
             if (isAdmin) {
                 sysDocSql += " AND u.department_id = ?";
                 sysDocParams.push(user.department_id);
@@ -355,7 +356,7 @@ export const getDashboardSummary = async (req, res) => {
         const aggUserParams = [...dateFilter.params];
         if (!isSuperAdmin) {
             aggUserSql += " AND u.business_id = ?";
-            aggUserParams.push(companyId);
+            aggUserParams.push(businessId);
             if (isAdmin) {
                 aggUserSql += " AND u.department_id = ?";
                 aggUserParams.push(user.department_id);
@@ -382,7 +383,7 @@ export const getDashboardSummary = async (req, res) => {
         const allDocParams = [...dateFilter.params];
         if (!isSuperAdmin) {
             allDocSql += " AND u.business_id = ?";
-            allDocParams.push(companyId);
+            allDocParams.push(businessId);
             if (isAdmin) {
                 allDocSql += " AND u.department_id = ?";
                 allDocParams.push(user.department_id);

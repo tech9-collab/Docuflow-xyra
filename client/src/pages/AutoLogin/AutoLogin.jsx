@@ -1,46 +1,53 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { api } from "../../helper/helper";
+import { useAuth } from "../../context/AuthContext";
 
 /**
  * AutoLogin — called by XYRA backend with ?token=<jwt>&redirect=/admin/dashboard
- * Stores token + user in localStorage (same keys the app uses everywhere),
- * sets the axios Authorization header, then redirects to the dashboard.
+ * Destroys any previous session, validates the incoming token, calls
+ * AuthContext.login() (which fetches fresh profile), then redirects.
  */
 export default function AutoLogin() {
     const navigate = useNavigate();
+    const { login, clearSession } = useAuth();
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const token = params.get("token");
-        const redirectTo = params.get("redirect") || "/admin/dashboard";
+        const run = async () => {
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get("token");
+            const redirectTo = params.get("redirect") || "/admin/dashboard";
 
-        if (!token) {
-            navigate("/login", { replace: true });
-            return;
-        }
-
-        try {
-            const decoded = jwtDecode(token);
-
-            // Check token is not expired
-            if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-                navigate("/login?error=session_expired", { replace: true });
+            if (!token) {
+                navigate("/login", { replace: true });
                 return;
             }
 
-            // Store exactly the same way AuthContext.login() does
-            localStorage.setItem("token", token);
-            localStorage.setItem("user", JSON.stringify(decoded));
+            try {
+                const decoded = jwtDecode(token);
 
-            // Set axios header so any immediate API calls work
-            api.defaults.headers.common.Authorization = `Bearer ${token}`;
+                // Check token is not expired
+                if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+                    navigate("/login?error=session_expired", { replace: true });
+                    return;
+                }
 
-            navigate(redirectTo, { replace: true });
-        } catch (e) {
-            navigate("/login?error=invalid_token", { replace: true });
-        }
+                // Destroy any previous session before setting up the new one
+                clearSession();
+
+                // Use AuthContext.login() so profile is fetched & state is set
+                // before we navigate to the dashboard
+                await login(token, decoded);
+
+                navigate(redirectTo, { replace: true });
+            } catch (e) {
+                setError(true);
+                navigate("/login?error=invalid_token", { replace: true });
+            }
+        };
+
+        run();
     }, []);
 
     return (

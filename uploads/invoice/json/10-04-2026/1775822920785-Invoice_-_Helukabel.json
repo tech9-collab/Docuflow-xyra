@@ -1,0 +1,84 @@
+{
+  "source": "Invoice - Helukabel.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "29-Mar-24",
+      "invoice_number": "2013UAE208/2024",
+      "vendor_name": "HELUKABEL Middle East DWC LLC",
+      "customer_name": "Afamia Sky International",
+      "vendor_trn": "100018410900003",
+      "customer_trn": null,
+      "before_tax_amount": 29609.18,
+      "vat": 0,
+      "net_amount": 29609.18,
+      "line_items": [
+        {
+          "description": "RADOX 9GKW-AX 3600V 1x35 RADOX 9GKW-AX 3600V 1x35 1X 300 MTRS HS CODE: 85446010 COO:SWITZERLAND",
+          "quantity": 300,
+          "unit_price": 51.83,
+          "tax_amount": 0,
+          "net_amount": 15549
+        },
+        {
+          "description": "RADOX Tenuis-TW 600V 2x0,75 RADOX Tenuis-TW 600V 2x0,75 1 X 500 MTRS HS CODE: 85444999 COO:SWITZERLAND",
+          "quantity": 500,
+          "unit_price": 12.3,
+          "tax_amount": 0,
+          "net_amount": 6150
+        },
+        {
+          "description": "RADOX 3 GKW 600V 1G1,5 GNYE RADOX 3 GKW 600V 1G1,5 GNYE 1 X 500 MTRS HS CODE: 85444999 COO: SWITZERLAND",
+          "quantity": 500,
+          "unit_price": 3.74,
+          "tax_amount": 0,
+          "net_amount": 1870
+        },
+        {
+          "description": "HELUKABEL 3 GKW 300V 1x2, 5qmm M FR RW GY Huber & Suhner-Nr.:12564625 1 X 280 MTRS HSCODE:85444999 COO: SWITZERLAND",
+          "quantity": 280,
+          "unit_price": 8.2,
+          "tax_amount": 0,
+          "net_amount": 2296
+        },
+        {
+          "description": "RADOX Tenuis-TW 600V 3x1,5 RADOX Tenuis-TW 600V 3x1,5 1X198MTR HS CODE: 85444991 COO:SWITZERLAND",
+          "quantity": 198,
+          "unit_price": 18.91,
+          "tax_amount": 0,
+          "net_amount": 3744.18
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Zero Rated Supplies",
+      "tax_rate_percent": 0,
+      "currency": "AED",
+      "place_of_supply": "UAE",
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "Tax Invoice",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Uploading company's TRN or name not found as vendor or customer on the invoice.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    }
+  ]
+}

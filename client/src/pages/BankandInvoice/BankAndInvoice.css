@@ -308,7 +308,21 @@
   color: #dc2626;
 }
 
-/* viewer pane (full width under the two panels) */
+/* side-by-side layout: upload card + preview pane */
+.filing-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .filing-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* viewer pane — sits to the right of the upload card */
 .pane-right {
   min-height: 420px;
   padding: 12px;

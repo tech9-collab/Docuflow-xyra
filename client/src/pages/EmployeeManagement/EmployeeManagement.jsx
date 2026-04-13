@@ -60,18 +60,13 @@ export default function EmployeeManagement() {
         }
     }, [newEmployee.companyId, editingEmployee?.company_id, showEmployeeForm]);
 
-    // Refresh roles whenever the selected department changes.
+    // Refresh roles whenever the selected company changes or form opens.
     useEffect(() => {
         if (showEmployeeForm) {
-            const deptId = editingEmployee ? editingEmployee.department_id : newEmployee.departmentId;
             const compId = editingEmployee ? editingEmployee.company_id : newEmployee.companyId;
-            if (deptId) {
-                fetchRoles(deptId, compId || null);
-            } else {
-                setRoles([]);
-            }
+            fetchRoles(compId || null);
         }
-    }, [newEmployee.departmentId, editingEmployee?.department_id, newEmployee.companyId, editingEmployee?.company_id, showEmployeeForm]);
+    }, [newEmployee.companyId, editingEmployee?.company_id, showEmployeeForm]);
 
     const fetchInitialData = async () => {
         setLoading(true);
@@ -112,24 +107,17 @@ export default function EmployeeManagement() {
         }
     };
 
-    const fetchRoles = async (deptId, compId = null) => {
+    const fetchRoles = async (compId = null) => {
         try {
-            const params = new URLSearchParams({ departmentId: String(deptId) });
+            const params = new URLSearchParams();
             if (compId) {
                 params.set('companyId', String(compId));
+            } else if (!isSuperAdmin() && user?.company_id) {
+                params.set('companyId', String(user.company_id));
             }
 
-            const [departmentRolesRes, filteredRolesRes] = await Promise.all([
-                api.get(`/admin/departments/${deptId}/roles`),
-                api.get(`/admin/roles?${params.toString()}`)
-            ]);
-
-            const mergedRoles = [...(departmentRolesRes.data.roles || []), ...(filteredRolesRes.data.roles || [])];
-            const uniqueRoles = mergedRoles.filter((role, index, list) =>
-                role?.id && list.findIndex(candidate => String(candidate.id) === String(role.id)) === index
-            );
-
-            setRoles(uniqueRoles.filter(role => role.name !== 'super_admin'));
+            const res = await api.get(`/admin/roles?${params.toString()}`);
+            setRoles((res.data.roles || []).filter(role => role.name !== 'super_admin'));
         } catch (err) {
             console.error('Failed to fetch roles:', err);
             setRoles([]);
@@ -162,8 +150,8 @@ export default function EmployeeManagement() {
     };
 
     const updateEmployee = async () => {
-        if (!editingEmployee.name.trim() || !editingEmployee.email.trim()) {
-            setError('Name and email are required');
+        if (!editingEmployee.name.trim() || !editingEmployee.email.trim() || !editingEmployee.role_id) {
+            setError('Name, email and role are required');
             return;
         }
 
@@ -373,17 +361,28 @@ export default function EmployeeManagement() {
                                     required
                                 >
                                     <option value="">Select Role</option>
-                                    {roles.map(role => (
-                                        <option key={role.id} value={role.id}>
-                                            {`${role.name} - ${role.department_name || 'No Department'}`}
-                                        </option>
-                                    ))}
+                                    {roles
+                                        .filter(role => {
+                                            const selectedDeptId = editingEmployee ? editingEmployee.department_id : newEmployee.departmentId;
+                                            return String(role.department_id) === String(selectedDeptId);
+                                        })
+                                        .map(role => (
+                                            <option key={role.id} value={role.id}>
+                                                {`${role.name} - ${role.department_name || 'No Department'}`}
+                                            </option>
+                                        ))}
+                                    {roles.length > 0 && roles.filter(role => {
+                                        const selectedDeptId = editingEmployee ? editingEmployee.department_id : newEmployee.departmentId;
+                                        return String(role.department_id) === String(selectedDeptId);
+                                    }).length === 0 && (
+                                            <option disabled>No roles available</option>
+                                        )}
                                 </select>
                             </div>
                         </div>
 
                         <div className="form-actions">
-                            <button className="btn-save" onClick={editingEmployee ? updateEmployeeAction : createEmployee}>
+                            <button className="btn-save" onClick={editingEmployee ? updateEmployee : createEmployee}>
                                 <Save size={16} />
                                 {editingEmployee ? 'Update User' : 'Create User'}
                             </button>

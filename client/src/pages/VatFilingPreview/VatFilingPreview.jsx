@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import PdfViewer from "../../components/PdfViewer/PdfViewer";
 import ImageViewer from "../../components/ImageViewer/ImageViewer";
 import { VatFilingComposer } from "../BankandInvoice/BankAndInvoice";
-import { X } from "lucide-react";
+import { X, Info } from "lucide-react";
 
 const RAW_API_BASE =
   import.meta.env.VITE_API_BASE || "http://localhost:3001/api";

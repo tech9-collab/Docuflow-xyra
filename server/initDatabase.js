@@ -289,11 +289,34 @@ export async function initializeDatabase() {
       await pool.query("ALTER TABLE companies ADD COLUMN country_code VARCHAR(10) NULL AFTER phone");
     }
 
-    // 6.6) Add business_id to users if not present
+    // 6.6) Add business_id to users if not present, or migrate INT → VARCHAR(100)
     const [userCompIdCol] = await pool.query("SHOW COLUMNS FROM users LIKE 'business_id'");
     if (!userCompIdCol.length) {
-      await pool.query("ALTER TABLE users ADD COLUMN business_id INT NULL AFTER department_id, ADD INDEX (business_id)");
-      await pool.query("ALTER TABLE users ADD CONSTRAINT fk_users_company FOREIGN KEY (business_id) REFERENCES companies(id) ON DELETE SET NULL");
+      // Fresh install: create as VARCHAR(100) directly
+      await pool.query("ALTER TABLE users ADD COLUMN business_id VARCHAR(100) NULL AFTER department_id, ADD INDEX (business_id)");
+    } else if (userCompIdCol[0].Type.startsWith('int')) {
+      // Migration: business_id is currently INT (storing companies.id), convert to VARCHAR(100) storing 'BIZ-XXXXX'
+      console.log('Migrating users.business_id from INT to VARCHAR(100)...');
+      // 1) Drop FK constraint if it exists
+      try {
+        await pool.query("ALTER TABLE users DROP FOREIGN KEY fk_users_company");
+      } catch (e) { /* FK may not exist */ }
+      try {
+        await pool.query("ALTER TABLE users DROP INDEX business_id");
+      } catch (e) { /* Index may not exist or have different name */ }
+      // 2) Add a temp column to hold the string business_id
+      await pool.query("ALTER TABLE users ADD COLUMN business_id_new VARCHAR(100) NULL AFTER business_id");
+      // 3) Populate temp column by looking up companies.business_id using the numeric value
+      await pool.query(`
+        UPDATE users u
+        LEFT JOIN companies c ON u.business_id = c.id
+        SET u.business_id_new = c.business_id
+        WHERE u.business_id IS NOT NULL
+      `);
+      // 4) Drop old column, rename new column
+      await pool.query("ALTER TABLE users DROP COLUMN business_id");
+      await pool.query("ALTER TABLE users CHANGE COLUMN business_id_new business_id VARCHAR(100) NULL, ADD INDEX (business_id)");
+      console.log('Migration complete: users.business_id is now VARCHAR(100)');
     }
 
     // 6.7) Add company_id to departments if not present

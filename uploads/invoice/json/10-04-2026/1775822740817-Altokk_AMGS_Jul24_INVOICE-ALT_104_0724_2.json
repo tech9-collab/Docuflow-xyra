@@ -1,0 +1,56 @@
+{
+  "source": "Altokk_AMGS_Jul24_INVOICE-ALT_104_0724_2.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "06 Aug 2024",
+      "invoice_number": "ALT/104/0724",
+      "vendor_name": "Active Minds Global Solutions L.L.C",
+      "customer_name": "ALTOKK Software Solutions Private Limited",
+      "vendor_trn": "104165301300003",
+      "customer_trn": null,
+      "before_tax_amount": 11715.41,
+      "vat": 0,
+      "net_amount": 11715.41,
+      "line_items": [
+        {
+          "description": "BOLAND Power BI Support Services – Jul 24 (15th Jul - 31st Jul)",
+          "quantity": 109.5,
+          "unit_price": 106.99,
+          "tax_amount": 0,
+          "net_amount": 11715.41
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Zero Rated Supplies",
+      "tax_rate_percent": 0,
+      "currency": "AED",
+      "place_of_supply": "Dubai",
+      "document_category": "Invoice",
+      "document_category_evidence": {
+        "matched_text": "Invoice",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company name 'TRAVEL MEDIA MIDDLE EAST - FZCO' nor TRN '104165761800003' matches vendor or customer details on the invoice.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    }
+  ]
+}
