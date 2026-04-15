@@ -1,6 +1,33 @@
 import axios from "axios";
 
-export const API_BASE = (import.meta.env.VITE_API_BASE || "https://apivatfiling.thexyra.com/api").replace(/\/$/, "");
+function normalizeApiBase(value) {
+  return String(value || "").trim().replace(/\/$/, "");
+}
+
+function resolveApiBase() {
+  const envBase = normalizeApiBase(import.meta.env.VITE_API_BASE);
+  if (envBase) return envBase;
+
+  if (typeof window !== "undefined") {
+    const { protocol, hostname, origin } = window.location;
+    const isLocalhost =
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "::1";
+
+    if (isLocalhost) {
+      return "http://localhost:3001/api";
+    }
+
+    if (protocol === "http:" || protocol === "https:") {
+      return `${origin}/api`;
+    }
+  }
+
+  return "https://apivatfiling.thexyra.com/api";
+}
+
+export const API_BASE = resolveApiBase();
 export const BACKEND_ORIGIN = API_BASE.replace(/\/api$/i, "");
 
 export const api = axios.create({
@@ -20,7 +47,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
+    const requestUrl = error.config?.url || "";
+    const isAuthRequest =
+      requestUrl.includes("/auth/login") || requestUrl.includes("/auth/register");
+
+    if (error.response && error.response.status === 401 && !isAuthRequest) {
       // Wipe all client-side session artifacts
       localStorage.removeItem("token");
       localStorage.removeItem("user");
@@ -60,7 +91,11 @@ export async function registerUser(payload) {
     return data;
   } catch (err) {
     const msg =
-      err.response?.data?.message || err.message || "Unable to create account.";
+      err.response?.data?.message ||
+      (err.message === "Network Error"
+        ? `Unable to reach the server at ${API_BASE}.`
+        : err.message) ||
+      "Unable to create account.";
     throw new Error(msg);
   }
 }
@@ -72,7 +107,11 @@ export async function loginUser(payload) {
     return data;
   } catch (err) {
     const msg =
-      err.response?.data?.message || err.message || "Unable to sign in.";
+      err.response?.data?.message ||
+      (err.message === "Network Error"
+        ? `Unable to reach the server at ${API_BASE}.`
+        : err.message) ||
+      "Unable to sign in.";
     throw new Error(msg);
   }
 }
