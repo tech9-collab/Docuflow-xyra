@@ -1272,7 +1272,8 @@ function detectType(gJSON, companyName, companyTrn) {
     // Single-token company names: require a longer distinctive token
     if (
       ov.shared >= 1 &&
-      Math.min(ov.aCount, ov.bCount) === 1 &&
+      ov.aCount === 1 &&
+      ov.bCount === 1 &&
       ov.sharedTokens[0] &&
       ov.sharedTokens[0].length >= 5
     ) {
@@ -1282,6 +1283,7 @@ function detectType(gJSON, companyName, companyTrn) {
     return false;
   };
 
+  // ── Gather identity ──
   const selfTRN = cleanTrn15(companyTrn);
   const hasSelfName = normalizeNameTokens(companyName).length > 0;
   const hasSelfIdentity = hasSelfName || !!selfTRN;
@@ -1369,6 +1371,7 @@ function detectType(gJSON, companyName, companyTrn) {
   );
   // Generic/ambiguous TRN (standalone "TRN" on invoice, role unknown)
   const genericTRN = cleanTrn15(gJSON?.trn);
+  const docCategory = String(gJSON?.document_category || "").toLowerCase();
 
   // ── Step 1: TRN-based matching (highest confidence, unambiguous) ──
   const supplierTrnMatch = !!(selfTRN && vendorTRN && selfTRN === vendorTRN);
@@ -1377,6 +1380,14 @@ function detectType(gJSON, companyName, companyTrn) {
   // ── Step 2: Name-based matching ──
   const supplierNameMatch = nameMatchesCompany(vendorName);
   const customerNameMatch = nameMatchesCompany(customerName);
+  const genericTrnMatch = !!(selfTRN && genericTRN && selfTRN === genericTRN);
+
+  // ── DEBUG: Log all signals for troubleshooting ──
+  console.log(`[detectType] selfTRN=${selfTRN}, vendorTRN=${vendorTRN}, customerTRN=${customerTRN}, genericTRN=${genericTRN}`);
+  console.log(`[detectType] vendorName="${vendorName}", customerName="${customerName}"`);
+  console.log(`[detectType] supplierTrnMatch=${supplierTrnMatch}, customerTrnMatch=${customerTrnMatch}`);
+  console.log(`[detectType] supplierNameMatch=${supplierNameMatch}, customerNameMatch=${customerNameMatch}`);
+  console.log(`[detectType] genericTrnMatch=${genericTrnMatch}, geminiType="${geminiType}", docCategory="${docCategory}"`);
 
   // ── Step 3: Detect Gemini role-swap ──
   // If company name matches CUSTOMER side but company TRN matches VENDOR side,
@@ -1396,67 +1407,101 @@ function detectType(gJSON, companyName, companyTrn) {
       confidence: 1,
     };
   }
-  if (customerTrnMatch && supplierNameMatch && !supplierTrnMatch && !customerNameMatch) {
-    // TRN on customer side = company is the buyer = Purchase
-    // Name on vendor side is a false positive from role swap
-    return {
-      type: "purchase",
-      reason: "MATCH_CUSTOMER_TRN_OVERRIDES_SUPPLIER_NAME_SWAP",
-      confidence: 1,
-    };
+
+  // ── Weighted Voting ──
+  // Each signal votes for "sales" (positive) or "purchase" (negative).
+  // Weights reflect reliability: TRN >> name > doc category.
+  // Doc category only fires for explicitly directional types (e.g. "bill",
+  // "purchase order"), NOT for neutral types like "Tax Invoice" / "Invoice"
+  // which can go either way.
+  // ── Simple weighted voting — trust Gemini's extraction, just match ──
+  const WEIGHT_TRN = 10;
+  const WEIGHT_NAME = 4;
+  const WEIGHT_DOC_CATEGORY = 2;
+  const WEIGHT_GENERIC_TRN = 1;
+
+  let salesScore = 0;
+  let purchaseScore = 0;
+  const votes = [];
+
+  // Signal 1: Vendor TRN matches company TRN → Sales (company is the seller)
+  if (supplierTrnMatch) {
+    salesScore += WEIGHT_TRN;
+    votes.push(`+${WEIGHT_TRN}S:VENDOR_TRN`);
   }
 
-  // Case: Both sides match — prefer TRN-based match direction
-  if (supplierSideMatch && customerSideMatch) {
-    if (supplierTrnMatch && !customerTrnMatch) {
-      return { type: "sales", reason: "MATCH_BOTH_SIDES_SUPPLIER_TRN_WINS", confidence: 1 };
+  // Signal 2: Customer TRN matches company TRN → Purchase (company is the buyer)
+  if (customerTrnMatch) {
+    purchaseScore += WEIGHT_TRN;
+    votes.push(`+${WEIGHT_TRN}P:CUSTOMER_TRN`);
+  }
+
+  // Signal 3: Document category hints — ONLY for explicitly directional types.
+  const isPurchaseDoc = /\bbill\b|\bpurchase\s+(order|summary)\b/.test(docCategory);
+  const isSalesDoc = /\bsales\s+(order|summary)\b/.test(docCategory);
+  if (isPurchaseDoc && !isSalesDoc) {
+    purchaseScore += WEIGHT_DOC_CATEGORY;
+    votes.push(`+${WEIGHT_DOC_CATEGORY}P:DOC_CATEGORY`);
+  } else if (isSalesDoc && !isPurchaseDoc) {
+    salesScore += WEIGHT_DOC_CATEGORY;
+    votes.push(`+${WEIGHT_DOC_CATEGORY}S:DOC_CATEGORY`);
+  }
+
+  // Signal 4: Vendor name matches company name → Sales
+  if (supplierNameMatch) {
+    salesScore += WEIGHT_NAME;
+    votes.push(`+${WEIGHT_NAME}S:VENDOR_NAME`);
+  }
+
+  // Signal 5: Customer name matches company name → Purchase
+  if (customerNameMatch) {
+    purchaseScore += WEIGHT_NAME;
+    votes.push(`+${WEIGHT_NAME}P:CUSTOMER_NAME`);
+  }
+
+  // Signal 6: Generic TRN fallback (weakest, only if no specific TRN matched)
+  if (genericTrnMatch && !supplierTrnMatch && !customerTrnMatch) {
+    if (isPurchaseDoc) {
+      purchaseScore += WEIGHT_GENERIC_TRN;
+      votes.push(`+${WEIGHT_GENERIC_TRN}P:GENERIC_TRN_PURCHASE_DOC`);
+    } else {
+      salesScore += WEIGHT_GENERIC_TRN;
+      votes.push(`+${WEIGHT_GENERIC_TRN}S:GENERIC_TRN_DEFAULT`);
     }
-    if (customerTrnMatch && !supplierTrnMatch) {
-      return { type: "purchase", reason: "MATCH_BOTH_SIDES_CUSTOMER_TRN_WINS", confidence: 1 };
-    }
-    // Both TRN match or both name-only match — default to sales
-    return {
-      type: "sales",
-      reason: supplierTrnMatch
-        ? "MATCH_BOTH_SIDES_PREFER_SUPPLIER_TRN"
-        : "MATCH_BOTH_SIDES_PREFER_SUPPLIER_NAME",
-      confidence: supplierTrnMatch ? 1 : 0.7,
-    };
   }
 
-  // Case: Only one side matches
-  if (supplierSideMatch) {
-    return {
-      type: "sales",
-      reason: supplierTrnMatch ? "MATCH_SUPPLIER_TRN" : "MATCH_SUPPLIER_NAME",
-      confidence: supplierTrnMatch ? 1 : 0.8,
-    };
-  }
-  if (customerSideMatch) {
-    return {
-      type: "purchase",
-      reason: customerTrnMatch ? "MATCH_CUSTOMER_TRN" : "MATCH_CUSTOMER_NAME",
-      confidence: customerTrnMatch ? 1 : 0.8,
-    };
+  // ── Decision ──
+  const totalScore = salesScore + purchaseScore;
+  const diff = Math.abs(salesScore - purchaseScore);
+  const reason = `VOTE[S=${salesScore},P=${purchaseScore}] ${votes.join(" ")}`;
+
+  if (totalScore === 0) {
+    return { type: "unknown", reason: `NO_SIGNALS ${reason}`, confidence: 0 };
   }
 
-  // ── Step 4: Generic TRN fallback ──
-  // Invoice has a standalone "TRN" field (not vendor_trn or customer_trn).
-  // If it matches company TRN, we need document_category to decide direction.
-  if (selfTRN && genericTRN && selfTRN === genericTRN) {
-    const cat = String(gJSON?.document_category || "").toLowerCase();
-    // If document is explicitly a purchase/bill, company TRN in generic field = Purchase
-    if (cat.includes("bill") || cat.includes("purchase")) {
-      return { type: "purchase", reason: "GENERIC_TRN_WITH_PURCHASE_CATEGORY", confidence: 0.7 };
-    }
-    // Otherwise assume company issued it = Sales
-    return { type: "sales", reason: "GENERIC_TRN_MATCH_DEFAULT_SALES", confidence: 0.6 };
+  if (diff < 3) {
+    return { type: "unknown", reason: `TIE ${reason}`, confidence: 0.3 };
   }
 
-  // No match at all
-  return { type: "unknown", reason: "NO_SELF_MATCH", confidence: 0 };
+  const winnerType = salesScore > purchaseScore ? "sales" : "purchase";
+  const winnerScore = Math.max(salesScore, purchaseScore);
+  const confidence = Math.min(1, 0.5 + (diff / (totalScore * 2)) + (winnerScore >= WEIGHT_TRN ? 0.3 : 0));
+
+  console.log(`[detectType] RESULT: ${winnerType} — ${reason}`);
+  return { type: winnerType, reason, confidence: Math.round(confidence * 100) / 100 };
 }
-// ****** Detect 'Sales' vs 'Purchase' ****** //
+
+// Simplified: no swap-correction layer. We trust Gemini's extraction
+// (improved via prompt) and detectType's name/TRN matching.
+function finalizeInvoiceClassification({
+  row,
+  classification,
+  companyName,
+  companyTrn,
+}) {
+  return classification;
+}
+// ****** Detect 'Sales' vs 'Purchase' — Weighted Voting System ****** //
 
 // ****** Parsing ****** //
 function coerceGeminiJson(payload) {
@@ -1801,8 +1846,14 @@ async function processJob(jobId) {
                   : null;
 
               row["CONFIDENCE"] = overallPct;
-              row["CLASSIFICATION_REASON"] = classification.reason;
-              row["CLASSIFICATION_CONFIDENCE"] = classification.confidence;
+              const finalClassification = finalizeInvoiceClassification({
+                row,
+                classification,
+                companyName: job.company_name,
+                companyTrn: job.company_trn,
+              });
+              row["CLASSIFICATION_REASON"] = finalClassification.reason;
+              row["CLASSIFICATION_CONFIDENCE"] = finalClassification.confidence;
 
               if (classification.type === "sales") {
                 job.uaeSalesRows.push(row);
@@ -1850,8 +1901,14 @@ async function processJob(jobId) {
                   : null;
 
               row["CONFIDENCE"] = overallPct;
-              row["CLASSIFICATION_REASON"] = classification.reason;
-              row["CLASSIFICATION_CONFIDENCE"] = classification.confidence;
+              const finalClassification = finalizeInvoiceClassification({
+                row,
+                classification,
+                companyName: job.company_name,
+                companyTrn: job.company_trn,
+              });
+              row["CLASSIFICATION_REASON"] = finalClassification.reason;
+              row["CLASSIFICATION_CONFIDENCE"] = finalClassification.confidence;
 
               if (classification.type === "sales") {
                 job.uaeSalesRows.push(row);
@@ -2254,8 +2311,14 @@ async function processJob(jobId) {
               : null;
 
           row["CONFIDENCE"] = overallPct;
-          row["CLASSIFICATION_REASON"] = classification.reason;
-          row["CLASSIFICATION_CONFIDENCE"] = classification.confidence;
+          const finalClassification = finalizeInvoiceClassification({
+            row,
+            classification,
+            companyName: job.company_name,
+            companyTrn: job.company_trn,
+          });
+          row["CLASSIFICATION_REASON"] = finalClassification.reason;
+          row["CLASSIFICATION_CONFIDENCE"] = finalClassification.confidence;
 
           const _bucket = fileRowBuckets[f._fileIndex];
           if (classification.type === "sales") {
@@ -2387,8 +2450,14 @@ async function processJob(jobId) {
               : null;
 
           row["CONFIDENCE"] = overallPct;
-          row["CLASSIFICATION_REASON"] = classification.reason;
-          row["CLASSIFICATION_CONFIDENCE"] = classification.confidence;
+          const finalClassification = finalizeInvoiceClassification({
+            row,
+            classification,
+            companyName: job.company_name,
+            companyTrn: job.company_trn,
+          });
+          row["CLASSIFICATION_REASON"] = finalClassification.reason;
+          row["CLASSIFICATION_CONFIDENCE"] = finalClassification.confidence;
 
           const _bucket = fileRowBuckets[f._fileIndex];
           if (classification.type === "sales") {
@@ -2456,16 +2525,24 @@ async function processJob(jobId) {
 
   // If everything landed in "Other", promote to Purchase so preview/export
   // does not appear empty in Sales/Purchase-only views.
+  // BUT: if rows are in Others because the company identity was not found
+  // on the document (NO_IDENTITY_MATCH or SELF_IDENTITY_MISSING), keep them
+  // in Others — they are genuinely unrelated to the uploading company.
   if (
     (job.uaeSalesRows || []).length === 0 &&
     (job.uaePurchaseRows || []).length === 0 &&
     (job.uaeOtherRows || []).length > 0
   ) {
-    // If self identity was missing, keep rows in Others (no forced Purchase promotion).
-    const allFromMissingIdentity = (job.uaeOtherRows || []).every(
-      (r) => String(r?.CLASSIFICATION_REASON || "") === "SELF_IDENTITY_MISSING"
-    );
-    if (allFromMissingIdentity) {
+    const allUnrelated = (job.uaeOtherRows || []).every((r) => {
+      const reason = String(r?.CLASSIFICATION_REASON || "");
+      return (
+        reason === "SELF_IDENTITY_MISSING" ||
+        reason.startsWith("NO_IDENTITY_MATCH") ||
+        reason.startsWith("NO_SIGNALS")
+      );
+    });
+    if (allUnrelated) {
+      // Keep in Others — these documents don't belong to the uploading company.
       job.uaeAllRows = [...(job.uaeOtherRows || [])].map((r) => ({
         TYPE: "Other",
         ...r,
@@ -2589,6 +2666,8 @@ async function processJob(jobId) {
       "PARTY", // for sales rows (purchase rows will likely leave null)
       "SUPPLIER TRN",
       "CUSTOMER TRN",
+      "PLACE OF SUPPLY (SELLER)",
+      "PLACE OF SUPPLY (CUSTOMER)",
       "CURRENCY",
       "BEFORE TAX AMOUNT",
       "VAT",

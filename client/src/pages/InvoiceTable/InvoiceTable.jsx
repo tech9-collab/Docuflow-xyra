@@ -2,12 +2,15 @@ import { useLocation } from "react-router-dom";
 import { useMemo, useState } from "react";
 import axios from "axios";
 import "./InvoiceTable.css";
-import { API_BASE, BACKEND_ORIGIN } from "../../helper/helper";
-
 import PdfViewer from "../../components/PdfViewer/PdfViewer";
 import ImageViewer from "../../components/ImageViewer/ImageViewer";
 import { X } from "lucide-react";
 
+const RAW_API_BASE =
+  import.meta.env.VITE_API_BASE || "http://localhost:3001/api";
+
+const API_BASE = RAW_API_BASE.replace(/\/$/, "");
+const BACKEND_ORIGIN = API_BASE.replace(/\/api$/i, "");
 
 const UAE_SALES_ORDER = [
   "DATE",
@@ -88,6 +91,10 @@ export default function InvoiceTable() {
   const [view, setView] = useState("purchase");
 
   const [preview, setPreview] = useState(null);
+  const hasExplicitBuckets =
+    (Array.isArray(uaeSalesRows) && uaeSalesRows.length > 0) ||
+    (Array.isArray(uaePurchaseRows) && uaePurchaseRows.length > 0) ||
+    (Array.isArray(othersRows) && othersRows.length > 0);
 
   const purchaseData = useMemo(() => {
     const fallbackRows = Array.isArray(uaePurchaseRows) ? uaePurchaseRows : [];
@@ -108,11 +115,13 @@ export default function InvoiceTable() {
         return o;
       }),
     };
-  }, [table.rows, uaePurchaseRows]);
+  }, [hasExplicitBuckets, table.rows, uaePurchaseRows]);
 
   const salesData = useMemo(() => {
     const fallbackRows = Array.isArray(uaeSalesRows) ? uaeSalesRows : [];
-    const rows = (table.rows || []).length
+    const rows = hasExplicitBuckets
+      ? fallbackRows
+      : (table.rows || []).length
       ? (table.rows || []).filter(
         (r) => String(r.TYPE || "").toLowerCase() === "sales"
       )
@@ -129,11 +138,13 @@ export default function InvoiceTable() {
         return o;
       }),
     };
-  }, [table.rows, uaeSalesRows]);
+  }, [hasExplicitBuckets, table.rows, uaeSalesRows]);
 
   const othersData = useMemo(() => {
     const fallbackRows = Array.isArray(othersRows) ? othersRows : [];
-    const rows = (table.rows || []).length
+    const rows = hasExplicitBuckets
+      ? fallbackRows
+      : (table.rows || []).length
       ? (table.rows || []).filter((r) => {
         const t = String(r.TYPE || "").toLowerCase();
         return t === "other" || t === "others";
@@ -151,7 +162,7 @@ export default function InvoiceTable() {
         return o;
       }),
     };
-  }, [table.rows, othersRows]);
+  }, [hasExplicitBuckets, table.rows, othersRows]);
 
   const { columns, rows } =
     view === "sales"
@@ -324,9 +335,7 @@ export default function InvoiceTable() {
                       return (
                         <td
                           key={c.key}
-                          className={[idx === 0 ? "sticky-col" : "", ""]
-                            .join(" ")
-                            .trim()}
+                          className=""
                           title={label}
                         >
                           {srcUrl ? (
@@ -353,12 +362,7 @@ export default function InvoiceTable() {
                     return (
                       <td
                         key={c.key}
-                        className={[
-                          idx === 0 ? "sticky-col" : "",
-                          isNum ? "num" : "",
-                        ]
-                          .join(" ")
-                          .trim()}
+                        className={isNum ? "num" : ""}
                         // title={val ?? ""}
                         title={
                           c.key === "CONFIDENCE" && typeof val === "number"

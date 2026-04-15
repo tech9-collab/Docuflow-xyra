@@ -12,12 +12,14 @@ export default function Login() {
     const [form, setForm] = useState({ email: "", password: "" });
     const [msg, setMsg] = useState({ type: "", text: "" });
     const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
+    const { login, clearSession } = useAuth();
 
     const errorMsg = searchParams.get("error");
 
     React.useEffect(() => {
         document.title = "XYRA - Login";
+        // Landing on login means the previous session is no longer valid — wipe it
+        clearSession();
     }, []);
 
     const onChange = (e) => {
@@ -39,10 +41,16 @@ export default function Login() {
             await login(token, user);
             navigate(redirectUrl || "/", { replace: true });
         } catch (err) {
-            setMsg({
-                type: "error",
-                text: err.message || "Unable to sign in.",
-            });
+            const raw = (err.message || "").toLowerCase();
+            let text = "Unable to sign in.";
+            if (raw.includes("invalid credentials") || raw.includes("invalid password")) {
+                text = "Invalid credentials. Please try again.";
+            } else if (raw.includes("not found") || raw.includes("no account")) {
+                text = "No account found with this email.";
+            } else if (err.message) {
+                text = err.message;
+            }
+            setMsg({ type: "error", text });
         } finally {
             setLoading(false);
         }
@@ -56,9 +64,13 @@ export default function Login() {
                 {(msg.text || errorMsg) && (
                     <div className="alert error">
                         {msg.text ||
-                            (errorMsg === "invalid_credentials"
-                                ? "Invalid credentials. Please try again."
-                                : "A system error occurred.")}
+                            (errorMsg === "session_expired"
+                                ? "Your session has expired. Please sign in again."
+                                : errorMsg === "invalid_credentials"
+                                    ? "Invalid credentials. Please try again."
+                                    : errorMsg === "invalid_token"
+                                        ? "Your login link is invalid or has expired. Please try again."
+                                        : "A system error occurred.")}
                     </div>
                 )}
 

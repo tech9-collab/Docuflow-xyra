@@ -4,11 +4,33 @@ You are a specialist in extracting structured data from UAE invoices (PDFs or im
 The output format (single object or JSON array) is specified by each individual request — follow the user prompt format exactly.
 No markdown, no comments. If a field is missing or invalid, return null for that field.
 
-CRITICAL ROLE RULES:
-- "vendor_*" = the seller/supplier on the letterhead/issuer section.
-- "customer_*" = the buyer/recipient (Bill To/Customer/Sold To/Ship To).
-- Never swap these roles. Do not infer or copy between parties.
-- If only one of name/TRN is present for a party, return that one and set the missing one to null.
+VENDOR vs CUSTOMER IDENTIFICATION (follow these steps in order):
+
+Step A — Find the VENDOR (seller/supplier/issuer):
+  The vendor is the company that CREATED and ISSUED this invoice.
+  1. LETTERHEAD/LOGO: The company whose logo, letterhead, branding, trade name, or stamp appears on the document is the VENDOR. This is the most reliable signal.
+  2. LABELS: Any field explicitly labeled "Supplier", "Vendor", "Seller", "From", "Issued by", "Service Provider" → that is the vendor.
+  3. TABLE/GRID LAYOUT: If both parties are in a table, read headers — "Supplier"/"Vendor"/"Seller" column = vendor.
+  4. CONTEXTUAL: The company providing/selling the goods or services is the vendor.
+
+Step B — Find the CUSTOMER (buyer/recipient):
+  The customer is the company/person this invoice is addressed TO — the one being billed.
+  1. LABELS: Any field labeled "Bill To", "Customer", "Party", "Sold To", "Ship To", "Buyer", "Recipient", "Deliver To", "To" → that is the customer.
+     IMPORTANT: "Client", "Client Name", "Customer Name" = the CUSTOMER (buyer), NOT the vendor. On an invoice, "Client" means the person being billed.
+  2. TABLE/GRID LAYOUT: "Customer"/"Party"/"Buyer"/"Bill To"/"Client" column = customer.
+  3. POSITION: Usually in a secondary block below or beside the vendor info.
+
+Step C — Match TRNs to the correct party:
+  - LABELED TRNs: "Supplier TRN"/"Vendor TRN" → vendor_trn. "Customer TRN"/"Party TRN"/"Buyer TRN"/"Client TRN" → customer_trn. Trust labels over position.
+  - STANDALONE TRN in invoice metadata: A TRN appearing alongside invoice metadata fields (Invoice Number, Invoice Date, Due Date) with a generic label like "TRN", "TRN N°", "TRN No", or "Tax Registration Number" — this is the VENDOR's (issuer's) TRN, because it identifies who issued the invoice.
+  - TRN IN A PARTY BLOCK: A TRN printed inside or directly below a party's name/address block belongs to THAT party.
+  - If two TRNs are present, one belongs to each party — use labels or proximity to assign them.
+
+Step D — Verify (sanity check before outputting):
+  - The vendor and customer MUST be DIFFERENT entities. If you have the same name/TRN in both, re-examine.
+  - If only one party is identifiable, set the other party's fields to null.
+  - If the layout is genuinely ambiguous, prefer null over guessing.
+  - Do NOT invent or hallucinate company names. Only return names that are actually printed on the document.
 
 Normalization & validation you MUST follow:
 - Trim whitespace; collapse internal multiple spaces to one.
@@ -33,17 +55,9 @@ CONFIDENCE RULES (model-reported):
 - Do not invent. If a field is null or not present on the document, set its confidence to 0.
 - Also return an 'overall_confidence' 0..1 (you decide how to aggregate internally).
 
-TRANSACTION TYPE CLASSIFICATION (CRITICAL):
-- Each document must include a "transaction_type" field: "sales" | "purchase" | "unknown".
-- The uploading company's identity will be provided in the user prompt.
-- If the uploading company is the SELLER/VENDOR (their name or TRN appears on the letterhead/issuer section) → "sales".
-- If the uploading company is the BUYER/CUSTOMER (their name or TRN appears in Bill To/Customer/Sold To section) → "purchase".
-- If you cannot determine the relationship, return "unknown".
-- DECISION HIERARCHY for transaction_type:
-  1. TRN match is DEFINITIVE — if the company TRN appears as vendor_trn → "sales"; as customer_trn → "purchase".
-  2. Name match — if the company name appears on the letterhead/header → "sales"; in Bill To/Customer section → "purchase".
-  3. Visual layout — the entity on the letterhead/logo/top-left is usually the seller; the entity in "Bill To"/"Ship To" is usually the buyer.
-  4. If unsure → "unknown".
+TRANSACTION TYPE:
+- Always return transaction_type as "unknown" and transaction_type_reason as null.
+- Transaction type classification is handled server-side after extraction.
 `;
 
 export const USER_PROMPT = `
@@ -109,7 +123,9 @@ Each entry in "documents" must have these fields:
   "currency": "ISO 4217 3-letter code like AED|USD|EUR|null",
   "currency_evidence": "string|null (verbatim symbol/word/line you used to decide the currency, e.g. 'AED', 'د.إ', 'Dhs')",
 
-  "place_of_supply": "string|null (the UAE emirate or location explicitly printed on the invoice, e.g. 'Dubai', 'Abu Dhabi', 'Sharjah'. Look for labels like 'Place of Supply', 'Place Of Supply', 'POS'. Return verbatim value as printed; null if not found)",
+  "vendor_place_of_supply": "string|null (emirate/city from the SELLER/VENDOR address block — near letterhead/logo/company stamp at top of document. Look for: Dubai, Abu Dhabi, Sharjah, Ajman, etc. NEVER copy the customer's address here. null if not visible)",
+  "customer_place_of_supply": "string|null (emirate/city from the BUYER/CUSTOMER address block — in Bill To/Customer/Ship To/Sold To/Deliver To section. Look for: Dubai, Abu Dhabi, Sharjah, Ajman, etc. NEVER copy the vendor's address here. null if not visible)",
+  "place_of_supply": "string|null (the explicit invoice field labeled 'Place of Supply', 'Place Of Supply', or 'POS'. Return that verbatim field value only; do not copy seller/customer address into this field unless the invoice explicitly labels it as Place of Supply. null if not found)",
 
   "document_category": "one of: Tax Invoice|Invoice|Bill|Payment Voucher|Receipt Voucher|Remittance advice|Quotation|Sales order|Purchase order|Proforma Invoice|Commercial invoice|Receipt|Payment details|Cheque|Packing List|Order|Order summary|Sales summary|Purchase summary|Statement of Accounts|Proforma Tax Invoice|Cash Invoice|Others",
   "document_category_evidence": {
@@ -137,12 +153,17 @@ Each entry in "documents" must have these fields:
   "confidence_notes": ["string", "... (optional, short reasons for low scores)"]
 }
 
-STRICT party extraction:
-- Identify the seller on the letterhead/header as vendor_*.
-- Identify the buyer in Bill To/Customer/Sold To/Ship To as customer_*.
-- If a party has only a name but no TRN, return the name and set TRN to null.
-- If a party has only TRN but no clear name, return the TRN and set the name to null.
-- Do NOT duplicate the same value into both vendor_* and customer_*.
+PARTY EXTRACTION (use the Step A/B/C/D method from the system prompt):
+- Step A (VENDOR): The company on the letterhead/logo/branding is the VENDOR who issued this invoice. Also check for "Supplier"/"Vendor"/"Seller"/"From" labels.
+- Step B (CUSTOMER): The company under "Bill To"/"Customer"/"Party"/"Sold To"/"Client"/"Client Name" is the CUSTOMER being billed. REMEMBER: "Client" and "Client Name" on an invoice = the CUSTOMER (buyer), not the vendor.
+- Step C (TRNs): A standalone TRN near invoice metadata (Invoice No, Date, Due Date) labeled "TRN"/"TRN N°" belongs to the VENDOR (issuer). A TRN labeled with a party name ("Supplier TRN", "Customer TRN") belongs to that party. A TRN inside a party's address block belongs to that party.
+- Step D: Vendor and customer must be different. Do not hallucinate names not printed on the document.
+- PLACE OF SUPPLY extraction (CRITICAL — do not mix up):
+  - vendor_place_of_supply: Extract the emirate/city ONLY from the vendor/seller's address section (e.g. "Dubai", "Abu Dhabi", "Sharjah"). Do NOT use the customer's address here.
+  - customer_place_of_supply: Extract the emirate/city ONLY from the customer/buyer's address section. Do NOT use the vendor's address here.
+  - place_of_supply: ONLY fill this if the invoice has an explicit field LABELED "Place of Supply" or "POS". Copy that value verbatim. Do NOT infer this from addresses.
+  - If only one party's address/emirate is visible, return that one and set the other to null.
+  - UAE Emirates: Dubai, Abu Dhabi, Sharjah, Ajman, Umm Al Quwain, Ras Al Khaimah, Fujairah.
 
 UAE TRN:
 - Remove spaces/dashes; valid only if exactly 15 digits; otherwise null.
@@ -237,7 +258,9 @@ Each object must match this schema (unknown/invalid => null):
 
   "currency": "ISO 4217 like AED|USD|EUR|null",
 
-  "place_of_supply": "string|null (the UAE emirate or location explicitly printed on the invoice, e.g. 'Dubai', 'Abu Dhabi', 'Sharjah'. Look for labels like 'Place of Supply', 'Place Of Supply', 'POS'. Return verbatim value as printed; null if not found)",
+  "vendor_place_of_supply": "string|null (seller/supplier emirate or location printed in the issuer/vendor section or vendor address block. Return ONLY the seller/vendor place, never the customer place. null if not found)",
+  "customer_place_of_supply": "string|null (buyer/customer emirate or location printed in the Bill To/Customer/Ship To/Sold To section or customer address block. Return ONLY the customer place, never the vendor place. null if not found)",
+  "place_of_supply": "string|null (the explicit invoice field labeled 'Place of Supply', 'Place Of Supply', or 'POS'. Return that verbatim field value only; do not copy seller/customer address into this field unless the invoice explicitly labels it as Place of Supply. null if not found)",
 
   "document_category": "one of: Tax Invoice|Invoice|Bill|Payment Voucher|Receipt Voucher|Remittance advice|Quotation|Sales order|Purchase order|Proforma Invoice|Commercial invoice|Receipt|Payment details|Cheque|Packing List|Order|Order summary|Sales summary|Purchase summary|Statement of Accounts|Proforma Tax Invoice|Cash Invoice|Others|null",
     "document_category_evidence": {
@@ -265,6 +288,12 @@ Each object must match this schema (unknown/invalid => null):
   "pages_covered": "string|null (e.g. '1-3' or '2,4')",
   "invoice_key_hint": "string|null"
 }
+
+PARTY EXTRACTION (use the Step A/B/C/D method from the system prompt):
+- Step A (VENDOR): The company on the letterhead/logo/branding is the VENDOR who issued this invoice. Also check "Supplier"/"Vendor"/"Seller"/"From" labels.
+- Step B (CUSTOMER): The company under "Bill To"/"Customer"/"Party"/"Sold To"/"Client"/"Client Name" is the CUSTOMER being billed. "Client" = buyer, not vendor.
+- Step C (TRNs): A standalone "TRN"/"TRN N°" near invoice metadata = VENDOR's TRN. Labeled TRNs go to the named party. TRN inside a party block = that party's TRN.
+- Step D: Vendor and customer must be different. Do not hallucinate names. If uncertain, use null.
 
  Document Category Rules (CRITICAL):
  - Decide from the MAIN TITLE: the largest/most prominent heading near the top/center of the first page.
@@ -334,7 +363,9 @@ Each entry in "documents" must use the same schema as WHOLE_PDF_USER_PROMPT:
   "tax_type": "Standard rated supplies (5%)|Zero Rated Supplies|null",
   "tax_rate_percent": "number|null",
   "currency": "ISO 4217 like AED|USD|EUR|null",
-  "place_of_supply": "string|null (the UAE emirate or location explicitly printed on the invoice, e.g. 'Dubai', 'Abu Dhabi', 'Sharjah'. Look for labels like 'Place of Supply', 'Place Of Supply', 'POS'. Return verbatim value as printed; null if not found)",
+  "vendor_place_of_supply": "string|null (seller/supplier emirate or location printed in the issuer/vendor section or vendor address block. Return ONLY the seller/vendor place, never the customer place. null if not found)",
+  "customer_place_of_supply": "string|null (buyer/customer emirate or location printed in the Bill To/Customer/Ship To/Sold To section or customer address block. Return ONLY the customer place, never the vendor place. null if not found)",
+  "place_of_supply": "string|null (the explicit invoice field labeled 'Place of Supply', 'Place Of Supply', or 'POS'. Return that verbatim field value only; do not copy seller/customer address into this field unless the invoice explicitly labels it as Place of Supply. null if not found)",
   "document_category": "one of: Tax Invoice|Invoice|Bill|Payment Voucher|Receipt Voucher|Remittance advice|Quotation|Sales order|Purchase order|Proforma Invoice|Commercial invoice|Receipt|Payment details|Cheque|Packing List|Order|Order summary|Sales summary|Purchase summary|Statement of Accounts|Proforma Tax Invoice|Cash Invoice|Others|null",
   "document_category_evidence": {
     "matched_text": "string|null",
@@ -362,6 +393,12 @@ Each entry in "documents" must use the same schema as WHOLE_PDF_USER_PROMPT:
   "invoice_key_hint": "string|null"
 }
 
+PARTY EXTRACTION (use the Step A/B/C/D method from the system prompt):
+- Step A (VENDOR): The company on the letterhead/logo/branding is the VENDOR who issued this invoice. Also check "Supplier"/"Vendor"/"Seller"/"From" labels.
+- Step B (CUSTOMER): The company under "Bill To"/"Customer"/"Party"/"Sold To"/"Client"/"Client Name" is the CUSTOMER being billed. "Client" = buyer, not vendor.
+- Step C (TRNs): A standalone "TRN"/"TRN N°" near invoice metadata = VENDOR's TRN. Labeled TRNs go to the named party. TRN inside a party block = that party's TRN.
+- Step D: Vendor and customer must be different. Do not hallucinate names. If uncertain, use null.
+
 STRICT:
 - Output the wrapper object { "total_documents_found": N, "documents": [...] } only. No markdown.
 - Do not summarize. Do not merge multiple invoices into one object.
@@ -379,15 +416,23 @@ export function buildCompanyContext(companyName, companyTrn) {
   const parts = [];
   if (name) parts.push(`Company Name: "${name}"`);
   if (trn) parts.push(`Company TRN: "${trn}"`);
-  return `UPLOADING COMPANY IDENTITY (use this for transaction_type classification):
+  return `UPLOADING COMPANY IDENTITY (for transaction_type classification ONLY):
 ${parts.join("\n")}
-- If this company's name or TRN appears as the vendor/seller/issuer on the document → transaction_type = "sales"
-- If this company's name or TRN appears as the customer/buyer/recipient on the document → transaction_type = "purchase"
-- If you cannot determine → transaction_type = "unknown"
+
+CRITICAL RULES:
+1. EXTRACT ALL FIELDS (vendor_name, vendor_trn, customer_name, customer_trn, etc.) ONLY from what is PRINTED on the document. NEVER copy or insert the uploading company name or TRN into any extracted field. The company identity above is ONLY for deciding transaction_type.
+2. After extracting all fields purely from the document, determine transaction_type:
+   - SEARCH for the company TRN (15-digit number) in the EXTRACTED vendor_trn and customer_trn values. If it matches the extracted vendor_trn -> "sales". If it matches the extracted customer_trn -> "purchase".
+   - SEARCH for the company name on the letterhead/header/logo area AND in the Bill To/Customer/Sold To section.
+   - In transaction_type_reason, state exactly what you matched and where (e.g. "TRN 100XXXXXXXXXXX found in supplier TRN field" or "Company name found in Bill To section").
+   - If neither the company name nor TRN appear anywhere on the document -> transaction_type = "unknown". Do NOT guess. It is perfectly valid for a document to be unrelated to the uploading company.
+3. Role sanity check before returning JSON:
+   - If the company name/TRN is printed in the Supplier/Vendor/Seller block, the company must remain in vendor_* fields.
+   - If the company name/TRN is printed in the Bill To/Customer/Party/Buyer block, the company must remain in customer_* fields.
+   - Never duplicate the same company into both vendor_* and customer_* because of a generic title like "Tax Invoice".
 
 `;
 }
-
 export const MULTI_DOC_COUNT_PROMPT = `
 You are a document counter. Your ONLY job is to count how many SEPARATE invoices, receipts, bills, or payment slips appear in this image.
 
@@ -439,7 +484,9 @@ Each document object must have these fields:
   "tax_type": "Standard rated supplies (5%)|Zero Rated Supplies|null",
   "tax_rate_percent": "number|null",
   "currency": "ISO 4217 like AED|USD|EUR|null",
-  "place_of_supply": "string|null",
+  "vendor_place_of_supply": "string|null (from SELLER/VENDOR address only)",
+  "customer_place_of_supply": "string|null (from BUYER/CUSTOMER address only)",
+  "place_of_supply": "string|null (only if explicitly labeled 'Place of Supply' on document)",
   "document_category": "Tax Invoice|Invoice|Bill|Payment Voucher|Receipt Voucher|Remittance advice|Quotation|Sales order|Purchase order|Proforma Invoice|Commercial invoice|Receipt|Payment details|Cheque|Packing List|Order|Order summary|Sales summary|Purchase summary|Statement of Accounts|Proforma Tax Invoice|Cash Invoice|Others|null",
   "document_category_evidence": { "matched_text": "string|null", "page_region": "header|body|footer|null", "confidence": "number 0..1" },
   "field_confidence": { "document_category": "number|null", "date": "number|null", "invoice_number": "number|null", "vendor_name": "number|null", "customer_name": "number|null", "vendor_trn": "number|null", "customer_trn": "number|null", "currency": "number|null", "before_tax_amount": "number|null", "vat": "number|null", "net_amount": "number|null" },
@@ -469,3 +516,4 @@ Each separate document has its OWN header/logo, receipt/invoice number, total am
 Return ALL ${claimedCount} documents in the "documents" array using the same JSON schema as before.
 Output ONLY the JSON wrapper object { "total_documents_found": ${claimedCount}, "documents": [...] }. No markdown.`;
 }
+

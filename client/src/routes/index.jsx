@@ -20,6 +20,7 @@ import DepartmentDashboard from "../pages/DepartmentDashboard/DepartmentDashboar
 import DepartmentUsers from "../pages/DepartmentUsers/DepartmentUsers";
 import UserDashboard from "../pages/UserDashboard/UserDashboard";
 import NotFound from "../pages/NotFound/NotFound";
+import KnowledgeBase from "../pages/KnowledgeBase/KnowledgeBase";
 import {
   PermissionRoute,
   AdminRoute,

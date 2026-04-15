@@ -1,7 +1,6 @@
 import axios from "axios";
 
-export const API_BASE = (import.meta.env.VITE_API_BASE || "https://apivatfiling.thexyra.com/api").replace(/\/$/, "");
-export const BACKEND_ORIGIN = API_BASE.replace(/\/api$/i, "");
+const API_BASE = import.meta?.env?.VITE_API_BASE || "http://localhost:3001/api";
 
 export const api = axios.create({
   baseURL: API_BASE,
@@ -20,11 +19,22 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
+    const reqUrl = error.config?.url || "";
+    const isAuthEndpoint = reqUrl.includes("/auth/login") || reqUrl.includes("/auth/register");
+
+    // Only treat 401 as an expired session for protected endpoints, NOT for login/register
+    if (error.response && error.response.status === 401 && !isAuthEndpoint) {
+      // Wipe all client-side session artifacts
       localStorage.removeItem("token");
-      // Redirect to login if possible, or just let the caller handle it
-      if (typeof window !== "undefined") {
+      localStorage.removeItem("user");
+      sessionStorage.clear();
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      delete api.defaults.headers.common.Authorization;
+
+      // Redirect only if we aren't already on the login page (avoid loop)
+      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
         window.location.href = "/login?error=session_expired";
+        return new Promise(() => {}); // halt promise chain while redirecting
       }
     }
     const msg = error.response?.data?.message || error.message || "Request failed.";

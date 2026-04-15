@@ -71,9 +71,10 @@ export default function UserDashboard() {
   }, []);
 
   useEffect(() => {
+    setUserProfile(null);
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [user?.id]);
 
   const getInitials = (name = "") =>
     name

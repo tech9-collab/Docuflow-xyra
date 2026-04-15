@@ -780,6 +780,66 @@ export function VatFilingComposer({
         pEnd.setHours(23, 59, 59, 999);
       }
 
+      // Re-classify unknown-type rows using row-level TRN/name fields
+      // against the company identity — mirrors the weighted voting logic
+      // in invoiceConvertController.js detectType().
+      // Simple name/TRN matching — trust Gemini's extraction fields directly
+      const reclassifyByIdentity = (row) => {
+        const cleanTrn = (v) => {
+          if (!v) return "";
+          const digits = String(v).replace(/\D/g, "");
+          return digits.length === 15 ? digits : "";
+        };
+        const normName = (s) =>
+          String(s || "")
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9\s]/g, "")
+            .replace(/\s+/g, " ");
+
+        const selfTrn = cleanTrn(companyTRN);
+        const selfName = normName(companyName);
+        if (!selfTrn && !selfName) return null;
+
+        const supplierTrn = cleanTrn(row?.["SUPPLIER TRN"]);
+        const customerTrn = cleanTrn(row?.["CUSTOMER TRN"]);
+        const vendorName = normName(row?.["SUPPLIER/VENDOR"]);
+        const partyName = normName(row?.PARTY);
+
+        // Match flags
+        const sTrnMatch = !!(selfTrn && supplierTrn && selfTrn === supplierTrn);
+        const cTrnMatch = !!(selfTrn && customerTrn && selfTrn === customerTrn);
+        const vendorMatch = !!(
+          selfName &&
+          vendorName &&
+          (vendorName.includes(selfName) || selfName.includes(vendorName))
+        );
+        const partyMatch = !!(
+          selfName &&
+          partyName &&
+          (partyName.includes(selfName) || selfName.includes(partyName))
+        );
+
+        // Simple weighted voting — no conflict/swap detection
+        const W_TRN = 10;
+        const W_NAME = 4;
+
+        let salesScore = 0;
+        let purchaseScore = 0;
+
+        if (sTrnMatch) salesScore += W_TRN;
+        if (cTrnMatch) purchaseScore += W_TRN;
+        if (vendorMatch) salesScore += W_NAME;
+        if (partyMatch) purchaseScore += W_NAME;
+
+        const diff = Math.abs(salesScore - purchaseScore);
+        if (diff < 3) return null; // too close to call — leave as Others
+
+        if (salesScore > purchaseScore) return "sales";
+        if (purchaseScore > salesScore) return "purchase";
+        return null;
+      };
+
       const routeInvoiceRow = (row, preferredKind = "") => {
         // VAT filing: when period is selected, rows outside period OR
         // rows without parseable date are routed to Others.
@@ -791,6 +851,14 @@ export function VatFilingComposer({
         const detected = toKind(row?.TYPE) || preferredKind;
         if (detected === "sales") return "sales";
         if (detected === "purchase") return "purchase";
+
+        // For in-period rows with unknown type, try re-classification
+        // using the row's own TRN/name fields vs company identity.
+        if (pStart && pEnd) {
+          const reclass = reclassifyByIdentity(row);
+          if (reclass) return reclass;
+        }
+
         return "others";
       };
 
@@ -808,8 +876,13 @@ export function VatFilingComposer({
         else othersRows.push(r);
       });
       incoming.others.forEach((r) => {
-        // Keep explicit "other" rows as Others in VAT flow.
-        othersRows.push(r);
+        // Route through date + re-classification instead of blindly
+        // sending to Others. Out-of-period rows still go to Others;
+        // in-period rows get a second chance at Sales/Purchase.
+        const bucket = routeInvoiceRow(r);
+        if (bucket === "sales") uaeSalesRows.push(r);
+        else if (bucket === "purchase") uaePurchaseRows.push(r);
+        else othersRows.push(r);
       });
       uaeSalesRows = dedupeInvoiceRows(uaeSalesRows);
       uaePurchaseRows = dedupeInvoiceRows(uaePurchaseRows);

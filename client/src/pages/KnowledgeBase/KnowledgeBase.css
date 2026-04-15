@@ -1,0 +1,292 @@
+.kb-page {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 24px;
+  color: #0f172a;
+}
+
+.kb-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
+  gap: 20px;
+  align-items: stretch;
+  margin-bottom: 22px;
+}
+
+.kb-hero-copy,
+.kb-hero-card,
+.kb-panel,
+.kb-role-card,
+.kb-workflow-card,
+.kb-note,
+.kb-ref-item {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04), 0 14px 40px rgba(15, 23, 42, 0.04);
+}
+
+.kb-hero-copy {
+  padding: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(17, 17, 17, 0.08), transparent 32%),
+    linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+}
+
+.kb-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #111827;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.kb-hero h1 {
+  margin: 0 0 12px;
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.kb-hero p {
+  margin: 0;
+  max-width: 72ch;
+  color: #4b5563;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.kb-hero-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 18px;
+}
+
+.kb-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 16px;
+  border-radius: 14px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.kb-stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.kb-stat-label {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.kb-grid,
+.kb-card-grid,
+.kb-ref-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.kb-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 16px;
+}
+
+.kb-panel {
+  padding: 20px;
+}
+
+.kb-panel-head,
+.kb-section-head,
+.kb-role-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kb-panel-head {
+  margin-bottom: 12px;
+}
+
+.kb-panel h2,
+.kb-section-head h2,
+.kb-role-top h3 {
+  margin: 0;
+}
+
+.kb-section {
+  margin-top: 18px;
+}
+
+.kb-section-head {
+  justify-content: space-between;
+  align-items: end;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.kb-section-head p {
+  margin: 0;
+  color: #6b7280;
+  max-width: 70ch;
+}
+
+.kb-card-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.kb-card-grid.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.kb-role-card,
+.kb-workflow-card {
+  padding: 18px;
+}
+
+.kb-role-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #111827;
+  color: #fff;
+}
+
+.kb-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #374151;
+  line-height: 1.7;
+}
+
+.kb-list.compact {
+  line-height: 1.55;
+}
+
+.kb-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.kb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.kb-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.kb-step {
+  position: relative;
+  padding: 16px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 132px;
+}
+
+.kb-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #111827;
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.kb-step-text {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.55;
+  padding-right: 24px;
+}
+
+.kb-step-arrow {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  color: #9ca3af;
+}
+
+.kb-notes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.kb-note {
+  padding: 16px;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.kb-ref-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.kb-ref-item {
+  padding: 16px 18px;
+  font-weight: 600;
+}
+
+@media (max-width: 1180px) {
+  .kb-hero,
+  .kb-grid,
+  .kb-card-grid,
+  .kb-card-grid.three,
+  .kb-steps,
+  .kb-notes,
+  .kb-ref-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .kb-page {
+    padding: 16px;
+  }
+
+  .kb-hero-copy,
+  .kb-hero-card,
+  .kb-panel,
+  .kb-role-card,
+  .kb-workflow-card,
+  .kb-note,
+  .kb-ref-item {
+    border-radius: 14px;
+  }
+
+  .kb-hero-copy {
+    padding: 22px;
+  }
+}
