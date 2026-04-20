@@ -15,7 +15,7 @@ export default async function requireAuth(req, res, next) {
         // Company admin accounts (registered via /auth/register) are stored in companies table
         if (decoded.type === 'admin') {
             const [compRows] = await pool.query(
-                "SELECT id FROM companies WHERE id = ? LIMIT 1",
+                "SELECT id, business_id FROM companies WHERE id = ? LIMIT 1",
                 [decoded.id]
             );
             if (compRows.length === 0) {
@@ -27,6 +27,7 @@ export default async function requireAuth(req, res, next) {
                 type: 'admin',
                 role_id: null,
                 company_id: decoded.id,
+                business_id: compRows[0].business_id,
                 department_id: null,
             };
             return next();
@@ -34,9 +35,12 @@ export default async function requireAuth(req, res, next) {
 
         // Employee accounts are stored in users table
         const [rows] = await pool.query(
-            `SELECT u.id, u.business_id AS company_id, u.type, u.role_id, u.department_id, r.name as role
+            `SELECT u.id, u.business_id, u.type, u.role_id, u.department_id,
+                    r.name as role,
+                    c.id as numeric_company_id
              FROM users u
              LEFT JOIN roles r ON u.role_id = r.id
+             LEFT JOIN companies c ON u.business_id = c.business_id
              WHERE u.id = ? LIMIT 1`,
             [decoded.id]
         );
@@ -52,12 +56,17 @@ export default async function requireAuth(req, res, next) {
             role: userRow.type === 'super_admin' ? 'super_admin' : userRow.role,
             type: userRow.type,
             role_id: userRow.role_id,
-            company_id: userRow.company_id,
+            company_id: userRow.numeric_company_id || null,
+            business_id: userRow.business_id || null,
             department_id: userRow.department_id
         };
         next();
     } catch (error) {
-        console.error("JWT verification error:", error);
+        if (error.name === 'TokenExpiredError') {
+            console.warn(`[AUTH] Token expired at ${error.expiredAt}`);
+        } else {
+            console.error("[AUTH] JWT verification error:", error.message);
+        }
         return res.status(401).json({ message: "Invalid or expired token" });
     }
 }

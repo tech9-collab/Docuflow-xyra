@@ -279,9 +279,12 @@ export default function DepartmentUsers() {
                   <option value="">Select Role</option>
                   {roles.map(role => (
                     <option key={role.id} value={role.id}>
-                      {role.name}
+                      {role.name}{role.department_name ? ` - ${role.department_name}` : ''}
                     </option>
                   ))}
+                  {roles.length === 0 && (
+                    <option value="" disabled>No roles available</option>
+                  )}
                 </select>
                 {roles.length === 0 && (
                   <p className="help-text">No roles available. Please create roles first.</p>

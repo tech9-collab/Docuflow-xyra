@@ -1,0 +1,2108 @@
+{
+  "companyId": "7",
+  "companyName": "TRAVEL MEDIA MIDDLE EAST - FZCO",
+  "companyTRN": "",
+  "periodId": 5,
+  "customerId": 7,
+  "bankData": {
+    "columns": [],
+    "rows": [],
+    "summary": {}
+  },
+  "invoiceData": {
+    "uaeSalesRows": [],
+    "uaePurchaseRows": [],
+    "othersRows": [
+      {
+        "DATE": "29.03.2024",
+        "INVOICE NUMBER": "2024DA-119-AFAMIA",
+        "INVOICE CATEGORY": "Others",
+        "SUPPLIER/VENDOR": "HELUKABEL MIDDLE EAST DWC LLC",
+        "PARTY": "AFAMIA SKY INTERNATIONAL",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 1,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": null
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24 (1).pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822824340-SHIPPING_DOCS_DT29.03.24_1_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 29647,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": null,
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Others",
+        "SUPPLIER/VENDOR": "HELUKABE MIDDLE EAST DWC-LLC",
+        "PARTY": null,
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29647,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 300,
+            "unit_price": 51.83,
+            "tax_amount": null,
+            "net_amount": 15549
+          },
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 1280,
+            "unit_price": 8.06,
+            "tax_amount": null,
+            "net_amount": 10316
+          },
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 200,
+            "unit_price": 18.91,
+            "tax_amount": null,
+            "net_amount": 3782
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24 (1).pdf [page 2]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822824340-SHIPPING_DOCS_DT29.03.24_1_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 60,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29647,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "29-Mar-24",
+        "INVOICE NUMBER": "2013UAE208/2024",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "HELUKABEL Middle East DWC LLC",
+        "PARTY": "Afamia Sky International",
+        "SUPPLIER TRN": "100018410900003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29647,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "RADOX 9GKW-AX 3600V 1x35",
+            "quantity": 300,
+            "unit_price": 51.83,
+            "tax_amount": 0,
+            "net_amount": 15549
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 2x0,75",
+            "quantity": 500,
+            "unit_price": 12.3,
+            "tax_amount": 0,
+            "net_amount": 6150
+          },
+          {
+            "description": "RADOX 3 GKW 600V 1G1,5 GNYE",
+            "quantity": 500,
+            "unit_price": 3.74,
+            "tax_amount": 0,
+            "net_amount": 1870
+          },
+          {
+            "description": "HELUKABEL 3 GKW 300V 1x2,5qmm M FR RW GY",
+            "quantity": 280,
+            "unit_price": 8.2,
+            "tax_amount": 0,
+            "net_amount": 2296
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 3x1,5",
+            "quantity": 200,
+            "unit_price": 18.91,
+            "tax_amount": 0,
+            "net_amount": 3782
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24 (1).pdf [page 3]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822824340-SHIPPING_DOCS_DT29.03.24_1_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 100,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29647,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "April-15, 2024",
+        "INVOICE NUMBER": "PO /15 /04-24",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "AFAMIA Sky International General Trading LLC",
+        "PARTY": "OOO LOGITRANS UZBEKISTAN",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": 304532,
+        "LINE_ITEMS": [
+          {
+            "description": "Sika Primer-206 G+P Black 6 Pc/Box",
+            "quantity": 150,
+            "unit_price": 104,
+            "tax_amount": null,
+            "net_amount": 15600
+          },
+          {
+            "description": "Sika Primer-207 6 Pc/Box",
+            "quantity": 300,
+            "unit_price": 97,
+            "tax_amount": null,
+            "net_amount": 29100
+          },
+          {
+            "description": "Sika Remover-208 4Pc/Box",
+            "quantity": 88,
+            "unit_price": 109,
+            "tax_amount": null,
+            "net_amount": 9592
+          },
+          {
+            "description": "Sika Activator PRO 4Pc/Box",
+            "quantity": 112,
+            "unit_price": 170,
+            "tax_amount": null,
+            "net_amount": 19040
+          },
+          {
+            "description": "SIKAFLEX-521 UV Black 20PC/Box",
+            "quantity": 40,
+            "unit_price": 47,
+            "tax_amount": null,
+            "net_amount": 1880
+          },
+          {
+            "description": "Sikaflex-268 Power. Cure (AB)/ 14x600ML 14Pc /Box",
+            "quantity": 2002,
+            "unit_price": 84,
+            "tax_amount": null,
+            "net_amount": 168168
+          },
+          {
+            "description": "Sikaflex 521 UV grey 12 pc/Box",
+            "quantity": 48,
+            "unit_price": 24,
+            "tax_amount": null,
+            "net_amount": 1152
+          },
+          {
+            "description": "Sikaflex 265 Black 20PC/Box",
+            "quantity": 1200,
+            "unit_price": 50,
+            "tax_amount": null,
+            "net_amount": 60000
+          }
+        ],
+        "SOURCE": "SIKA TO TASHKENT.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822824370-SIKA_TO_TASHKENT.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 304532,
+        "ZERO RATED (AED)": 304532,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "27/11/2023",
+        "INVOICE NUMBER": "0101",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "Afamia Sky International General Trading LLC",
+        "PARTY": "Better You Limited",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "USD",
+        "BEFORE TAX AMOUNT": 673188,
+        "VAT": 0,
+        "NET AMOUNT": 673188,
+        "LINE_ITEMS": [
+          {
+            "description": "CNC Cutting Machine (ALN-400G)",
+            "quantity": 4,
+            "unit_price": 168297,
+            "tax_amount": null,
+            "net_amount": 673188
+          }
+        ],
+        "SOURCE": "CNC - Better for you .pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822855066-CNC_-_Better_for_you_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 2472282.93,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 2472282.93,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "2024.05.11",
+        "INVOICE NUMBER": "KSA-YST 20231120-2",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "Wuxi Yushun metallurgical technology Co., Ltd",
+        "PARTY": "AFAMIA SKY INTERNATIONAL GENERAL TRADING LLC.",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "USD",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": 500000,
+        "LINE_ITEMS": [
+          {
+            "description": "电火花机床 CNC wire cutting machine HS 8456301090",
+            "quantity": 2,
+            "unit_price": 500000,
+            "tax_amount": null,
+            "net_amount": 500000
+          }
+        ],
+        "SOURCE": "COMMERCIAL INVOICE - WUXI.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822862685-COMMERCIAL_INVOICE_-_WUXI.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 1836250,
+        "ZERO RATED (AED)": 1836250,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "22-Mar-24",
+        "INVOICE NUMBER": "2013UAE180/2024",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "HELUKABEL Middle East DWC LLC",
+        "PARTY": "Afamia Sky International",
+        "SUPPLIER TRN": "100018410900003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 2000,
+        "VAT": 0,
+        "NET AMOUNT": 2000,
+        "LINE_ITEMS": [
+          {
+            "description": "Freight Charges",
+            "quantity": null,
+            "unit_price": null,
+            "tax_amount": 0,
+            "net_amount": 2000
+          }
+        ],
+        "SOURCE": "Helukabel.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822880405-Helukabel.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 2000,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 2000,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "07-May-2024",
+        "INVOICE NUMBER": "HQ-0001127",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "GATES ENGINEERING & SERVICES FZCO",
+        "PARTY": "WHITE SWAN LOGISTICS DWC-LLC",
+        "SUPPLIER TRN": "100277924500003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 136981.25,
+        "VAT": 0,
+        "NET AMOUNT": 136981.25,
+        "LINE_ITEMS": [
+          {
+            "description": "RUBBER BELT",
+            "quantity": 340,
+            "unit_price": 17.1,
+            "tax_amount": null,
+            "net_amount": 5814
+          },
+          {
+            "description": "RUBBER BELT",
+            "quantity": 3,
+            "unit_price": 555.75,
+            "tax_amount": null,
+            "net_amount": 1667.25
+          },
+          {
+            "description": "RUBBER BELT",
+            "quantity": 140,
+            "unit_price": 925,
+            "tax_amount": null,
+            "net_amount": 129500
+          }
+        ],
+        "SOURCE": "HQ-1127-CI.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822885057-HQ-1127-CI.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 136981.25,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 136981.25,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "29-Mar-24",
+        "INVOICE NUMBER": "2013UAE208/2024",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "HELUKABEL Middle East DWC LLC",
+        "PARTY": "Afamia Sky International",
+        "SUPPLIER TRN": "100018410900003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29609.18,
+        "VAT": 0,
+        "NET AMOUNT": 29609.18,
+        "LINE_ITEMS": [
+          {
+            "description": "RADOX 9GKW-AX 3600V 1x35 RADOX 9GKW-AX 3600V 1x35 1X 300 MTRS HS CODE: 85446010 COO:SWITZERLAND",
+            "quantity": 300,
+            "unit_price": 51.83,
+            "tax_amount": 0,
+            "net_amount": 15549
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 2x0,75 RADOX Tenuis-TW 600V 2x0,75 1 X 500 MTRS HS CODE: 85444999 COO:SWITZERLAND",
+            "quantity": 500,
+            "unit_price": 12.3,
+            "tax_amount": 0,
+            "net_amount": 6150
+          },
+          {
+            "description": "RADOX 3 GKW 600V 1G1,5 GNYE RADOX 3 GKW 600V 1G1,5 GNYE 1 X 500 MTRS HS CODE: 85444999 COO: SWITZERLAND",
+            "quantity": 500,
+            "unit_price": 3.74,
+            "tax_amount": 0,
+            "net_amount": 1870
+          },
+          {
+            "description": "HELUKABEL 3 GKW 300V 1x2, 5qmm M FR RW GY Huber & Suhner-Nr.:12564625 1 X 280 MTRS HSCODE:85444999 COO: SWITZERLAND",
+            "quantity": 280,
+            "unit_price": 8.2,
+            "tax_amount": 0,
+            "net_amount": 2296
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 3x1,5 RADOX Tenuis-TW 600V 3x1,5 1X198MTR HS CODE: 85444991 COO:SWITZERLAND",
+            "quantity": 198,
+            "unit_price": 18.91,
+            "tax_amount": 0,
+            "net_amount": 3744.18
+          }
+        ],
+        "SOURCE": "Invoice - Helukabel.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822900137-Invoice_-_Helukabel.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29609.18,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29609.18,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "28-March-2024",
+        "INVOICE NUMBER": "INV 003746/24",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "Sika UAE LLC",
+        "PARTY": "Afamia Sky International General Trading LLC",
+        "SUPPLIER TRN": "100053753800003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 229728,
+        "VAT": 11486.4,
+        "NET AMOUNT": 241214.4,
+        "LINE_ITEMS": [
+          {
+            "description": "Sikaprimer-206 G+P 250ML",
+            "quantity": 150,
+            "unit_price": 86,
+            "tax_amount": null,
+            "net_amount": 12900
+          },
+          {
+            "description": "SikaPrimer-207 black",
+            "quantity": 294,
+            "unit_price": 80,
+            "tax_amount": null,
+            "net_amount": 23520
+          },
+          {
+            "description": "Sikaremover-208 1000ML",
+            "quantity": 87,
+            "unit_price": 90,
+            "tax_amount": null,
+            "net_amount": 7830
+          },
+          {
+            "description": "Sikaflex®-521 UV Black",
+            "quantity": 1,
+            "unit_price": 780,
+            "tax_amount": null,
+            "net_amount": 780
+          },
+          {
+            "description": "Sikaflex®-268 PowerCure Black",
+            "quantity": 143,
+            "unit_price": 966,
+            "tax_amount": null,
+            "net_amount": 138138
+          },
+          {
+            "description": "Sikaflex®-521 UV Light Grey",
+            "quantity": 4,
+            "unit_price": 240,
+            "tax_amount": null,
+            "net_amount": 960
+          },
+          {
+            "description": "Sikaflex-265 black",
+            "quantity": 60,
+            "unit_price": 760,
+            "tax_amount": null,
+            "net_amount": 45600
+          }
+        ],
+        "SOURCE": "Set of docs- afamia.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822906255-Set_of_docs-_afamia.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 229728,
+        "VAT (AED)": 11486.4,
+        "NET AMOUNT (AED)": 241214.4,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "29.03.2024",
+        "INVOICE NUMBER": "2024DA-119-AFAMIA",
+        "INVOICE CATEGORY": "Others",
+        "SUPPLIER/VENDOR": "HELUKABEL MIDDLE EAST DWC LLC",
+        "PARTY": "AFAMIA SKY INTERNATIONAL",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": null,
+        "LINE_ITEMS": [
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 1,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": null
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822920799-SHIPPING_DOCS_DT29.03.24.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 85,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 0,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": null,
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "HELUKABE MIDDLE EAST DWC-LLC",
+        "PARTY": null,
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29647,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 300,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": 15549
+          },
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 1280,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": 10316
+          },
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 200,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": 3782
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24.pdf [page 2]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822920799-SHIPPING_DOCS_DT29.03.24.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 40,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29647,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "29-Mar-24",
+        "INVOICE NUMBER": "2013UAE208/2024",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "HELUKABEL Middle East DWC LLC",
+        "PARTY": "Afamia Sky International",
+        "SUPPLIER TRN": "100018410900003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE, Not Applicable",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29647,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "RADOX 9GKW-AX 3600V 1x35",
+            "quantity": 300,
+            "unit_price": 51.83,
+            "tax_amount": 0,
+            "net_amount": 15549
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 2x0,75",
+            "quantity": 500,
+            "unit_price": 12.3,
+            "tax_amount": 0,
+            "net_amount": 6150
+          },
+          {
+            "description": "RADOX 3 GKW 600V 1G1,5 GNYE",
+            "quantity": 500,
+            "unit_price": 3.74,
+            "tax_amount": 0,
+            "net_amount": 1870
+          },
+          {
+            "description": "HELUKABEL 3 GKW 300V 1x2,5qmm M FR RW GY",
+            "quantity": 280,
+            "unit_price": 8.2,
+            "tax_amount": 0,
+            "net_amount": 2296
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 3x1,5",
+            "quantity": 200,
+            "unit_price": 18.91,
+            "tax_amount": 0,
+            "net_amount": 3782
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24.pdf [page 3]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822920799-SHIPPING_DOCS_DT29.03.24.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29647,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      }
+    ],
+    "totals": {
+      "purchase": {
+        "beforeTax": 2989189.3600000003,
+        "vat": 11486.4,
+        "zero": 2170429,
+        "net": 5171104.76
+      },
+      "sales": {
+        "beforeTax": 0,
+        "vat": 0,
+        "zero": 0,
+        "net": 0
+      }
+    },
+    "__explicitBuckets": true,
+    "uaeOtherRows": [
+      {
+        "DATE": "29.03.2024",
+        "INVOICE NUMBER": "2024DA-119-AFAMIA",
+        "INVOICE CATEGORY": "Others",
+        "SUPPLIER/VENDOR": "HELUKABEL MIDDLE EAST DWC LLC",
+        "PARTY": "AFAMIA SKY INTERNATIONAL",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 1,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": null
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24 (1).pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822824340-SHIPPING_DOCS_DT29.03.24_1_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 29647,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": null,
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Others",
+        "SUPPLIER/VENDOR": "HELUKABE MIDDLE EAST DWC-LLC",
+        "PARTY": null,
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29647,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 300,
+            "unit_price": 51.83,
+            "tax_amount": null,
+            "net_amount": 15549
+          },
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 1280,
+            "unit_price": 8.06,
+            "tax_amount": null,
+            "net_amount": 10316
+          },
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 200,
+            "unit_price": 18.91,
+            "tax_amount": null,
+            "net_amount": 3782
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24 (1).pdf [page 2]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822824340-SHIPPING_DOCS_DT29.03.24_1_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 60,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29647,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "29-Mar-24",
+        "INVOICE NUMBER": "2013UAE208/2024",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "HELUKABEL Middle East DWC LLC",
+        "PARTY": "Afamia Sky International",
+        "SUPPLIER TRN": "100018410900003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29647,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "RADOX 9GKW-AX 3600V 1x35",
+            "quantity": 300,
+            "unit_price": 51.83,
+            "tax_amount": 0,
+            "net_amount": 15549
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 2x0,75",
+            "quantity": 500,
+            "unit_price": 12.3,
+            "tax_amount": 0,
+            "net_amount": 6150
+          },
+          {
+            "description": "RADOX 3 GKW 600V 1G1,5 GNYE",
+            "quantity": 500,
+            "unit_price": 3.74,
+            "tax_amount": 0,
+            "net_amount": 1870
+          },
+          {
+            "description": "HELUKABEL 3 GKW 300V 1x2,5qmm M FR RW GY",
+            "quantity": 280,
+            "unit_price": 8.2,
+            "tax_amount": 0,
+            "net_amount": 2296
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 3x1,5",
+            "quantity": 200,
+            "unit_price": 18.91,
+            "tax_amount": 0,
+            "net_amount": 3782
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24 (1).pdf [page 3]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822824340-SHIPPING_DOCS_DT29.03.24_1_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 100,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29647,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "April-15, 2024",
+        "INVOICE NUMBER": "PO /15 /04-24",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "AFAMIA Sky International General Trading LLC",
+        "PARTY": "OOO LOGITRANS UZBEKISTAN",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": 304532,
+        "LINE_ITEMS": [
+          {
+            "description": "Sika Primer-206 G+P Black 6 Pc/Box",
+            "quantity": 150,
+            "unit_price": 104,
+            "tax_amount": null,
+            "net_amount": 15600
+          },
+          {
+            "description": "Sika Primer-207 6 Pc/Box",
+            "quantity": 300,
+            "unit_price": 97,
+            "tax_amount": null,
+            "net_amount": 29100
+          },
+          {
+            "description": "Sika Remover-208 4Pc/Box",
+            "quantity": 88,
+            "unit_price": 109,
+            "tax_amount": null,
+            "net_amount": 9592
+          },
+          {
+            "description": "Sika Activator PRO 4Pc/Box",
+            "quantity": 112,
+            "unit_price": 170,
+            "tax_amount": null,
+            "net_amount": 19040
+          },
+          {
+            "description": "SIKAFLEX-521 UV Black 20PC/Box",
+            "quantity": 40,
+            "unit_price": 47,
+            "tax_amount": null,
+            "net_amount": 1880
+          },
+          {
+            "description": "Sikaflex-268 Power. Cure (AB)/ 14x600ML 14Pc /Box",
+            "quantity": 2002,
+            "unit_price": 84,
+            "tax_amount": null,
+            "net_amount": 168168
+          },
+          {
+            "description": "Sikaflex 521 UV grey 12 pc/Box",
+            "quantity": 48,
+            "unit_price": 24,
+            "tax_amount": null,
+            "net_amount": 1152
+          },
+          {
+            "description": "Sikaflex 265 Black 20PC/Box",
+            "quantity": 1200,
+            "unit_price": 50,
+            "tax_amount": null,
+            "net_amount": 60000
+          }
+        ],
+        "SOURCE": "SIKA TO TASHKENT.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822824370-SIKA_TO_TASHKENT.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 304532,
+        "ZERO RATED (AED)": 304532,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "27/11/2023",
+        "INVOICE NUMBER": "0101",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "Afamia Sky International General Trading LLC",
+        "PARTY": "Better You Limited",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "USD",
+        "BEFORE TAX AMOUNT": 673188,
+        "VAT": 0,
+        "NET AMOUNT": 673188,
+        "LINE_ITEMS": [
+          {
+            "description": "CNC Cutting Machine (ALN-400G)",
+            "quantity": 4,
+            "unit_price": 168297,
+            "tax_amount": null,
+            "net_amount": 673188
+          }
+        ],
+        "SOURCE": "CNC - Better for you .pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822855066-CNC_-_Better_for_you_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 2472282.93,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 2472282.93,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "2024.05.11",
+        "INVOICE NUMBER": "KSA-YST 20231120-2",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "Wuxi Yushun metallurgical technology Co., Ltd",
+        "PARTY": "AFAMIA SKY INTERNATIONAL GENERAL TRADING LLC.",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "USD",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": 500000,
+        "LINE_ITEMS": [
+          {
+            "description": "电火花机床 CNC wire cutting machine HS 8456301090",
+            "quantity": 2,
+            "unit_price": 500000,
+            "tax_amount": null,
+            "net_amount": 500000
+          }
+        ],
+        "SOURCE": "COMMERCIAL INVOICE - WUXI.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822862685-COMMERCIAL_INVOICE_-_WUXI.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 1836250,
+        "ZERO RATED (AED)": 1836250,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "22-Mar-24",
+        "INVOICE NUMBER": "2013UAE180/2024",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "HELUKABEL Middle East DWC LLC",
+        "PARTY": "Afamia Sky International",
+        "SUPPLIER TRN": "100018410900003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 2000,
+        "VAT": 0,
+        "NET AMOUNT": 2000,
+        "LINE_ITEMS": [
+          {
+            "description": "Freight Charges",
+            "quantity": null,
+            "unit_price": null,
+            "tax_amount": 0,
+            "net_amount": 2000
+          }
+        ],
+        "SOURCE": "Helukabel.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822880405-Helukabel.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 2000,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 2000,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "07-May-2024",
+        "INVOICE NUMBER": "HQ-0001127",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "GATES ENGINEERING & SERVICES FZCO",
+        "PARTY": "WHITE SWAN LOGISTICS DWC-LLC",
+        "SUPPLIER TRN": "100277924500003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 136981.25,
+        "VAT": 0,
+        "NET AMOUNT": 136981.25,
+        "LINE_ITEMS": [
+          {
+            "description": "RUBBER BELT",
+            "quantity": 340,
+            "unit_price": 17.1,
+            "tax_amount": null,
+            "net_amount": 5814
+          },
+          {
+            "description": "RUBBER BELT",
+            "quantity": 3,
+            "unit_price": 555.75,
+            "tax_amount": null,
+            "net_amount": 1667.25
+          },
+          {
+            "description": "RUBBER BELT",
+            "quantity": 140,
+            "unit_price": 925,
+            "tax_amount": null,
+            "net_amount": 129500
+          }
+        ],
+        "SOURCE": "HQ-1127-CI.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822885057-HQ-1127-CI.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 136981.25,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 136981.25,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "29-Mar-24",
+        "INVOICE NUMBER": "2013UAE208/2024",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "HELUKABEL Middle East DWC LLC",
+        "PARTY": "Afamia Sky International",
+        "SUPPLIER TRN": "100018410900003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29609.18,
+        "VAT": 0,
+        "NET AMOUNT": 29609.18,
+        "LINE_ITEMS": [
+          {
+            "description": "RADOX 9GKW-AX 3600V 1x35 RADOX 9GKW-AX 3600V 1x35 1X 300 MTRS HS CODE: 85446010 COO:SWITZERLAND",
+            "quantity": 300,
+            "unit_price": 51.83,
+            "tax_amount": 0,
+            "net_amount": 15549
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 2x0,75 RADOX Tenuis-TW 600V 2x0,75 1 X 500 MTRS HS CODE: 85444999 COO:SWITZERLAND",
+            "quantity": 500,
+            "unit_price": 12.3,
+            "tax_amount": 0,
+            "net_amount": 6150
+          },
+          {
+            "description": "RADOX 3 GKW 600V 1G1,5 GNYE RADOX 3 GKW 600V 1G1,5 GNYE 1 X 500 MTRS HS CODE: 85444999 COO: SWITZERLAND",
+            "quantity": 500,
+            "unit_price": 3.74,
+            "tax_amount": 0,
+            "net_amount": 1870
+          },
+          {
+            "description": "HELUKABEL 3 GKW 300V 1x2, 5qmm M FR RW GY Huber & Suhner-Nr.:12564625 1 X 280 MTRS HSCODE:85444999 COO: SWITZERLAND",
+            "quantity": 280,
+            "unit_price": 8.2,
+            "tax_amount": 0,
+            "net_amount": 2296
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 3x1,5 RADOX Tenuis-TW 600V 3x1,5 1X198MTR HS CODE: 85444991 COO:SWITZERLAND",
+            "quantity": 198,
+            "unit_price": 18.91,
+            "tax_amount": 0,
+            "net_amount": 3744.18
+          }
+        ],
+        "SOURCE": "Invoice - Helukabel.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822900137-Invoice_-_Helukabel.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29609.18,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29609.18,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "28-March-2024",
+        "INVOICE NUMBER": "INV 003746/24",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "Sika UAE LLC",
+        "PARTY": "Afamia Sky International General Trading LLC",
+        "SUPPLIER TRN": "100053753800003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 229728,
+        "VAT": 11486.4,
+        "NET AMOUNT": 241214.4,
+        "LINE_ITEMS": [
+          {
+            "description": "Sikaprimer-206 G+P 250ML",
+            "quantity": 150,
+            "unit_price": 86,
+            "tax_amount": null,
+            "net_amount": 12900
+          },
+          {
+            "description": "SikaPrimer-207 black",
+            "quantity": 294,
+            "unit_price": 80,
+            "tax_amount": null,
+            "net_amount": 23520
+          },
+          {
+            "description": "Sikaremover-208 1000ML",
+            "quantity": 87,
+            "unit_price": 90,
+            "tax_amount": null,
+            "net_amount": 7830
+          },
+          {
+            "description": "Sikaflex®-521 UV Black",
+            "quantity": 1,
+            "unit_price": 780,
+            "tax_amount": null,
+            "net_amount": 780
+          },
+          {
+            "description": "Sikaflex®-268 PowerCure Black",
+            "quantity": 143,
+            "unit_price": 966,
+            "tax_amount": null,
+            "net_amount": 138138
+          },
+          {
+            "description": "Sikaflex®-521 UV Light Grey",
+            "quantity": 4,
+            "unit_price": 240,
+            "tax_amount": null,
+            "net_amount": 960
+          },
+          {
+            "description": "Sikaflex-265 black",
+            "quantity": 60,
+            "unit_price": 760,
+            "tax_amount": null,
+            "net_amount": 45600
+          }
+        ],
+        "SOURCE": "Set of docs- afamia.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822906255-Set_of_docs-_afamia.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 229728,
+        "VAT (AED)": 11486.4,
+        "NET AMOUNT (AED)": 241214.4,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "29.03.2024",
+        "INVOICE NUMBER": "2024DA-119-AFAMIA",
+        "INVOICE CATEGORY": "Others",
+        "SUPPLIER/VENDOR": "HELUKABEL MIDDLE EAST DWC LLC",
+        "PARTY": "AFAMIA SKY INTERNATIONAL",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": null,
+        "LINE_ITEMS": [
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 1,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": null
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822920799-SHIPPING_DOCS_DT29.03.24.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 85,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 0,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": null,
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "HELUKABE MIDDLE EAST DWC-LLC",
+        "PARTY": null,
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29647,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 300,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": 15549
+          },
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 1280,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": 10316
+          },
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 200,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": 3782
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24.pdf [page 2]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822920799-SHIPPING_DOCS_DT29.03.24.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 40,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29647,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "29-Mar-24",
+        "INVOICE NUMBER": "2013UAE208/2024",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "HELUKABEL Middle East DWC LLC",
+        "PARTY": "Afamia Sky International",
+        "SUPPLIER TRN": "100018410900003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE, Not Applicable",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29647,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "RADOX 9GKW-AX 3600V 1x35",
+            "quantity": 300,
+            "unit_price": 51.83,
+            "tax_amount": 0,
+            "net_amount": 15549
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 2x0,75",
+            "quantity": 500,
+            "unit_price": 12.3,
+            "tax_amount": 0,
+            "net_amount": 6150
+          },
+          {
+            "description": "RADOX 3 GKW 600V 1G1,5 GNYE",
+            "quantity": 500,
+            "unit_price": 3.74,
+            "tax_amount": 0,
+            "net_amount": 1870
+          },
+          {
+            "description": "HELUKABEL 3 GKW 300V 1x2,5qmm M FR RW GY",
+            "quantity": 280,
+            "unit_price": 8.2,
+            "tax_amount": 0,
+            "net_amount": 2296
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 3x1,5",
+            "quantity": 200,
+            "unit_price": 18.91,
+            "tax_amount": 0,
+            "net_amount": 3782
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24.pdf [page 3]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822920799-SHIPPING_DOCS_DT29.03.24.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29647,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      }
+    ],
+    "placeOfSupplyRows": [
+      {
+        "DATE": "29.03.2024",
+        "INVOICE NUMBER": "2024DA-119-AFAMIA",
+        "INVOICE CATEGORY": "Others",
+        "SUPPLIER/VENDOR": "HELUKABEL MIDDLE EAST DWC LLC",
+        "PARTY": "AFAMIA SKY INTERNATIONAL",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 1,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": null
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24 (1).pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822824340-SHIPPING_DOCS_DT29.03.24_1_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 29647,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": null,
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Others",
+        "SUPPLIER/VENDOR": "HELUKABE MIDDLE EAST DWC-LLC",
+        "PARTY": null,
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29647,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 300,
+            "unit_price": 51.83,
+            "tax_amount": null,
+            "net_amount": 15549
+          },
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 1280,
+            "unit_price": 8.06,
+            "tax_amount": null,
+            "net_amount": 10316
+          },
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 200,
+            "unit_price": 18.91,
+            "tax_amount": null,
+            "net_amount": 3782
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24 (1).pdf [page 2]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822824340-SHIPPING_DOCS_DT29.03.24_1_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 60,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29647,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "29-Mar-24",
+        "INVOICE NUMBER": "2013UAE208/2024",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "HELUKABEL Middle East DWC LLC",
+        "PARTY": "Afamia Sky International",
+        "SUPPLIER TRN": "100018410900003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29647,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "RADOX 9GKW-AX 3600V 1x35",
+            "quantity": 300,
+            "unit_price": 51.83,
+            "tax_amount": 0,
+            "net_amount": 15549
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 2x0,75",
+            "quantity": 500,
+            "unit_price": 12.3,
+            "tax_amount": 0,
+            "net_amount": 6150
+          },
+          {
+            "description": "RADOX 3 GKW 600V 1G1,5 GNYE",
+            "quantity": 500,
+            "unit_price": 3.74,
+            "tax_amount": 0,
+            "net_amount": 1870
+          },
+          {
+            "description": "HELUKABEL 3 GKW 300V 1x2,5qmm M FR RW GY",
+            "quantity": 280,
+            "unit_price": 8.2,
+            "tax_amount": 0,
+            "net_amount": 2296
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 3x1,5",
+            "quantity": 200,
+            "unit_price": 18.91,
+            "tax_amount": 0,
+            "net_amount": 3782
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24 (1).pdf [page 3]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822824340-SHIPPING_DOCS_DT29.03.24_1_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 100,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29647,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "April-15, 2024",
+        "INVOICE NUMBER": "PO /15 /04-24",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "AFAMIA Sky International General Trading LLC",
+        "PARTY": "OOO LOGITRANS UZBEKISTAN",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": 304532,
+        "LINE_ITEMS": [
+          {
+            "description": "Sika Primer-206 G+P Black 6 Pc/Box",
+            "quantity": 150,
+            "unit_price": 104,
+            "tax_amount": null,
+            "net_amount": 15600
+          },
+          {
+            "description": "Sika Primer-207 6 Pc/Box",
+            "quantity": 300,
+            "unit_price": 97,
+            "tax_amount": null,
+            "net_amount": 29100
+          },
+          {
+            "description": "Sika Remover-208 4Pc/Box",
+            "quantity": 88,
+            "unit_price": 109,
+            "tax_amount": null,
+            "net_amount": 9592
+          },
+          {
+            "description": "Sika Activator PRO 4Pc/Box",
+            "quantity": 112,
+            "unit_price": 170,
+            "tax_amount": null,
+            "net_amount": 19040
+          },
+          {
+            "description": "SIKAFLEX-521 UV Black 20PC/Box",
+            "quantity": 40,
+            "unit_price": 47,
+            "tax_amount": null,
+            "net_amount": 1880
+          },
+          {
+            "description": "Sikaflex-268 Power. Cure (AB)/ 14x600ML 14Pc /Box",
+            "quantity": 2002,
+            "unit_price": 84,
+            "tax_amount": null,
+            "net_amount": 168168
+          },
+          {
+            "description": "Sikaflex 521 UV grey 12 pc/Box",
+            "quantity": 48,
+            "unit_price": 24,
+            "tax_amount": null,
+            "net_amount": 1152
+          },
+          {
+            "description": "Sikaflex 265 Black 20PC/Box",
+            "quantity": 1200,
+            "unit_price": 50,
+            "tax_amount": null,
+            "net_amount": 60000
+          }
+        ],
+        "SOURCE": "SIKA TO TASHKENT.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822824370-SIKA_TO_TASHKENT.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 304532,
+        "ZERO RATED (AED)": 304532,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "27/11/2023",
+        "INVOICE NUMBER": "0101",
+        "INVOICE CATEGORY": "Invoice",
+        "SUPPLIER/VENDOR": "Afamia Sky International General Trading LLC",
+        "PARTY": "Better You Limited",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "USD",
+        "BEFORE TAX AMOUNT": 673188,
+        "VAT": 0,
+        "NET AMOUNT": 673188,
+        "LINE_ITEMS": [
+          {
+            "description": "CNC Cutting Machine (ALN-400G)",
+            "quantity": 4,
+            "unit_price": 168297,
+            "tax_amount": null,
+            "net_amount": 673188
+          }
+        ],
+        "SOURCE": "CNC - Better for you .pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822855066-CNC_-_Better_for_you_.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 2472282.93,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 2472282.93,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "2024.05.11",
+        "INVOICE NUMBER": "KSA-YST 20231120-2",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "Wuxi Yushun metallurgical technology Co., Ltd",
+        "PARTY": "AFAMIA SKY INTERNATIONAL GENERAL TRADING LLC.",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "USD",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": 500000,
+        "LINE_ITEMS": [
+          {
+            "description": "电火花机床 CNC wire cutting machine HS 8456301090",
+            "quantity": 2,
+            "unit_price": 500000,
+            "tax_amount": null,
+            "net_amount": 500000
+          }
+        ],
+        "SOURCE": "COMMERCIAL INVOICE - WUXI.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822862685-COMMERCIAL_INVOICE_-_WUXI.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 90,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 1836250,
+        "ZERO RATED (AED)": 1836250,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "22-Mar-24",
+        "INVOICE NUMBER": "2013UAE180/2024",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "HELUKABEL Middle East DWC LLC",
+        "PARTY": "Afamia Sky International",
+        "SUPPLIER TRN": "100018410900003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 2000,
+        "VAT": 0,
+        "NET AMOUNT": 2000,
+        "LINE_ITEMS": [
+          {
+            "description": "Freight Charges",
+            "quantity": null,
+            "unit_price": null,
+            "tax_amount": 0,
+            "net_amount": 2000
+          }
+        ],
+        "SOURCE": "Helukabel.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822880405-Helukabel.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 2000,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 2000,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "07-May-2024",
+        "INVOICE NUMBER": "HQ-0001127",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "GATES ENGINEERING & SERVICES FZCO",
+        "PARTY": "WHITE SWAN LOGISTICS DWC-LLC",
+        "SUPPLIER TRN": "100277924500003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 136981.25,
+        "VAT": 0,
+        "NET AMOUNT": 136981.25,
+        "LINE_ITEMS": [
+          {
+            "description": "RUBBER BELT",
+            "quantity": 340,
+            "unit_price": 17.1,
+            "tax_amount": null,
+            "net_amount": 5814
+          },
+          {
+            "description": "RUBBER BELT",
+            "quantity": 3,
+            "unit_price": 555.75,
+            "tax_amount": null,
+            "net_amount": 1667.25
+          },
+          {
+            "description": "RUBBER BELT",
+            "quantity": 140,
+            "unit_price": 925,
+            "tax_amount": null,
+            "net_amount": 129500
+          }
+        ],
+        "SOURCE": "HQ-1127-CI.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822885057-HQ-1127-CI.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 136981.25,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 136981.25,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "29-Mar-24",
+        "INVOICE NUMBER": "2013UAE208/2024",
+        "INVOICE CATEGORY": "Tax Invoice",
+        "SUPPLIER/VENDOR": "HELUKABEL Middle East DWC LLC",
+        "PARTY": "Afamia Sky International",
+        "SUPPLIER TRN": "100018410900003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29609.18,
+        "VAT": 0,
+        "NET AMOUNT": 29609.18,
+        "LINE_ITEMS": [
+          {
+            "description": "RADOX 9GKW-AX 3600V 1x35 RADOX 9GKW-AX 3600V 1x35 1X 300 MTRS HS CODE: 85446010 COO:SWITZERLAND",
+            "quantity": 300,
+            "unit_price": 51.83,
+            "tax_amount": 0,
+            "net_amount": 15549
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 2x0,75 RADOX Tenuis-TW 600V 2x0,75 1 X 500 MTRS HS CODE: 85444999 COO:SWITZERLAND",
+            "quantity": 500,
+            "unit_price": 12.3,
+            "tax_amount": 0,
+            "net_amount": 6150
+          },
+          {
+            "description": "RADOX 3 GKW 600V 1G1,5 GNYE RADOX 3 GKW 600V 1G1,5 GNYE 1 X 500 MTRS HS CODE: 85444999 COO: SWITZERLAND",
+            "quantity": 500,
+            "unit_price": 3.74,
+            "tax_amount": 0,
+            "net_amount": 1870
+          },
+          {
+            "description": "HELUKABEL 3 GKW 300V 1x2, 5qmm M FR RW GY Huber & Suhner-Nr.:12564625 1 X 280 MTRS HSCODE:85444999 COO: SWITZERLAND",
+            "quantity": 280,
+            "unit_price": 8.2,
+            "tax_amount": 0,
+            "net_amount": 2296
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 3x1,5 RADOX Tenuis-TW 600V 3x1,5 1X198MTR HS CODE: 85444991 COO:SWITZERLAND",
+            "quantity": 198,
+            "unit_price": 18.91,
+            "tax_amount": 0,
+            "net_amount": 3744.18
+          }
+        ],
+        "SOURCE": "Invoice - Helukabel.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822900137-Invoice_-_Helukabel.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29609.18,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29609.18,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "28-March-2024",
+        "INVOICE NUMBER": "INV 003746/24",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "Sika UAE LLC",
+        "PARTY": "Afamia Sky International General Trading LLC",
+        "SUPPLIER TRN": "100053753800003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 229728,
+        "VAT": 11486.4,
+        "NET AMOUNT": 241214.4,
+        "LINE_ITEMS": [
+          {
+            "description": "Sikaprimer-206 G+P 250ML",
+            "quantity": 150,
+            "unit_price": 86,
+            "tax_amount": null,
+            "net_amount": 12900
+          },
+          {
+            "description": "SikaPrimer-207 black",
+            "quantity": 294,
+            "unit_price": 80,
+            "tax_amount": null,
+            "net_amount": 23520
+          },
+          {
+            "description": "Sikaremover-208 1000ML",
+            "quantity": 87,
+            "unit_price": 90,
+            "tax_amount": null,
+            "net_amount": 7830
+          },
+          {
+            "description": "Sikaflex®-521 UV Black",
+            "quantity": 1,
+            "unit_price": 780,
+            "tax_amount": null,
+            "net_amount": 780
+          },
+          {
+            "description": "Sikaflex®-268 PowerCure Black",
+            "quantity": 143,
+            "unit_price": 966,
+            "tax_amount": null,
+            "net_amount": 138138
+          },
+          {
+            "description": "Sikaflex®-521 UV Light Grey",
+            "quantity": 4,
+            "unit_price": 240,
+            "tax_amount": null,
+            "net_amount": 960
+          },
+          {
+            "description": "Sikaflex-265 black",
+            "quantity": 60,
+            "unit_price": 760,
+            "tax_amount": null,
+            "net_amount": 45600
+          }
+        ],
+        "SOURCE": "Set of docs- afamia.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822906255-Set_of_docs-_afamia.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 229728,
+        "VAT (AED)": 11486.4,
+        "NET AMOUNT (AED)": 241214.4,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "29.03.2024",
+        "INVOICE NUMBER": "2024DA-119-AFAMIA",
+        "INVOICE CATEGORY": "Others",
+        "SUPPLIER/VENDOR": "HELUKABEL MIDDLE EAST DWC LLC",
+        "PARTY": "AFAMIA SKY INTERNATIONAL",
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": null,
+        "VAT": 0,
+        "NET AMOUNT": null,
+        "LINE_ITEMS": [
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 1,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": null
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24.pdf [page 1]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822920799-SHIPPING_DOCS_DT29.03.24.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 85,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 0,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 0,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": null,
+        "INVOICE NUMBER": null,
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "HELUKABE MIDDLE EAST DWC-LLC",
+        "PARTY": null,
+        "SUPPLIER TRN": null,
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29647,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 300,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": 15549
+          },
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 1280,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": 10316
+          },
+          {
+            "description": "ELECTRICAL CABLES",
+            "quantity": 200,
+            "unit_price": null,
+            "tax_amount": null,
+            "net_amount": 3782
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24.pdf [page 2]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822920799-SHIPPING_DOCS_DT29.03.24.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 40,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29647,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      },
+      {
+        "DATE": "29-Mar-24",
+        "INVOICE NUMBER": "2013UAE208/2024",
+        "INVOICE CATEGORY": "Commercial invoice",
+        "SUPPLIER/VENDOR": "HELUKABEL Middle East DWC LLC",
+        "PARTY": "Afamia Sky International",
+        "SUPPLIER TRN": "100018410900003",
+        "CUSTOMER TRN": null,
+        "PLACE OF SUPPLY": "UAE, Not Applicable",
+        "CURRENCY": "AED",
+        "BEFORE TAX AMOUNT": 29647,
+        "VAT": 0,
+        "NET AMOUNT": 29647,
+        "LINE_ITEMS": [
+          {
+            "description": "RADOX 9GKW-AX 3600V 1x35",
+            "quantity": 300,
+            "unit_price": 51.83,
+            "tax_amount": 0,
+            "net_amount": 15549
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 2x0,75",
+            "quantity": 500,
+            "unit_price": 12.3,
+            "tax_amount": 0,
+            "net_amount": 6150
+          },
+          {
+            "description": "RADOX 3 GKW 600V 1G1,5 GNYE",
+            "quantity": 500,
+            "unit_price": 3.74,
+            "tax_amount": 0,
+            "net_amount": 1870
+          },
+          {
+            "description": "HELUKABEL 3 GKW 300V 1x2,5qmm M FR RW GY",
+            "quantity": 280,
+            "unit_price": 8.2,
+            "tax_amount": 0,
+            "net_amount": 2296
+          },
+          {
+            "description": "RADOX Tenuis-TW 600V 3x1,5",
+            "quantity": 200,
+            "unit_price": 18.91,
+            "tax_amount": 0,
+            "net_amount": 3782
+          }
+        ],
+        "SOURCE": "SHIPPING DOCS DT29.03.24.pdf [page 3]",
+        "SOURCE_URL": "/uploads/invoice/uploads/10-04-2026/1775822920799-SHIPPING_DOCS_DT29.03.24.pdf",
+        "SOURCE_TYPE": "pdf",
+        "CONFIDENCE": 95,
+        "CLASSIFICATION_REASON": "NO_SELF_MATCH",
+        "CLASSIFICATION_CONFIDENCE": 0,
+        "BEFORE TAX (AED)": 29647,
+        "VAT (AED)": 0,
+        "NET AMOUNT (AED)": 29647,
+        "ZERO RATED (AED)": 0,
+        "VAT ELIGIBILTY": "Not qualified for Vat Return Filing"
+      }
+    ]
+  },
+  "bankReconData": {
+    "columns": [],
+    "rows": []
+  },
+  "salesTotal": [
+    {
+      "METRIC": "STANDARDRATEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "OUTPUTTAX",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "ZERORATEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "EXEMPTEDSUPPLIES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "TOTALAMOUNTINCLUDINGVAT",
+      "AMOUNT": "0.00"
+    }
+  ],
+  "purchaseTotal": [
+    {
+      "METRIC": "STANDARDRATEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "INPUTTAX",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "ZERORATEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "EXEMPTEDEXPENSES",
+      "AMOUNT": "0.00"
+    },
+    {
+      "METRIC": "TOTALAMOUNTINCLUDINGVAT",
+      "AMOUNT": "0.00"
+    }
+  ],
+  "vatSummary": [
+    {
+      "PARTICULAR": "STANDARDRATEDSUPPLIES/EXPENSES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "OUTPUTTAX",
+      "SALES": "0.00",
+      "PURCHASES": "",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "INPUTTAX",
+      "SALES": "",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "ZERORATEDSUPPLIES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "EXEMPTEDSUPPLIES",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "TOTALAMOUNTINCLUDINGVAT",
+      "SALES": "0.00",
+      "PURCHASES": "0.00",
+      "NET_VAT": ""
+    },
+    {
+      "PARTICULAR": "NETVATPAYABLEFORTHEPERIOD",
+      "SALES": "",
+      "PURCHASES": "",
+      "NET_VAT": "0.00"
+    }
+  ],
+  "vatReturnOverrides": {},
+  "savedAt": "2026-04-10T13:30:04.680Z"
+}

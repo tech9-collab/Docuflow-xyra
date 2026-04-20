@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE = import.meta?.env?.VITE_API_BASE || "http://localhost:3001/api";
+export const API_BASE = (import.meta.env.VITE_API_BASE || "https://apivatfiling.thexyra.com/api").replace(/\/$/, "");
+export const BACKEND_ORIGIN = API_BASE.replace(/\/api$/i, "");
 
 export const api = axios.create({
   baseURL: API_BASE,
@@ -19,12 +20,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const reqUrl = error.config?.url || "";
-    const isAuthEndpoint = reqUrl.includes("/auth/login") || reqUrl.includes("/auth/register");
-
-    // Only treat 401 as an expired session for protected endpoints, NOT for login/register
-    if (error.response && error.response.status === 401 && !isAuthEndpoint) {
-      // Wipe all client-side session artifacts
+    if (error.response && error.response.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       sessionStorage.clear();
@@ -34,7 +30,6 @@ api.interceptors.response.use(
       // Redirect only if we aren't already on the login page (avoid loop)
       if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
         window.location.href = "/login?error=session_expired";
-        return new Promise(() => {}); // halt promise chain while redirecting
       }
     }
     const msg = error.response?.data?.message || error.message || "Request failed.";
@@ -63,7 +58,11 @@ export async function registerUser(payload) {
     return data;
   } catch (err) {
     const msg =
-      err.response?.data?.message || err.message || "Unable to create account.";
+      err.response?.data?.message ||
+      (err.message === "Network Error"
+        ? `Unable to reach the server at ${API_BASE}.`
+        : err.message) ||
+      "Unable to create account.";
     throw new Error(msg);
   }
 }
@@ -75,7 +74,11 @@ export async function loginUser(payload) {
     return data;
   } catch (err) {
     const msg =
-      err.response?.data?.message || err.message || "Unable to sign in.";
+      err.response?.data?.message ||
+      (err.message === "Network Error"
+        ? `Unable to reach the server at ${API_BASE}.`
+        : err.message) ||
+      "Unable to sign in.";
     throw new Error(msg);
   }
 }

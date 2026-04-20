@@ -5,14 +5,14 @@ import { api } from '../../helper/helper';
 import './EmployeeManagement.css';
 
 export default function EmployeeManagement() {
-    const { isSuperAdmin } = useAuth();
+    const { isSuperAdmin, hasPermission } = useAuth();
     const [employees, setEmployees] = useState([]);
     const [roles, setRoles] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    
+
     // Employee management states
     const [showEmployeeForm, setShowEmployeeForm] = useState(false);
     const [editingEmployee, setEditingEmployee] = useState(null);
@@ -28,13 +28,13 @@ export default function EmployeeManagement() {
     const [showPassword, setShowPassword] = useState(false);
 
     // Check if user has access to this page
-    if (!isSuperAdmin()) {
+    if (!isSuperAdmin() && !hasPermission('employees.read')) {
         return (
             <div className="employee-management-page">
                 <div className="access-denied">
                     <Shield size={64} />
                     <h2>Access Denied</h2>
-                    <p>Only Super Admin can access this page.</p>
+                    <p>You do not have permission to access this page.</p>
                 </div>
             </div>
         );
@@ -47,7 +47,7 @@ export default function EmployeeManagement() {
     const fetchData = async () => {
         setLoading(true);
         setError('');
-        
+
         try {
             const [employeesRes, rolesRes, departmentsRes] = await Promise.all([
                 api.get('/admin/employees'),
@@ -69,7 +69,7 @@ export default function EmployeeManagement() {
             setError('Name, email, password and role are required');
             return;
         }
-        
+
         try {
             await api.post('/admin/employees', newEmployee);
             setSuccess('Employee created successfully');
@@ -87,7 +87,7 @@ export default function EmployeeManagement() {
             setError('Name and email are required');
             return;
         }
-        
+
         try {
             await api.put(`/admin/employees/${editingEmployee.id}`, {
                 name: editingEmployee.name,
@@ -110,7 +110,7 @@ export default function EmployeeManagement() {
         if (!confirm('Are you sure you want to delete this employee? This action cannot be undone.')) {
             return;
         }
-        
+
         try {
             await api.delete(`/admin/employees/${employeeId}`);
             setSuccess('Employee deleted successfully');
@@ -137,13 +137,15 @@ export default function EmployeeManagement() {
                     <p>Manage all employees and their roles</p>
                 </div>
                 <div className="header-actions">
-                    <button 
-                        className="btn-primary"
-                        onClick={() => setShowEmployeeForm(true)}
-                    >
-                        <UserPlus size={16} />
-                        Add Employee
-                    </button>
+                    {(isSuperAdmin() || hasPermission('employees.create')) && (
+                        <button
+                            className="btn-primary"
+                            onClick={() => setShowEmployeeForm(true)}
+                        >
+                            <UserPlus size={16} />
+                            Add Employee
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -155,35 +157,35 @@ export default function EmployeeManagement() {
                 <div className="employee-form-container">
                     <div className="employee-form">
                         <h3>Add New Employee</h3>
-                        
+
                         <div className="form-grid">
                             <div className="form-group">
                                 <label>Full Name *</label>
                                 <input
                                     type="text"
                                     value={newEmployee.name}
-                                    onChange={(e) => setNewEmployee({...newEmployee, name: e.target.value})}
+                                    onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
                                     placeholder="Enter employee full name"
                                 />
                             </div>
-                            
+
                             <div className="form-group">
                                 <label>Email Address *</label>
                                 <input
                                     type="email"
                                     value={newEmployee.email}
-                                    onChange={(e) => setNewEmployee({...newEmployee, email: e.target.value})}
+                                    onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
                                     placeholder="Enter email address"
                                 />
                             </div>
-                            
+
                             <div className="form-group">
                                 <label>Password *</label>
                                 <div className="password-field">
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         value={newEmployee.password}
-                                        onChange={(e) => setNewEmployee({...newEmployee, password: e.target.value})}
+                                        onChange={(e) => setNewEmployee({ ...newEmployee, password: e.target.value })}
                                         placeholder="Enter password (min 6 characters)"
                                     />
                                     <button
@@ -195,12 +197,12 @@ export default function EmployeeManagement() {
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <div className="form-group">
                                 <label>Role *</label>
                                 <select
                                     value={newEmployee.roleId}
-                                    onChange={(e) => setNewEmployee({...newEmployee, roleId: e.target.value})}
+                                    onChange={(e) => setNewEmployee({ ...newEmployee, roleId: e.target.value })}
                                 >
                                     <option value="">Select Role</option>
                                     {roles.filter(role => role.name !== 'super_admin').map(role => (
@@ -210,12 +212,12 @@ export default function EmployeeManagement() {
                                     ))}
                                 </select>
                             </div>
-                            
+
                             <div className="form-group">
                                 <label>Department</label>
                                 <select
                                     value={newEmployee.departmentId}
-                                    onChange={(e) => setNewEmployee({...newEmployee, departmentId: e.target.value})}
+                                    onChange={(e) => setNewEmployee({ ...newEmployee, departmentId: e.target.value })}
                                 >
                                     <option value="">Select Department</option>
                                     {departments.map(department => (
@@ -225,28 +227,28 @@ export default function EmployeeManagement() {
                                     ))}
                                 </select>
                             </div>
-                            
+
                             <div className="form-group">
                                 <label>Country Code</label>
                                 <input
                                     type="text"
                                     value={newEmployee.countryCode}
-                                    onChange={(e) => setNewEmployee({...newEmployee, countryCode: e.target.value})}
+                                    onChange={(e) => setNewEmployee({ ...newEmployee, countryCode: e.target.value })}
                                     placeholder="e.g., +971"
                                 />
                             </div>
-                            
+
                             <div className="form-group">
                                 <label>Phone Number</label>
                                 <input
                                     type="tel"
                                     value={newEmployee.phone}
-                                    onChange={(e) => setNewEmployee({...newEmployee, phone: e.target.value})}
+                                    onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })}
                                     placeholder="Enter phone number"
                                 />
                             </div>
                         </div>
-                        
+
                         <div className="form-actions">
                             <button className="btn-save" onClick={createEmployee}>
                                 <Save size={16} />
@@ -265,7 +267,7 @@ export default function EmployeeManagement() {
                     <h3>All Employees</h3>
                     <span className="employee-count">{employees.length} total employees</span>
                 </div>
-                
+
                 {loading ? (
                     <div className="loading">Loading employees...</div>
                 ) : (
@@ -279,7 +281,9 @@ export default function EmployeeManagement() {
                                     <th>Role</th>
                                     <th>Status</th>
                                     <th>Created</th>
-                                    <th>Actions</th>
+                                    {(isSuperAdmin() || hasPermission('employees.update') || hasPermission('employees.delete')) && (
+                                        <th>Actions</th>
+                                    )}
                                 </tr>
                             </thead>
                             <tbody>
@@ -295,14 +299,14 @@ export default function EmployeeManagement() {
                                                         <input
                                                             type="text"
                                                             value={editingEmployee.name}
-                                                            onChange={(e) => setEditingEmployee({...editingEmployee, name: e.target.value})}
+                                                            onChange={(e) => setEditingEmployee({ ...editingEmployee, name: e.target.value })}
                                                             className="inline-input"
                                                             placeholder="Full name"
                                                         />
                                                         <input
                                                             type="email"
                                                             value={editingEmployee.email}
-                                                            onChange={(e) => setEditingEmployee({...editingEmployee, email: e.target.value})}
+                                                            onChange={(e) => setEditingEmployee({ ...editingEmployee, email: e.target.value })}
                                                             className="inline-input"
                                                             placeholder="Email address"
                                                         />
@@ -326,15 +330,15 @@ export default function EmployeeManagement() {
                                                     <input
                                                         type="text"
                                                         value={editingEmployee.country_code || ''}
-                                                        onChange={(e) => setEditingEmployee({...editingEmployee, country_code: e.target.value})}
+                                                        onChange={(e) => setEditingEmployee({ ...editingEmployee, country_code: e.target.value })}
                                                         className="inline-input"
                                                         placeholder="Country code"
-                                                        style={{marginBottom: '4px', width: '80px'}}
+                                                        style={{ marginBottom: '4px', width: '80px' }}
                                                     />
                                                     <input
                                                         type="tel"
                                                         value={editingEmployee.phone || ''}
-                                                        onChange={(e) => setEditingEmployee({...editingEmployee, phone: e.target.value})}
+                                                        onChange={(e) => setEditingEmployee({ ...editingEmployee, phone: e.target.value })}
                                                         className="inline-input"
                                                         placeholder="Phone number"
                                                     />
@@ -353,7 +357,7 @@ export default function EmployeeManagement() {
                                             {editingEmployee?.id === employee.id ? (
                                                 <select
                                                     value={editingEmployee.department_id || ''}
-                                                    onChange={(e) => setEditingEmployee({...editingEmployee, department_id: e.target.value})}
+                                                    onChange={(e) => setEditingEmployee({ ...editingEmployee, department_id: e.target.value })}
                                                     className="department-select"
                                                 >
                                                     <option value="">No Department</option>
@@ -371,9 +375,9 @@ export default function EmployeeManagement() {
                                         </td>
                                         <td>
                                             {editingEmployee?.id === employee.id ? (
-                                                <select 
+                                                <select
                                                     value={editingEmployee.role_id}
-                                                    onChange={(e) => setEditingEmployee({...editingEmployee, role_id: e.target.value})}
+                                                    onChange={(e) => setEditingEmployee({ ...editingEmployee, role_id: e.target.value })}
                                                     className="role-select"
                                                 >
                                                     {roles.filter(role => role.name !== 'super_admin').map(role => (
@@ -392,7 +396,7 @@ export default function EmployeeManagement() {
                                             {editingEmployee?.id === employee.id ? (
                                                 <select
                                                     value={editingEmployee.status || 'active'}
-                                                    onChange={(e) => setEditingEmployee({...editingEmployee, status: e.target.value})}
+                                                    onChange={(e) => setEditingEmployee({ ...editingEmployee, status: e.target.value })}
                                                     className="status-select"
                                                 >
                                                     <option value="active">Active</option>
@@ -410,45 +414,51 @@ export default function EmployeeManagement() {
                                                 {new Date(employee.created_at).toLocaleDateString()}
                                             </span>
                                         </td>
-                                        <td>
-                                            <div className="action-buttons">
-                                                {editingEmployee?.id === employee.id ? (
-                                                    <>
-                                                        <button 
-                                                            className="btn-save"
-                                                            onClick={updateEmployee}
-                                                            title="Save changes"
-                                                        >
-                                                            <Save size={14} />
-                                                        </button>
-                                                        <button 
-                                                            className="btn-cancel"
-                                                            onClick={cancelEditEmployee}
-                                                            title="Cancel"
-                                                        >
-                                                            <X size={14} />
-                                                        </button>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <button 
-                                                            className="btn-edit"
-                                                            onClick={() => startEditEmployee(employee)}
-                                                            title="Edit employee"
-                                                        >
-                                                            <Edit2 size={14} />
-                                                        </button>
-                                                        <button 
-                                                            className="btn-delete"
-                                                            onClick={() => deleteEmployee(employee.id)}
-                                                            title="Delete employee"
-                                                        >
-                                                            <Trash2 size={14} />
-                                                        </button>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </td>
+                                        {(isSuperAdmin() || hasPermission('employees.update') || hasPermission('employees.delete')) && (
+                                            <td>
+                                                <div className="action-buttons">
+                                                    {editingEmployee?.id === employee.id ? (
+                                                        <>
+                                                            <button
+                                                                className="btn-save"
+                                                                onClick={updateEmployee}
+                                                                title="Save changes"
+                                                            >
+                                                                <Save size={14} />
+                                                            </button>
+                                                            <button
+                                                                className="btn-cancel"
+                                                                onClick={cancelEditEmployee}
+                                                                title="Cancel"
+                                                            >
+                                                                <X size={14} />
+                                                            </button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            {(isSuperAdmin() || hasPermission('employees.update')) && (
+                                                                <button
+                                                                    className="btn-edit"
+                                                                    onClick={() => startEditEmployee(employee)}
+                                                                    title="Edit employee"
+                                                                >
+                                                                    <Edit2 size={14} />
+                                                                </button>
+                                                            )}
+                                                            {(isSuperAdmin() || hasPermission('employees.delete')) && (
+                                                                <button
+                                                                    className="btn-delete"
+                                                                    onClick={() => deleteEmployee(employee.id)}
+                                                                    title="Delete employee"
+                                                                >
+                                                                    <Trash2 size={14} />
+                                                                </button>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        )}
                                     </tr>
                                 ))}
                             </tbody>

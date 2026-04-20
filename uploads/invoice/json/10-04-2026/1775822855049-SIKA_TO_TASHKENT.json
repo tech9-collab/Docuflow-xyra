@@ -1,0 +1,105 @@
+{
+  "source": "SIKA TO TASHKENT.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "April-15, 2024",
+      "invoice_number": "PO /15 /04-24",
+      "vendor_name": "AFAMIA Sky International General Trading LLC",
+      "customer_name": "OOO LOGITRANS UZBEKISTAN",
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": 304532,
+      "line_items": [
+        {
+          "description": "Sika Primer-206 G+P Black 6 Pc/Box",
+          "quantity": 150,
+          "unit_price": 104,
+          "tax_amount": null,
+          "net_amount": 15600
+        },
+        {
+          "description": "Sika Primer-207 6 Pc/Box",
+          "quantity": 300,
+          "unit_price": 97,
+          "tax_amount": null,
+          "net_amount": 29100
+        },
+        {
+          "description": "Sika Remover-208 4Pc/Box",
+          "quantity": 88,
+          "unit_price": 109,
+          "tax_amount": null,
+          "net_amount": 9592
+        },
+        {
+          "description": "Sika Activator PRO 4Pc/Box",
+          "quantity": 112,
+          "unit_price": 170,
+          "tax_amount": null,
+          "net_amount": 19040
+        },
+        {
+          "description": "SIKAFLEX-521 UV Black 20PC/Box",
+          "quantity": 40,
+          "unit_price": 47,
+          "tax_amount": null,
+          "net_amount": 1880
+        },
+        {
+          "description": "Sikaflex-268 Power. Cure (AB)/ 14x600ML 14Pc /Box",
+          "quantity": 2002,
+          "unit_price": 84,
+          "tax_amount": null,
+          "net_amount": 168168
+        },
+        {
+          "description": "Sikaflex 521 UV grey 12 pc/Box",
+          "quantity": 48,
+          "unit_price": 24,
+          "tax_amount": null,
+          "net_amount": 1152
+        },
+        {
+          "description": "Sikaflex 265 Black 20PC/Box",
+          "quantity": 1200,
+          "unit_price": 50,
+          "tax_amount": null,
+          "net_amount": 60000
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Invoice",
+      "document_category_evidence": {
+        "matched_text": "INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company's name (TRAVEL MEDIA MIDDLE EAST - FZCO) nor TRN (104165761800003) found as vendor or customer.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    }
+  ]
+}

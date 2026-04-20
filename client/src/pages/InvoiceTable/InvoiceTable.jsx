@@ -1,10 +1,92 @@
 import { useLocation } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./InvoiceTable.css";
 import PdfViewer from "../../components/PdfViewer/PdfViewer";
 import ImageViewer from "../../components/ImageViewer/ImageViewer";
-import { X } from "lucide-react";
+import { X, Info } from "lucide-react";
+
+/* --- DATE FORMATTING UTILS --- */
+const parseFlexibleDate = (s) => {
+  if (!s) return null;
+  const str = String(s).trim();
+  if (!str) return null;
+
+  const makeDate = (year, month, day) => {
+    const d = new Date(year, month - 1, day);
+    if (
+      d.getFullYear() !== year ||
+      d.getMonth() !== month - 1 ||
+      d.getDate() !== day
+    ) {
+      return null;
+    }
+    return d;
+  };
+
+  // 1. ISO-like YYYY-MM-DD / YYYY/MM/DD
+  const isoMatch = str.match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})$/);
+  if (isoMatch) {
+    const year = parseInt(isoMatch[1], 10);
+    const month = parseInt(isoMatch[2], 10);
+    const day = parseInt(isoMatch[3], 10);
+    return makeDate(year, month, day);
+  }
+
+  // 2. Numeric dates
+  const numericMatch = str.match(/^(\d{1,2})([\/\-.])(\d{1,2})\2(\d{4})$/);
+  if (numericMatch) {
+    const first = parseInt(numericMatch[1], 10);
+    const sep = numericMatch[2];
+    const second = parseInt(numericMatch[3], 10);
+    const year = parseInt(numericMatch[4], 10);
+    if (sep === "/") {
+      if (first > 12) return makeDate(year, second, first);
+      return makeDate(year, first, second);
+    }
+    if (second > 12) return makeDate(year, first, second);
+    return makeDate(year, second, first);
+  }
+
+  // 3. Alpha months
+  const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+  const alphaMatch = str.match(/^(\d{1,2})[\/\- ]?([a-z]{3})[\/\- ]?(\d{4})$/i);
+  if (alphaMatch) {
+    const day = parseInt(alphaMatch[1], 10);
+    const monthStr = alphaMatch[2].toLowerCase();
+    const monthIndex = monthNames.indexOf(monthStr);
+    const year = parseInt(alphaMatch[3], 10);
+    if (monthIndex !== -1) return makeDate(year, monthIndex + 1, day);
+  }
+
+  const d = new Date(str);
+  return isNaN(d.getTime()) ? null : d;
+};
+
+const formatLineItems = (items) => {
+  if (!items) return "";
+  const arr = Array.isArray(items) ? items : [];
+  if (arr.length === 0) return "";
+  return arr.map((li, idx) => {
+    const desc = li.description || `Item ${idx + 1}`;
+    const qty = li.quantity != null ? ` | Qty: ${li.quantity}` : "";
+    const rate = li.unit_price != null ? ` | Rate: ${li.unit_price}` : "";
+    const amount = li.net_amount != null ? ` | Amount: ${li.net_amount}` : "";
+    return `Item ${idx + 1}: ${desc}${qty}${rate}${amount}`;
+  }).join("\n");
+};
+
+const formatDateDisplay = (val) => {
+  if (val === null || val === undefined || val === "") return "";
+  const str = String(val).trim();
+  const strippedDate = str.replace(/\s+\d{1,2}:\d{2}(:\d{2})?(\s*[AP]M)?$/i, "");
+  const d = parseFlexibleDate(strippedDate);
+  if (!d || isNaN(d.getTime())) return strippedDate;
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
 
 const RAW_API_BASE =
   import.meta.env.VITE_API_BASE || "http://localhost:3001/api";
@@ -91,10 +173,6 @@ export default function InvoiceTable() {
   const [view, setView] = useState("purchase");
 
   const [preview, setPreview] = useState(null);
-  const hasExplicitBuckets =
-    (Array.isArray(uaeSalesRows) && uaeSalesRows.length > 0) ||
-    (Array.isArray(uaePurchaseRows) && uaePurchaseRows.length > 0) ||
-    (Array.isArray(othersRows) && othersRows.length > 0);
 
   const purchaseData = useMemo(() => {
     const fallbackRows = Array.isArray(uaePurchaseRows) ? uaePurchaseRows : [];
@@ -122,10 +200,10 @@ export default function InvoiceTable() {
     const rows = hasExplicitBuckets
       ? fallbackRows
       : (table.rows || []).length
-      ? (table.rows || []).filter(
-        (r) => String(r.TYPE || "").toLowerCase() === "sales"
-      )
-      : fallbackRows;
+        ? (table.rows || []).filter(
+          (r) => String(r.TYPE || "").toLowerCase() === "sales"
+        )
+        : fallbackRows;
     return {
       columns: UAE_SALES_ORDER.map((k) => ({ key: k, label: k })),
       rows: rows.map((r) => {
@@ -145,11 +223,11 @@ export default function InvoiceTable() {
     const rows = hasExplicitBuckets
       ? fallbackRows
       : (table.rows || []).length
-      ? (table.rows || []).filter((r) => {
-        const t = String(r.TYPE || "").toLowerCase();
-        return t === "other" || t === "others";
-      })
-      : fallbackRows;
+        ? (table.rows || []).filter((r) => {
+          const t = String(r.TYPE || "").toLowerCase();
+          return t === "other" || t === "others";
+        })
+        : fallbackRows;
     return {
       columns: UAE_OTHERS_ORDER.map((k) => ({ key: k, label: k })),
       rows: rows.map((r) => {
@@ -281,6 +359,11 @@ export default function InvoiceTable() {
 
       {/* Table Card */}
       <div className="result-card">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
+          <span className="record-count" style={{ fontSize: '13px', color: '#6b7280', fontWeight: '500' }}>
+            Total Records: {rows.length}
+          </span>
+        </div>
         <div className="tbl-scroller">
           <table className="tbl nice">
             <thead>
@@ -289,9 +372,36 @@ export default function InvoiceTable() {
                   <th
                     key={c.key}
                     className={idx === 0 ? "sticky-col" : undefined}
-                    title={c.label}
+                    title={c.key === "PLACE OF SUPPLY" && view === "sales" ? undefined : c.label}
                   >
-                    {c.label}
+                    {c.key === "PLACE OF SUPPLY" && view === "sales" ? (
+                      <span className="th-with-info">
+                        {c.label}
+                        <button
+                          ref={posIconRef}
+                          type="button"
+                          className="pos-info-btn"
+                          aria-label="Place of supply information"
+                          onMouseEnter={showPosTooltip}
+                          onMouseLeave={() => {
+                            if (!posClickLockedRef.current) setPosTooltipOpen(false);
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            posClickLockedRef.current = !posClickLockedRef.current;
+                            if (posClickLockedRef.current) {
+                              showPosTooltip();
+                            } else {
+                              setPosTooltipOpen(false);
+                            }
+                          }}
+                        >
+                          <Info size={13} />
+                        </button>
+                      </span>
+                    ) : (
+                      c.label
+                    )}
                   </th>
                 ))}
               </tr>
@@ -359,10 +469,31 @@ export default function InvoiceTable() {
                       );
                     }
 
+                    const isDateCol = String(c.key).toUpperCase().includes("DATE");
+                    const isLineItemsCol = String(c.key).toUpperCase() === "LINE_ITEMS";
+                    const text = isDateCol ? formatDateDisplay(val) : (isLineItemsCol ? formatLineItems(val) : String(val ?? ""));
+
+                    const cls = [
+                      idx === 0 ? "sticky-col" : "",
+                      numericKeys.has(c.key) ? "num" : "",
+                    ]
+                      .join(" ")
+                      .trim();
+
+                    const title =
+                      c.key === "CONFIDENCE" && typeof val === "number"
+                        ? `${val}%`
+                        : text;
+
                     return (
                       <td
                         key={c.key}
-                        className={isNum ? "num" : ""}
+                        className={[
+                          idx === 0 ? "sticky-col" : "",
+                          isNum ? "num" : "",
+                        ]
+                          .join(" ")
+                          .trim()}
                         // title={val ?? ""}
                         title={
                           c.key === "CONFIDENCE" && typeof val === "number"
@@ -370,10 +501,9 @@ export default function InvoiceTable() {
                             : val ?? ""
                         }
                       >
-                        {/* {val ?? ""} */}
                         {c.key === "CONFIDENCE" && typeof val === "number"
                           ? `${val}%`
-                          : val ?? ""}
+                          : text}
                       </td>
                     );
                   })}
@@ -383,6 +513,26 @@ export default function InvoiceTable() {
           </table>
         </div>
       </div>
+      {posTooltipOpen && (
+        <div
+          className="pos-tooltip-popup"
+          style={{ top: posTooltipPos.y, left: posTooltipPos.x }}
+        >
+          <p>
+            <strong>Domestic (UAE):</strong> Select the Emirate where goods
+            were delivered or services performed.
+          </p>
+          <p>
+            <strong>Exports:</strong> Select &lsquo;Outside UAE&rsquo; (0%
+            VAT). Ensure you have official exit/commercial evidence.
+          </p>
+          <p>
+            <strong>Exceptions:</strong> For Real Estate or Events, POS is
+            always the physical location of the property/activity.
+          </p>
+        </div>
+      )}
+
       {preview && (
         <div className="invoice-preview-overlay">
           <div className="invoice-preview-dialog">

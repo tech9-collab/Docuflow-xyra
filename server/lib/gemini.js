@@ -5,9 +5,19 @@ const AI_KEY =
   process.env.GEMINI_API_KEY ||
   process.env.GOOGLE_API_KEY ||
   process.env.GOOGLEAI_API_KEY;
-if (!AI_KEY) throw new Error("Missing GEMINI_API_KEY/GOOGLE_API_KEY");
+let aiInstance = null;
 
-export const ai = new GoogleGenAI({ apiKey: AI_KEY });
+function getAi() {
+  if (!AI_KEY) {
+    throw new Error("Missing GEMINI_API_KEY/GOOGLE_API_KEY");
+  }
+  if (!aiInstance) {
+    aiInstance = new GoogleGenAI({ apiKey: AI_KEY });
+  }
+  return aiInstance;
+}
+
+export { getAi };
 
 const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 const GEMINI_TEMPERATURE = Number(process.env.GEMINI_TEMPERATURE || 0);
@@ -44,6 +54,7 @@ async function withRetry(fn, { retries = 6, baseMs = 1200 } = {}) {
 export async function uploadBufferToGemini({ buffer, filename, mimeType }) {
   return await withRetry(
     async () => {
+      const ai = getAi();
       let fileArg;
       if (typeof Blob !== "undefined") {
         fileArg = new Blob([buffer], {
@@ -75,6 +86,7 @@ export async function uploadBufferToGemini({ buffer, filename, mimeType }) {
 export async function extractJsonFromFile({ file, systemPrompt, userPrompt }) {
   const result = await withRetry(
     async () => {
+      const ai = getAi();
       return await ai.models.generateContent({
         model: MODEL,
         contents: [
@@ -116,6 +128,7 @@ export async function extractJsonFromInlineBuffer({
 
   const result = await withRetry(
     async () => {
+      const ai = getAi();
       return await ai.models.generateContent({
         model: MODEL,
         contents: [
@@ -250,6 +263,7 @@ function parseGeminiJson(s) {
 export async function uploadPathToGemini({ path, filename, mimeType }) {
   return await withRetry(
     async () => {
+      const ai = getAi();
       const uploaded = await ai.files.upload({
         file: path, // <-- path string (preferred for Node)
         config: {
@@ -270,6 +284,7 @@ export async function uploadPathToGemini({ path, filename, mimeType }) {
 }
 
 async function waitUntilActive(name, { tries = 60, delayMs = 2000 } = {}) {
+  const ai = getAi();
   let f = await ai.files.get({ name });
   for (let i = 0; i < tries; i++) {
     if (!f?.state || String(f.state) === "ACTIVE") return f;

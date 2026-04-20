@@ -1,0 +1,70 @@
+{
+  "source": "HQ-1127-CI.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "07-May-2024",
+      "invoice_number": "HQ-0001127",
+      "vendor_name": "GATES ENGINEERING & SERVICES FZCO",
+      "customer_name": "WHITE SWAN LOGISTICS DWC-LLC",
+      "vendor_trn": "100277924500003",
+      "customer_trn": null,
+      "before_tax_amount": 136981.25,
+      "vat": null,
+      "net_amount": 136981.25,
+      "line_items": [
+        {
+          "description": "RUBBER BELT",
+          "quantity": 340,
+          "unit_price": 17.1,
+          "tax_amount": null,
+          "net_amount": 5814
+        },
+        {
+          "description": "RUBBER BELT",
+          "quantity": 3,
+          "unit_price": 555.75,
+          "tax_amount": null,
+          "net_amount": 1667.25
+        },
+        {
+          "description": "RUBBER BELT",
+          "quantity": 140,
+          "unit_price": 925,
+          "tax_amount": null,
+          "net_amount": 129500
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "place_of_supply": null,
+      "document_category": "Commercial invoice",
+      "document_category_evidence": {
+        "matched_text": "Commercial Invoice / Packing List",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0.9,
+        "vat": 0,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither the uploading company's name (TRAVEL MEDIA MIDDLE EAST - FZCO) nor TRN (104165761800003) matches the vendor or customer on the document.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": "HQ-0001127"
+    }
+  ]
+}

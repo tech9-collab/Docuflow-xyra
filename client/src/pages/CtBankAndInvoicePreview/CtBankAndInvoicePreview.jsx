@@ -77,6 +77,87 @@ export default function CtBankAndInvoicePreview() {
   }
 
   // ===== Helpers (same as VAT) =====
+  const parseFlexibleDate = (s) => {
+    if (!s) return null;
+    const str = String(s).trim();
+    if (!str) return null;
+
+    const makeDate = (year, month, day) => {
+      const d = new Date(year, month - 1, day);
+      if (
+        d.getFullYear() !== year ||
+        d.getMonth() !== month - 1 ||
+        d.getDate() !== day
+      ) {
+        return null;
+      }
+      return d;
+    };
+
+    // 1. ISO-like YYYY-MM-DD / YYYY/MM/DD
+    const isoMatch = str.match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})$/);
+    if (isoMatch) {
+      const year = parseInt(isoMatch[1], 10);
+      const month = parseInt(isoMatch[2], 10);
+      const day = parseInt(isoMatch[3], 10);
+      return makeDate(year, month, day);
+    }
+
+    // 2. Numeric dates
+    const numericMatch = str.match(/^(\d{1,2})([\/\-.])(\d{1,2})\2(\d{4})$/);
+    if (numericMatch) {
+      const first = parseInt(numericMatch[1], 10);
+      const sep = numericMatch[2];
+      const second = parseInt(numericMatch[3], 10);
+      const year = parseInt(numericMatch[4], 10);
+      if (sep === "/") {
+        if (first > 12) return makeDate(year, second, first);
+        return makeDate(year, first, second);
+      }
+      if (second > 12) return makeDate(year, first, second);
+      return makeDate(year, second, first);
+    }
+
+    // 3. Alpha months
+    const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+    const alphaMatch = str.match(/^(\d{1,2})[\/\- ]?([a-z]{3})[\/\- ]?(\d{4})$/i);
+    if (alphaMatch) {
+      const day = parseInt(alphaMatch[1], 10);
+      const monthStr = alphaMatch[2].toLowerCase();
+      const monthIndex = monthNames.indexOf(monthStr);
+      const year = parseInt(alphaMatch[3], 10);
+      if (monthIndex !== -1) return makeDate(year, monthIndex + 1, day);
+    }
+
+    const d = new Date(str);
+    return isNaN(d.getTime()) ? null : d;
+  };
+
+  const formatLineItems = (items) => {
+    if (!items) return "";
+    const arr = Array.isArray(items) ? items : [];
+    if (arr.length === 0) return "";
+    return arr.map((li, idx) => {
+      const desc = li.description || `Item ${idx + 1}`;
+      const qty = li.quantity != null ? ` | Qty: ${li.quantity}` : "";
+      const rate = li.unit_price != null ? ` | Rate: ${li.unit_price}` : "";
+      const amount = li.net_amount != null ? ` | Amount: ${li.net_amount}` : "";
+      return `Item ${idx + 1}: ${desc}${qty}${rate}${amount}`;
+    }).join("\n");
+  };
+
+  const formatDateDisplay = (val) => {
+    if (val === null || val === undefined || val === "") return "";
+    const str = String(val).trim();
+    const strippedDate = str.replace(/\s+\d{1,2}:\d{2}(:\d{2})?(\s*[AP]M)?$/i, "");
+    const d = parseFlexibleDate(strippedDate);
+    if (!d || isNaN(d.getTime())) return strippedDate;
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   const HIDE_KEYS = new Set(["row"]);
   const normalizeCols = (cols = []) =>
     cols.map((c, i) => {
@@ -278,7 +359,9 @@ export default function CtBankAndInvoicePreview() {
                 <tr key={i}>
                   {cols.map((c, idx) => {
                     const val = r?.[c.key] ?? "";
-                    const text = String(val ?? "");
+                    const isDateCol = String(c.key).toUpperCase().includes("DATE");
+                    const isLineItemsCol = String(c.key).toUpperCase() === "LINE_ITEMS";
+                    const text = isDateCol ? formatDateDisplay(val) : (isLineItemsCol ? formatLineItems(val) : String(val ?? ""));
                     const cls = [
                       idx === 0 ? "sticky-col" : "",
                       isNumeric(text) ? "num" : "",
@@ -291,7 +374,7 @@ export default function CtBankAndInvoicePreview() {
                         ? `${val}%`
                         : text;
                     return (
-                      <td key={c.key} className={cls} title={title}>
+                      <td key={c.key} className={cls} title={title} style={isLineItemsCol ? { whiteSpace: 'pre-wrap', minWidth: '400px' } : {}}>
                         {c.key === "CONFIDENCE" && typeof val === "number"
                           ? `${val}%`
                           : text}
@@ -351,6 +434,11 @@ export default function CtBankAndInvoicePreview() {
 
       {/* Table Card */}
       <div className="result-card">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
+          <span className="record-count" style={{ fontSize: '13px', color: '#6b7280', fontWeight: '500' }}>
+            Total Records: {current.rows.length}
+          </span>
+        </div>
         {renderTable(current.columns, current.rows, "No data to display")}
       </div>
     </div>

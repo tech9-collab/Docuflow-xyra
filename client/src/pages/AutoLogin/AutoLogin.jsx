@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../context/AuthContext";
@@ -10,7 +10,6 @@ import { useAuth } from "../../context/AuthContext";
  */
 export default function AutoLogin() {
     const navigate = useNavigate();
-    const { login, clearSession } = useAuth();
 
     useEffect(() => {
         const run = async () => {
@@ -43,10 +42,7 @@ export default function AutoLogin() {
             } catch (e) {
                 navigate("/login?error=invalid_token", { replace: true });
             }
-        };
-
-        run();
-    }, []);
+        }, []);
 
     return (
         <div style={{

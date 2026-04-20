@@ -4,31 +4,6 @@ import { api } from "../helper/helper"; // ✅ use the shared axios instance
 
 const AuthContext = createContext();
 
-/**
- * Clear ALL client-side session artifacts so no stale data persists.
- * Called before every new login/SSO entry and on explicit logout.
- */
-const clearSession = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    sessionStorage.clear();
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    delete api.defaults.headers.common.Authorization;
-};
-
-/**
- * Returns true when the JWT is structurally valid AND not yet expired.
- */
-const isTokenValid = (token) => {
-    if (!token) return false;
-    try {
-        const decoded = jwtDecode(token);
-        return decoded.exp * 1000 > Date.now();
-    } catch {
-        return false;
-    }
-};
-
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [permissions, setPermissions] = useState([]);
@@ -50,15 +25,7 @@ export const AuthProvider = ({ children }) => {
             return true;
         } catch (error) {
             console.error('Failed to fetch user profile:', error);
-            const status = error?.response?.status || error?.status;
-            // 401 = invalid/expired token, 404 = user not found in DB
-            // Both mean the session is no longer usable
-            if (status === 401 || status === 404) {
-                clearSession();
-                setUser(null);
-                setPermissions([]);
-            }
-            return false;
+            // Don't logout on profile fetch failure, just use stored data
         }
     };
 
@@ -80,32 +47,35 @@ export const AuthProvider = ({ children }) => {
                 const cookieToken = getCookie("token");
                 if (cookieToken) {
                     token = cookieToken;
+                    // Note: user data will be fetched via /admin/profile since it's not in cookie
                 }
             }
 
-            // Validate token before using it
-            if (!isTokenValid(token)) {
-                clearSession();
-                setLoading(false);
-                return;
-            }
+            if (token) {
+                try {
+                    const decoded = jwtDecode(token);
+                    const userData = userDataRaw ? JSON.parse(userDataRaw) : {};
 
-            try {
-                api.defaults.headers.common.Authorization = `Bearer ${token}`;
+                    // Check if token is expired
+                    if (decoded.exp * 1000 < Date.now()) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+                        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                        setLoading(false);
+                        return;
+                    }
 
-                // Always fetch fresh profile from backend — never rely on cached state
-                const ok = await fetchUserProfile();
-                if (!ok) {
-                    // Profile fetch failed (user not found / token rejected)
-                    clearSession();
+                    setUser({ ...decoded, ...userData, type: userData.type || decoded.type, role_id: userData.role_id || decoded.role_id });
+                    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+                    // Fetch full profile and permissions
+                    await fetchUserProfile();
+                } catch (error) {
+                    console.error('Auth initialization error:', error);
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
                 }
-            } catch (error) {
-                console.error('Auth initialization error:', error);
-                clearSession();
-                setUser(null);
-                setPermissions([]);
             }
-
             setLoading(false);
         };
 
@@ -122,13 +92,14 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("user", JSON.stringify(userInfo));
         api.defaults.headers.common.Authorization = `Bearer ${token}`;
 
-        // Fetch fresh profile from backend — this is the authoritative source
-        const ok = await fetchUserProfile();
+        const decoded = jwtDecode(token);
+        setUser({ ...decoded, ...userInfo });
 
-        // Only fall back to token/login payload if profile fetch failed
-        if (!ok) {
-            const decoded = jwtDecode(token);
-            setUser({ ...decoded, ...userInfo });
+        // Fetch permissions after login
+        try {
+            await fetchUserProfile();
+        } catch (error) {
+            console.error('Failed to fetch permissions after login:', error);
         }
     };
 

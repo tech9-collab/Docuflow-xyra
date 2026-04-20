@@ -141,11 +141,11 @@ export default function RolesPermissions() {
                         } else {
                             // Super admin sees all users
                             const [usersRes, rolesRes, deptsRes] = await Promise.all([
-                                api.get('/admin/users'),
+                                api.get('/admin/employees'),
                                 api.get('/admin/roles'),
                                 api.get('/admin/departments')
                             ]);
-                            setUsers(usersRes.data.users || []);
+                            setUsers(usersRes.data.employees || []);
                             setRoles(rolesRes.data.roles || []);
                             setDepartments(deptsRes.data.departments || []);
                         }
@@ -287,7 +287,11 @@ export default function RolesPermissions() {
             setError('Name, email, and password are required');
             return;
         }
-        
+        if (!newUser.roleId) {
+            setError('Role is required');
+            return;
+        }
+
         try {
             await api.post('/admin/employees', newUser);
             setSuccess('User created successfully');
@@ -588,27 +592,34 @@ export default function RolesPermissions() {
                             />
                         </div>
                         <div className="form-group">
-                            <label>Role</label>
-                            <select
-                                value={newUser.roleId}
-                                onChange={(e) => setNewUser({...newUser, roleId: e.target.value})}
-                            >
-                                <option value="">Select Role</option>
-                                {roles.map(role => (
-                                    <option key={role.id} value={role.id}>{role.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="form-group">
                             <label>Department</label>
                             <select
                                 value={newUser.departmentId}
-                                onChange={(e) => setNewUser({...newUser, departmentId: e.target.value})}
+                                onChange={(e) => setNewUser({...newUser, departmentId: e.target.value, roleId: ''})}
                             >
                                 <option value="">Select Department</option>
                                 {userFormDepartments.map(dept => (
                                     <option key={dept.id} value={dept.id}>{dept.name}</option>
                                 ))}
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Role *</label>
+                            <select
+                                value={newUser.roleId}
+                                onChange={(e) => setNewUser({...newUser, roleId: e.target.value})}
+                            >
+                                <option value="">Select Role</option>
+                                {roles
+                                    .filter(role => !newUser.departmentId || role.department_id == newUser.departmentId)
+                                    .map(role => (
+                                        <option key={role.id} value={role.id}>
+                                            {role.name}{role.department_name ? ` - ${role.department_name}` : ''}
+                                        </option>
+                                    ))}
+                                {roles.filter(role => !newUser.departmentId || role.department_id == newUser.departmentId).length === 0 && (
+                                    <option value="" disabled>No roles available</option>
+                                )}
                             </select>
                         </div>
                         {/* Removed organization selection */}
@@ -678,7 +689,9 @@ export default function RolesPermissions() {
                                                 >
                                                     <option value="">No Role</option>
                                                     {roles.map(role => (
-                                                        <option key={role.id} value={role.id}>{role.name}</option>
+                                                        <option key={role.id} value={role.id}>
+                                                            {role.name}{role.department_name ? ` - ${role.department_name}` : ''}
+                                                        </option>
                                                     ))}
                                                 </select>
                                             </td>

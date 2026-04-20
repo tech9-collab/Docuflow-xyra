@@ -12,7 +12,7 @@ import {
     Calendar,
     ChevronLeft,
     ChevronRight,
-    DollarSign,
+    ClipboardList,
     ArrowUpRight,
     ArrowDownRight,
 } from "lucide-react";
@@ -135,12 +135,13 @@ export default function AdminDashboard() {
             const aggregated = data.aggregatedCounts || [];
             const allDocs = data.documentCounts || [];
 
+            const pendingItems = pendingRes.data.pendingFilings || [];
             setStats({
                 totalUsers: users.length,
                 totalDepartments: departments.length,
                 totalRoles: roles.length,
                 totalDocuments: Number(docCount.totalFiles) || 0,
-                pendingFilings: Number(data.pendingFilings) || 0,
+                pendingFilings: pendingItems.length,
                 totalPages: Number(docCount.totalPages) || 0,
                 totalSize: Number(docCount.totalSize) || 0,
                 totalInputTokens: Number(docCount.totalInputTokens) || 0,
@@ -150,7 +151,7 @@ export default function AdminDashboard() {
                 allDocumentDetails: allDocs,
             });
             setMonthlySummary(data.monthlySummary || []);
-            setPendingFilingRows(pendingRes.data.pendingFilings || []);
+            setPendingFilingRows(pendingItems);
             setPendingCustomers(customersRes.data.customers || []);
             setSelectedCustomerPendingRows([]);
             setPendingPage(1);
@@ -297,8 +298,15 @@ export default function AdminDashboard() {
 
     const pendingPageSize = 10;
     const pendingCustomerOptions = useMemo(() => {
+        const seen = new Set();
         return (pendingCustomers || [])
-            .filter((customer) => customer?.id && customer?.customer_name)
+            .filter((customer) => {
+                if (!customer?.id || !customer?.customer_name) return false;
+                const key = customer.customer_name.trim().toLowerCase();
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            })
             .map((customer) => ({
                 id: customer.id,
                 name: customer.customer_name,
@@ -331,6 +339,9 @@ export default function AdminDashboard() {
             return pendingSortDir === "asc" ? aTime - bTime : bTime - aTime;
         });
     }, [pendingFilingRows, selectedCustomerPendingRows, pendingSearch, selectedPendingCustomer, pendingSortDir]);
+
+    // KPI count always matches what the table displays
+    const pendingFilingsCount = filteredPendingFilings.length;
 
     const pendingTotalPages = Math.max(1, Math.ceil(filteredPendingFilings.length / pendingPageSize));
     const currentPendingPage = Math.min(pendingPage, pendingTotalPages);
@@ -440,9 +451,9 @@ export default function AdminDashboard() {
                     value={stats.totalPages}
                 />
                 <Kpi
-                    icon={<DollarSign />}
+                    icon={<ClipboardList />}
                     title="Pending Filings"
-                    value={stats.pendingFilings}
+                    value={pendingFilingsCount}
                     hint="View filing list"
                     onClick={() => setShowPendingFilings((prev) => !prev)}
                     active={showPendingFilings}
@@ -477,7 +488,7 @@ export default function AdminDashboard() {
                                         setPendingPage(1);
                                     }}
                                 >
-                                    <option value="">Customer</option>
+                                    <option value="">All Customers</option>
                                     {pendingCustomerOptions.map((customer) => (
                                         <option key={customer.id} value={String(customer.id)}>
                                             {customer.name}

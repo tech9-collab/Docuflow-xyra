@@ -1041,7 +1041,7 @@ export function VatFilingComposer({
         </p>
       </div>
 
-      <div className="two-panels">
+      <div className="filing-layout">
         {/* Invoices */}
         <div className="upload-card">
           <div className="upload-card-head">
@@ -1103,122 +1103,35 @@ export function VatFilingComposer({
           />
         </div>
 
-        {/* Bank statements */}
-        <div className="upload-card">
-          <div className="upload-card-head">
-            <div className="upload-title with-count">
-              Bank Statements{" "}
-              <span className="count-pill purchase">{bankFiles.length}</span>
-            </div>
-            <button
-              className="btn btn-black btn-add-files"
-              onClick={openBankPicker}
-              disabled={polling}
-            >
-              <Upload size={16} /> Add Files
-            </button>
-            <input
-              ref={bankPickerRef}
-              type="file"
-              multiple
-              accept={BANK_ACCEPT}
-              onChange={onPickBank}
-              hidden
-            />
-          </div>
-
-          <div className="drop-hint">
-            Drag & drop files here or click "Add Files"
-          </div>
-
-          {/* Password */}
-          <div className="field" style={{ marginTop: 12 }}>
-            <label className="label-inline">
-              <Lock size={14} /> PDF Password (optional)
-            </label>
-            <div className="pw-wrap">
-              <input
-                type={showPw ? "text" : "password"}
-                className="pw-input"
-                placeholder="Enter password if any PDFs are protected"
-                value={pdfPassword}
-                onChange={(e) => setPdfPassword(e.target.value)}
-                autoComplete="off"
-              />
-              <button
-                type="button"
-                className="pw-toggle"
-                onClick={() => setShowPw((s) => !s)}
-                aria-label={showPw ? "Hide password" : "Show password"}
-                title={showPw ? "Hide password" : "Show password"}
-              >
-                {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
-          {bankQueue.length > 0 && (
-            <div className="block">
-              <div className="block-title">Uploading</div>
-              <ul className="queue-list">
-                {bankQueue.map((q) => (
-                  <li key={q.id} className="queue-item">
-                    <div className="qi-top">
-                      <span className="qi-name" title={q.name}>
-                        {q.name}
-                      </span>
-                      <span className="qi-percent">{q.percent}%</span>
-                    </div>
-                    <div className="progress">
-                      <div className="bar" style={{ width: `${q.percent}%` }} />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        {/* Right-side preview panel */}
+        <div className="pane-right">
+          {!selected && (
+            <div className="preview-empty">Select a file to preview</div>
           )}
 
-          <FilesList
-            title="Files"
-            items={bankFiles}
-            onSelect={(id) => {
-              setActivePane("bank");
-              setBankSelectedId(id);
-            }}
-            selectedId={bankSelectedId}
-            onRemove={(id) => removeBank(id)}
-          />
+          {selected && selected.type === "image" && (
+            <ImageViewer
+              key={selected.id}
+              src={selected.url}
+              alt={selected.name}
+              initialScale={1}
+              minScale={0.4}
+              maxScale={5}
+              step={0.2}
+            />
+          )}
+
+          {selected && selected.type === "pdf" && (
+            <PdfViewer
+              key={selected.id}
+              fileUrl={selected.url}
+              controls={{
+                prev: <ChevronLeft size={16} />,
+                next: <ChevronRight size={16} />,
+              }}
+            />
+          )}
         </div>
-      </div>
-
-      {/* Right-side viewer (below on mobile) */}
-      <div className="pane-right">
-        {!selected && (
-          <div className="preview-empty">Select a file to preview</div>
-        )}
-
-        {selected && selected.type === "image" && (
-          <ImageViewer
-            key={selected.id}
-            src={selected.url}
-            alt={selected.name}
-            initialScale={1}
-            minScale={0.4}
-            maxScale={5}
-            step={0.2}
-          />
-        )}
-
-        {selected && selected.type === "pdf" && (
-          <PdfViewer
-            key={selected.id}
-            fileUrl={selected.url}
-            controls={{
-              prev: <ChevronLeft size={16} />,
-              next: <ChevronRight size={16} />,
-            }}
-          />
-        )}
       </div>
 
       {/* Processing overlay */}
