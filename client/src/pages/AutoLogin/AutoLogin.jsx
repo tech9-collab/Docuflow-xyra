@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../context/AuthContext";
@@ -10,6 +10,7 @@ import { useAuth } from "../../context/AuthContext";
  */
 export default function AutoLogin() {
     const navigate = useNavigate();
+    const { login, clearSession } = useAuth();
 
     useEffect(() => {
         const run = async () => {
@@ -25,24 +26,25 @@ export default function AutoLogin() {
             try {
                 const decoded = jwtDecode(token);
 
-                // Check token is not expired
                 if (decoded.exp && decoded.exp * 1000 < Date.now()) {
                     navigate("/login?error=session_expired", { replace: true });
                     return;
                 }
 
-                // Destroy any previous session before setting up the new one
-                clearSession();
+                if (typeof clearSession === "function") {
+                    clearSession();
+                }
 
-                // Use AuthContext.login() so profile is fetched & state is set
-                // before we navigate to the dashboard
                 await login(token, decoded);
 
                 navigate(redirectTo, { replace: true });
             } catch (e) {
                 navigate("/login?error=invalid_token", { replace: true });
             }
-        }, []);
+        };
+
+        run();
+    }, [navigate, login, clearSession]);
 
     return (
         <div style={{
