@@ -91,18 +91,16 @@ export default function VatPeriodRuns() {
   const formatDateTime = (d) => {
     if (!d) return "-";
     const dt = new Date(d);
-    if (isNaN(dt.getTime())) return d;
+    if (isNaN(dt.getTime())) {
+      // If native parsing fails, try to strip time manually as fallback
+      return String(d).split(/\s+/)[0];
+    }
 
     const day = String(dt.getDate()).padStart(2, "0");
     const month = String(dt.getMonth() + 1).padStart(2, "0");
     const year = dt.getFullYear();
 
-    const time = dt.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    return `${day}/${month}/${year} ${time}`;
+    return `${day}/${month}/${year}`;
   };
 
   const prettyStatus = (value) => {

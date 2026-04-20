@@ -155,13 +155,34 @@ const parseFlexibleDate = (s) => {
 
 const formatDateDisplay = (val) => {
   if (val === null || val === undefined || val === "") return "";
-  const d = parseFlexibleDate(val);
-  if (!d || isNaN(d.getTime())) return String(val);
+
+  const str = String(val).trim();
+  // Strip time part if present (e.g., "HH:MM AM/PM" or "HH:MM")
+  const strippedDate = str.replace(/\s+\d{1,2}:\d{2}(:\d{2})?(\s*[AP]M)?$/i, "");
+
+  const d = parseFlexibleDate(strippedDate);
+  if (!d || isNaN(d.getTime())) return strippedDate;
 
   const day = String(d.getDate()).padStart(2, "0");
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const year = d.getFullYear();
   return `${day}/${month}/${year}`;
+};
+
+const formatLineItems = (items) => {
+  if (!items) return "";
+  const arr = Array.isArray(items) ? items : [];
+  if (arr.length === 0) return "";
+
+  return arr
+    .map((li, idx) => {
+      const desc = li.description || `Item ${idx + 1}`;
+      const qty = li.quantity != null ? ` | Qty: ${li.quantity}` : "";
+      const rate = li.unit_price != null ? ` | Rate: ${li.unit_price}` : "";
+      const amount = li.net_amount != null ? ` | Amount: ${li.net_amount}` : "";
+      return `Item ${idx + 1}: ${desc}${qty}${rate}${amount}`;
+    })
+    .join("\n");
 };
 
 const resolveInvoiceDateDisplayValue = (row, colKey) => {
@@ -977,10 +998,10 @@ export default function VatFillingPreview() {
         previewData.bankReconData && Array.isArray(previewData.bankReconData.rows)
           ? previewData.bankReconData
           : buildBankReconciliationDisplay(
-              previewData.bankData,
-              salesRows,
-              purchaseRows
-            );
+            previewData.bankData,
+            salesRows,
+            purchaseRows
+          );
       const savedSnapshot = clonePreviewSnapshot({
         ...previewData,
         invoiceData: normalizedInvoiceData,
@@ -1091,10 +1112,10 @@ export default function VatFillingPreview() {
         previewData.bankReconData && Array.isArray(previewData.bankReconData.rows)
           ? previewData.bankReconData
           : buildBankReconciliationDisplay(
-              previewData.bankData,
-              salesRows,
-              purchaseRows
-            );
+            previewData.bankData,
+            salesRows,
+            purchaseRows
+          );
 
       const blob = await generateVatFilingExcel(companyId, {
         bankData: previewData.bankData,
@@ -1132,10 +1153,10 @@ export default function VatFillingPreview() {
         previewData.bankReconData && Array.isArray(previewData.bankReconData.rows)
           ? previewData.bankReconData
           : buildBankReconciliationDisplay(
-              previewData.bankData,
-              salesRows,
-              purchaseRows
-            );
+            previewData.bankData,
+            salesRows,
+            purchaseRows
+          );
 
       const blob = await downloadVatReturnTemplate(companyId, {
         bankData: previewData.bankData,
@@ -3058,10 +3079,10 @@ export default function VatFillingPreview() {
 
   const selectedRow =
     selectedRecord &&
-    selectedRecord.view === view &&
-    Array.isArray(current?.rows) &&
-    selectedRecord.rowIndex >= 0 &&
-    selectedRecord.rowIndex < current.rows.length
+      selectedRecord.view === view &&
+      Array.isArray(current?.rows) &&
+      selectedRecord.rowIndex >= 0 &&
+      selectedRecord.rowIndex < current.rows.length
       ? current.rows[selectedRecord.rowIndex]
       : null;
 
@@ -3094,11 +3115,11 @@ export default function VatFillingPreview() {
           normalizedCurrentKeys.length === 0
             ? availableKeys
             : [
-                ...normalizedCurrentKeys,
-                ...availableKeys.filter(
-                  (key) => !normalizedCurrentKeys.includes(key)
-                ),
-              ];
+              ...normalizedCurrentKeys,
+              ...availableKeys.filter(
+                (key) => !normalizedCurrentKeys.includes(key)
+              ),
+            ];
 
         if (
           nextKeys.length === currentKeys.length &&
@@ -3167,8 +3188,8 @@ export default function VatFillingPreview() {
     const availableColumnKeys = cols.map((c) => String(c.key));
     const selectedColumnKeys = supportsColumnFilter
       ? visibleColumnKeysByView[viewName]?.filter((key) =>
-          availableColumnKeys.includes(String(key))
-        ) || []
+        availableColumnKeys.includes(String(key))
+      ) || []
       : availableColumnKeys;
     const resolvedColumnKeys =
       supportsColumnFilter && selectedColumnKeys.length
@@ -3207,8 +3228,8 @@ export default function VatFillingPreview() {
 
     return (
       <div className="tbl-wrap">
-        {(showAddRowButton || supportsColumnFilter) && (
-          <div className="tbl-actions">
+        <div className="tbl-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="tbl-actions-left" style={{ display: 'flex', gap: '8px' }}>
             {supportsColumnFilter && (
               <div className="column-filter" ref={openColumnFilterView === viewName ? columnFilterRef : null}>
                 <button
@@ -3242,16 +3263,16 @@ export default function VatFillingPreview() {
                               setVisibleColumnKeysByView((prev) => {
                                 const previousKeys = Array.isArray(prev[viewName])
                                   ? prev[viewName].filter((key) =>
-                                      availableColumnKeys.includes(String(key))
-                                    )
+                                    availableColumnKeys.includes(String(key))
+                                  )
                                   : availableColumnKeys;
                                 const nextKeys = checked
                                   ? [
-                                      ...previousKeys,
-                                      ...(!previousKeys.includes(colKey)
-                                        ? [colKey]
-                                        : []),
-                                    ]
+                                    ...previousKeys,
+                                    ...(!previousKeys.includes(colKey)
+                                      ? [colKey]
+                                      : []),
+                                  ]
                                   : previousKeys.filter((key) => key !== colKey);
 
                                 return {
@@ -3279,294 +3300,301 @@ export default function VatFillingPreview() {
               </button>
             )}
           </div>
-        )}
+          <div className="tbl-record-count" style={{ fontSize: '13px', color: '#6b7280', fontWeight: '500' }}>
+            Total Records: {rows.length}
+          </div>
+        </div>
         {supportsColumnFilter && filteredCols.length === 0 ? (
           <div className="muted" style={{ padding: 12 }}>
             No columns selected.
           </div>
         ) : (
-        <div className={scrollerClassName}>
-          <table className={tableClassName}>
-            <thead>
-              <tr>
-                {filteredCols.map((c) => {
-                  const label = c.label ?? "";
-
-                  const isNumericHeader =
-                    /\(aed\)/i.test(label) ||
-                    /\bamount\b/i.test(label) ||
-                    /\bvat\b/i.test(label) ||
-                    /\btax\b/i.test(label) ||
-                    /\btotal\b/i.test(label) ||
-                    /\bnet\b/i.test(label) ||
-                    /\bdebit\b/i.test(label) ||
-                    /\bcredit\b/i.test(label) ||
-                    /\bbalance\b/i.test(label);
-
-                  const thCls = [
-                    "no-wrap-header",
-                    isNumericHeader ? "num num-header" : "",
-                  ]
-                    .join(" ")
-                    .trim();
-
-                  return (
-                    <th key={c.key} className={thCls} title={label}>
-                      {label}
-                    </th>
-                  );
-                })}
-                {showActionColumn && <th className="actions-col">Action</th>}
-              </tr>
-            </thead>
-
-            <tbody>
-              {!rows || rows.length === 0 ? (
+          <div className={scrollerClassName}>
+            <table className={tableClassName}>
+              <thead>
                 <tr>
-                  <td
-                    colSpan={filteredCols.length + (showActionColumn ? 1 : 0)}
-                    className="muted"
-                    style={{ textAlign: "center", padding: 18 }}
-                  >
-                    {emptyText}
-                  </td>
-                </tr>
-              ) : (
-                rows.map((row, rowIndex) => (
-                  <tr
-                    key={rowIndex}
-                    className={
-                      selectedRecord?.view === viewName &&
-                      selectedRecord?.rowIndex === rowIndex
-                        ? "row-selected"
-                        : ""
-                    }
-                    onClick={() => setSelectedRecord({ view: viewName, rowIndex })}
-                  >
-                    {filteredCols.map((c) => {
-                      const rawCellValue = resolveInvoiceDateDisplayValue(row, c.key);
-                      const val = rawCellValue ?? "";
-                      const isDateCol = String(c.key).toUpperCase().includes("DATE");
-                      const formattedDate = isDateCol ? formatDateDisplay(val) : null;
-                      const text = isDateCol ? formattedDate : String(val ?? "");
+                  {filteredCols.map((c) => {
+                    const label = c.label ?? "";
 
-                      // ✅ NEW: SOURCE column => open preview (pdf/image) using setPreview
-                      if (c.key === "SOURCE") {
-                        const label = val ?? "";
-                        const rawUrl = row.SOURCE_URL || row.source_url || null;
-                        const srcUrl = resolvePreviewUrl(rawUrl);
-                        const srcType = inferPreviewType(
-                          row.SOURCE_TYPE || row.source_type,
-                          rawUrl
-                        );
+                    const isNumericHeader =
+                      /\(aed\)/i.test(label) ||
+                      /\bamount\b/i.test(label) ||
+                      /\bvat\b/i.test(label) ||
+                      /\btax\b/i.test(label) ||
+                      /\btotal\b/i.test(label) ||
+                      /\bnet\b/i.test(label) ||
+                      /\bdebit\b/i.test(label) ||
+                      /\bcredit\b/i.test(label) ||
+                      /\bbalance\b/i.test(label);
+
+                    const thCls = [
+                      "no-wrap-header",
+                      isNumericHeader ? "num num-header" : "",
+                    ]
+                      .join(" ")
+                      .trim();
+
+                    return (
+                      <th key={c.key} className={thCls} title={label}>
+                        {label}
+                      </th>
+                    );
+                  })}
+                  {showActionColumn && <th className="actions-col">Action</th>}
+                </tr>
+              </thead>
+
+              <tbody>
+                {!rows || rows.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={filteredCols.length + (showActionColumn ? 1 : 0)}
+                      className="muted"
+                      style={{ textAlign: "center", padding: 18 }}
+                    >
+                      {emptyText}
+                    </td>
+                  </tr>
+                ) : (
+                  rows.map((row, rowIndex) => (
+                    <tr
+                      key={rowIndex}
+                      className={
+                        selectedRecord?.view === viewName &&
+                          selectedRecord?.rowIndex === rowIndex
+                          ? "row-selected"
+                          : ""
+                      }
+                      onClick={() => setSelectedRecord({ view: viewName, rowIndex })}
+                    >
+                      {filteredCols.map((c) => {
+                        const rawCellValue = resolveInvoiceDateDisplayValue(row, c.key);
+                        const val = rawCellValue ?? "";
+                        const isDateCol = String(c.key).toUpperCase().includes("DATE");
+                        const formattedDate = isDateCol ? formatDateDisplay(val) : null;
+
+                        const isLineItemsCol = String(c.key).toUpperCase() === "LINE_ITEMS";
+                        const formattedLineItems = isLineItemsCol ? formatLineItems(val) : null;
+
+                        const text = isDateCol ? formattedDate : (isLineItemsCol ? formattedLineItems : String(val ?? ""));
+
+                        // ✅ NEW: SOURCE column => open preview (pdf/image) using setPreview
+                        if (c.key === "SOURCE") {
+                          const label = val ?? "";
+                          const rawUrl = row.SOURCE_URL || row.source_url || null;
+                          const srcUrl = resolvePreviewUrl(rawUrl);
+                          const srcType = inferPreviewType(
+                            row.SOURCE_TYPE || row.source_type,
+                            rawUrl
+                          );
+
+                          return (
+                            <td key={c.key} title={String(label ?? "")}>
+                              {srcUrl ? (
+                                <button
+                                  type="button"
+                                  className="src-link"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedRecord({ view: viewName, rowIndex });
+                                    setPreview({
+                                      url: srcUrl,
+                                      type: srcType,
+                                      label,
+                                    });
+                                  }}
+                                >
+                                  {label}
+                                </button>
+                              ) : (
+                                label
+                              )}
+                            </td>
+                          );
+                        }
+
+                        const cls = [
+                          isNumeric(text) ? "num" : "",
+                          isRTL(text) ? "rtl" : "",
+                        ]
+                          .join(" ")
+                          .trim();
+
+                        const title =
+                          c.key === "CONFIDENCE" && typeof val === "number"
+                            ? `${val}%`
+                            : text;
+
+                        const isMetricRowEditing =
+                          isEditMode &&
+                          ["salesTotal", "purchaseTotal", "vatSummary"].includes(viewName) &&
+                          selectedRecord?.view === viewName &&
+                          selectedRecord?.rowIndex === rowIndex;
+
+                        let editable = isCellEditable(viewName) || isMetricRowEditing;
+
+                        if (
+                          (viewName === "salesTotal" ||
+                            viewName === "purchaseTotal") &&
+                          metricKey(row?.METRIC) === "TOTALAMOUNTINCLUDINGVAT" &&
+                          String(c.key).toUpperCase() === "AMOUNT"
+                        ) {
+                          editable = false;
+                        }
+
+                        // ✅ VAT SUMMARY: TOTALAMOUNTINCLUDINGVAT row should be read-only (auto)
+                        if (
+                          viewName === "vatSummary" &&
+                          particularKey(row?.PARTICULAR) ===
+                          "TOTALAMOUNTINCLUDINGVAT" &&
+                          (String(c.key).toUpperCase() === "SALES" ||
+                            String(c.key).toUpperCase() === "PURCHASES")
+                        ) {
+                          editable = false;
+                        }
+
+                        // ✅ NET VAT PAYABLE should always be calculated (read-only)
+                        if (
+                          viewName === "vatSummary" &&
+                          normalizeParticularKey(row?.PARTICULAR) ===
+                          "NETVATPAYABLEFORTHEPERIOD" &&
+                          String(c.key).toUpperCase() === "NET_VAT"
+                        ) {
+                          editable = false;
+                        }
 
                         return (
-                          <td key={c.key} title={String(label ?? "")}>
-                            {srcUrl ? (
-                              <button
-                                type="button"
-                                className="src-link"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedRecord({ view: viewName, rowIndex });
-                                  setPreview({
-                                    url: srcUrl,
-                                    type: srcType,
-                                    label,
-                                  });
-                                }}
-                              >
-                                {label}
-                              </button>
-                            ) : (
-                              label
-                            )}
-                          </td>
-                        );
-                      }
-
-                      const cls = [
-                        isNumeric(text) ? "num" : "",
-                        isRTL(text) ? "rtl" : "",
-                      ]
-                        .join(" ")
-                        .trim();
-
-                      const title =
-                        c.key === "CONFIDENCE" && typeof val === "number"
-                          ? `${val}%`
-                          : text;
-
-                      const isMetricRowEditing =
-                        isEditMode &&
-                        ["salesTotal", "purchaseTotal", "vatSummary"].includes(viewName) &&
-                        selectedRecord?.view === viewName &&
-                        selectedRecord?.rowIndex === rowIndex;
-
-                      let editable = isCellEditable(viewName) || isMetricRowEditing;
-
-                      if (
-                        (viewName === "salesTotal" ||
-                          viewName === "purchaseTotal") &&
-                        metricKey(row?.METRIC) === "TOTALAMOUNTINCLUDINGVAT" &&
-                        String(c.key).toUpperCase() === "AMOUNT"
-                      ) {
-                        editable = false;
-                      }
-
-                      // ✅ VAT SUMMARY: TOTALAMOUNTINCLUDINGVAT row should be read-only (auto)
-                      if (
-                        viewName === "vatSummary" &&
-                        particularKey(row?.PARTICULAR) ===
-                        "TOTALAMOUNTINCLUDINGVAT" &&
-                        (String(c.key).toUpperCase() === "SALES" ||
-                          String(c.key).toUpperCase() === "PURCHASES")
-                      ) {
-                        editable = false;
-                      }
-
-                      // ✅ NET VAT PAYABLE should always be calculated (read-only)
-                      if (
-                        viewName === "vatSummary" &&
-                        normalizeParticularKey(row?.PARTICULAR) ===
-                        "NETVATPAYABLEFORTHEPERIOD" &&
-                        String(c.key).toUpperCase() === "NET_VAT"
-                      ) {
-                        editable = false;
-                      }
-
-                      return (
-                        <td key={c.key} className={cls} title={title}>
-                          {editable ? (
-                            viewName === "others" &&
-                              String(c.key).toUpperCase() === "VAT ELIGIBILTY" ? (
-                              <select
-                                className="inline-edit-input"
-                                value={val ?? ""}
-                                onChange={(e) =>
-                                  handleCellChange(
-                                    viewName,
-                                    rowIndex,
-                                    c.key,
-                                    e.target.value
-                                  )
-                                }
-                              >
-                                <option value="">Select</option>
-                                {VAT_ELIGIBILITY_OPTIONS.map((opt) => (
-                                  <option key={opt} value={opt}>
-                                    {opt}
-                                  </option>
-                                ))}
-                              </select>
-                            ) : (
-                              <input
-                                className="inline-edit-input"
-                                value={isDateCol ? formattedDate : (val ?? "")}
-                                onChange={(e) =>
-                                  handleCellChange(
-                                    viewName,
-                                    rowIndex,
-                                    c.key,
-                                    e.target.value
-                                  )
-                                }
-                                onBlur={(e) => {
-                                  // Only format these two columns for Sales/Purchase when leaving the field
-                                  if (
-                                    (viewName === "sales" ||
-                                      viewName === "purchase") &&
-                                    (c.key === "BEFORE TAX (AED)" ||
-                                      c.key === "VAT (AED)")
-                                  ) {
-                                    const n = toNumberLoose(e.target.value);
+                          <td key={c.key} className={cls} title={title} style={isLineItemsCol ? { whiteSpace: 'pre-wrap', minWidth: '400px' } : {}}>
+                            {editable ? (
+                              viewName === "others" &&
+                                String(c.key).toUpperCase() === "VAT ELIGIBILTY" ? (
+                                <select
+                                  className="inline-edit-input"
+                                  value={val ?? ""}
+                                  onChange={(e) =>
                                     handleCellChange(
                                       viewName,
                                       rowIndex,
                                       c.key,
-                                      n == null ? "" : fmt2(n)
-                                    );
+                                      e.target.value
+                                    )
                                   }
-                                }}
-                              />
-                            )
-                          ) : viewName === "vatSummary" &&
-                            String(c.key).toUpperCase() === "NET_VAT" ? (
-                            formatAED(val)
-                          ) : c.key === "CONFIDENCE" &&
-                            typeof val === "number" ? (
-                            `${val}%`
-                          ) : (viewName === "salesTotal" ||
-                            viewName === "purchaseTotal") &&
-                            String(c.key).toUpperCase() === "AMOUNT" ? (
-                            formatAED(val)
+                                >
+                                  <option value="">Select</option>
+                                  {VAT_ELIGIBILITY_OPTIONS.map((opt) => (
+                                    <option key={opt} value={opt}>
+                                      {opt}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <input
+                                  className="inline-edit-input"
+                                  value={isDateCol ? formattedDate : (val ?? "")}
+                                  onChange={(e) =>
+                                    handleCellChange(
+                                      viewName,
+                                      rowIndex,
+                                      c.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  onBlur={(e) => {
+                                    // Only format these two columns for Sales/Purchase when leaving the field
+                                    if (
+                                      (viewName === "sales" ||
+                                        viewName === "purchase") &&
+                                      (c.key === "BEFORE TAX (AED)" ||
+                                        c.key === "VAT (AED)")
+                                    ) {
+                                      const n = toNumberLoose(e.target.value);
+                                      handleCellChange(
+                                        viewName,
+                                        rowIndex,
+                                        c.key,
+                                        n == null ? "" : fmt2(n)
+                                      );
+                                    }
+                                  }}
+                                />
+                              )
+                            ) : viewName === "vatSummary" &&
+                              String(c.key).toUpperCase() === "NET_VAT" ? (
+                              formatAED(val)
+                            ) : c.key === "CONFIDENCE" &&
+                              typeof val === "number" ? (
+                              `${val}%`
+                            ) : (viewName === "salesTotal" ||
+                              viewName === "purchaseTotal") &&
+                              String(c.key).toUpperCase() === "AMOUNT" ? (
+                              formatAED(val)
+                            ) : (
+                              text
+                            )}
+                          </td>
+                        );
+                      })}
+                      {showActionColumn && (
+                        <td className="actions-col">
+                          {["others", "sales", "purchase", "salesTotal", "purchaseTotal", "vatSummary"].includes(viewName) ? (
+                            <select
+                              className="inline-edit-input action-select"
+                              value=""
+                              onClick={(e) => e.stopPropagation()}
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                if (viewName === "others") {
+                                  handleOthersRowAction(rowIndex, e.target.value);
+                                } else if (
+                                  ["salesTotal", "purchaseTotal", "vatSummary"].includes(viewName)
+                                ) {
+                                  if (e.target.value === "edit") {
+                                    handleMetricRowEdit(viewName, rowIndex);
+                                  }
+                                } else {
+                                  handleSalesPurchaseRowAction(
+                                    viewName,
+                                    rowIndex,
+                                    e.target.value
+                                  );
+                                }
+                              }}
+                            >
+                              <option value="">Actions</option>
+                              <option value="edit">Edit</option>
+                              {viewName === "others" ? (
+                                <>
+                                  <option value="delete">Delete</option>
+                                  <option value="moveToSales">Move to Sales</option>
+                                  <option value="moveToPurchase">Move to Purchase</option>
+                                </>
+                              ) : ["salesTotal", "purchaseTotal", "vatSummary"].includes(viewName) ? null : (
+                                <>
+                                  <option value="delete">Delete</option>
+                                  <option value="moveToOthers">Move to Others</option>
+                                </>
+                              )}
+                            </select>
                           ) : (
-                            text
+                            <button
+                              type="button"
+                              className="row-delete-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteRow(viewName, rowIndex);
+                              }}
+                            >
+                              Delete
+                            </button>
                           )}
                         </td>
-                      );
-                    })}
-                    {showActionColumn && (
-                      <td className="actions-col">
-                        {["others", "sales", "purchase", "salesTotal", "purchaseTotal", "vatSummary"].includes(viewName) ? (
-                          <select
-                            className="inline-edit-input action-select"
-                            value=""
-                            onClick={(e) => e.stopPropagation()}
-                            onChange={(e) => {
-                              e.stopPropagation();
-                              if (viewName === "others") {
-                                handleOthersRowAction(rowIndex, e.target.value);
-                              } else if (
-                                ["salesTotal", "purchaseTotal", "vatSummary"].includes(viewName)
-                              ) {
-                                if (e.target.value === "edit") {
-                                  handleMetricRowEdit(viewName, rowIndex);
-                                }
-                              } else {
-                                handleSalesPurchaseRowAction(
-                                  viewName,
-                                  rowIndex,
-                                  e.target.value
-                                );
-                              }
-                            }}
-                          >
-                            <option value="">Actions</option>
-                            <option value="edit">Edit</option>
-                            {viewName === "others" ? (
-                              <>
-                                <option value="delete">Delete</option>
-                                <option value="moveToSales">Move to Sales</option>
-                                <option value="moveToPurchase">Move to Purchase</option>
-                              </>
-                            ) : ["salesTotal", "purchaseTotal", "vatSummary"].includes(viewName) ? null : (
-                              <>
-                                <option value="delete">Delete</option>
-                                <option value="moveToOthers">Move to Others</option>
-                              </>
-                            )}
-                          </select>
-                        ) : (
-                          <button
-                            type="button"
-                            className="row-delete-btn"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteRow(viewName, rowIndex);
-                            }}
-                          >
-                            Delete
-                          </button>
-                        )}
-                      </td>
-                    )}
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                      )}
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     );
@@ -3825,19 +3853,19 @@ export default function VatFillingPreview() {
                       <td>
                         {canEdit
                           ? renderVatReturnEditableCell(
-                              actionKey,
-                              `${actionKey}.amount`,
-                              row.amount
-                            )
+                            actionKey,
+                            `${actionKey}.amount`,
+                            row.amount
+                          )
                           : formatAED(row.amount)}
                       </td>
                       <td>
                         {canEdit
                           ? renderVatReturnEditableCell(
-                              actionKey,
-                              `${actionKey}.vat`,
-                              row.vat
-                            )
+                            actionKey,
+                            `${actionKey}.vat`,
+                            row.vat
+                          )
                           : formatAED(row.vat)}
                       </td>
                       <td>{formatAED(row.total)}</td>

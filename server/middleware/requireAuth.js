@@ -62,7 +62,11 @@ export default async function requireAuth(req, res, next) {
         };
         next();
     } catch (error) {
-        console.error("JWT verification error:", error);
+        if (error.name === 'TokenExpiredError') {
+            console.warn(`[AUTH] Token expired at ${error.expiredAt}`);
+        } else {
+            console.error("[AUTH] JWT verification error:", error.message);
+        }
         return res.status(401).json({ message: "Invalid or expired token" });
     }
 }

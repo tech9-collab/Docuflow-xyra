@@ -26,7 +26,16 @@ export default function Login() {
         document.title = "XYRA - Login";
         // Landing on login means the previous session is no longer valid — wipe it
         clearSession();
-    }, []);
+
+        // If we have an error parameter, clean it up from the URL after a short delay
+        // so it doesn't persist on page refreshes.
+        if (errorMsg) {
+            const timer = setTimeout(() => {
+                navigate("/login", { replace: true });
+            }, 6000); // 6 seconds visibility
+            return () => clearTimeout(timer);
+        }
+    }, [errorMsg]);
 
     const onChange = (e) => {
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));

@@ -7,7 +7,10 @@ const ProtectedRoute = ({ children }) => {
   // Check both React state AND that the stored token is still valid
   const token = localStorage.getItem("token");
   if (!isAuthenticated || !isTokenValid(token)) {
-    return <Navigate to="/login?error=session_expired" replace />;
+    // Only show the "session_expired" message if there was a token but it's now invalid
+    // If there is no token at all, it's just a regular first-time login
+    const errorParam = token ? "?error=session_expired" : "";
+    return <Navigate to={`/login${errorParam}`} replace />;
   }
 
   return children;

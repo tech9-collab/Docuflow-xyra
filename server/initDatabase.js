@@ -157,6 +157,18 @@ export async function initializeDatabase() {
       `);
     }
 
+    // Ensure users.created_by exists
+    const [createdByCol] = await pool.query(
+      "SHOW COLUMNS FROM users LIKE 'created_by'"
+    );
+    if (!createdByCol.length) {
+      await pool.query(`
+        ALTER TABLE users
+        ADD COLUMN created_by INT NULL AFTER type,
+        ADD INDEX (created_by)
+      `);
+    }
+
     // Ensure users.company_name exists
     const [compNameCol] = await pool.query(
       "SHOW COLUMNS FROM users LIKE 'company_name'"

@@ -76,6 +76,7 @@ export const AuthProvider = ({ children }) => {
                 const cookieToken = getCookie("token");
                 if (cookieToken) {
                     token = cookieToken;
+                    localStorage.setItem("token", token); // Sync back to localStorage
                 }
             }
 
@@ -87,10 +88,25 @@ export const AuthProvider = ({ children }) => {
             }
 
             try {
-                api.defaults.headers.common.Authorization = `Bearer ${token}`;
+                // Skip profile fetch on public auth pages to avoid 401 redirects during initialization
+                const publicPaths = ["/login", "/signup", "/auto-login"];
+                const isPublicPath = publicPaths.some(p => window.location.pathname.startsWith(p));
 
-                // Always fetch fresh profile from backend — never rely on cached state
-                await fetchUserProfile();
+                if (!isPublicPath && token && isTokenValid(token)) {
+                    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+                    // Always fetch fresh profile from backend — never rely on cached state
+                    await fetchUserProfile();
+                } else if (token && isTokenValid(token)) {
+                    // Even if we don't fetch profile, we should decode the token if it exists and is valid
+                    // to populate the initial user state for the context
+                    try {
+                        const decoded = jwtDecode(token);
+                        const userInfo = JSON.parse(localStorage.getItem("user") || "{}");
+                        setUser({ ...decoded, ...userInfo });
+                    } catch (e) {
+                        console.warn("Soft fails for invalid token in public path", e);
+                    }
+                }
             } catch (error) {
                 console.error('Auth initialization error:', error);
                 clearSession();
