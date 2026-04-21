@@ -469,7 +469,7 @@ export function VatFilingComposer({
         table: result.table,
         uaeSalesRows: result.uaeSalesRows || [],
         uaePurchaseRows: result.uaePurchaseRows || [],
-        othersRows: result.othersRows || [],
+        othersRows: result.othersRows || result.uaeOtherRows || [],
         totals: result.totals,
       },
     });

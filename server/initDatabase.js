@@ -591,6 +591,18 @@ CREATE TABLE IF NOT EXISTS vat_filing_runs (
   COLLATE=utf8mb4_unicode_ci;
 `);
 
+    // Ensure job_id column exists
+    const [bscJobIdCol] = await pool.query(
+      "SHOW COLUMNS FROM bank_statements_converts LIKE 'job_id'"
+    );
+    if (!bscJobIdCol.length) {
+      await pool.query(`
+        ALTER TABLE bank_statements_converts
+        ADD COLUMN job_id VARCHAR(100) NULL AFTER id,
+        ADD INDEX (job_id)
+      `);
+    }
+
     // 9b) bank_statements_converts (local store for each converted bank doc)
     await pool.query(`
   CREATE TABLE IF NOT EXISTS bank_statements_converts (
@@ -1245,6 +1257,21 @@ export async function setBankConvertOutputJsonPath(
     `UPDATE bank_statements_converts SET file_output_json_path=?, status=?, updated_at=NOW() WHERE id=?`,
     [jsonPath, status, id]
   );
+}
+
+export async function setBankConvertJobId(id, jobId) {
+  await pool.query(
+    `UPDATE bank_statements_converts SET job_id=?, updated_at=NOW() WHERE id=?`,
+    [jobId, id]
+  );
+}
+
+export async function getBankConvertByJobId(jobId) {
+  const [rows] = await pool.query(
+    `SELECT * FROM bank_statements_converts WHERE job_id = ? LIMIT 1`,
+    [jobId]
+  );
+  return rows.length ? rows[0] : null;
 }
 
 // Emirates Storage Helpers

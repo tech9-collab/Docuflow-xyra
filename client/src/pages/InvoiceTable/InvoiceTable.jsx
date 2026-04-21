@@ -164,8 +164,21 @@ export default function InvoiceTable() {
     table = { columns: [], rows: [] },
     uaeSalesRows = [],
     uaePurchaseRows = [],
-    othersRows = [],
+    othersRows: othersRowsIn = [],
+    uaeOtherRows = [],
+    __explicitBuckets,
   } = state || {};
+
+  const othersRows = (othersRowsIn.length ? othersRowsIn : uaeOtherRows) || [];
+
+  const hasSalesKey = Object.prototype.hasOwnProperty.call(state || {}, "uaeSalesRows");
+  const hasPurchKey = Object.prototype.hasOwnProperty.call(state || {}, "uaePurchaseRows");
+  const hasOthersKey =
+    Object.prototype.hasOwnProperty.call(state || {}, "othersRows") ||
+    Object.prototype.hasOwnProperty.call(state || {}, "uaeOtherRows");
+
+  const hasExplicitBuckets =
+    !!__explicitBuckets || hasSalesKey || hasPurchKey || hasOthersKey;
 
   const [view, setView] = useState("purchase");
 
@@ -199,11 +212,12 @@ export default function InvoiceTable() {
 
   const purchaseData = useMemo(() => {
     const fallbackRows = Array.isArray(uaePurchaseRows) ? uaePurchaseRows : [];
-    const rows = (table.rows || []).length
-      ? (table.rows || []).filter(
-        (r) => String(r.TYPE || "").toLowerCase() === "purchase"
-      )
-      : fallbackRows;
+    const rows =
+      hasExplicitBuckets && fallbackRows.length
+        ? fallbackRows
+        : (table.rows || []).filter(
+          (r) => String(r.TYPE || "").toLowerCase() === "purchase"
+        );
     return {
       columns: UAE_PURCHASE_ORDER.map((k) => ({ key: k, label: k })),
       rows: rows.map((r) => {
@@ -216,15 +230,16 @@ export default function InvoiceTable() {
         return o;
       }),
     };
-  }, [table.rows, uaePurchaseRows]);
+  }, [table.rows, uaePurchaseRows, hasExplicitBuckets]);
 
   const salesData = useMemo(() => {
     const fallbackRows = Array.isArray(uaeSalesRows) ? uaeSalesRows : [];
-    const rows = (table.rows || []).length
-      ? (table.rows || []).filter(
-        (r) => String(r.TYPE || "").toLowerCase() === "sales"
-      )
-      : fallbackRows;
+    const rows =
+      hasExplicitBuckets && fallbackRows.length
+        ? fallbackRows
+        : (table.rows || []).filter(
+          (r) => String(r.TYPE || "").toLowerCase() === "sales"
+        );
     return {
       columns: UAE_SALES_ORDER.map((k) => ({ key: k, label: k })),
       rows: rows.map((r) => {
@@ -237,16 +252,17 @@ export default function InvoiceTable() {
         return o;
       }),
     };
-  }, [table.rows, uaeSalesRows]);
+  }, [table.rows, uaeSalesRows, hasExplicitBuckets]);
 
   const othersData = useMemo(() => {
     const fallbackRows = Array.isArray(othersRows) ? othersRows : [];
-    const rows = (table.rows || []).length
-      ? (table.rows || []).filter((r) => {
-        const t = String(r.TYPE || "").toLowerCase();
-        return t === "other" || t === "others";
-      })
-      : fallbackRows;
+    const rows =
+      hasExplicitBuckets && fallbackRows.length
+        ? fallbackRows
+        : (table.rows || []).filter((r) => {
+          const t = String(r.TYPE || "").toLowerCase();
+          return t === "other" || t === "others";
+        });
     return {
       columns: UAE_OTHERS_ORDER.map((k) => ({ key: k, label: k })),
       rows: rows.map((r) => {
@@ -259,7 +275,7 @@ export default function InvoiceTable() {
         return o;
       }),
     };
-  }, [table.rows, othersRows]);
+  }, [table.rows, othersRows, hasExplicitBuckets]);
 
   const { columns, rows } =
     view === "sales"

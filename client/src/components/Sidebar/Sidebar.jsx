@@ -52,26 +52,9 @@ export default function Sidebar({ collapsed }) {
       <div className="sidebar-brand">
         <img
           src={logo}
-          alt="XYRA Logo"
-          className={`brand-logo ${collapsed ? "small" : "large"}`}
-          style={{
-            height: collapsed ? '40px' : '60px',
-            width: 'auto',
-            marginBottom: '8px',
-            transition: 'all 0.3s ease'
-          }}
+          alt="XYRA"
+          className="brand-logo"
         />
-        {!collapsed && (
-          <div className="brand-title">Document Processing Suite</div>
-        )}
-        {!collapsed && user && (
-          <div className="user-badge">
-            {user.type === "super_admin" ? "SUPER ADMIN" : user.type === "admin" ? "ADMIN" : (user.role_name || user.role || "User").replace(/_/g, " ")}
-          </div>
-        )}
-        {!collapsed && user?.business_name && (
-          <div className="company-badge">{user.business_name}</div>
-        )}
       </div>
 
       <div className="nav-group">

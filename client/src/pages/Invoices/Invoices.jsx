@@ -164,7 +164,7 @@ function ImporterInvoices() {
           table: preview.table || { columns: [], rows: [] },
           uaeSalesRows: preview.uaeSalesRows || [],
           uaePurchaseRows: preview.uaePurchaseRows || [],
-          othersRows: preview.othersRows || [],
+          othersRows: preview.othersRows || preview.uaeOtherRows || [],
           totals: preview.totals || { purchase: {}, sales: {} },
         },
       });
