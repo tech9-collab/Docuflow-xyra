@@ -25,11 +25,14 @@ import {
   createBankConvert,
   setBankConvertStatus,
   setBankConvertOutputJsonPath,
+  setBankConvertJobId,
+  getBankConvertByJobId,
 } from "../initDatabase.js";
 
 import {
   copyToLocal,
   writeJsonLocal,
+  readJsonLocal,
   withExt,
   buildBankLocalPath,
 } from "../lib/localStorage.js";
@@ -177,6 +180,9 @@ export async function startSmart(req, res) {
         totalInputTokens: 0,
         totalOutputTokens: 0,
       });
+      if (convertRow?.convertId) {
+        await setBankConvertJobId(convertRow.convertId, jobId);
+      }
       return res.json({ jobId, originalName: name, pages, mode: "normal" });
     }
 
@@ -232,6 +238,10 @@ export async function startSmart(req, res) {
       totalInputTokens: 0,
       totalOutputTokens: 0,
     });
+
+    if (convertRow?.convertId) {
+      await setBankConvertJobId(convertRow.convertId, groupId);
+    }
 
     return res.json({
       groupId,
@@ -321,6 +331,11 @@ export async function start(req, res) {
       totalInputTokens: 0,
       totalOutputTokens: 0,
     });
+
+    if (convertRow?.convertId) {
+      await setBankConvertJobId(convertRow.convertId, jobId);
+    }
+
     res.json({ jobId, originalName: f.originalname });
   } catch (e) {
     console.error("bank.start:", e?.response?.data || e.message);
@@ -1066,4 +1081,122 @@ export async function excelByJob(req, res) {
 export async function excelRebuild(req, res) {
   // Same behavior – builds fresh from Gemini result
   return excelByJob(req, res);
+}
+
+/**
+ * GET /api/bank/extract/result/:id
+ * Returns the full extracted data in a structured format.
+ */
+export async function getExtractionResult(req, res) {
+  const { id } = req.params;
+  let meta = JOBS.get(id);
+  let dbRecord = null;
+
+  // 1) Try Database if not in Map (survives restarts)
+  if (!meta) {
+    try {
+      dbRecord = await getBankConvertByJobId(id);
+      if (dbRecord) {
+        meta = {
+          originalName: dbRecord.file_name,
+          status: dbRecord.status === "extracted" ? "completed" : "processing",
+          type: "single", // Assume single if looking up by job_id from DB
+          convertId: dbRecord.id,
+          fileOutputJsonPath: dbRecord.file_output_json_path,
+        };
+      }
+    } catch (err) {
+      console.warn("DB lookup failed for jobId:", id, err.message);
+    }
+  }
+
+  if (!meta) {
+    return res.status(404).json({
+      success: false,
+      message: "Extraction job not found."
+    });
+  }
+
+  try {
+    let currentStatus = "processing";
+    let summary = {};
+    let allRows = [];
+
+    // 2) Handle In-Memory Job
+    if (JOBS.has(id)) {
+      const st = await getStatus(id);
+      currentStatus = String(st?.status || "").toLowerCase();
+
+      if (currentStatus === "completed") {
+        const result = await collectHeadersAndRowsForJob(id);
+        allRows = result.rows;
+        summary = result.summary;
+      } else if (currentStatus === "error") {
+        return res.status(500).json({
+          success: false,
+          jobId: id,
+          status: "error",
+          message: st.error || "Extraction failed."
+        });
+      }
+    } 
+    // 3) Handle DB-only Job (completed)
+    else if (dbRecord && dbRecord.status === "extracted" && dbRecord.file_output_json_path) {
+      try {
+        const saved = await readJsonLocal(dbRecord.file_output_json_path);
+        allRows = saved.rows || [];
+        summary = saved.summary || {};
+        currentStatus = "completed";
+      } catch (err) {
+        console.error("Failed to read persistent JSON:", err.message);
+        currentStatus = "processing"; // fallback to processing if file missing
+      }
+    }
+    // 4) Handle DB-only Job (still processing)
+    else if (dbRecord) {
+      currentStatus = "processing";
+    }
+
+    if (currentStatus === "processing" || currentStatus === "started" || currentStatus === "queued") {
+      return res.json({
+        success: true,
+        jobId: id,
+        status: "processing",
+        originalName: meta.originalName || "document.pdf",
+      });
+    }
+
+    // Map summary fields to requested schema
+    const data = {
+      type: summary.type || summary.document_type || summary["Document Type"] || null,
+      date: summary.date || summary.invoice_date || summary["Date"] || null,
+      invoice_number: summary.invoice_number || summary.bill_number || summary.receipt_no || summary["Invoice Number"] || null,
+      invoice_category: summary.invoice_category || summary.category || summary["Category"] || null,
+      supplier_vendor: summary.supplier_vendor || summary.supplier || summary.vendor || summary["Supplier Name"] || null,
+      party: summary.party || summary.customer || summary.customer_name || summary["Customer Name"] || null,
+      taxable_amount: summary.taxable_amount || summary.before_tax_amount || summary["Taxable Amount"] || null,
+      vat_amount: summary.vat_amount || summary.vat || summary["VAT Amount"] || null,
+      gross_amount: summary.gross_amount || summary.total || summary.net_amount || summary["Total Amount"] || null,
+      currency: summary.currency || summary["Currency"] || null,
+      line_items: allRows || [],
+      additional_fields: summary,
+      raw_text: meta.raw_text || null,
+    };
+
+    return res.json({
+      success: true,
+      jobId: id,
+      status: "completed",
+      originalName: meta.originalName || "document.pdf",
+      data: data
+    });
+  } catch (e) {
+    console.error("getExtractionResult error:", e);
+    const msg = e?.message || "Failed to fetch result";
+    res.status(500).json({
+      success: false,
+      jobId: id,
+      message: msg
+    });
+  }
 }

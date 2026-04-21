@@ -25,3 +25,236 @@ select,
 textarea {
   font: inherit;
 }
+
+/* ---------- Global button size compression ----------
+   Shrinks any class whose name starts with "btn" or "button" across all pages.
+   Per-page CSS can override when a specific element needs different sizing.
+--------------------------------------------------------- */
+[class*="btn-"]:not(.btn-mini):not(.btn-icon),
+[class^="btn-"]:not(.btn-mini):not(.btn-icon),
+button.btn,
+.btn {
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+/* Keep icon-only buttons square and small */
+.btn-icon,
+.icon-btn,
+.btn-mini {
+  min-height: 30px;
+  padding: 0 8px;
+}
+
+/* Compact form controls to match */
+.form-control,
+input[type="text"].form-control,
+input[type="email"].form-control,
+input[type="password"].form-control,
+input[type="search"].form-control,
+select.form-control,
+textarea.form-control {
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+/* ---------- Global primary button color (XYRA purple) ---------- */
+.btn-primary,
+.btn-save,
+button.btn-primary,
+button.btn-save {
+  background: #7c5cff;
+  border: 1.5px solid #7c5cff;
+  color: #ffffff;
+}
+
+.btn-primary:hover:not(:disabled),
+.btn-save:hover:not(:disabled) {
+  background: #6a48f0;
+  border-color: #6a48f0;
+  color: #ffffff;
+}
+
+.btn-primary:disabled,
+.btn-save:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Secondary / cancel — outlined purple */
+.btn-cancel,
+.btn-secondary {
+  background: #ffffff;
+  border: 1.5px solid #7c5cff;
+  color: #7c5cff;
+}
+
+.btn-cancel:hover:not(:disabled),
+.btn-secondary:hover:not(:disabled) {
+  background: #f3eeff;
+  color: #6a48f0;
+  border-color: #6a48f0;
+}
+
+/* ---------- Global table styling (XYRA purple theme) ----------
+   Applies to any <table> plus common table classes (tbl, nice, *-table).
+   Page-level CSS still overrides via higher specificity.
+-------------------------------------------------------------------- */
+table,
+.tbl,
+table.nice,
+table[class$="-table"],
+table[class*="-table "] {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  font-size: 14px;
+}
+
+table thead,
+.tbl thead {
+  background: #faf8ff;
+}
+
+table th,
+.tbl th {
+  text-align: left;
+  padding: 12px 14px;
+  font-weight: 700;
+  color: #7c5cff;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  border-bottom: 1px solid #ece8f7;
+  white-space: nowrap;
+  background: #faf8ff;
+}
+
+table td,
+.tbl td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f3f0fa;
+  vertical-align: middle;
+  color: #2e2749;
+}
+
+table tbody tr:last-child td,
+.tbl tbody tr:last-child td {
+  border-bottom: none;
+}
+
+table tbody tr,
+.tbl tbody tr {
+  transition: background 0.15s ease;
+}
+
+table tbody tr:hover,
+.tbl tbody tr:hover {
+  background: #faf8ff;
+}
+
+/* Right-aligned columns (used by `.tbl.nice .right`) */
+table th.right,
+table td.right,
+.tbl th.right,
+.tbl td.right {
+  text-align: right;
+}
+
+/* ---------- Shared admin table surrounds ----------
+   Catches `*-section`, `*-count`, `.section-header`, `.status-badge`,
+   `.btn-edit` / `.btn-delete` across all admin pages at once.
+----------------------------------------------------- */
+[class$="-section"] {
+  background: #ffffff;
+  border: 1px solid #ece8f7;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(16, 11, 43, 0.04);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ece8f7;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1b0f3a;
+}
+
+[class$="-count"] {
+  background: #f3eeff;
+  color: #7c5cff;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: 1px solid #e3d7ff;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+  border: 1px solid transparent;
+}
+
+.status-badge.active {
+  background: #e7f8ee;
+  color: #10b981;
+  border-color: #bfe9d0;
+}
+
+.status-badge.inactive {
+  background: #f3f0fa;
+  color: #6b6483;
+  border-color: #ece8f7;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-buttons .btn-edit,
+.action-buttons .btn-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #ece8f7;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #6b6483;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.action-buttons .btn-edit:hover {
+  background: #f3eeff;
+  border-color: #c5b3ff;
+  color: #7c5cff;
+}
+
+.action-buttons .btn-delete:hover {
+  background: #ffe9ee;
+  border-color: #f9c0cc;
+  color: #f43f5e;
+}

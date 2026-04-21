@@ -207,60 +207,83 @@
 /* Departments Section */
 .departments-section {
     background: #ffffff;
-    border: 2px solid #000000;
+    border: 1px solid #ece8f7;
     border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-shadow: 0 1px 2px rgba(16, 11, 43, 0.04);
 }
 
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid #000000;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ece8f7;
 }
 
 .section-header h3 {
     margin: 0;
-    font-size: 24px;
-    font-weight: 600;
-    color: #333333;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1b0f3a;
 }
 
 .department-count {
-    background: #000000;
-    color: #ffffff;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
+    background: #f3eeff;
+    color: #7c5cff;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    border: 1px solid #e3d7ff;
 }
 
 .departments-table-container {
     overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid #ece8f7;
 }
 
 .departments-table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 14px;
+}
+
+.departments-table thead {
+    background: #faf8ff;
 }
 
 .departments-table th {
     text-align: left;
-    padding: 16px;
-    font-weight: 600;
-    color: #000000;
-    border-bottom: 2px solid #000000;
+    padding: 12px 14px;
+    font-weight: 700;
+    color: #7c5cff;
+    border-bottom: 1px solid #ece8f7;
     white-space: nowrap;
-    background-color: #f8f8f8;
+    font-size: 13px;
+    letter-spacing: 0.2px;
 }
 
 .departments-table td {
-    padding: 16px;
-    border-bottom: 1px solid #e5e7eb;
-    vertical-align: top;
+    padding: 14px;
+    border-bottom: 1px solid #f3f0fa;
+    vertical-align: middle;
+    color: #2e2749;
+}
+
+.departments-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.departments-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.departments-table tbody tr:hover {
+    background: #faf8ff;
 }
 
 .department-name {
@@ -278,22 +301,24 @@
 
 .status-badge {
     display: inline-block;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
     text-transform: capitalize;
-    border: 2px solid #000000;
+    border: 1px solid transparent;
 }
 
 .status-badge.active {
-    background: #ffffff;
-    color: #000000;
+    background: #e7f8ee;
+    color: #10b981;
+    border-color: #bfe9d0;
 }
 
 .status-badge.inactive {
-    background: #000000;
-    color: #ffffff;
+    background: #f3f0fa;
+    color: #6b6483;
+    border-color: #ece8f7;
 }
 
 .created-date {

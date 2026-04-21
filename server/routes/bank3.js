@@ -60,7 +60,7 @@ function safeSingle(field = "file") {
 router.post("/extract/start-smart", safeSingle("file"), bank.startSmart);
 router.post("/extract/start", safeSingle("file"), bank.start);
 router.get("/extract/status/:id", bank.status);
-router.get("/extract/result/:id", bank.result);
+router.get("/extract/result/:id", bank.getExtractionResult);
 router.get("/excel/:id", bank.excelByJob);
 router.get("/excel/rebuild/:id", bank.excelRebuild);
 router.get("/excel/transactions/:id", bank.excelRebuild);

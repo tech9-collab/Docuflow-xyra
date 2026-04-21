@@ -89,6 +89,13 @@ export async function writeJsonLocal({ json, destRelPath }) {
   return { abs: absDest, rel: destRelPath };
 }
 
+export async function readJsonLocal(destRelPath) {
+  const absRoot = path.resolve(ROOT);
+  const absDest = path.join(absRoot, destRelPath);
+  const data = await fs.readFile(absDest, "utf-8");
+  return JSON.parse(data);
+}
+
 export async function writeBufferLocal({ buffer, destRelPath }) {
   const absRoot = path.resolve(ROOT);
   const absDest = path.join(absRoot, destRelPath);

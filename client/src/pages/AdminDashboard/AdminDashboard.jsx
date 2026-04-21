@@ -437,18 +437,20 @@ export default function AdminDashboard() {
 
             {/* KPIs */}
             <section className="kpi-grid">
-                <Kpi icon={<Users />} title="Users" value={stats.totalUsers} />
-                <Kpi icon={<Briefcase />} title="Departments" value={stats.totalDepartments} />
-                <Kpi icon={<Shield />} title="Roles" value={stats.totalRoles} />
+                <Kpi icon={<Users />} title="Users" value={stats.totalUsers} tone="indigo" />
+                <Kpi icon={<Briefcase />} title="Departments" value={stats.totalDepartments} tone="emerald" />
+                <Kpi icon={<Shield />} title="Roles" value={stats.totalRoles} tone="amber" />
                 <Kpi
                     icon={<FileSpreadsheet />}
                     title="Documents"
                     value={stats.totalDocuments}
+                    tone="violet"
                 />
                 <Kpi
                     icon={<ScrollText />}
                     title="Total Pages"
                     value={stats.totalPages}
+                    tone="sky"
                 />
                 <Kpi
                     icon={<ClipboardList />}
@@ -458,6 +460,7 @@ export default function AdminDashboard() {
                     onClick={() => setShowPendingFilings((prev) => !prev)}
                     active={showPendingFilings}
                     className="kpi-card--pending"
+                    tone="rose"
                 />
             </section>
 
@@ -848,10 +851,10 @@ export default function AdminDashboard() {
 }
 
 /** Small KPI component (local) */
-function Kpi({ icon, title, value, hint, change, onClick, active = false, className = "" }) {
+function Kpi({ icon, title, value, hint, change, onClick, active = false, className = "", tone = "default" }) {
     return (
         <article
-            className={`kpi-card${onClick ? " clickable" : ""}${active ? " active" : ""}${className ? ` ${className}` : ""}`}
+            className={`kpi-card kpi-tone-${tone}${onClick ? " clickable" : ""}${active ? " active" : ""}${className ? ` ${className}` : ""}`}
             onClick={onClick}
             onKeyDown={(e) => {
                 if (!onClick) return;

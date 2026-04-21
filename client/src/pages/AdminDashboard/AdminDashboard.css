@@ -55,7 +55,7 @@
     align-items: center;
     gap: 0;
     border: 1px solid var(--line);
-    border-radius: 12px;
+    border-radius: 8px;
     background: var(--card);
     box-shadow: var(--shadow);
     overflow: hidden;
@@ -64,8 +64,8 @@
 .month-nav {
     display: grid;
     place-items: center;
-    width: 38px;
-    height: 42px;
+    width: 30px;
+    height: 34px;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -85,26 +85,27 @@
 .month-label {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 0 14px;
+    gap: 6px;
+    padding: 0 10px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 12px;
     white-space: nowrap;
     color: var(--ink);
     border-left: 1px solid var(--line);
     border-right: 1px solid var(--line);
-    height: 42px;
+    height: 34px;
 }
 
 /* Refresh button */
 .btn-refresh {
-    height: 42px;
-    padding: 0 16px;
-    border-radius: 12px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 8px;
     background: #000;
     color: #fff;
-    border: 2px solid #000;
+    border: 1.5px solid #000;
     font-weight: 600;
+    font-size: 13px;
     transition: all 0.15s ease;
 }
 
@@ -147,8 +148,8 @@
 /* KPIs */
 .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
     margin-bottom: 14px;
 }
 
@@ -186,12 +187,38 @@
     width: 46px;
     height: 46px;
     border-radius: 12px;
-    border: 1px solid var(--line);
+    border: 1px solid transparent;
     background: #f2f3f5;
+    color: #334155;
     display: grid;
     place-items: center;
     flex-shrink: 0;
+    transition: transform .15s ease;
 }
+
+.kpi-card.clickable:hover .kpi-icon {
+    transform: scale(1.06);
+}
+
+/* Tone variants: soft pastel background + saturated icon color */
+.kpi-tone-indigo .kpi-icon   { background: #eef1ff; color: #4f46e5; }
+.kpi-tone-emerald .kpi-icon  { background: #e7f8ee; color: #10b981; }
+.kpi-tone-amber .kpi-icon    { background: #fff4e0; color: #f59e0b; }
+.kpi-tone-violet .kpi-icon   { background: #f3edff; color: #7c5cff; }
+.kpi-tone-sky .kpi-icon      { background: #e4f3ff; color: #0ea5e9; }
+.kpi-tone-rose .kpi-icon     { background: #ffe9ee; color: #f43f5e; }
+
+.kpi-card .kpi-value {
+    color: #1b0f3a;
+}
+
+.kpi-card .kpi-title {
+    color: #4a4568;
+}
+
+.kpi-tone-indigo .kpi-value   { color: #1b0f3a; }
+.kpi-tone-violet .kpi-title   { color: #6b4fd9; }
+.kpi-tone-rose .kpi-title     { color: #c0354e; }
 
 .kpi-meta {
     flex: 1;
@@ -332,27 +359,29 @@
 }
 
 .pending-search {
-    min-width: 280px;
-    max-width: 440px;
+    min-width: 240px;
+    max-width: 380px;
     width: 100%;
-    flex: 1 1 320px;
-    height: 42px;
-    padding: 0 14px;
+    flex: 1 1 280px;
+    height: 34px;
+    padding: 0 10px;
     border: 1px solid var(--line);
-    border-radius: 12px;
+    border-radius: 8px;
     background: #fff;
     color: var(--ink);
+    font-size: 13px;
 }
 
 .pending-customer-select {
-    min-width: 190px;
-    max-width: 260px;
-    height: 42px;
-    padding: 0 14px;
+    min-width: 170px;
+    max-width: 220px;
+    height: 34px;
+    padding: 0 10px;
     border: 1px solid var(--line);
-    border-radius: 12px;
+    border-radius: 8px;
     background: #fff;
     color: var(--ink);
+    font-size: 13px;
 }
 
 .pending-search:focus-visible {
@@ -667,29 +696,30 @@
 
 /* Black/White combo refresh button */
 :where(.admin-dashboard) .btn-refresh.bw {
-    --btn-bg: #000;
+    --btn-bg: #7c5cff;
     --btn-fg: #fff;
-    --btn-br: #000;
+    --btn-br: #7c5cff;
 
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    height: 44px;
-    padding: 0 18px;
-    border-radius: 12px;
-    border: 2px solid var(--btn-br);
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1.5px solid var(--btn-br);
     background: var(--btn-bg);
     color: var(--btn-fg);
     font-weight: 700;
+    font-size: 13px;
     letter-spacing: .2px;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, .06), 0 8px 24px rgba(0, 0, 0, .10);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .06), 0 4px 12px rgba(124, 92, 255, .28);
     transition: transform .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
 }
 
 :where(.admin-dashboard) .btn-refresh.bw:hover {
-    --btn-bg: #fff;
-    --btn-fg: #000;
-    --btn-br: #000;
+    --btn-bg: #6a48f0;
+    --btn-fg: #fff;
+    --btn-br: #6a48f0;
     transform: translateY(-1px);
 }
 
