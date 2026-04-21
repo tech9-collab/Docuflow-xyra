@@ -355,12 +355,7 @@ export default function DepartmentDashboard() {
       .join(" ") || "-";
 
   /* ---------- guards ---------- */
-  if (loading)
-    return (
-      <div className="dept page">
-        <div className="center-stack">Loading…</div>
-      </div>
-    );
+  /* Loading check removed as per user request */
 
   if (error)
     return (
