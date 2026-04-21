@@ -207,15 +207,7 @@ export default function UserDashboard() {
   }, [monthlySummary]);
 
   /* ---------- RENDER ---------- */
-  if (loading)
-    return (
-      <div className="udb page">
-        <div className="center-stack" role="status" aria-live="polite">
-          <Loader2 className="spin" size={22} />
-          <span>Loading dashboard…</span>
-        </div>
-      </div>
-    );
+  /* Loading check removed as per user request */
 
   if (error)
     return (

@@ -370,16 +370,7 @@ export default function AdminDashboard() {
 
     /** --------- Render --------- */
 
-    if (loading) {
-        return (
-            <div className="admin-dashboard">
-                <div className="block center">
-                    <Activity className="spin" size={40} />
-                    <div className="muted">Loading dashboard…</div>
-                </div>
-            </div>
-        );
-    }
+    /* Loading check removed as per user request */
 
     if (!canAccess) {
         return (
