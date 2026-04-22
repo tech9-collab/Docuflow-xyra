@@ -221,7 +221,7 @@
 
 .kpi-label {
   font-size: 13px;
-  color: var(--muted)
+  color: #000;
 }
 
 .kpi-hint {

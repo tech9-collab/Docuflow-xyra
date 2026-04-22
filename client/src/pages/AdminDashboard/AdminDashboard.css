@@ -213,12 +213,12 @@
 }
 
 .kpi-card .kpi-title {
-    color: #4a4568;
+    color: #000;
 }
 
 .kpi-tone-indigo .kpi-value   { color: #1b0f3a; }
-.kpi-tone-violet .kpi-title   { color: #6b4fd9; }
-.kpi-tone-rose .kpi-title     { color: #c0354e; }
+.kpi-tone-violet .kpi-title   { color: #000; }
+.kpi-tone-rose .kpi-title     { color: #000; }
 
 .kpi-meta {
     flex: 1;

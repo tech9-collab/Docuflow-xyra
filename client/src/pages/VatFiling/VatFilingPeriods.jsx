@@ -498,7 +498,7 @@ export default function VatFilingPeriods() {
                               title="Edit Period"
                               aria-label="Edit Period"
                             >
-                              <Edit2 size={15} />
+                              <Edit2 size={16} />
                             </button>
 
                             {/* ✅ UPLOAD / OPEN FILING ICON */}
@@ -509,7 +509,7 @@ export default function VatFilingPeriods() {
                               title="Upload / Open Filing"
                               aria-label="Upload / Open Filing"
                             >
-                              <Upload size={15} />
+                              <Upload size={16} />
                             </button>
                             <button
                               type="button"
@@ -518,7 +518,7 @@ export default function VatFilingPeriods() {
                               title="View Saved Filings"
                               aria-label="View Saved Filings"
                             >
-                              <Eye size={15} />
+                              <Eye size={16} />
                             </button>
                             <button
                               type="button"
@@ -527,7 +527,7 @@ export default function VatFilingPeriods() {
                               title="Delete Period"
                               aria-label="Delete Period"
                             >
-                              <Trash2 size={15} />
+                              <Trash2 size={20} />
                             </button>
                           </div>
                         </td>

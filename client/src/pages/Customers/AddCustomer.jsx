@@ -513,6 +513,7 @@ export default function AddCustomer() {
                         PDF, JPG, PNG – max 10MB
                       </span>
                       <input
+                        id="file-upload"
                         type="file"
                         onChange={(e) => handleBusinessDocFileChange(index, e)}
                         accept=".pdf,.jpg,.jpeg,.png"
@@ -558,6 +559,7 @@ export default function AddCustomer() {
               <div className="field">
                 <label>Entity Type *</label>
                 <select
+                  id="entity-type"
                   name="entityType"
                   value={form.entityType}
                   onChange={handleInputChange}
@@ -661,6 +663,7 @@ export default function AddCustomer() {
               <div className="field">
                 <label>Trade License Number *</label>
                 <input
+                  id="license-number"
                   type="text"
                   name="tradeLicenseNumber"
                   value={form.tradeLicenseNumber}
@@ -672,6 +675,7 @@ export default function AddCustomer() {
               <div className="field">
                 <label>License Issue Date *</label>
                 <input
+                  id="issue-date"
                   type="text"
                   name="licenseIssueDate"
                   value={form.licenseIssueDate}

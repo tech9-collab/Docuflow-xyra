@@ -35,10 +35,31 @@
   gap: 6px;
 }
 
-/* Make the small icon buttons consistent */
 .vf-actions-cell .prj-icon-btn {
-  height: 30px;
-  width: 30px;
+  height: 32px;
+  width: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.prj-icon-btn-danger {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.2) !important;
+}
+
+.prj-icon-btn-danger:hover {
+  background: #ef4444 !important;
+  color: #fff !important;
+  border-color: #ef4444 !important;
+}
+
+.prj-icon-btn svg {
+  display: block;
+  width: 16px;
+  height: 16px;
 }
 
 /* PERIOD CARD */

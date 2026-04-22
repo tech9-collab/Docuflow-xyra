@@ -1,0 +1,58 @@
+{
+  "source": "COMMERCIAL INVOICE - WUXI.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "2024.05.11",
+      "invoice_number": "KSA-YST 20231120-2",
+      "vendor_name": "Wuxi Yushun metallurgical technology Co., Ltd",
+      "customer_name": "AFAMIA SKY INTERNATIONAL GENERAL TRADING LLC.",
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": 500000,
+      "vat": 0,
+      "net_amount": 500000,
+      "line_items": [
+        {
+          "description": "电火花机床 CNC wire cutting machine HS 8456301090",
+          "quantity": 2,
+          "unit_price": 500000,
+          "tax_amount": null,
+          "net_amount": 500000
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "USD",
+      "vendor_place_of_supply": null,
+      "customer_place_of_supply": "DUBAI",
+      "place_of_supply": null,
+      "document_category": "Commercial invoice",
+      "document_category_evidence": {
+        "matched_text": "COMMERCIAL INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0.9,
+        "vat": 0.9,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    }
+  ]
+}

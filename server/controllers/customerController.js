@@ -78,20 +78,19 @@ export async function createCustomer(req, res) {
 
     const targetCompanyId = isSuperAdmin ? (body.companyId || null) : requesterCompanyId;
 
-    const {
+    let {
       customerName, address, email, mobile, country, entityType, entitySubType,
       dateOfIncorporation, tradeLicenseAuthority, tradeLicenseNumber,
       licenseIssueDate, licenseExpiryDate, businessActivity, authorisedSignatories,
       shareCapital, ftaCredentials, ftaPassword, functionalCurrency,
       vatTaxTreatment, vatTrn, vatRegisteredDate, firstVatFilingPeriod,
       vatReturnDueDate, vatReportingPeriod, placeOfSupply, ctTaxTreatment,
-      ctTrn, ctRegisteredDate, coporateTaxPeriod, firstCtPeriodStartDate,
-      firstCtPeriodEndDate, firstCtReturnDueDate,
+      ctTrn, ctRegisteredDate, corporateTaxPeriod, firstCtPeriodStartDate,
+      firstCtPeriodEndDate, firstCtReturnDueDate, shareholders = [], businessDocuments = []
     } = body;
 
-    let shareholders = [];
-    if (body.shareholders) {
-      try { shareholders = JSON.parse(body.shareholders); } catch (e) { console.warn("Invalid shareholders JSON", e); }
+    if (typeof shareholders === 'string') {
+      try { shareholders = JSON.parse(shareholders); } catch (e) { console.warn("Invalid shareholders JSON", e); }
     }
 
     let vatCertPath = null, ctCertPath = null;
@@ -126,7 +125,7 @@ export async function createCustomer(req, res) {
         ftaPassword || "", functionalCurrency || "", vatTaxTreatment || "", vatCertPath,
         vatTrn || "", vatRegisteredDate || null, firstVatFilingPeriod || "", vatReturnDueDate || null,
         vatReportingPeriod || null, placeOfSupply || "", ctTaxTreatment || "", ctTrn || "",
-        ctRegisteredDate || null, coporateTaxPeriod || "", firstCtPeriodStartDate || null,
+        ctRegisteredDate || null, corporateTaxPeriod || "", firstCtPeriodStartDate || null,
         firstCtPeriodEndDate || null, firstCtReturnDueDate || null,
       ]
     );
@@ -145,7 +144,8 @@ export async function createCustomer(req, res) {
   } catch (err) {
     await conn.rollback();
     console.error("createCustomer error:", err);
-    res.status(500).json({ message: "Failed to create customer" });
+    console.error("Request Body:", req.body);
+    res.status(500).json({ message: `Failed to create customer: ${err.message}` });
   } finally {
     conn.release();
   }
@@ -168,11 +168,13 @@ export async function updateCustomer(req, res) {
       firstCtPeriodStartDate, firstCtPeriodEndDate, firstCtReturnDueDate,
     } = req.body;
 
-    let vatInfoCertificatePath = null, ctCertificateTaxPath = null;
+    let vatCertPath = null, ctCertPath = null;
     if (Array.isArray(req.files)) {
-      for (const f of req.files) {
-        if (f.fieldname === "vatInfoCertificate") vatInfoCertificatePath = f.path;
-        if (f.fieldname === "ctCertificateTax") ctCertificateTaxPath = f.path;
+      for (const file of req.files) {
+        const rel = buildInvoiceLocalPath({ type: "uploads", originalName: file.originalname });
+        await copyToLocal({ srcAbsPath: file.path, destRelPath: rel });
+        if (file.fieldname === "vatInfoCertificate") vatCertPath = rel;
+        else if (file.fieldname === "ctCertificateTax") ctCertPath = rel;
       }
     }
 
@@ -181,11 +183,12 @@ export async function updateCustomer(req, res) {
       entity_sub_type = ?, date_of_incorporation = NULLIF(?, ''), trade_license_authority = ?,
       trade_license_number = ?, license_issue_date = NULLIF(?, ''), license_expiry_date = NULLIF(?, ''),
       business_activity = ?, is_freezone = ?, freezone_name = ?, authorised_signatories = ?,
-      share_capital = ?, fta_credentials = ?, fta_password = ?, functional_currency = ?,
-      vat_tax_treatment = ?, vat_trn = ?, vat_registered_date = NULLIF(?, ''),
+      vat_tax_treatment = ?, vat_info_certificate_path = COALESCE(?, vat_info_certificate_path),
+      vat_trn = ?, vat_registered_date = NULLIF(?, ''),
       first_vat_filing_period = ?, vat_return_due_date = NULLIF(?, ''),
       vat_reporting_period = NULLIF(?, ''), place_of_supply = ?, ct_tax_treatment = ?,
       ct_trn = ?, ct_registered_date = NULLIF(?, ''), corporate_tax_period = ?,
+      ct_certificate_tax_path = COALESCE(?, ct_certificate_tax_path),
       first_ct_period_start_date = NULLIF(?, ''), first_ct_period_end_date = NULLIF(?, ''),
       first_ct_return_due_date = NULLIF(?, ''), updated_at = NOW() 
       WHERE id = ?`;
@@ -196,11 +199,12 @@ export async function updateCustomer(req, res) {
       licenseIssueDate, licenseExpiryDate, businessActivity,
       isFreezone === "true" || isFreezone === true ? 1 : 0,
       freezoneName, authorisedSignatories, shareCapital, ftaCredentials, ftaPassword,
-      functionalCurrency, vatTaxTreatment, vatTrn, vatRegisteredDate,
+      functionalCurrency, vatTaxTreatment, vatCertPath, vatTrn, vatRegisteredDate,
       firstVatFilingPeriod, vatReturnDueDate, vatReportingPeriod || null,
-      placeOfSupply, ctTaxTreatment, ctTrn, ctRegisteredDate, coporateTaxPeriod,
+      placeOfSupply, ctTaxTreatment, ctTrn, ctRegisteredDate, corporateTaxPeriod,
+      ctCertPath,
       firstCtPeriodStartDate, firstCtPeriodEndDate, firstCtReturnDueDate,
-      customerId
+      id
     ];
 
     if (!isSuperAdmin) {

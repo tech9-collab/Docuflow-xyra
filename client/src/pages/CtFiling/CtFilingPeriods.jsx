@@ -307,7 +307,7 @@ export default function CtFilingPeriods() {
                               title="Edit Period"
                               aria-label="Edit Period"
                             >
-                              <Edit2 size={15} />
+                              <Edit2 size={16} />
                             </button>
 
                             {/* Upload / Open CT filing */}
@@ -318,7 +318,7 @@ export default function CtFilingPeriods() {
                               title="Upload / Open Filing"
                               aria-label="Upload / Open Filing"
                             >
-                              <Upload size={15} />
+                              <Upload size={16} />
                             </button>
 
                             {/* Delete period */}
@@ -329,7 +329,7 @@ export default function CtFilingPeriods() {
                               title="Delete Period"
                               aria-label="Delete Period"
                             >
-                              <Trash2 size={15} />
+                              <Trash2 size={16} />
                             </button>
                           </div>
                         </td>

@@ -1,9 +1,9 @@
 // src/pages/Customers/EditCustomer.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Save, Plus, Trash2, UploadCloud } from "lucide-react";
+import { ArrowLeft, Save, Plus, Trash2, UploadCloud, Loader2 } from "lucide-react";
 import "./EditCustomer.css";
-import { fetchCustomerById, updateCustomer } from "../../helper/helper";
+import { fetchCustomerById, updateCustomer, extractTradeLicense } from "../../helper/helper";
 import { TRADE_LICENSE_AUTHORITIES } from "../../constants/authorities";
 import {
   DATE_FIELD_NAMES,
@@ -221,13 +221,50 @@ export default function EditCustomer() {
     });
   };
 
+  const handleExtract = async (index, file) => {
+    const updatedDocs = [...businessDocuments];
+    updatedDocs[index].isExtracting = true;
+    setBusinessDocuments(updatedDocs);
+
+    try {
+      const res = await extractTradeLicense(file);
+      if (res) {
+        setForm((prev) => ({
+          ...prev,
+          customerName: res.COMPANY_NAME || prev.customerName,
+          address: res.ADDRESS || prev.address,
+          entityType: res.FORMATION_TYPE ? "legal_llc" : prev.entityType,
+          tradeLicenseNumber: res.LICENSE_NUMBER || prev.tradeLicenseNumber,
+          licenseIssueDate: res.ISSUE_DATE || prev.licenseIssueDate,
+          licenseExpiryDate: res.EXPIRY_DATE || prev.licenseExpiryDate,
+          businessActivity: res.ACTIVITIES || prev.businessActivity,
+          isFreezone: res.IS_FREEZONE || prev.isFreezone,
+        }));
+      }
+    } catch (err) {
+      console.warn("Auto-fill extraction failed:", err.message);
+    } finally {
+      const finalDocs = [...businessDocuments];
+      if (finalDocs[index]) {
+        finalDocs[index].isExtracting = false;
+        setBusinessDocuments(finalDocs);
+      }
+    }
+  };
+
   const handleBusinessDocFileChange = (index, e) => {
-    const file = e.target.files && e.target.files[0] ? e.target.files[0] : null;
-    setBusinessDocuments((prev) => {
-      const next = [...prev];
-      next[index] = { ...next[index], file };
-      return next;
-    });
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const updated = [...businessDocuments];
+    updated[index].file = file;
+    setBusinessDocuments(updated);
+
+    const docType = updated[index].docType;
+    const supportsExtraction = ["trade_license", "moa", "incorporation"];
+    if (supportsExtraction.includes(docType)) {
+      handleExtract(index, file);
+    }
   };
 
   const addBusinessDocumentRow = () => {
@@ -434,10 +471,17 @@ export default function EditCustomer() {
                         PDF, JPG, PNG – max 10MB
                       </span>
                       <input
+                        id="file-upload"
                         type="file"
                         onChange={(e) => handleBusinessDocFileChange(index, e)}
                         accept=".pdf,.jpg,.jpeg,.png"
                       />
+                      {doc.isExtracting && (
+                        <div className="extracting-spinner-overlay">
+                          <Loader2 className="spin" size={16} />
+                          <span>Auto-filling...</span>
+                        </div>
+                      )}
                     </label>
                   </div>
 
@@ -473,6 +517,7 @@ export default function EditCustomer() {
               <div className="field">
                 <label>Entity Type</label>
                 <select
+                  id="entity-type"
                   name="entityType"
                   value={form.entityType}
                   onChange={handleInputChange}
@@ -571,6 +616,7 @@ export default function EditCustomer() {
               <div className="field">
                 <label>Trade License Number</label>
                 <input
+                  id="license-number"
                   type="text"
                   name="tradeLicenseNumber"
                   value={form.tradeLicenseNumber}
@@ -581,6 +627,7 @@ export default function EditCustomer() {
               <div className="field">
                 <label>License Issue Date</label>
                 <input
+                  id="issue-date"
                   type="text"
                   name="licenseIssueDate"
                   value={form.licenseIssueDate}

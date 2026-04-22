@@ -115,21 +115,13 @@ const parseFlexibleDate = (s) => {
     return makeDate(year, month, day);
   }
 
-  // 2. Numeric dates with format detection.
-  // Slash dates default to MM/DD/YYYY unless the first token cannot be a month.
-  // Dash/dot dates default to DD/MM/YYYY unless the second token cannot be a month.
+  // 2. Numeric dates default to DD/MM/YYYY (UAE convention), with format
+  //    detection to auto-correct when a token can only be a day.
   const numericMatch = str.match(/^(\d{1,2})([\/\-.])(\d{1,2})\2(\d{4})$/);
   if (numericMatch) {
     const first = parseInt(numericMatch[1], 10);
-    const sep = numericMatch[2];
     const second = parseInt(numericMatch[3], 10);
     const year = parseInt(numericMatch[4], 10);
-
-    if (sep === "/") {
-      if (first > 12) return makeDate(year, second, first);
-      if (second > 12) return makeDate(year, first, second);
-      return makeDate(year, first, second);
-    }
 
     if (second > 12) return makeDate(year, first, second);
     if (first > 12) return makeDate(year, second, first);

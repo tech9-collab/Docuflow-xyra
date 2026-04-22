@@ -1,0 +1,58 @@
+{
+  "source": "INVFD2304329ME (1).pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "01/16/2024",
+      "invoice_number": "INVFD2304329ME",
+      "vendor_name": "Universal Data Acquisition LLC FZ",
+      "customer_name": "United Engineering Services LLC",
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": 150,
+      "vat": 0,
+      "net_amount": 150,
+      "line_items": [
+        {
+          "description": "Spring Push PLC Terminal Blocs",
+          "quantity": 15,
+          "unit_price": 10,
+          "tax_amount": 0,
+          "net_amount": 150
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Zero Rated Supplies",
+      "tax_rate_percent": 0,
+      "currency": "USD",
+      "vendor_place_of_supply": "Dubai",
+      "customer_place_of_supply": "Muscat",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX Invoice",
+        "page_region": "body",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": "INVFD2304329ME"
+    }
+  ]
+}

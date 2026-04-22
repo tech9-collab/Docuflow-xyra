@@ -61,7 +61,7 @@ export default function Sidebar({ collapsed }) {
         {/* Super Admin section */}
         {isSuperAdmin() && !isAdmin() && (
           <>
-            {!collapsed && <div className="nav-title">Administration</div>}
+            {!collapsed && <div className="nav-title">Dashboard</div>}
             <NavItem
               to="/admin/dashboard"
               icon={<BarChart3 size={18} />}
@@ -92,7 +92,7 @@ export default function Sidebar({ collapsed }) {
         {/* Company Admin section (registered via signup, type='admin') */}
         {isAdmin() && (
           <>
-            {!collapsed && <div className="nav-title">Administration</div>}
+            {!collapsed && <div className="nav-title">Dashboard</div>}
             <NavItem
               to="/admin/dashboard"
               icon={<BarChart3 size={18} />}
@@ -123,7 +123,7 @@ export default function Sidebar({ collapsed }) {
         {/* Business User Admin section */}
         {isBusinessUser() && !isAdmin() && (
           <>
-            {!collapsed && <div className="nav-title">Administration</div>}
+            {!collapsed && <div className="nav-title">Dashboard</div>}
             <NavItem
               to="/admin/dashboard"
               icon={<BarChart3 size={18} />}
@@ -236,14 +236,14 @@ export default function Sidebar({ collapsed }) {
         {/* Converts section */}
         {!collapsed && <div className="nav-title">Converts</div>}
 
-        {hasPermission("converts.bank_statements") && (
+        {/* {hasPermission("converts.bank_statements") && (
           <NavItem
             to="/converts/bank-statement"
             icon={<Landmark size={18} />}
             text="Bank Statements"
             collapsed={collapsed}
           />
-        )}
+        )} */}
 
         {hasPermission("converts.invoices") && (
           <NavItem

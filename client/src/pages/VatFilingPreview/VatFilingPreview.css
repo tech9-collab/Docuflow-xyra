@@ -125,7 +125,7 @@
 
 /* Wrapper that owns the scrollbars */
 .tbl-scroller {
-  height: 60vh; /* fixed height → vertical scrollbar */
+  max-height: 60vh; /* cap height → vertical scrollbar appears only when needed */
   overflow-x: auto; /* horizontal scroll */
   overflow-y: auto; /* vertical scroll */
   border-radius: 12px;
@@ -282,7 +282,7 @@
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(320px, 3fr);
   gap: 14px;
-  align-items: stretch;
+  align-items: start;
   min-width: 0;
   overflow: hidden;
 }

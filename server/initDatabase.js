@@ -349,7 +349,7 @@ export async function initializeDatabase() {
     await pool.query(`
   CREATE TABLE IF NOT EXISTS customers (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+    user_id INT NULL,
     department_id INT NULL,
 
     -- Basic details
@@ -520,7 +520,7 @@ export async function initializeDatabase() {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS document_count (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT NOT NULL,
+        user_id INT NULL,
         files_count INT DEFAULT 0,
         file_size BIGINT DEFAULT 0,
         file_uploaded_date DATE,
@@ -988,6 +988,26 @@ CREATE TABLE IF NOT EXISTS vat_filing_runs (
         await pool.query("SET FOREIGN_KEY_CHECKS = 1");
       }
     } catch (e) { console.warn("ct_filing_periods user_id migration skipped:", e.message); }
+
+    // Make user_id nullable in customers (admin users have no users-table row)
+    try {
+      const [custUserCol] = await pool.query("SHOW COLUMNS FROM customers LIKE 'user_id'");
+      if (custUserCol.length && custUserCol[0].Null === 'NO') {
+        await pool.query("SET FOREIGN_KEY_CHECKS = 0");
+        await pool.query("ALTER TABLE customers MODIFY COLUMN user_id INT NULL");
+        await pool.query("SET FOREIGN_KEY_CHECKS = 1");
+      }
+    } catch (e) { console.warn("customers user_id migration skipped:", e.message); }
+
+    // Make user_id nullable in document_count
+    try {
+      const [dcUserCol] = await pool.query("SHOW COLUMNS FROM document_count LIKE 'user_id'");
+      if (dcUserCol.length && dcUserCol[0].Null === 'NO') {
+        await pool.query("SET FOREIGN_KEY_CHECKS = 0");
+        await pool.query("ALTER TABLE document_count MODIFY COLUMN user_id INT NULL");
+        await pool.query("SET FOREIGN_KEY_CHECKS = 1");
+      }
+    } catch (e) { console.warn("document_count user_id migration skipped:", e.message); }
 
     await pool.query(`SET FOREIGN_KEY_CHECKS = 1`);
     console.log("Database schema initialized successfully");

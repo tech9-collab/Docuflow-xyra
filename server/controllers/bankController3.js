@@ -1121,31 +1121,79 @@ export async function getExtractionResult(req, res) {
     let currentStatus = "processing";
     let summary = {};
     let allRows = [];
+    let headers = [];
+    let baseName = null;
 
     // 2) Handle In-Memory Job
     if (JOBS.has(id)) {
-      const st = await getStatus(id);
-      currentStatus = String(st?.status || "").toLowerCase();
+      // 2a) Group job: aggregate across parts (getStatus doesn't know group IDs)
+      if (meta?.type === "group") {
+        const parts = meta.parts || [];
+        const partStatuses = [];
+        let done = 0;
+        let firstError = null;
 
-      if (currentStatus === "completed") {
-        const result = await collectHeadersAndRowsForJob(id);
-        allRows = result.rows;
-        summary = result.summary;
-      } else if (currentStatus === "error") {
-        return res.status(500).json({
-          success: false,
-          jobId: id,
-          status: "error",
-          message: st.error || "Extraction failed."
-        });
+        for (const jid of parts) {
+          try {
+            const pst = await getStatus(jid);
+            const ps = String(pst?.status || "").toLowerCase();
+            partStatuses.push({ jobId: jid, status: ps, error: pst?.error });
+            if (ps === "completed") done++;
+            else if (ps === "error" && !firstError) firstError = pst?.error || "part failed";
+          } catch (e) {
+            partStatuses.push({ jobId: jid, status: "error", error: e?.message });
+            if (!firstError) firstError = e?.message || "part failed";
+          }
+        }
+
+        if (done === parts.length && parts.length > 0) {
+          const result = await collectHeadersAndRowsForJob(id);
+          allRows = result.rows;
+          summary = result.summary;
+          headers = result.headers || [];
+          baseName = result.baseName || null;
+          currentStatus = "completed";
+        } else if (firstError) {
+          return res.status(500).json({
+            success: false,
+            jobId: id,
+            status: "error",
+            message: firstError,
+            parts: partStatuses,
+          });
+        } else {
+          currentStatus = "processing";
+        }
       }
-    } 
+      // 2b) Single job
+      else {
+        const st = await getStatus(id);
+        currentStatus = String(st?.status || "").toLowerCase();
+
+        if (currentStatus === "completed") {
+          const result = await collectHeadersAndRowsForJob(id);
+          allRows = result.rows;
+          summary = result.summary;
+          headers = result.headers || [];
+          baseName = result.baseName || null;
+        } else if (currentStatus === "error") {
+          return res.status(500).json({
+            success: false,
+            jobId: id,
+            status: "error",
+            message: st.error || "Extraction failed."
+          });
+        }
+      }
+    }
     // 3) Handle DB-only Job (completed)
     else if (dbRecord && dbRecord.status === "extracted" && dbRecord.file_output_json_path) {
       try {
         const saved = await readJsonLocal(dbRecord.file_output_json_path);
         allRows = saved.rows || [];
         summary = saved.summary || {};
+        headers = Array.isArray(saved.headers) ? saved.headers : [];
+        baseName = (dbRecord.file_name || "document").replace(/\.[^/.]+$/, "");
         currentStatus = "completed";
       } catch (err) {
         console.error("Failed to read persistent JSON:", err.message);
@@ -1183,11 +1231,38 @@ export async function getExtractionResult(req, res) {
       raw_text: meta.raw_text || null,
     };
 
+    // Fall back to row keys if headers weren't captured
+    if ((!headers || headers.length === 0) && allRows.length > 0) {
+      const seen = new Set();
+      allRows.forEach((r) => {
+        if (r && typeof r === "object") {
+          Object.keys(r).forEach((k) => {
+            if (!seen.has(k)) seen.add(k);
+          });
+        }
+      });
+      headers = Array.from(seen);
+    }
+
+    const columns = headers.map((h) => ({ key: h, label: h }));
+    const resolvedBase =
+      baseName ||
+      (meta.originalName || "bank_statements").replace(/\.[^/.]+$/, "");
+    const downloadFileName = `${resolvedBase}.xlsx`;
+
     return res.json({
       success: true,
       jobId: id,
       status: "completed",
       originalName: meta.originalName || "document.pdf",
+      // Table shape for UI (consumed by client's normalizeResult)
+      title: "Bank Statement Results",
+      columns,
+      rows: allRows,
+      tableTable: { columns, rows: allRows },
+      downloadFileName,
+      summary: summary || {},
+      // Invoice-shaped summary for other consumers
       data: data
     });
   } catch (e) {
