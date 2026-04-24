@@ -10,11 +10,17 @@ import "./PdfViewer.css";
 // Tell pdf.js where to fetch the worker script (bundled asset, not CDN)
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 
-export default function PdfViewer({ fileUrl, controls = {} }) {
+function clampToPositiveInt(value, fallback = 1) {
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < 1) return fallback;
+  return Math.floor(n);
+}
+
+export default function PdfViewer({ fileUrl, page: pageProp, onPageChange, controls = {} }) {
   const canvasRef = useRef(null);
 
   const [doc, setDoc] = useState(null);   // current PDFDocumentProxy
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(() => clampToPositiveInt(pageProp, 1));
   const [total, setTotal] = useState(1);
   const [scale, setScale] = useState(1.15);
 
@@ -22,13 +28,26 @@ export default function PdfViewer({ fileUrl, controls = {} }) {
   const renderTaskRef = useRef(null); // RenderTask
   const docRef = useRef(null);        // holds last PDFDocumentProxy for cleanup
 
+  // Keep latest pageProp accessible from the fileUrl reset without retriggering the load
+  const pagePropRef = useRef(pageProp);
+  useEffect(() => {
+    pagePropRef.current = pageProp;
+  }, [pageProp]);
+
+  // Sync controlled page prop into internal state
+  useEffect(() => {
+    if (pageProp == null) return;
+    const next = clampToPositiveInt(pageProp, 1);
+    setPage((prev) => (prev === next ? prev : next));
+  }, [pageProp]);
+
   // Load when fileUrl changes
   useEffect(() => {
     let cancelled = false;
 
     // reset UI
     setDoc(null);
-    setPage(1);
+    setPage(clampToPositiveInt(pagePropRef.current, 1));
     setTotal(1);
     cancelRender();
     cancelLoad();
@@ -121,14 +140,21 @@ export default function PdfViewer({ fileUrl, controls = {} }) {
     }
   }
 
+  const goToPage = (next) => {
+    const clamped = Math.min(total, Math.max(1, clampToPositiveInt(next, 1)));
+    if (clamped === page) return;
+    setPage(clamped);
+    onPageChange?.(clamped);
+  };
+
   return (
     <div className="pdf-wrap">
       <div className="pdf-toolbar">
-        <button className="btn-mini" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={!doc || page <= 1}>
+        <button className="btn-mini" onClick={() => goToPage(page - 1)} disabled={!doc || page <= 1}>
           {controls.prev || "<"}
         </button>
         <div className="pdf-meta">{page} / {total}</div>
-        <button className="btn-mini" onClick={() => setPage(p => Math.min(total, p + 1))} disabled={!doc || page >= total}>
+        <button className="btn-mini" onClick={() => goToPage(page + 1)} disabled={!doc || page >= total}>
           {controls.next || ">"}
         </button>
         <div className="spacer" />

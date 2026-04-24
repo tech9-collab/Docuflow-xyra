@@ -1679,6 +1679,15 @@ async function processJob(jobId) {
     return `${originalName} [${label}]`;
   }
 
+  function firstPageNumber(pagesCovered) {
+    const raw = String(pagesCovered ?? "").trim();
+    if (!raw) return null;
+    const match = raw.match(/\d+/);
+    if (!match) return null;
+    const n = Number(match[0]);
+    return Number.isFinite(n) && n >= 1 ? Math.floor(n) : null;
+  }
+
   function isNonEmptyString(x) {
     return typeof x === "string" && x.trim() !== "";
   }
@@ -1838,6 +1847,9 @@ async function processJob(jobId) {
                 row.SOURCE_TYPE = f.isPdf ? "pdf" : "image";
               }
 
+              row.PAGE_NUMBER = firstPageNumber(gJSON?.pages_covered);
+              row.PAGES_COVERED = gJSON?.pages_covered || null;
+
               const overallPct =
                 gJSON?.overall_confidence != null
                   ? Math.round(gJSON.overall_confidence * 100)
@@ -1892,6 +1904,9 @@ async function processJob(jobId) {
                 row.SOURCE_URL = f.localPublicPath;
                 row.SOURCE_TYPE = f.isPdf ? "pdf" : "image";
               }
+
+              row.PAGE_NUMBER = firstPageNumber(gJSON?.pages_covered);
+              row.PAGES_COVERED = gJSON?.pages_covered || null;
 
               const overallPct =
                 gJSON?.overall_confidence != null
@@ -2303,6 +2318,9 @@ async function processJob(jobId) {
             row.SOURCE_TYPE = f.isPdf ? "pdf" : "image"; // here: "pdf"
           }
 
+          row.PAGE_NUMBER = firstPageNumber(gJSON?.pages_covered);
+          row.PAGES_COVERED = gJSON?.pages_covered || null;
+
           const overallPct =
             gJSON?.overall_confidence != null
               ? Math.round(gJSON.overall_confidence * 100)
@@ -2441,6 +2459,9 @@ async function processJob(jobId) {
             row.SOURCE_URL = f.localPublicPath; // /uploads/...
             row.SOURCE_TYPE = f.isPdf ? "pdf" : "image"; // here: "image"
           }
+
+          row.PAGE_NUMBER = firstPageNumber(gJSON?.pages_covered);
+          row.PAGES_COVERED = gJSON?.pages_covered || null;
 
           const overallPct =
             gJSON?.overall_confidence != null

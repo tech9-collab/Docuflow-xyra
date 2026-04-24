@@ -59,6 +59,7 @@ const toNumberLoose = (v) => {
 
 const fmt2 = (n) => round2(n).toFixed(2);
 const COLUMN_FILTER_VIEWS = new Set(["sales", "purchase", "others"]);
+const COLUMN_FILTER_STORAGE_KEY = "vatFilingPreview.hiddenColumnKeysByView";
 
 const normalizeInvoiceRowToken = (v) =>
   String(v ?? "")
@@ -689,6 +690,50 @@ function buildRowDocuments(row, viewName) {
   return docs;
 }
 
+function resolveRowPageNumber(row) {
+  if (!row || typeof row !== "object") return 1;
+  const scalarCandidates = [
+    row.PAGE_NUMBER,
+    row.pageNumber,
+    row.page_number,
+    row.sourcePage,
+    row.source_page,
+    row.page,
+    row.PAGE,
+  ];
+  for (const v of scalarCandidates) {
+    const n = Number(v);
+    if (Number.isFinite(n) && n >= 1) return Math.floor(n);
+  }
+  // "pages_covered" may be "2", "11,12", "pages 3-5", etc. Pick the first page number.
+  const rangeSources = [row.PAGES_COVERED, row.pages_covered, row.pagesCovered];
+  for (const src of rangeSources) {
+    const raw = String(src ?? "").trim();
+    if (!raw) continue;
+    const match = raw.match(/\d+/);
+    if (match) {
+      const n = Number(match[0]);
+      if (Number.isFinite(n) && n >= 1) return Math.floor(n);
+    }
+  }
+  // Last-resort fallback: parse the SOURCE label itself, which is built server-side
+  // as `originalName [page N]` / `[pages N,M]` / `[pages N-M]`. Covers rows from
+  // drafts saved before PAGE_NUMBER was propagated onto the row object.
+  const labelSources = [row.SOURCE, row.source, row["INVOICE SOURCE"], row["BANK SOURCE"]];
+  for (const label of labelSources) {
+    const raw = String(label ?? "");
+    if (!raw) continue;
+    const bracket = raw.match(/\[\s*pages?\s+([^\]]+)\]/i);
+    if (!bracket) continue;
+    const firstDigits = bracket[1].match(/\d+/);
+    if (firstDigits) {
+      const n = Number(firstDigits[0]);
+      if (Number.isFinite(n) && n >= 1) return Math.floor(n);
+    }
+  }
+  return 1;
+}
+
 function clonePreviewSnapshot(data) {
   if (!data) return data;
   return JSON.parse(JSON.stringify(data));
@@ -705,6 +750,7 @@ export default function VatFillingPreview() {
   const [preview, setPreview] = useState(null);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [activeDocumentId, setActiveDocumentId] = useState(null);
+  const [activePage, setActivePage] = useState(1);
   const [committedPreviewData, setCommittedPreviewData] = useState(
     clonePreviewSnapshot(location.state || null)
   );
@@ -713,11 +759,39 @@ export default function VatFillingPreview() {
   const columnFilterRef = useRef(null);
   const [openColumnFilterView, setOpenColumnFilterView] = useState(null);
   const [vatReturnEditKey, setVatReturnEditKey] = useState(null);
-  const [visibleColumnKeysByView, setVisibleColumnKeysByView] = useState({
-    sales: [],
-    purchase: [],
-    others: [],
+  // We track the columns the user has explicitly UNCHECKED per tab. New columns
+  // default to visible (absence from the set). This way the state only grows in
+  // response to user input, so switching tabs or re-rendering cannot silently
+  // flip an unchecked column back on.
+  const [hiddenColumnKeysByView, setHiddenColumnKeysByView] = useState(() => {
+    const fallback = { sales: [], purchase: [], others: [] };
+    if (typeof window === "undefined") return fallback;
+    try {
+      const saved = window.localStorage.getItem(COLUMN_FILTER_STORAGE_KEY);
+      if (!saved) return fallback;
+      const parsed = JSON.parse(saved);
+      if (!parsed || typeof parsed !== "object") return fallback;
+      return {
+        sales: Array.isArray(parsed.sales) ? parsed.sales : [],
+        purchase: Array.isArray(parsed.purchase) ? parsed.purchase : [],
+        others: Array.isArray(parsed.others) ? parsed.others : [],
+      };
+    } catch {
+      return fallback;
+    }
   });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(
+        COLUMN_FILTER_STORAGE_KEY,
+        JSON.stringify(hiddenColumnKeysByView)
+      );
+    } catch {
+      /* localStorage unavailable (quota, private mode, etc.) — ignore */
+    }
+  }, [hiddenColumnKeysByView]);
 
   const searchParams = new URLSearchParams(location.search);
   const runIdFromQuery = searchParams.get("runId");
@@ -2072,6 +2146,8 @@ export default function VatFillingPreview() {
       // ✅ keep source meta for preview
       out.SOURCE_URL = r?.SOURCE_URL ?? r?.source_url ?? null;
       out.SOURCE_TYPE = r?.SOURCE_TYPE ?? r?.source_type ?? null;
+      out.PAGE_NUMBER = r?.PAGE_NUMBER ?? r?.pageNumber ?? r?.page_number ?? null;
+      out.PAGES_COVERED = r?.PAGES_COVERED ?? r?.pages_covered ?? null;
 
       return out;
     });
@@ -2090,6 +2166,8 @@ export default function VatFillingPreview() {
       // ✅ keep source meta for preview
       out.SOURCE_URL = r?.SOURCE_URL ?? r?.source_url ?? null;
       out.SOURCE_TYPE = r?.SOURCE_TYPE ?? r?.source_type ?? null;
+      out.PAGE_NUMBER = r?.PAGE_NUMBER ?? r?.pageNumber ?? r?.page_number ?? null;
+      out.PAGES_COVERED = r?.PAGES_COVERED ?? r?.pages_covered ?? null;
 
       return out;
     });
@@ -2115,16 +2193,19 @@ export default function VatFillingPreview() {
       return row;
     });
     const keys = rows.length ? Object.keys(rows[0]) : [];
+    const HIDDEN_META_KEYS = new Set([
+      "SOURCE_URL",
+      "SOURCE_TYPE",
+      "PAGE_NUMBER",
+      "PAGES_COVERED",
+    ]);
     const baseOrder = UAE_OTHERS_ORDER.filter(
-      (k) =>
-        String(k).toUpperCase() !== "SOURCE_URL" &&
-        String(k).toUpperCase() !== "SOURCE_TYPE"
+      (k) => !HIDDEN_META_KEYS.has(String(k).toUpperCase())
     );
     const extraKeys = keys.filter(
       (k) =>
         !baseOrder.includes(k) &&
-        String(k).toUpperCase() !== "SOURCE_URL" &&
-        String(k).toUpperCase() !== "SOURCE_TYPE"
+        !HIDDEN_META_KEYS.has(String(k).toUpperCase())
     );
     const orderedKeys = baseOrder.concat(extraKeys);
     const columns = orderedKeys.map((k) => ({
@@ -2146,6 +2227,8 @@ export default function VatFillingPreview() {
       // ✅ keep source meta for preview
       out.SOURCE_URL = r?.SOURCE_URL ?? r?.source_url ?? null;
       out.SOURCE_TYPE = r?.SOURCE_TYPE ?? r?.source_type ?? null;
+      out.PAGE_NUMBER = r?.PAGE_NUMBER ?? r?.pageNumber ?? r?.page_number ?? null;
+      out.PAGES_COVERED = r?.PAGES_COVERED ?? r?.pages_covered ?? null;
 
       return out;
     });
@@ -3093,44 +3176,11 @@ export default function VatFillingPreview() {
     }
   }, [activeDocumentId, contextualDocuments]);
 
+  // Jump the PDF viewer to the page associated with the selected row.
+  // Resets to page 1 when the underlying document changes (e.g. invoice ↔ bank tab).
   useEffect(() => {
-    const syncVisibleColumns = (viewName, columns) => {
-      if (!COLUMN_FILTER_VIEWS.has(viewName)) return;
-      const availableKeys = (columns || []).map((col) => String(col.key));
-
-      setVisibleColumnKeysByView((prev) => {
-        const currentKeys = Array.isArray(prev[viewName]) ? prev[viewName] : [];
-        const normalizedCurrentKeys = currentKeys.filter((key) =>
-          availableKeys.includes(String(key))
-        );
-        const nextKeys =
-          normalizedCurrentKeys.length === 0
-            ? availableKeys
-            : [
-              ...normalizedCurrentKeys,
-              ...availableKeys.filter(
-                (key) => !normalizedCurrentKeys.includes(key)
-              ),
-            ];
-
-        if (
-          nextKeys.length === currentKeys.length &&
-          nextKeys.every((key, index) => key === currentKeys[index])
-        ) {
-          return prev;
-        }
-
-        return {
-          ...prev,
-          [viewName]: nextKeys,
-        };
-      });
-    };
-
-    syncVisibleColumns("sales", salesData.columns);
-    syncVisibleColumns("purchase", purchaseData.columns);
-    syncVisibleColumns("others", othersData.columns);
-  }, [othersData.columns, purchaseData.columns, salesData.columns]);
+    setActivePage(resolveRowPageNumber(selectedRow));
+  }, [selectedRow, activeDocumentId]);
 
   useEffect(() => {
     if (!openColumnFilterView) return;
@@ -3177,18 +3227,11 @@ export default function VatFillingPreview() {
     viewName = ""
   ) => {
     const supportsColumnFilter = COLUMN_FILTER_VIEWS.has(viewName);
-    const availableColumnKeys = cols.map((c) => String(c.key));
-    const selectedColumnKeys = supportsColumnFilter
-      ? visibleColumnKeysByView[viewName]?.filter((key) =>
-        availableColumnKeys.includes(String(key))
-      ) || []
-      : availableColumnKeys;
-    const resolvedColumnKeys =
-      supportsColumnFilter && selectedColumnKeys.length
-        ? selectedColumnKeys
-        : availableColumnKeys;
+    const hiddenKeysForView = supportsColumnFilter
+      ? new Set(hiddenColumnKeysByView[viewName] || [])
+      : new Set();
     const filteredCols = supportsColumnFilter
-      ? cols.filter((c) => resolvedColumnKeys.includes(String(c.key)))
+      ? cols.filter((c) => !hiddenKeysForView.has(String(c.key)))
       : cols;
 
     if (!cols.length) {
@@ -3243,7 +3286,7 @@ export default function VatFillingPreview() {
                   >
                     {cols.map((col) => {
                       const colKey = String(col.key);
-                      const isChecked = resolvedColumnKeys.includes(colKey);
+                      const isChecked = !hiddenKeysForView.has(colKey);
 
                       return (
                         <label key={colKey} className="column-filter-option">
@@ -3252,25 +3295,19 @@ export default function VatFillingPreview() {
                             checked={isChecked}
                             onChange={(e) => {
                               const checked = e.target.checked;
-                              setVisibleColumnKeysByView((prev) => {
-                                const previousKeys = Array.isArray(prev[viewName])
-                                  ? prev[viewName].filter((key) =>
-                                    availableColumnKeys.includes(String(key))
-                                  )
-                                  : availableColumnKeys;
-                                const nextKeys = checked
-                                  ? [
-                                    ...previousKeys,
-                                    ...(!previousKeys.includes(colKey)
-                                      ? [colKey]
-                                      : []),
-                                  ]
-                                  : previousKeys.filter((key) => key !== colKey);
-
-                                return {
-                                  ...prev,
-                                  [viewName]: nextKeys,
-                                };
+                              setHiddenColumnKeysByView((prev) => {
+                                const prevHidden = Array.isArray(prev[viewName])
+                                  ? prev[viewName]
+                                  : [];
+                                let nextHidden;
+                                if (checked) {
+                                  if (!prevHidden.includes(colKey)) return prev;
+                                  nextHidden = prevHidden.filter((key) => key !== colKey);
+                                } else {
+                                  if (prevHidden.includes(colKey)) return prev;
+                                  nextHidden = [...prevHidden, colKey];
+                                }
+                                return { ...prev, [viewName]: nextHidden };
                               });
                             }}
                           />
@@ -3393,6 +3430,7 @@ export default function VatFillingPreview() {
                                       url: srcUrl,
                                       type: srcType,
                                       label,
+                                      page: resolveRowPageNumber(row),
                                     });
                                   }}
                                 >
@@ -4200,7 +4238,9 @@ export default function VatFillingPreview() {
                     <button
                       type="button"
                       className="btn btn-outline"
-                      onClick={() => setPreview(activeDocument)}
+                      onClick={() =>
+                        setPreview({ ...activeDocument, page: activePage })
+                      }
                     >
                       Open Preview
                     </button>
@@ -4220,6 +4260,8 @@ export default function VatFillingPreview() {
                       <PdfViewer
                         key={activeDocument.id}
                         fileUrl={activeDocument.url}
+                        page={activePage}
+                        onPageChange={setActivePage}
                         controls={{
                           prev: <span>{"<"}</span>,
                           next: <span>{">"}</span>,
@@ -4279,6 +4321,7 @@ export default function VatFillingPreview() {
               {preview.type === "pdf" ? (
                 <PdfViewer
                   fileUrl={preview.url}
+                  page={preview.page}
                   controls={{
                     prev: <span>{"<"}</span>,
                     next: <span>{">"}</span>,
