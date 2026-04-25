@@ -1,0 +1,972 @@
+{
+  "source": "Local Purchases InvoicesC (1).pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "9-Jan-2024",
+      "invoice_number": "55082",
+      "vendor_name": "EDRC GLOBAL COMPUTERS LLC",
+      "customer_name": "RPC Trading- F.Z.E",
+      "vendor_trn": "100370226100003",
+      "customer_trn": "100523629200003",
+      "before_tax_amount": 12300,
+      "vat": 615,
+      "net_amount": 12915,
+      "line_items": [
+        {
+          "description": "SERVER HPE ProLiant DL380 G10 2x Intel® Xeon Gold 6130 HPE 64GB DDR4 RDIMM RAM 4 x HPE 2TB SATA 2.5\" HDD HPE Smart Array P408i-a/2GB SR Controller HPE Ethernet 1GbE Network Adapter 2x HPE 500w Flex Slot Platinum hot plug P50751-B21:CZ231909DQ,",
+          "quantity": 1,
+          "unit_price": 12300,
+          "tax_amount": 615,
+          "net_amount": 12915
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Abu Dhabi",
+      "customer_place_of_supply": "Ajman",
+      "place_of_supply": "UAE, Abu Dhabi",
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "body",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither company name nor TRN found on document",
+      "overall_confidence": 0.98,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "10/01/2024",
+      "invoice_number": "SE/5094",
+      "vendor_name": "XCELL COMPUTERS LLC",
+      "customer_name": "RPC Trading -FZE",
+      "vendor_trn": "100053019400003",
+      "customer_trn": "100523629200003",
+      "before_tax_amount": 6585,
+      "vat": 329.25,
+      "net_amount": 6914.25,
+      "line_items": [
+        {
+          "description": "HP 290G9/i7-12700/8GB/1TB SSD/DOS",
+          "quantity": 3,
+          "unit_price": 1905,
+          "tax_amount": 285.75,
+          "net_amount": 5715
+        },
+        {
+          "description": "HP Monitor V22V G5 FHD",
+          "quantity": 3,
+          "unit_price": 290,
+          "tax_amount": 43.5,
+          "net_amount": 870
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Dubai",
+      "customer_place_of_supply": "Ajman",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 1,
+      "confidence_notes": [],
+      "pages_covered": "2",
+      "invoice_key_hint": "SE/5094"
+    },
+    {
+      "country_hint": "uae",
+      "date": "08-01-2024",
+      "invoice_number": "MME 2024-0020",
+      "vendor_name": "MOHD MIRZA ELECTRONICS LLC",
+      "customer_name": "RPC TRADING FZE",
+      "vendor_trn": "100301561500003",
+      "customer_trn": "100523629200003",
+      "before_tax_amount": 7680,
+      "vat": 384,
+      "net_amount": 8064,
+      "line_items": [
+        {
+          "description": "HP PROBOOK 450G10 I7-13TH (I7 -1355U/8GB/512GB SSD/ DOS/ 15.6\")",
+          "quantity": 3,
+          "unit_price": 2530,
+          "tax_amount": 379.5,
+          "net_amount": 7969.5
+        },
+        {
+          "description": "Hp Bag",
+          "quantity": 3,
+          "unit_price": 30,
+          "tax_amount": 4.5,
+          "net_amount": 94.5
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Dubai",
+      "customer_place_of_supply": "Dubai",
+      "place_of_supply": "UAE, Dubai",
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "Tax Invoice",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 1,
+      "confidence_notes": [],
+      "pages_covered": "3",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "22-Jan-2024",
+      "invoice_number": "55188",
+      "vendor_name": "EDRC GLOBAL COMPUTERS LLC",
+      "customer_name": "RPC Trading- F.Z.E",
+      "vendor_trn": "100370226100003",
+      "customer_trn": "100523629200003",
+      "before_tax_amount": 11900,
+      "vat": 595,
+      "net_amount": 12495,
+      "line_items": [
+        {
+          "description": "SERVER HPE Proliant DL380 Gen10 2x Intel Xeon-Gold 6133 12-Core 128GB DDR4 REG RAM 2 x 2.4TB SAS 10K 2.5\" HDD Smart Array P408-a SR Gen10 2-ports SAS Controller Embedded 1Gb 4-port Ethernet Adapter 800W Power Supply (1) P23465-B21: CZ234003FJ,",
+          "quantity": 1,
+          "unit_price": 11900,
+          "tax_amount": 595,
+          "net_amount": 12495
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Dubai",
+      "customer_place_of_supply": "Ajman",
+      "place_of_supply": "UAE, Dubai",
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "body",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 1,
+      "confidence_notes": [],
+      "pages_covered": "4",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "23-01-2024",
+      "invoice_number": "ANC20/42791",
+      "vendor_name": "AL NOORI COMPUTERS & STATIONERY (L.L.C)",
+      "customer_name": "RPC TRADING F.Z.E",
+      "vendor_trn": "100212748600003",
+      "customer_trn": "100523629200003",
+      "before_tax_amount": 2150,
+      "vat": 107.5,
+      "net_amount": 2257.5,
+      "line_items": [
+        {
+          "description": "HP SCANJET PRO N4600 Fnw1 SCANNER (20G07A)",
+          "quantity": 1,
+          "unit_price": 2150,
+          "tax_amount": 107.5,
+          "net_amount": 2257.5
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Dubai",
+      "customer_place_of_supply": "AJMAN",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "5",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "29-01-2024",
+      "invoice_number": "MME 2024-0093",
+      "vendor_name": "MOHD MIRZA ELECTRONICS LLC",
+      "customer_name": "RPC TRADING FZE",
+      "vendor_trn": "100301561500003",
+      "customer_trn": "100523629200003",
+      "before_tax_amount": 9625,
+      "vat": 481.25,
+      "net_amount": 10106.25,
+      "line_items": [
+        {
+          "description": "LENOVO V15 G4 15-12500H/8GB/512GB /15.6\"",
+          "quantity": 7,
+          "unit_price": 1375,
+          "tax_amount": 481.25,
+          "net_amount": 10106.25
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Dubai",
+      "customer_place_of_supply": "Ajman",
+      "place_of_supply": "UAE, Dubai",
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "Tax Invoice",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 0.98,
+      "confidence_notes": [],
+      "pages_covered": "6",
+      "invoice_key_hint": "MME 2024-0093"
+    },
+    {
+      "country_hint": "uae",
+      "date": "31/01/2024",
+      "invoice_number": "SE/5389",
+      "vendor_name": "XCELL COMPUTERS LLC",
+      "customer_name": "RPC Trading -FZE",
+      "vendor_trn": "100053019400003",
+      "customer_trn": "100523629200003",
+      "before_tax_amount": 130,
+      "vat": 6.5,
+      "net_amount": 136.5,
+      "line_items": [
+        {
+          "description": "Cat 6 patch cord 1Mtr",
+          "quantity": 10,
+          "unit_price": 5.5,
+          "tax_amount": 2.75,
+          "net_amount": 55
+        },
+        {
+          "description": "Cat6 2mtrs Cable Patch cord",
+          "quantity": 10,
+          "unit_price": 7.5,
+          "tax_amount": 3.75,
+          "net_amount": 75
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Dubai",
+      "customer_place_of_supply": "Ajman",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 0.95,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company name nor TRN found on document.",
+      "overall_confidence": 0.98,
+      "confidence_notes": [
+        "Currency derived from 'Dhs' in amount in words and UAE context.",
+        "TRN values are 15 digits and valid."
+      ],
+      "pages_covered": "7",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "22-01-2024",
+      "invoice_number": "ΜΜΕ 2024-0070",
+      "vendor_name": "MOHD MIRZA ELECTRONICS LLC",
+      "customer_name": "RPC TRADING FZE",
+      "vendor_trn": "100301561500003",
+      "customer_trn": "100523629200003",
+      "before_tax_amount": 134550,
+      "vat": 6727.5,
+      "net_amount": 141277.5,
+      "line_items": [
+        {
+          "description": "ASUS A1504VA-EJ537 15-1335U 8GB /512GB/DOS",
+          "quantity": 30,
+          "unit_price": 1774.5,
+          "tax_amount": 2535,
+          "net_amount": 53235
+        },
+        {
+          "description": "ASUS A1504VA-NJ533 13-1315U 4GB 256GB DOS",
+          "quantity": 20,
+          "unit_price": 1228.5,
+          "tax_amount": 1170,
+          "net_amount": 24570
+        },
+        {
+          "description": "ASUS VIVOBOOK A1504ZA-BQ633 (i7 -1255U/8GB/512GB SSD/ UHD GRAPHICS / 15.6\"FHD IPS)",
+          "quantity": 10,
+          "unit_price": 1890,
+          "tax_amount": 900,
+          "net_amount": 18900
+        },
+        {
+          "description": "ACER S2690G 15-12400/4GB/256GB /DOS DT.VWMEM.02S",
+          "quantity": 30,
+          "unit_price": 1485.75,
+          "tax_amount": 2122.5,
+          "net_amount": 44572.5
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Dubai",
+      "customer_place_of_supply": "Ajman",
+      "place_of_supply": "UAE, Dubai",
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "Tax Invoice",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither company name 'TRAVEL MEDIA MIDDLE EAST - FZCO' nor TRN '104165761800003' found on document.",
+      "overall_confidence": 1,
+      "confidence_notes": [],
+      "pages_covered": "8",
+      "invoice_key_hint": "ΜΜΕ 2024-0070"
+    },
+    {
+      "country_hint": "uae",
+      "date": "06 Feb 2024",
+      "invoice_number": "INV-032648",
+      "vendor_name": "Simal Technologies Middle East LLC",
+      "customer_name": "RPC Trading- F.Z.E",
+      "vendor_trn": "100207478700003",
+      "customer_trn": "100523629200003",
+      "before_tax_amount": 2700,
+      "vat": 135,
+      "net_amount": 2835,
+      "line_items": [
+        {
+          "description": "TEAM M.2-2280 PCI-E Gen3x4 MP33 PRO 512GB RETAIL SKU: TM8FPD512G0C101",
+          "quantity": 25,
+          "unit_price": 108,
+          "tax_amount": 135,
+          "net_amount": 2700
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Dubai",
+      "customer_place_of_supply": "Ajman",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "9",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "31/01/2024",
+      "invoice_number": "SE/5390",
+      "vendor_name": "XCELL COMPUTERS LLC",
+      "customer_name": "RPC Trading -FZE",
+      "vendor_trn": "100053019400003",
+      "customer_trn": "100523629200003",
+      "before_tax_amount": 825,
+      "vat": 41.25,
+      "net_amount": 866.25,
+      "line_items": [
+        {
+          "description": "Laptop 3 pin Powercable",
+          "quantity": 150,
+          "unit_price": 5.5,
+          "tax_amount": 41.25,
+          "net_amount": 825
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Dubai",
+      "customer_place_of_supply": "Ajman",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither the uploading company's name nor TRN were found on the document.",
+      "overall_confidence": 1,
+      "confidence_notes": [],
+      "pages_covered": "10",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "30/11/2023",
+      "invoice_number": "INV20231100069042",
+      "vendor_name": "RAKBANK",
+      "customer_name": "RPC TRADING FZE",
+      "vendor_trn": "100272500800003",
+      "customer_trn": null,
+      "before_tax_amount": 32,
+      "vat": 1.6,
+      "net_amount": 33.6,
+      "line_items": [
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Ras Al Khaimah",
+      "customer_place_of_supply": "AJMAN",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "Tax Invoice",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 0.9,
+        "vendor_trn": 1,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company name nor TRN found on document.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "11,12",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "31/12/2023",
+      "invoice_number": "INV20231200063525",
+      "vendor_name": "RAKBANK",
+      "customer_name": "RPC TRADING FZE",
+      "vendor_trn": "100272500800003",
+      "customer_trn": null,
+      "before_tax_amount": 111,
+      "vat": 5.55,
+      "net_amount": 116.55,
+      "line_items": [
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "CHARGE COLLECTION-INCL. VAT",
+          "quantity": null,
+          "unit_price": 99,
+          "tax_amount": 4.95,
+          "net_amount": 103.95
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Ras Al Khaimah",
+      "customer_place_of_supply": "AJMAN",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "Tax Invoice",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 1,
+      "confidence_notes": [],
+      "pages_covered": "13",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "31/01/2024",
+      "invoice_number": "INV20240100055194",
+      "vendor_name": "The National Bank of Ras Al Khaimah (P.S.C.)",
+      "customer_name": "RPC TRADING FZE",
+      "vendor_trn": "100272500800003",
+      "customer_trn": null,
+      "before_tax_amount": 31,
+      "vat": 1.55,
+      "net_amount": 32.55,
+      "line_items": [
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 3,
+          "tax_amount": 0.15,
+          "net_amount": 3.15
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        },
+        {
+          "description": "Charge Collection-INCL. VAT",
+          "quantity": null,
+          "unit_price": 1,
+          "tax_amount": 0.05,
+          "net_amount": 1.05
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Ras Al Khaimah",
+      "customer_place_of_supply": "AJMAN, United Arab Emirates",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "Tax Invoice",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 0.9,
+        "vendor_trn": 1,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 0.9,
+        "vat": 0.9,
+        "net_amount": 0.9
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 0.95,
+      "confidence_notes": [
+        "Total amounts (before_tax_amount, vat, net_amount) are sums of line items as no explicit overall summary was provided on the document."
+      ],
+      "pages_covered": "14,15",
+      "invoice_key_hint": null
+    }
+  ]
+}

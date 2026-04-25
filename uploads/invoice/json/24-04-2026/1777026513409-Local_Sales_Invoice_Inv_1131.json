@@ -1,0 +1,72 @@
+{
+  "source": "Local Sales Invoice Inv 1131.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "11-01-24",
+      "invoice_number": "1131",
+      "vendor_name": "RPC Trading FZE",
+      "customer_name": "Amnest Tech Limited",
+      "vendor_trn": "100523629200003",
+      "customer_trn": null,
+      "before_tax_amount": 28823.4,
+      "vat": 1441.17,
+      "net_amount": 30264.57,
+      "line_items": [
+        {
+          "description": "HP ProBook 450 13th Gen Core i7 8GB RAM 1TB SSD 15.6\" W11",
+          "quantity": 3,
+          "unit_price": 2719,
+          "tax_amount": null,
+          "net_amount": 8157
+        },
+        {
+          "description": "HP 290 G4 Desktops 12th Gen Core i7 8GB RAM 1TB SSD W11 With Led Monitor 22\"",
+          "quantity": 3,
+          "unit_price": 2265,
+          "tax_amount": null,
+          "net_amount": 6795
+        },
+        {
+          "description": "HPE ProLiant SERVER DL-380-G10 - Rack Processor: 2cpu 2x Intel® Xeon Gold 6130 (2.0 GHz, up to 3.7 GHz w/Turbo Boost 27.5 MB cache, 2400MHz 16Core/32Threads) 125W Memory: HPE 64gb RDIMM Dual Rank /s. (24 DIMM Slots) Internal storage: 8 SFF SAS/SATA HDD Bays Internal HDD: 4x 2TB HPE ; HPE Smart Array P408i-a/2GB SR Controller (RAID 0/1/1+0/5/5+0); Optical Drive: N/A; Network interfaces: HPE Ethernet 1GbE Network Adapter; Power supply: 2x HPE 500w Flex Slot Platinum hot plug power kit; Form Factor: 2U Rack",
+          "quantity": 1,
+          "unit_price": 13871.4,
+          "tax_amount": null,
+          "net_amount": 13871.4
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Standard rated supplies (5%)",
+      "tax_rate_percent": 5,
+      "currency": "AED",
+      "vendor_place_of_supply": "Ajman",
+      "customer_place_of_supply": "Lusaka",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    }
+  ]
+}

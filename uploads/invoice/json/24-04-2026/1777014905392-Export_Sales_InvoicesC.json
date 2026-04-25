@@ -1,0 +1,427 @@
+{
+  "source": "Export Sales InvoicesC.pdf",
+  "records": [
+    {
+      "country_hint": "uae",
+      "date": "7/2/2024",
+      "invoice_number": "201-07398713-24",
+      "vendor_name": "Dubai Customs",
+      "customer_name": "RPC TRADING - F.Z.E",
+      "vendor_trn": null,
+      "customer_trn": null,
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "LAPTOPS AND ACCESSORIES",
+          "quantity": 1,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": null
+        }
+      ],
+      "tax_registered": null,
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": null,
+      "vendor_place_of_supply": "Dubai",
+      "customer_place_of_supply": "AJMAN",
+      "place_of_supply": null,
+      "document_category": "Others",
+      "document_category_evidence": {
+        "matched_text": "CUSTOMS EXIT / ENTRY CERTIFICATE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 0,
+        "customer_trn": 0,
+        "currency": 0,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "1",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "06/02/2024",
+      "invoice_number": "201-07398713-24",
+      "vendor_name": "UNITED ARAB EMIRATES Federal Customs Authority DUBAI CUSTOMS",
+      "customer_name": "RPC TRADING - F.Z.E",
+      "vendor_trn": null,
+      "customer_trn": "100523629200003",
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [],
+      "tax_registered": "Yes",
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": "AED",
+      "vendor_place_of_supply": "DUBAI",
+      "customer_place_of_supply": "UAE",
+      "place_of_supply": null,
+      "document_category": "Others",
+      "document_category_evidence": {
+        "matched_text": "Customs Declaration",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 0,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company name nor TRN found in vendor or customer fields on document.",
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "2",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "30-01-24",
+      "invoice_number": "1132",
+      "vendor_name": "RPC Trading F.Z.E.",
+      "customer_name": "Office Machine Services Ltd.",
+      "vendor_trn": "100523629200003",
+      "customer_trn": null,
+      "before_tax_amount": 7128,
+      "vat": 0,
+      "net_amount": 7128,
+      "line_items": [
+        {
+          "description": "HPE Proliant DL380 Gen10/8-SFF Hot Plug / 2U Rack / 2CPU 2x Intel Xeon-Gold 6133 12-Core (2.50GHz 11MB L3 Cache) Processor / 128GB (4x32GB) Dual Rank x4 DDR4-CAS-19-19-19 Registered Memory /2.4TB x 2 (4.8TB) / HPE Smart Array P408i-a SR Gen10 2-ports SAS Controller Module / NO DVD /Embedded 1Gb 4-port Ethernet Adapter / 1 x HPE 800W Flex Slot Platinum Hot Plug Low Halogen Power Supply",
+          "quantity": 1,
+          "unit_price": 3700,
+          "tax_amount": 0,
+          "net_amount": 3700
+        },
+        {
+          "description": "HP Scanjet Pro N4600 fnw1",
+          "quantity": 1,
+          "unit_price": 598,
+          "tax_amount": 0,
+          "net_amount": 598
+        },
+        {
+          "description": "Cat6 Fly Lead 1meter",
+          "quantity": 10,
+          "unit_price": 1.95,
+          "tax_amount": 0,
+          "net_amount": 19.5
+        },
+        {
+          "description": "Cat6 Fly Lead 2meter",
+          "quantity": 10,
+          "unit_price": 2.45,
+          "tax_amount": 0,
+          "net_amount": 24.5
+        },
+        {
+          "description": "Lenovo V15 G4 Ci5-12500H/8GB/512GB-SSD / Iris Xe Graphics/15.6\" FHD / WIN 11P",
+          "quantity": 7,
+          "unit_price": 398,
+          "tax_amount": 0,
+          "net_amount": 2786
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Zero Rated Supplies",
+      "tax_rate_percent": 0,
+      "currency": "USD",
+      "vendor_place_of_supply": "Ajman",
+      "customer_place_of_supply": "Lusaka",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "3",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "06 02 2024",
+      "invoice_number": "201-07399111-24",
+      "vendor_name": "Dubai Customs",
+      "customer_name": "RPC TRADING - F.Z.E",
+      "vendor_trn": null,
+      "customer_trn": "100523629200003",
+      "before_tax_amount": null,
+      "vat": null,
+      "net_amount": null,
+      "line_items": [
+        {
+          "description": "STC: ASUS A1504-CORE I5-1335U/8GB/512 GB SSD/ INTEL IRIS XE GRAPHICS / DOS / ENG KB / 15.6\" FHD COLOR SILVER, ACER VERITON VS2690G - INTEL CORE I5-12400/4GB RAM/512GB SSD/NO ODD/DOS/USB WIRED KB & MOUSE, ASUS A1504-CORE I5-13TH GEN CORE I3/4 GB/256 GB SSD/15.6ED COLOR/ENG KB/DOS, ASUS A1504-CORE I7-12TH GEN/820BRD/15.6\" FHD/SILVER COLOR/ENG KB/DOS, SSD TRANSCEND 512GB M. PAROMENEPEL, SSD TEAM MP33 PRO PCIE NVME 512GB, ACER KEYBOARDS, KECEROWER CORD.",
+          "quantity": 39,
+          "unit_price": null,
+          "tax_amount": null,
+          "net_amount": null
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": null,
+      "tax_rate_percent": null,
+      "currency": null,
+      "vendor_place_of_supply": "Dubai",
+      "customer_place_of_supply": null,
+      "place_of_supply": null,
+      "document_category": "Others",
+      "document_category_evidence": {
+        "matched_text": "CUSTOMS EXIT / ENTRY CERTIFICATE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 0,
+        "customer_trn": 0.7,
+        "currency": 0,
+        "before_tax_amount": 0,
+        "vat": 0,
+        "net_amount": 0
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": null,
+      "overall_confidence": 0.9,
+      "confidence_notes": [],
+      "pages_covered": "4",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "06/02/2024",
+      "invoice_number": "201-0739111-24",
+      "vendor_name": "Federal Customs Authority DUBAI CUSTOMS",
+      "customer_name": "RPC TRADING - F.Z.E",
+      "vendor_trn": null,
+      "customer_trn": "100523629200003",
+      "before_tax_amount": 151978.3983,
+      "vat": 0,
+      "net_amount": 151978.3983,
+      "line_items": [
+        {
+          "description": "STC ASUS A1504 CORE I5",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0,
+          "net_amount": 99859.09
+        },
+        {
+          "description": "STC LAPTOP POWER CORD",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0,
+          "net_amount": 276.98
+        },
+        {
+          "description": "STC SSD TRANSCEND 512G",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0,
+          "net_amount": 1599.07
+        },
+        {
+          "description": "STC SSD TEAM MP33 PRO",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0,
+          "net_amount": 2917.47
+        },
+        {
+          "description": "STC ACER KEYBOARDS RE",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0,
+          "net_amount": 73.86
+        },
+        {
+          "description": "STC ACER VERITON VS269",
+          "quantity": null,
+          "unit_price": null,
+          "tax_amount": 0,
+          "net_amount": 47251.94
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Zero Rated Supplies",
+      "tax_rate_percent": 0,
+      "currency": "AED",
+      "vendor_place_of_supply": "DUBAI",
+      "customer_place_of_supply": null,
+      "place_of_supply": null,
+      "document_category": "Others",
+      "document_category_evidence": {
+        "matched_text": "Customs Declaration",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 0,
+        "customer_trn": 1,
+        "currency": 1,
+        "before_tax_amount": 0.9,
+        "vat": 1,
+        "net_amount": 0.9
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company name nor TRN found on the document.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "5",
+      "invoice_key_hint": null
+    },
+    {
+      "country_hint": "uae",
+      "date": "30-01-24",
+      "invoice_number": "1133",
+      "vendor_name": "RPC TRADING F.Z.E.",
+      "customer_name": "Advanced Digital Limited",
+      "vendor_trn": "100523629200003",
+      "customer_trn": null,
+      "before_tax_amount": 41153.1,
+      "vat": 0,
+      "net_amount": 41153.1,
+      "line_items": [
+        {
+          "description": "Asus A1504 - Core i5-1335u | 8GB | 512GB SSD | Intel Iris Xe Graphics | Dos | Eng KB | 15.6\" FHD Color Silver",
+          "quantity": 30,
+          "unit_price": 484.67,
+          "tax_amount": 0,
+          "net_amount": 14540.1
+        },
+        {
+          "description": "Asus A1504-13TH Gen Core i3 | 4GB | 256GB SSD 15.6\" FHD | Blue color | Eng Kb | Dos",
+          "quantity": 20,
+          "unit_price": 348,
+          "tax_amount": 0,
+          "net_amount": 6960
+        },
+        {
+          "description": "Asus A1504 - Core i7-12TH Gen | 8GB | 512GB SSD 15.6\" FHD Silver Color Eng Kb | Dos",
+          "quantity": 10,
+          "unit_price": 554,
+          "tax_amount": 0,
+          "net_amount": 5540
+        },
+        {
+          "description": "SSD Transcend 512gb M.2 2242 NVME PCL",
+          "quantity": 10,
+          "unit_price": 43.3,
+          "tax_amount": 0,
+          "net_amount": 433
+        },
+        {
+          "description": "SSD TEAM MP33 Pro PCIe NVMe 512GB",
+          "quantity": 25,
+          "unit_price": 31.6,
+          "tax_amount": 0,
+          "net_amount": 790
+        },
+        {
+          "description": "Acer Keyboards",
+          "quantity": 10,
+          "unit_price": 2,
+          "tax_amount": 0,
+          "net_amount": 20
+        },
+        {
+          "description": "Laptop Power Cord",
+          "quantity": 150,
+          "unit_price": 0.5,
+          "tax_amount": 0,
+          "net_amount": 75
+        },
+        {
+          "description": "Acer Veriton VS2690G - Intel Core i5-12400 | 4GB RAM 512GB SSD | NO ODD | DOS | USB Wired KB & Mouse",
+          "quantity": 30,
+          "unit_price": 426.5,
+          "tax_amount": 0,
+          "net_amount": 12795
+        }
+      ],
+      "tax_registered": "Yes",
+      "tax_type": "Zero Rated Supplies",
+      "tax_rate_percent": 0,
+      "currency": "USD",
+      "vendor_place_of_supply": "Ajman",
+      "customer_place_of_supply": "Port Louis",
+      "place_of_supply": null,
+      "document_category": "Tax Invoice",
+      "document_category_evidence": {
+        "matched_text": "TAX INVOICE",
+        "page_region": "header",
+        "confidence": 1
+      },
+      "field_confidence": {
+        "document_category": 1,
+        "date": 1,
+        "invoice_number": 1,
+        "vendor_name": 1,
+        "customer_name": 1,
+        "vendor_trn": 1,
+        "customer_trn": 0,
+        "currency": 1,
+        "before_tax_amount": 1,
+        "vat": 1,
+        "net_amount": 1
+      },
+      "transaction_type": "unknown",
+      "transaction_type_reason": "Neither uploading company name nor TRN found on the document.",
+      "overall_confidence": 0.95,
+      "confidence_notes": [],
+      "pages_covered": "6",
+      "invoice_key_hint": "1133"
+    }
+  ]
+}
