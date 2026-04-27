@@ -45,12 +45,28 @@ export default function Sidebar({ collapsed }) {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    window.location.href = "https://xyra.tvcbooks.com/";
+  };
+
+  const handleBrandClick = () => {
+    window.location.href = "https://xyra.tvcbooks.com/";
   };
 
   return (
     <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
-      <div className="sidebar-brand">
+      <div
+        className="sidebar-brand"
+        role="link"
+        tabIndex={0}
+        onClick={handleBrandClick}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleBrandClick();
+          }
+        }}
+        style={{ cursor: "pointer" }}
+      >
         <img
           src={logo}
           alt="XYRA"

@@ -43,7 +43,7 @@ export default function Navbar({ onToggleSidebar, setupProgress = 0 }) {
 
   const handleLogout = () => {
     logout();
-    navigate("/login", { replace: true });
+    window.location.href = "https://xyra.tvcbooks.com/";
   };
 
   const displayName = user?.name || "User";
