@@ -10,13 +10,15 @@ import {
   getVatFilingPreview,
   generateVatFilingExcel,
   downloadVatReturnTemplate,
+  downloadFtaAuditFiling,
+  fetchVatPeriods,
 } from "../../helper/helper";
 import "./VatFilingPreview.css";
 import toast from "react-hot-toast";
 import PdfViewer from "../../components/PdfViewer/PdfViewer";
 import ImageViewer from "../../components/ImageViewer/ImageViewer";
 import { VatFilingComposer } from "../BankandInvoice/BankAndInvoice";
-import { X, Info } from "lucide-react";
+import { X, Info, ChevronDown } from "lucide-react";
 
 const RAW_API_BASE =
   import.meta.env.VITE_API_BASE || "http://localhost:3001/api";
@@ -747,6 +749,7 @@ export default function VatFillingPreview() {
   const [loading, setLoading] = useState(false);
   const [previewData, setPreviewData] = useState(location.state || null);
   const [error, setError] = useState(null);
+  const [periodInfo, setPeriodInfo] = useState(null);
   const [preview, setPreview] = useState(null);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [activeDocumentId, setActiveDocumentId] = useState(null);
@@ -758,6 +761,15 @@ export default function VatFillingPreview() {
   const editablePaneRef = useRef(null);
   const columnFilterRef = useRef(null);
   const [openColumnFilterView, setOpenColumnFilterView] = useState(null);
+  const downloadMenuRef = useRef(null);
+  const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
+  const bulkMoveMenuRef = useRef(null);
+  const [bulkMoveMenuOpen, setBulkMoveMenuOpen] = useState(false);
+  const [selectedRowKeysByView, setSelectedRowKeysByView] = useState({
+    sales: new Set(),
+    purchase: new Set(),
+    others: new Set(),
+  });
   const [vatReturnEditKey, setVatReturnEditKey] = useState(null);
   // We track the columns the user has explicitly UNCHECKED per tab. New columns
   // default to visible (absence from the set). This way the state only grows in
@@ -1017,6 +1029,34 @@ export default function VatFillingPreview() {
     }
   }, [runId, previewData]);
 
+  // Load filing period (dates, due date) for the verification document panel.
+  const effectivePeriodId = periodIdFromQuery || previewData?.periodId || null;
+  useEffect(() => {
+    if (!companyId || !effectivePeriodId) {
+      setPeriodInfo(null);
+      return;
+    }
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const periods = await fetchVatPeriods(companyId);
+        if (cancelled) return;
+        const found = (periods || []).find(
+          (p) => String(p.id) === String(effectivePeriodId)
+        );
+        setPeriodInfo(found || null);
+      } catch (err) {
+        console.error("Failed to load filing period info:", err);
+        if (!cancelled) setPeriodInfo(null);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [companyId, effectivePeriodId]);
+
   useEffect(() => {
     if (!previewData?.invoiceData?.othersRows?.length) return;
     const rows = previewData.invoiceData.othersRows;
@@ -1245,6 +1285,41 @@ export default function VatFillingPreview() {
     } catch (err) {
       console.error("Failed to download VAT Return template:", err);
       alert("Failed to download VAT Return template");
+    }
+  }
+
+  async function handleDownloadFtaAuditFiling() {
+    try {
+      if (!previewData) {
+        toast.error("No data to download");
+        return;
+      }
+
+      const periodId =
+        periodIdFromQuery || previewData?.periodId || periodInfo?.id || null;
+
+      const blob = await downloadFtaAuditFiling(companyId, {
+        periodId: periodId ? Number(periodId) : null,
+        invoiceData: normalizedInvoiceData,
+        companyName: previewData.companyName || `Company ${companyId}`,
+        companyTRN: previewData.companyTRN || "",
+      });
+
+      const safeName =
+        String(previewData.companyName || `Company ${companyId}`)
+          .replace(/[\\\/?*\[\]:]/g, "")
+          .trim() || `Company ${companyId}`;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `XYA - VAT- FTA File - ${safeName}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Failed to download FTA Audit Filing:", err);
+      toast.error("Failed to download FTA Audit Filing");
     }
   }
 
@@ -1646,6 +1721,118 @@ export default function VatFillingPreview() {
         bankReconData: null,
       };
     });
+  };
+
+  const handleToggleRowSelection = (viewName, rowKey) => {
+    if (!["sales", "purchase", "others"].includes(viewName)) return;
+    setSelectedRowKeysByView((prev) => {
+      const prevSet = prev[viewName] || new Set();
+      const nextSet = new Set(prevSet);
+      if (nextSet.has(rowKey)) nextSet.delete(rowKey);
+      else nextSet.add(rowKey);
+      return { ...prev, [viewName]: nextSet };
+    });
+  };
+
+  const handleToggleSelectAll = (viewName, visibleRows) => {
+    if (!["sales", "purchase", "others"].includes(viewName)) return;
+    const visibleKeys = (visibleRows || []).map((r) => getInvoiceRowMatchKey(r));
+    setSelectedRowKeysByView((prev) => {
+      const prevSet = prev[viewName] || new Set();
+      const allSelected =
+        visibleKeys.length > 0 &&
+        visibleKeys.every((k) => prevSet.has(k));
+      const nextSet = allSelected ? new Set() : new Set(visibleKeys);
+      return { ...prev, [viewName]: nextSet };
+    });
+  };
+
+  const handleBulkMove = (target) => {
+    if (!["sales", "purchase", "others"].includes(view)) return;
+    if (!["sales", "purchase", "others"].includes(target)) return;
+    if (target === view) {
+      setBulkMoveMenuOpen(false);
+      return;
+    }
+
+    const sourceView = view;
+    const sourceSet = selectedRowKeysByView[sourceView] || new Set();
+    if (sourceSet.size === 0) return;
+
+    if (
+      typeof window !== "undefined" &&
+      !window.confirm("Are you sure you want to move selected records?")
+    ) {
+      return;
+    }
+
+    const movedCount = sourceSet.size;
+    const targetLabel =
+      target === "sales" ? "Sales" : target === "purchase" ? "Purchase" : "Others";
+
+    setPreviewData((prev) => {
+      if (!prev) return prev;
+      const next = { ...prev };
+      const inv = { ...(next.invoiceData || {}) };
+
+      const collected = [];
+      const seenCollected = new Set();
+      const filterOutSelected = (rows = []) =>
+        (Array.isArray(rows) ? rows : []).filter((row) => {
+          if (!row || typeof row !== "object") return true;
+          const k = getInvoiceRowMatchKey(row);
+          if (sourceSet.has(k)) {
+            if (!seenCollected.has(k)) {
+              collected.push(row);
+              seenCollected.add(k);
+            }
+            return false;
+          }
+          return true;
+        });
+
+      if (sourceView === "others") {
+        inv.othersRows = filterOutSelected(inv.othersRows);
+        inv.uaeOtherRows = filterOutSelected(inv.uaeOtherRows);
+      } else if (sourceView === "sales") {
+        inv.uaeSalesRows = filterOutSelected(inv.uaeSalesRows);
+      } else {
+        inv.uaePurchaseRows = filterOutSelected(inv.uaePurchaseRows);
+      }
+
+      const taggedRows = collected.map((row) => ({
+        ...row,
+        TYPE: targetLabel,
+      }));
+
+      if (target === "others") {
+        const base = Array.isArray(inv.othersRows) ? [...inv.othersRows] : [];
+        const merged = [...base, ...taggedRows];
+        inv.othersRows = merged;
+        inv.uaeOtherRows = merged;
+      } else {
+        const tgtKey = target === "sales" ? "uaeSalesRows" : "uaePurchaseRows";
+        const base = Array.isArray(inv[tgtKey]) ? [...inv[tgtKey]] : [];
+        inv[tgtKey] = [...base, ...taggedRows];
+      }
+
+      inv.__explicitBuckets = true;
+      next.invoiceData = inv;
+      next.bankReconData = null;
+      return next;
+    });
+
+    setSelectedRowKeysByView((prev) => ({
+      ...prev,
+      [sourceView]: new Set(),
+    }));
+    setBulkMoveMenuOpen(false);
+    setSelectedRecord(null);
+    setActiveDocumentId(null);
+    setView(target);
+    toast.success(
+      `${movedCount} record${movedCount === 1 ? "" : "s"} moved to ${targetLabel}.`
+    );
   };
 
   const handleSalesPurchaseRowAction = (viewName, rowIndex, action) => {
@@ -2092,6 +2279,32 @@ export default function VatFillingPreview() {
       __explicitBuckets: true,
     };
   }, [previewData?.invoiceData, salesRows, purchaseRows, othersRowsView, placeOfSupplyRowsView]);
+
+  // Drop selection keys whose rows no longer exist (after edits, deletes, moves).
+  useEffect(() => {
+    setSelectedRowKeysByView((prev) => {
+      const cleanFor = (rows, set) => {
+        if (!set || set.size === 0) return set;
+        const keys = new Set(
+          (rows || []).map((r) => getInvoiceRowMatchKey(r))
+        );
+        const cleaned = new Set();
+        for (const k of set) if (keys.has(k)) cleaned.add(k);
+        return cleaned.size === set.size ? set : cleaned;
+      };
+      const nextSales = cleanFor(salesRows || [], prev.sales);
+      const nextPurch = cleanFor(purchaseRows || [], prev.purchase);
+      const nextOthers = cleanFor(othersRowsView || [], prev.others);
+      if (
+        nextSales === prev.sales &&
+        nextPurch === prev.purchase &&
+        nextOthers === prev.others
+      ) {
+        return prev;
+      }
+      return { sales: nextSales, purchase: nextPurch, others: nextOthers };
+    });
+  }, [salesRows, purchaseRows, othersRowsView]);
 
   // ===== Totals (same formula as backend generateCombinedExcel) =====
   const computedSales = useMemo(() => {
@@ -3196,6 +3409,41 @@ export default function VatFillingPreview() {
     return () => document.removeEventListener("click", handleDocumentClick);
   }, [openColumnFilterView]);
 
+  useEffect(() => {
+    if (!downloadMenuOpen) return;
+
+    const handleDocumentClick = (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (downloadMenuRef.current?.contains(target)) return;
+      setDownloadMenuOpen(false);
+    };
+
+    document.addEventListener("click", handleDocumentClick);
+    return () => document.removeEventListener("click", handleDocumentClick);
+  }, [downloadMenuOpen]);
+
+  useEffect(() => {
+    if (!bulkMoveMenuOpen) return;
+
+    const handleDocumentClick = (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (bulkMoveMenuRef.current?.contains(target)) return;
+      setBulkMoveMenuOpen(false);
+    };
+
+    document.addEventListener("click", handleDocumentClick);
+    return () => document.removeEventListener("click", handleDocumentClick);
+  }, [bulkMoveMenuOpen]);
+
+  // Close the bulk-move menu when leaving a tab that supports selection.
+  useEffect(() => {
+    if (!["sales", "purchase", "others"].includes(view)) {
+      setBulkMoveMenuOpen(false);
+    }
+  }, [view]);
+
   const activeDocument =
     contextualDocuments.find((doc) => doc.id === activeDocumentId) ||
     contextualDocuments[0] ||
@@ -3260,6 +3508,25 @@ export default function VatFillingPreview() {
     const showAddRowButton =
       isEditMode &&
       ["bank", "sales", "purchase", "others", "placeOfSupply"].includes(viewName);
+
+    const supportsBulkSelection = ["sales", "purchase", "others"].includes(
+      viewName
+    );
+    const selectionSet = supportsBulkSelection
+      ? selectedRowKeysByView[viewName] || new Set()
+      : null;
+    const visibleRowKeys = supportsBulkSelection
+      ? (rows || []).map((r) => getInvoiceRowMatchKey(r))
+      : [];
+    const selectedCount = selectionSet ? selectionSet.size : 0;
+    const allVisibleSelected =
+      supportsBulkSelection &&
+      visibleRowKeys.length > 0 &&
+      visibleRowKeys.every((k) => selectionSet.has(k));
+    const someVisibleSelected =
+      supportsBulkSelection &&
+      visibleRowKeys.some((k) => selectionSet.has(k)) &&
+      !allVisibleSelected;
 
     return (
       <div className="tbl-wrap">
@@ -3329,8 +3596,71 @@ export default function VatFillingPreview() {
               </button>
             )}
           </div>
-          <div className="tbl-record-count" style={{ fontSize: '13px', color: '#6b7280', fontWeight: '500' }}>
-            Total Records: {rows.length}
+          <div className="tbl-record-count" style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', color: '#6b7280', fontWeight: '500' }}>
+            <span>Total Records: {rows.length}</span>
+            {supportsBulkSelection && (
+              <>
+                {selectedCount > 0 && (
+                  <span className="bulk-selected-count">
+                    {selectedCount} Selected
+                  </span>
+                )}
+                <div
+                  className="bulk-move-menu"
+                  ref={view === viewName && bulkMoveMenuOpen ? bulkMoveMenuRef : null}
+                >
+                  <button
+                    type="button"
+                    className="row-add-btn bulk-move-trigger"
+                    disabled={selectedCount === 0}
+                    aria-haspopup="menu"
+                    aria-expanded={view === viewName && bulkMoveMenuOpen}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (selectedCount === 0) return;
+                      setBulkMoveMenuOpen((prev) => !prev);
+                    }}
+                  >
+                    Bulk Move
+                    <ChevronDown size={14} aria-hidden="true" />
+                  </button>
+                  {view === viewName && bulkMoveMenuOpen && selectedCount > 0 && (
+                    <div className="bulk-move-menu-list" role="menu">
+                      {viewName !== "sales" && (
+                        <button
+                          type="button"
+                          role="menuitem"
+                          className="bulk-move-menu-item"
+                          onClick={() => handleBulkMove("sales")}
+                        >
+                          Move to Sales
+                        </button>
+                      )}
+                      {viewName !== "purchase" && (
+                        <button
+                          type="button"
+                          role="menuitem"
+                          className="bulk-move-menu-item"
+                          onClick={() => handleBulkMove("purchase")}
+                        >
+                          Move to Purchase
+                        </button>
+                      )}
+                      {viewName !== "others" && (
+                        <button
+                          type="button"
+                          role="menuitem"
+                          className="bulk-move-menu-item"
+                          onClick={() => handleBulkMove("others")}
+                        >
+                          Move to Others
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
         {supportsColumnFilter && filteredCols.length === 0 ? (
@@ -3342,6 +3672,23 @@ export default function VatFillingPreview() {
             <table className={tableClassName}>
               <thead>
                 <tr>
+                  {supportsBulkSelection && (
+                    <th className="select-col">
+                      <input
+                        type="checkbox"
+                        aria-label="Select all visible rows"
+                        checked={allVisibleSelected}
+                        ref={(el) => {
+                          if (el) el.indeterminate = someVisibleSelected;
+                        }}
+                        disabled={visibleRowKeys.length === 0}
+                        onChange={() =>
+                          handleToggleSelectAll(viewName, rows)
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </th>
+                  )}
                   {filteredCols.map((c) => {
                     const label = c.label ?? "";
 
@@ -3377,7 +3724,11 @@ export default function VatFillingPreview() {
                 {!rows || rows.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={filteredCols.length + (showActionColumn ? 1 : 0)}
+                      colSpan={
+                        filteredCols.length +
+                        (showActionColumn ? 1 : 0) +
+                        (supportsBulkSelection ? 1 : 0)
+                      }
                       className="muted"
                       style={{ textAlign: "center", padding: 18 }}
                     >
@@ -3385,7 +3736,13 @@ export default function VatFillingPreview() {
                     </td>
                   </tr>
                 ) : (
-                  rows.map((row, rowIndex) => (
+                  rows.map((row, rowIndex) => {
+                    const rowKey = supportsBulkSelection
+                      ? getInvoiceRowMatchKey(row)
+                      : null;
+                    const isRowSelected =
+                      supportsBulkSelection && selectionSet.has(rowKey);
+                    return (
                     <tr
                       key={rowIndex}
                       className={
@@ -3396,6 +3753,22 @@ export default function VatFillingPreview() {
                       }
                       onClick={() => setSelectedRecord({ view: viewName, rowIndex })}
                     >
+                      {supportsBulkSelection && (
+                        <td
+                          className="select-col"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <input
+                            type="checkbox"
+                            aria-label="Select row"
+                            checked={isRowSelected}
+                            onChange={() =>
+                              handleToggleRowSelection(viewName, rowKey)
+                            }
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </td>
+                      )}
                       {filteredCols.map((c) => {
                         const rawCellValue = resolveInvoiceDateDisplayValue(row, c.key);
                         const val = rawCellValue ?? "";
@@ -3620,7 +3993,8 @@ export default function VatFillingPreview() {
                         </td>
                       )}
                     </tr>
-                  ))
+                    );
+                  })
                 )}
               </tbody>
             </table>
@@ -4168,16 +4542,55 @@ export default function VatFillingPreview() {
             ← {isExistingRun ? "Back to conversions" : "Back to filing"}
           </button>
 
-          <button
-            className="btn btn-black"
-            onClick={handleDownloadVatReturnTemplate}
-          >
-            Download VAT Return Template
-          </button>
-
-          <button className="btn btn-black" onClick={handleDownload}>
-            Download Excel
-          </button>
+          <div className="download-menu" ref={downloadMenuRef}>
+            <button
+              type="button"
+              className="btn btn-black download-menu-trigger"
+              aria-haspopup="menu"
+              aria-expanded={downloadMenuOpen}
+              onClick={() => setDownloadMenuOpen((prev) => !prev)}
+            >
+              Download
+              <ChevronDown size={16} aria-hidden="true" />
+            </button>
+            {downloadMenuOpen && (
+              <div className="download-menu-list" role="menu">
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="download-menu-item"
+                  onClick={() => {
+                    setDownloadMenuOpen(false);
+                    handleDownloadVatReturnTemplate();
+                  }}
+                >
+                  Download VAT Return Template
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="download-menu-item"
+                  onClick={() => {
+                    setDownloadMenuOpen(false);
+                    handleDownload();
+                  }}
+                >
+                  Download Excel
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="download-menu-item"
+                  onClick={() => {
+                    setDownloadMenuOpen(false);
+                    handleDownloadFtaAuditFiling();
+                  }}
+                >
+                  Download FTA Audit Filing
+                </button>
+              </div>
+            )}
+          </div>
           <button className="btn btn-black" onClick={handleAddMoreFiles}>
             Add More Files
           </button>
@@ -4200,6 +4613,32 @@ export default function VatFillingPreview() {
 
           <aside className="result-doc-pane" aria-label="Document preview">
             <div className="result-doc-pane-head">
+              <div className="filing-period-meta" aria-label="Filing period summary">
+                {periodInfo ? (
+                  <>
+                    <span className="filing-period-meta__item">
+                      <span className="filing-period-meta__label">Filing Period:</span>{" "}
+                      <span className="filing-period-meta__value">
+                        {formatDateDisplay(periodInfo.period_from)} to{" "}
+                        {formatDateDisplay(periodInfo.period_to)}
+                      </span>
+                    </span>
+                    {periodInfo.due_date && (
+                      <span className="filing-period-meta__item">
+                        <span className="filing-period-meta__label">Due Date:</span>{" "}
+                        <span className="filing-period-meta__value">
+                          {formatDateDisplay(periodInfo.due_date)}
+                        </span>
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span className="filing-period-meta__item">
+                    <span className="filing-period-meta__label">Filing Period:</span>{" "}
+                    <span className="filing-period-meta__value">Not available</span>
+                  </span>
+                )}
+              </div>
               <div className="result-doc-title">Verification Document</div>
               <div className="result-doc-subtitle">
                 {activeDocument

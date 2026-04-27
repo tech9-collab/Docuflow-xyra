@@ -32,6 +32,44 @@
   color: #6b7280;
   font-size: 13px;
 }
+
+.result-doc-pane-head .filing-period-meta {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 18px;
+  row-gap: 4px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1.45;
+  color: #334155;
+}
+.filing-period-meta__item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  position: relative;
+}
+.filing-period-meta__item + .filing-period-meta__item::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: #e2e8f0;
+}
+.filing-period-meta__label {
+  color: #6b7280;
+  font-weight: 600;
+}
+.filing-period-meta__value {
+  color: #0f172a;
+  font-weight: 600;
+}
 .head-actions {
   display: flex;
   gap: 10px;
@@ -73,6 +111,53 @@
   color: #fff;
 }
 .btn-black:hover {
+  background: #0a0a0a;
+}
+
+/* Download dropdown */
+.download-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+}
+.download-menu-trigger {
+  gap: 8px;
+  width: 100%;
+}
+.download-menu-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 30;
+  min-width: 240px;
+  padding: 6px;
+  background: #111827;
+  border: 1px solid #111827;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.download-menu-item {
+  text-align: left;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background 120ms ease;
+  white-space: nowrap;
+}
+.download-menu-item:hover,
+.download-menu-item:focus-visible {
+  background: #1f2937;
+  outline: none;
+}
+.download-menu-item:active {
   background: #0a0a0a;
 }
 
@@ -510,6 +595,81 @@
 }
 .row-add-btn:hover {
   background: #f3f4f6;
+}
+.row-add-btn:disabled,
+.row-add-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f9fafb;
+}
+
+/* Bulk move dropdown */
+.bulk-selected-count {
+  color: #111827;
+  font-weight: 600;
+}
+.bulk-move-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+}
+.bulk-move-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.bulk-move-menu-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 30;
+  min-width: 180px;
+  padding: 4px;
+  background: #111827;
+  border: 1px solid #111827;
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.bulk-move-menu-item {
+  text-align: left;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.bulk-move-menu-item:hover,
+.bulk-move-menu-item:focus-visible {
+  background: #1f2937;
+  outline: none;
+}
+
+/* Selection checkbox column */
+.tbl th.select-col,
+.tbl td.select-col {
+  width: 36px;
+  min-width: 36px;
+  text-align: center;
+  padding: 6px 4px;
+}
+.tbl td.select-col input[type="checkbox"],
+.tbl th.select-col input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: #111827;
+}
+.tbl td.select-col input[type="checkbox"]:disabled,
+.tbl th.select-col input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .row-delete-btn {

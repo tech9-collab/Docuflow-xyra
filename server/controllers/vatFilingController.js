@@ -2059,6 +2059,566 @@ export async function generateCombinedExcel(req, res) {
   }
 }
 
+// ===== FTA Audit Filing helpers =====
+const FTA_MONTHS_SHORT = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+function ftaParseDate(value) {
+  if (!value) return null;
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? null : value;
+  }
+  const str = String(value).trim();
+  if (!str) return null;
+
+  const dmy = str.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+  if (dmy) {
+    const day = parseInt(dmy[1], 10);
+    const month = parseInt(dmy[2], 10);
+    let year = parseInt(dmy[3], 10);
+    if (year < 100) year += year >= 70 ? 1900 : 2000;
+    if (day > 12 && month <= 12) {
+      return new Date(year, month - 1, day);
+    }
+    if (month > 12 && day <= 12) {
+      return new Date(year, day - 1, month);
+    }
+    return new Date(year, month - 1, day);
+  }
+  const ymd = str.match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})/);
+  if (ymd) {
+    return new Date(
+      parseInt(ymd[1], 10),
+      parseInt(ymd[2], 10) - 1,
+      parseInt(ymd[3], 10)
+    );
+  }
+  const fallback = new Date(str);
+  return Number.isNaN(fallback.getTime()) ? null : fallback;
+}
+
+function ftaFormatDmy(value) {
+  const d = ftaParseDate(value);
+  if (!d) return value ? String(value) : "";
+  return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+}
+
+function ftaFormatHeaderDate(value) {
+  const d = ftaParseDate(value);
+  if (!d) return value ? String(value) : "";
+  const day = String(d.getDate()).padStart(2, "0");
+  const mon = FTA_MONTHS_SHORT[d.getMonth()];
+  const yy = String(d.getFullYear()).slice(-2);
+  return `${day}-${mon}-${yy}`;
+}
+
+function ftaNumber(value) {
+  if (value === null || value === undefined || value === "") return 0;
+  const cleaned = typeof value === "number"
+    ? value
+    : Number(String(value).replace(/,/g, ""));
+  return Number.isFinite(cleaned) ? cleaned : 0;
+}
+
+function ftaSanitizeSheetName(raw) {
+  const fallback = "FTAVATAuditFile";
+  const cleaned = String(raw || "")
+    .replace(/[\\\/?*\[\]:]/g, "")
+    .trim();
+  const candidate = cleaned ? `FTAVATAuditFile_${cleaned}` : fallback;
+  return candidate.slice(0, 31);
+}
+
+const FTA_HEADER_STYLE = {
+  font: { bold: true, color: { rgb: "FFFFFF" } },
+  fill: { patternType: "solid", fgColor: { rgb: "1F2937" } },
+  alignment: { horizontal: "left", vertical: "center", wrapText: true },
+};
+
+const FTA_TOTAL_LABEL_STYLE = {
+  font: { bold: true },
+  alignment: { horizontal: "left", vertical: "center" },
+};
+
+const FTA_TOTAL_VALUE_STYLE = {
+  font: { bold: true },
+  numFmt: "#,##0.00",
+  alignment: { horizontal: "right", vertical: "center" },
+};
+
+const FTA_NUMBER_STYLE = {
+  numFmt: "#,##0.00",
+  alignment: { horizontal: "right", vertical: "center" },
+};
+
+function ftaWriteRow(ws, rowIndex, columnLetters, values, style) {
+  values.forEach((val, idx) => {
+    const cellAddress = `${columnLetters[idx]}${rowIndex}`;
+    const cell = { v: val };
+    if (typeof val === "number") {
+      cell.t = "n";
+    } else if (val === null || val === undefined) {
+      cell.v = "";
+      cell.t = "s";
+    } else {
+      cell.t = "s";
+      cell.v = String(val);
+    }
+    if (style) cell.s = style;
+    ws[cellAddress] = cell;
+  });
+}
+
+function ftaBuildLineRows(rows, kind) {
+  const isSales = kind === "sales";
+  const supplyKey = isSales ? "SupplyValueAED" : "PurchaseValueAED";
+  const fcyKey = isSales ? "SupplyFCY" : "PurchaseFCY";
+  const countryKey = isSales ? "CustomerCountry" : "SupplierCountry";
+  const trnKey = isSales ? "CustomerTIN/TRN" : "SupplierTRN/TIN";
+  const trnSourceField = isSales ? "CUSTOMER TRN" : "SUPPLIER TRN";
+  const partyField = isSales ? "PARTY" : "SUPPLIER/VENDOR";
+  const fallbackProductName = isSales ? "Product Sales" : "Uncategorized Expense";
+
+  const lineCounts = new Map();
+  const out = [];
+
+  for (const row of rows) {
+    if (!row || typeof row !== "object") continue;
+    const invoiceNo = row["INVOICE NUMBER"] || row["Invoice Number"] || "";
+    const date = row.DATE || row["Invoice Date"] || row["INVOICE DATE"] || "";
+    const country = row[countryKey] || row.COUNTRY || row["PLACE OF SUPPLY"] || "";
+    const trn = row[trnSourceField] || "";
+    const productName = row["INVOICE CATEGORY"] || row.CATEGORY || fallbackProductName;
+    const fallbackDesc =
+      row[partyField] ||
+      row.DESCRIPTION ||
+      row.NARRATION ||
+      invoiceNo ||
+      "";
+
+    const rowBeforeTax = ftaNumber(row["BEFORE TAX (AED)"]);
+    const rowVat = ftaNumber(row["VAT (AED)"]);
+    const rowZero = ftaNumber(row["ZERO RATED (AED)"]);
+    const isStandardRated = rowVat > 0;
+    const taxCode = isStandardRated ? "SR" : (rowZero > 0 || rowBeforeTax > 0 ? "ZR" : "ZR");
+
+    const lineItems = Array.isArray(row.LINE_ITEMS) && row.LINE_ITEMS.length
+      ? row.LINE_ITEMS
+      : null;
+
+    if (lineItems && lineItems.length) {
+      const sumLine = lineItems.reduce(
+        (s, li) => s + ftaNumber(li?.net_amount),
+        0
+      );
+      lineItems.forEach((item) => {
+        const supply = ftaNumber(item?.net_amount);
+        const allocFactor = sumLine > 0 ? supply / sumLine : 1 / lineItems.length;
+        const vat = isStandardRated
+          ? Math.round(rowVat * allocFactor * 100) / 100
+          : 0;
+        const counterKey = String(invoiceNo || "");
+        const next = (lineCounts.get(counterKey) || 0) + 1;
+        lineCounts.set(counterKey, next);
+        out.push({
+          [countryKey]: country,
+          [trnKey]: trn,
+          InvoiceDate: ftaFormatDmy(date),
+          "Invoice No.": invoiceNo,
+          TransactionID: invoiceNo,
+          "Line No.": next,
+          ProductDesc: item?.description || fallbackDesc,
+          ProductName: productName,
+          [supplyKey]: supply,
+          VATValueAED: vat,
+          TaxCode: supply > 0 ? (vat > 0 ? "SR" : "ZR") : taxCode,
+          Country: "",
+          VATFCY: 0,
+          [fcyKey]: 0,
+          FCYCode: "",
+        });
+      });
+    } else {
+      const counterKey = String(invoiceNo || "");
+      const next = (lineCounts.get(counterKey) || 0) + 1;
+      lineCounts.set(counterKey, next);
+      out.push({
+        [countryKey]: country,
+        [trnKey]: trn,
+        InvoiceDate: ftaFormatDmy(date),
+        "Invoice No.": invoiceNo,
+        TransactionID: invoiceNo,
+        "Line No.": next,
+        ProductDesc: fallbackDesc,
+        ProductName: productName,
+        [supplyKey]: rowBeforeTax,
+        VATValueAED: rowVat,
+        TaxCode: taxCode,
+        Country: "",
+        VATFCY: 0,
+        [fcyKey]: 0,
+        FCYCode: "",
+      });
+    }
+  }
+
+  return out;
+}
+
+function ftaAggregateLedger(salesLines, purchaseLines) {
+  const ledger = [];
+
+  const salesByInvoice = new Map();
+  for (const r of salesLines) {
+    const key = String(r["Invoice No."] || "");
+    const cur = salesByInvoice.get(key) || {
+      AccountName: r.ProductName || "Product Sales",
+      TransactionSource: key,
+      SourceCode: "Invoice",
+      Debit: 0,
+      Credit: 0,
+    };
+    cur.Credit += ftaNumber(r.SupplyValueAED);
+    salesByInvoice.set(key, cur);
+  }
+  for (const entry of salesByInvoice.values()) {
+    ledger.push({
+      "AccountNo.": "",
+      AccountName: entry.AccountName,
+      TransactionSource: entry.TransactionSource,
+      SourceCode: entry.SourceCode,
+      Debit: 0,
+      Credit: entry.Credit,
+      Balance: entry.Credit,
+    });
+  }
+
+  const purchaseByInvoice = new Map();
+  for (const r of purchaseLines) {
+    const key = String(r["Invoice No."] || "");
+    const cur = purchaseByInvoice.get(key) || {
+      AccountName: r.ProductName || "Uncategorized Expense",
+      TransactionSource: key,
+      SourceCode: "Bill",
+      Debit: 0,
+      Credit: 0,
+    };
+    cur.Debit += ftaNumber(r.PurchaseValueAED);
+    purchaseByInvoice.set(key, cur);
+  }
+  for (const entry of purchaseByInvoice.values()) {
+    ledger.push({
+      "AccountNo.": "",
+      AccountName: entry.AccountName,
+      TransactionSource: entry.TransactionSource,
+      SourceCode: entry.SourceCode,
+      Debit: entry.Debit,
+      Credit: 0,
+      Balance: -entry.Debit,
+    });
+  }
+
+  return ledger;
+}
+
+// POST /api/vat-filing/companies/:companyId/fta-audit-filing
+export async function downloadFtaAuditFiling(req, res) {
+  try {
+    const { companyId } = req.params;
+    const {
+      periodId,
+      invoiceData,
+      companyName,
+      companyTRN,
+    } = req.body || {};
+
+    let periodRow = null;
+    if (periodId) {
+      const [periodRows] = await pool.query(
+        `SELECT period_from, period_to, due_date FROM vat_filing_periods WHERE id = ? LIMIT 1`,
+        [periodId]
+      );
+      periodRow = periodRows?.[0] || null;
+    }
+
+    let displayName = companyName || "";
+    let displayTrn = companyTRN || "";
+    try {
+      const [custRows] = await pool.query(
+        `SELECT customer_name, vat_trn FROM customers WHERE id = ? LIMIT 1`,
+        [companyId]
+      );
+      if (custRows?.[0]) {
+        displayName = displayName || custRows[0].customer_name || "";
+        displayTrn = displayTrn || custRows[0].vat_trn || "";
+      }
+    } catch (lookupErr) {
+      console.warn("FTA Audit: customer lookup failed", lookupErr?.message);
+    }
+
+    const { uaeSalesRows, uaePurchaseRows } = strictSplitInvoice(invoiceData || {});
+    const salesLines = ftaBuildLineRows(uaeSalesRows, "sales");
+    const purchaseLines = ftaBuildLineRows(uaePurchaseRows, "purchase");
+    const ledgerRows = ftaAggregateLedger(salesLines, purchaseLines);
+
+    const supplyTotal = salesLines.reduce(
+      (s, r) => s + ftaNumber(r.SupplyValueAED),
+      0
+    );
+    const salesVatTotal = salesLines.reduce(
+      (s, r) => s + ftaNumber(r.VATValueAED),
+      0
+    );
+    const purchaseTotal = purchaseLines.reduce(
+      (s, r) => s + ftaNumber(r.PurchaseValueAED),
+      0
+    );
+    const purchaseVatTotal = purchaseLines.reduce(
+      (s, r) => s + ftaNumber(r.VATValueAED),
+      0
+    );
+    const totalCredit = ledgerRows.reduce(
+      (s, r) => s + ftaNumber(r.Credit),
+      0
+    );
+
+    const ws = {};
+    let cursor = 1;
+
+    const salesCols = ["B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P"];
+    const ledgerCols = ["B", "C", "D", "E", "F", "G", "H"];
+
+    // Section 1 — Tax person header
+    cursor = 2;
+    ftaWriteRow(
+      ws,
+      cursor,
+      ["B", "C", "D", "E", "F", "G", "H", "I", "J", "K"],
+      [
+        "TaxablePersonName",
+        "TRN",
+        "TaxAgencyName",
+        "TAN",
+        "TaxAgentName",
+        "TAAN",
+        "PeriodStart",
+        "PeriodEnd",
+        "FAFCreationDate",
+        "ProductVersion",
+      ],
+      FTA_HEADER_STYLE
+    );
+    cursor = 3;
+    ftaWriteRow(
+      ws,
+      cursor,
+      ["B", "C", "D", "E", "F", "G", "H", "I", "J", "K"],
+      [
+        displayName,
+        displayTrn,
+        "Federal Tax Authority",
+        "",
+        "",
+        "",
+        ftaFormatHeaderDate(periodRow?.period_from),
+        ftaFormatHeaderDate(periodRow?.period_to),
+        ftaFormatHeaderDate(new Date()),
+        "1.0",
+      ]
+    );
+
+    // Section 2 — Sales
+    cursor = 6;
+    const salesHeaders = [
+      "CustomerCountry",
+      "CustomerTIN/TRN",
+      "InvoiceDate",
+      "Invoice No.",
+      "TransactionID",
+      "Line No.",
+      "ProductDesc",
+      "ProductName",
+      "SupplyValueAED",
+      "VATValueAED",
+      "TaxCode",
+      "Country",
+      "VATFCY",
+      "SupplyFCY",
+      "FCYCode",
+    ];
+    ftaWriteRow(ws, cursor, salesCols, salesHeaders, FTA_HEADER_STYLE);
+    cursor += 1;
+    for (const r of salesLines) {
+      ftaWriteRow(
+        ws,
+        cursor,
+        salesCols,
+        salesHeaders.map((h) => r[h] ?? "")
+      );
+      // Highlight numeric cells
+      ["J", "K", "N", "O"].forEach((col) => {
+        const cell = ws[`${col}${cursor}`];
+        if (cell && cell.t === "n") cell.s = FTA_NUMBER_STYLE;
+      });
+      cursor += 1;
+    }
+    const salesEnd = cursor - 1;
+
+    cursor = salesEnd + 2;
+    ftaWriteRow(
+      ws,
+      cursor,
+      ["B", "C"],
+      ["SupplyValueTotal", "VATValueAED"],
+      FTA_TOTAL_LABEL_STYLE
+    );
+    cursor += 1;
+    ftaWriteRow(ws, cursor, ["B", "C"], [supplyTotal, salesVatTotal]);
+    ws[`B${cursor}`].s = FTA_TOTAL_VALUE_STYLE;
+    ws[`C${cursor}`].s = FTA_TOTAL_VALUE_STYLE;
+
+    // Section 3 — Purchase
+    cursor += 4;
+    const purchaseHeaders = [
+      "SupplierCountry",
+      "SupplierTRN/TIN",
+      "InvoiceDate",
+      "Invoice No.",
+      "TransactionID",
+      "Line No.",
+      "ProductDesc",
+      "ProductName",
+      "PurchaseValueAED",
+      "VATValueAED",
+      "TaxCode",
+      "Country",
+      "VATFCY",
+      "PurchaseFCY",
+      "FCYCode",
+    ];
+    ftaWriteRow(ws, cursor, salesCols, purchaseHeaders, FTA_HEADER_STYLE);
+    cursor += 1;
+    for (const r of purchaseLines) {
+      ftaWriteRow(
+        ws,
+        cursor,
+        salesCols,
+        purchaseHeaders.map((h) => r[h] ?? "")
+      );
+      ["J", "K", "N", "O"].forEach((col) => {
+        const cell = ws[`${col}${cursor}`];
+        if (cell && cell.t === "n") cell.s = FTA_NUMBER_STYLE;
+      });
+      cursor += 1;
+    }
+    const purchaseEnd = cursor - 1;
+
+    cursor = purchaseEnd + 2;
+    ftaWriteRow(
+      ws,
+      cursor,
+      ["B", "C"],
+      ["PurchaseValueTotal", "VATValueAED"],
+      FTA_TOTAL_LABEL_STYLE
+    );
+    cursor += 1;
+    ftaWriteRow(ws, cursor, ["B", "C"], [purchaseTotal, purchaseVatTotal]);
+    ws[`B${cursor}`].s = FTA_TOTAL_VALUE_STYLE;
+    ws[`C${cursor}`].s = FTA_TOTAL_VALUE_STYLE;
+
+    // Section 4 — General Ledger / Transactions
+    cursor += 4;
+    const ledgerHeaders = [
+      "AccountNo.",
+      "AccountName",
+      "TransactionSource",
+      "SourceCode",
+      "Debit",
+      "Credit",
+      "Balance",
+    ];
+    ftaWriteRow(ws, cursor, ledgerCols, ledgerHeaders, FTA_HEADER_STYLE);
+    cursor += 1;
+    for (const r of ledgerRows) {
+      ftaWriteRow(
+        ws,
+        cursor,
+        ledgerCols,
+        ledgerHeaders.map((h) => r[h] ?? "")
+      );
+      ["F", "G", "H"].forEach((col) => {
+        const cell = ws[`${col}${cursor}`];
+        if (cell && cell.t === "n") cell.s = FTA_NUMBER_STYLE;
+      });
+      cursor += 1;
+    }
+    const ledgerEnd = cursor - 1;
+
+    cursor = ledgerEnd + 3;
+    ftaWriteRow(
+      ws,
+      cursor,
+      ["B", "C"],
+      ["TotalCredit", "TotalCurrency"],
+      FTA_TOTAL_LABEL_STYLE
+    );
+    cursor += 1;
+    ftaWriteRow(ws, cursor, ["B", "C"], [totalCredit, "AED"]);
+    ws[`B${cursor}`].s = FTA_TOTAL_VALUE_STYLE;
+
+    // Define worksheet range
+    ws["!ref"] = XLSX.utils.encode_range({
+      s: { r: 0, c: 0 },
+      e: { r: cursor + 1, c: 16 },
+    });
+
+    // Column widths
+    ws["!cols"] = [
+      { wch: 4 },  // A spacer
+      { wch: 18 }, // B
+      { wch: 22 }, // C
+      { wch: 14 }, // D InvoiceDate
+      { wch: 18 }, // E Invoice No.
+      { wch: 18 }, // F TransactionID
+      { wch: 9 },  // G Line No.
+      { wch: 34 }, // H ProductDesc
+      { wch: 22 }, // I ProductName
+      { wch: 16 }, // J SupplyValue
+      { wch: 14 }, // K VATValue
+      { wch: 10 }, // L TaxCode
+      { wch: 12 }, // M Country
+      { wch: 10 }, // N VATFCY
+      { wch: 14 }, // O SupplyFCY
+      { wch: 10 }, // P FCYCode
+    ];
+
+    // Row heights — leave first row a touch shorter
+    ws["!rows"] = [{ hpt: 12 }];
+
+    const wb = XLSX.utils.book_new();
+    const sheetName = ftaSanitizeSheetName(displayName);
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+
+    const buf = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
+
+    const safeFileName = String(displayName || "Company").replace(/[\\\/?*\[\]:]/g, "").trim() || "Company";
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="XYA - VAT- FTA File - ${safeFileName}.xlsx"`
+    );
+    res.send(buf);
+  } catch (err) {
+    console.error("downloadFtaAuditFiling error:", err);
+    res.status(500).json({ message: "Failed to generate FTA Audit Filing" });
+  }
+}
+
 // Get combined preview data
 export async function getCombinedPreview(req, res) {
   try {

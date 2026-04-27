@@ -61,6 +61,7 @@ import ViewCustomer from "../pages/Customers/ViewCustomer";
 
 import EditCustomer from "../pages/Customers/EditCustomer";
 import Companies from "../pages/Companies/Companies";
+import TrnVerification from "../pages/TrnVerification/TrnVerification";
 
 // Only the Converts submenu pages are routed.
 const routes = [
@@ -234,6 +235,14 @@ const routes = [
     element: () => (
       <PermissionRoute permission="converts.invoices">
         <InvoiceTable />
+      </PermissionRoute>
+    ),
+  },
+  {
+    path: "/converts/trn-verification",
+    element: () => (
+      <PermissionRoute permission="converts.invoices">
+        <TrnVerification />
       </PermissionRoute>
     ),
   },

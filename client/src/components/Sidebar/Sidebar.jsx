@@ -20,6 +20,7 @@ import {
   FileUser, // Registration
   FileSearch, // Audit Report
   LogOut, // Logout
+  CheckCircle, // TRN Verification
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import "./Sidebar.css";
@@ -246,12 +247,20 @@ export default function Sidebar({ collapsed }) {
         )} */}
 
         {hasPermission("converts.invoices") && (
-          <NavItem
-            to="/converts/invoices"
-            icon={<FileSpreadsheet size={18} />}
-            text="Invoices & Bills"
-            collapsed={collapsed}
-          />
+          <>
+            <NavItem
+              to="/converts/invoices"
+              icon={<FileSpreadsheet size={18} />}
+              text="Invoices & Bills"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/converts/trn-verification"
+              icon={<CheckCircle size={18} />}
+              text="TRN Verification"
+              collapsed={collapsed}
+            />
+          </>
         )}
 
         {!isAdmin() && hasPermission("converts.emirates_id") && (

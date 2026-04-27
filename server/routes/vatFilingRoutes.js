@@ -49,6 +49,11 @@ router.post(
   vatFilingController.downloadVatReturnTemplate
 );
 
+router.post(
+  "/companies/:companyId/fta-audit-filing",
+  vatFilingController.downloadFtaAuditFiling
+);
+
 // Get combined preview data
 router.get(
   "/companies/:companyId/preview",

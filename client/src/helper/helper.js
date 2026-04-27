@@ -921,6 +921,22 @@ export async function downloadVatReturnTemplate(companyId, data) {
   }
 }
 
+export async function downloadFtaAuditFiling(companyId, data) {
+  try {
+    const response = await api.post(
+      `/vat-filing/companies/${companyId}/fta-audit-filing`,
+      data,
+      {
+        headers: { ...getAuthHeader(), "Content-Type": "application/json" },
+        responseType: "blob",
+      },
+    );
+    return response.data;
+  } catch (err) {
+    rethrow(err, "Failed to download FTA Audit Filing");
+  }
+}
+
 // Generate combined Excel file
 export async function generateCombinedExcel(companyId, data) {
   try {
