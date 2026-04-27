@@ -60,4 +60,6 @@ router.get(
   vatFilingController.getCombinedPreview
 );
 
+router.post("/bulk-delete", vatFilingController.bulkDeleteRows);
+
 export default router;

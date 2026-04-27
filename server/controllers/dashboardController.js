@@ -86,31 +86,39 @@ export const getDashboardStats = async (req, res) => {
         const dateFilter = buildDateFilter(req.query, 'dc');
 
         // 1. Counts
-        let userCountSql = "SELECT COUNT(*) as count FROM users WHERE business_id = ?";
-        let deptCountSql = "SELECT COUNT(*) as count FROM departments WHERE company_id = ?";
-        let roleCountSql = "SELECT COUNT(*) as count FROM roles WHERE (company_id = ? OR (company_id IS NULL AND department_id IN (SELECT id FROM departments WHERE company_id = ?)))";
+        let userCountSql = "SELECT COUNT(*) as count FROM users";
+        let deptCountSql = "SELECT COUNT(*) as count FROM departments";
+        let roleCountSql = "SELECT COUNT(*) as count FROM roles";
 
-        let userParams = [user.business_id];
-        let deptParams = [user.company_id];
-        let roleParams = [user.company_id, user.company_id];
+        let userParams = [];
+        let deptParams = [];
+        let roleParams = [];
 
-        if (isAdmin) {
-            userCountSql += " AND department_id = ?";
-            userParams.push(user.department_id);
-            // Count only roles available in this department?
-            roleCountSql += " AND department_id = ?";
-            roleParams.push(user.department_id);
-            // Department admin sees only one department
-            deptCountSql += " AND id = ?";
-            deptParams.push(user.department_id);
-        } else if (isUser) {
-            userCountSql += " AND id = ?";
-            userParams.push(user.id);
-            // Maybe user shouldn't see these counts at all? Return 1 for consistency.
-            deptCountSql += " AND id = ?";
-            deptParams.push(user.department_id);
-            roleCountSql += " AND id = ?";
-            roleParams.push(user.role_id);
+        if (!isSuperAdmin) {
+            userCountSql += " WHERE business_id = ?";
+            userParams.push(user.business_id);
+            
+            deptCountSql += " WHERE company_id = ?";
+            deptParams.push(user.company_id);
+            
+            roleCountSql += " WHERE (company_id = ? OR (company_id IS NULL AND department_id IN (SELECT id FROM departments WHERE company_id = ?)))";
+            roleParams.push(user.company_id, user.company_id);
+
+            if (isAdmin) {
+                userCountSql += " AND department_id = ?";
+                userParams.push(user.department_id);
+                roleCountSql += " AND department_id = ?";
+                roleParams.push(user.department_id);
+                deptCountSql += " AND id = ?";
+                deptParams.push(user.department_id);
+            } else if (isUser) {
+                userCountSql += " AND id = ?";
+                userParams.push(user.id);
+                deptCountSql += " AND id = ?";
+                deptParams.push(user.department_id);
+                roleCountSql += " AND id = ?";
+                roleParams.push(user.role_id);
+            }
         }
 
         const [userCount] = await pool.query(userCountSql, userParams);
@@ -123,19 +131,23 @@ export const getDashboardStats = async (req, res) => {
                 SUM(dc.files_count) as total_documents,
                 SUM(dc.page_count) as total_pages,
                 SUM(dc.input_tokens) as total_input_tokens,
-                SUM(dc.output_tokens) as total_output_tokens
             FROM document_count dc
             JOIN users u ON dc.user_id = u.id
-            WHERE ${dateFilter.clause} AND u.business_id = ?
+            WHERE ${dateFilter.clause}
         `;
-        const docStatsParams = [...dateFilter.params, user.business_id];
+        const docStatsParams = [...dateFilter.params];
 
-        if (isAdmin) {
-            docStatsSql += " AND u.department_id = ?";
-            docStatsParams.push(user.department_id);
-        } else if (isUser) {
-            docStatsSql += " AND u.id = ?";
-            docStatsParams.push(user.id);
+        if (!isSuperAdmin) {
+            docStatsSql += " AND u.business_id = ?";
+            docStatsParams.push(user.business_id);
+            
+            if (isAdmin) {
+                docStatsSql += " AND u.department_id = ?";
+                docStatsParams.push(user.department_id);
+            } else if (isUser) {
+                docStatsSql += " AND u.id = ?";
+                docStatsParams.push(user.id);
+            }
         }
 
         const [docStats] = await pool.query(docStatsSql, docStatsParams);
@@ -267,12 +279,16 @@ export const getDashboardSummary = async (req, res) => {
         const deptConditions = [];
 
         if (!isSuperAdmin) {
-            conditions.push("u.business_id = ?");
-            empParams.push(businessId);
-            roleConditions.push("(company_id = ? OR (company_id IS NULL AND department_id IN (SELECT id FROM departments WHERE company_id = ?)))");
-            roleParams.push(companyId, companyId);
-            deptConditions.push("company_id = ?");
-            deptParams.push(companyId);
+            if (businessId) {
+                conditions.push("u.business_id = ?");
+                empParams.push(businessId);
+            }
+            if (companyId) {
+                roleConditions.push("(company_id = ? OR (company_id IS NULL AND department_id IN (SELECT id FROM departments WHERE company_id = ?)))");
+                roleParams.push(companyId, companyId);
+                deptConditions.push("company_id = ?");
+                deptParams.push(companyId);
+            }
 
             if (isAdmin) {
                 conditions.push("u.department_id = ?");

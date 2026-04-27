@@ -650,6 +650,16 @@
   background: #1f2937;
   outline: none;
 }
+.bulk-move-menu-item.bulk-delete-item {
+  color: #fca5a5;
+  border-top: 1px solid #374151;
+  margin-top: 4px;
+  padding-top: 8px;
+}
+.bulk-move-menu-item.bulk-delete-item:hover {
+  background: #7f1d1d;
+  color: #fff;
+}
 
 /* Selection checkbox column */
 .tbl th.select-col,

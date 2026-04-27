@@ -53,13 +53,20 @@ export default async function requireAuth(req, res, next) {
 
         req.user = {
             id: userRow.id,
-            role: userRow.type === 'super_admin' ? 'super_admin' : userRow.role,
+            role: userRow.type === 'super_admin' ? 'super_admin' : (userRow.role || userRow.type),
             type: userRow.type,
             role_id: userRow.role_id,
             company_id: userRow.numeric_company_id || null,
             business_id: userRow.business_id || null,
             department_id: userRow.department_id
         };
+
+        // Fallback for company_id if join failed but we have business_id
+        if (!req.user.company_id && req.user.business_id) {
+            const [cRows] = await pool.query("SELECT id FROM companies WHERE business_id = ? LIMIT 1", [req.user.business_id]);
+            if (cRows.length) req.user.company_id = cRows[0].id;
+        }
+
         next();
     } catch (error) {
         if (error.name === 'TokenExpiredError') {

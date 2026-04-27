@@ -889,6 +889,21 @@ export async function getVatFilingPreview(companyId) {
   }
 }
 
+export async function bulkDeleteVatRows(ids, runId, companyId) {
+  try {
+    const { data } = await api.post(
+      `/vat-filing/bulk-delete`,
+      { ids, runId, companyId },
+      {
+        headers: getAuthHeader(),
+      },
+    );
+    return data;
+  } catch (err) {
+    rethrow(err, "Failed to delete records");
+  }
+}
+
 export async function generateVatFilingExcel(companyId, data) {
   try {
     const response = await api.post(

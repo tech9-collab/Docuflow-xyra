@@ -1841,6 +1841,7 @@ async function processJob(jobId) {
                 selfForRecord,
                 resolvedCategory
               );
+              row._id = uuidv4();
 
               if (f.localPublicPath) {
                 row.SOURCE_URL = f.localPublicPath;
@@ -1868,12 +1869,15 @@ async function processJob(jobId) {
               row["CLASSIFICATION_CONFIDENCE"] = finalClassification.confidence;
 
               if (classification.type === "sales") {
+                row.TYPE = "Sales";
                 job.uaeSalesRows.push(row);
                 job.uaeAllRows.push({ TYPE: "Sales", ...row });
               } else if (classification.type === "purchase") {
+                row.TYPE = "Purchase";
                 job.uaePurchaseRows.push(row);
                 job.uaeAllRows.push({ TYPE: "Purchase", ...row });
               } else {
+                row.TYPE = "Other";
                 job.uaeOtherRows.push(row);
                 job.uaeAllRows.push({ TYPE: "Other", ...row });
               }
@@ -1899,6 +1903,7 @@ async function processJob(jobId) {
                 classification.type,
                 selfForRecord
               );
+              row._id = uuidv4();
 
               if (f.localPublicPath) {
                 row.SOURCE_URL = f.localPublicPath;
@@ -2312,6 +2317,7 @@ async function processJob(jobId) {
             selfForRecord,
             resolvedCategory
           );
+          row._id = uuidv4();
 
           if (f.localPublicPath) {
             row.SOURCE_URL = f.localPublicPath; // e.g. /uploads/invoice/uploads/...
@@ -2340,12 +2346,15 @@ async function processJob(jobId) {
 
           const _bucket = fileRowBuckets[f._fileIndex];
           if (classification.type === "sales") {
+            row.TYPE = "Sales";
             _bucket.sales.push(row);
             _bucket.all.push({ TYPE: "Sales", ...row });
           } else if (classification.type === "purchase") {
+            row.TYPE = "Purchase";
             _bucket.purchase.push(row);
             _bucket.all.push({ TYPE: "Purchase", ...row });
           } else {
+            row.TYPE = "Other";
             _bucket.other.push(row);
             _bucket.all.push({ TYPE: "Other", ...row });
           }
@@ -2454,6 +2463,7 @@ async function processJob(jobId) {
             classification.type,
             selfForRecord
           );
+          row._id = uuidv4();
 
           if (f.localPublicPath) {
             row.SOURCE_URL = f.localPublicPath; // /uploads/...

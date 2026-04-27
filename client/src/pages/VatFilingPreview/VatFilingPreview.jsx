@@ -8,6 +8,7 @@ import {
 } from "../../helper/helper";
 import {
   getVatFilingPreview,
+  bulkDeleteVatRows,
   generateVatFilingExcel,
   downloadVatReturnTemplate,
   downloadFtaAuditFiling,
@@ -69,8 +70,9 @@ const normalizeInvoiceRowToken = (v) =>
     .toLowerCase()
     .replace(/\s+/g, " ");
 
-const getInvoiceRowMatchKey = (row) =>
-  [
+const getInvoiceRowMatchKey = (row) => {
+  if (row?._id) return String(row._id);
+  return [
     row?.SOURCE,
     row?.DATE,
     row?.["INVOICE NUMBER"],
@@ -90,6 +92,7 @@ const getInvoiceRowMatchKey = (row) =>
   ]
     .map(normalizeInvoiceRowToken)
     .join("|");
+};
 
 /* --- DATE FORMATTING UTILS --- */
 const parseFlexibleDate = (s) => {
@@ -1833,6 +1836,89 @@ export default function VatFillingPreview() {
     toast.success(
       `${movedCount} record${movedCount === 1 ? "" : "s"} moved to ${targetLabel}.`
     );
+  };
+
+  const handleBulkDelete = async (e, sourceView = view) => {
+    try {
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+
+      const sourceSet = selectedRowKeysByView[sourceView] || new Set();
+      if (sourceSet.size === 0) {
+        setBulkMoveMenuOpen(false);
+        return;
+      }
+
+      if (
+        typeof window !== "undefined" &&
+        !window.confirm("Are you sure you want to delete the selected records?")
+      ) {
+        return;
+      }
+
+      const idsToDelete = Array.from(sourceSet);
+
+      // 1. Call Backend API for permanent delete
+      await bulkDeleteVatRows(idsToDelete, runId, companyId);
+
+      // 2. Refresh data from backend to ensure state is in sync
+      try {
+        setLoading(true);
+        if (runId) {
+          const { payload } = await fetchVatRun(runId);
+          setPreviewData(payload);
+          setCommittedPreviewData(clonePreviewSnapshot(payload));
+        } else {
+          const res = await getVatFilingPreview(companyId);
+          setPreviewData(res);
+          setCommittedPreviewData(clonePreviewSnapshot(res));
+        }
+      } catch (refreshErr) {
+        console.error("Refresh error after delete:", refreshErr);
+        // Fallback: local remove if refresh fails
+        setPreviewData((prev) => {
+          if (!prev) return prev;
+          const next = { ...prev };
+          const inv = { ...(next.invoiceData || {}) };
+          const filterOut = (rows = []) =>
+            (rows || []).filter((r) => !idsToDelete.includes(getInvoiceRowMatchKey(r)));
+          
+          if (sourceView === "sales") inv.uaeSalesRows = filterOut(inv.uaeSalesRows);
+          else if (sourceView === "purchase") inv.uaePurchaseRows = filterOut(inv.uaePurchaseRows);
+          else if (sourceView === "others") {
+            inv.othersRows = filterOut(inv.othersRows);
+            inv.uaeOtherRows = filterOut(inv.uaeOtherRows);
+          }
+          next.invoiceData = inv;
+          return next;
+        });
+      } finally {
+        setLoading(false);
+      }
+
+      // 3. Cleanup
+      setSelectedRowKeysByView((prev) => ({
+        ...prev,
+        [sourceView]: new Set(),
+      }));
+      setBulkMoveMenuOpen(false);
+      setSelectedRecord(null);
+      setActiveDocumentId(null);
+
+      toast.success(
+        `${idsToDelete.length} record${
+          idsToDelete.length === 1 ? "" : "s"
+        } deleted permanently.`
+      );
+    } catch (err) {
+      console.error("Bulk delete error:", err);
+      toast.error(
+        "Failed to delete records: " +
+          (err.response?.data?.message || err.message)
+      );
+    }
   };
 
   const handleSalesPurchaseRowAction = (viewName, rowIndex, action) => {
@@ -3656,6 +3742,14 @@ export default function VatFillingPreview() {
                           Move to Others
                         </button>
                       )}
+                      <button
+                        type="button"
+                        role="menuitem"
+                        className="bulk-move-menu-item bulk-delete-item"
+                        onClick={(e) => handleBulkDelete(e, viewName)}
+                      >
+                        Delete Selected
+                      </button>
                     </div>
                   )}
                 </div>

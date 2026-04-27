@@ -2624,47 +2624,63 @@ export async function getCombinedPreview(req, res) {
   try {
     const { companyId } = req.params;
 
-    // TODO: replace mockInvoiceData with real DB fetch when ready.
-    // For a purchases-only preview, keep sales empty:
-    const mockInvoiceData = {
-      uaeSalesRows: [], // <-- ensure empty when you expect NO sales
-      uaePurchaseRows: [
-        {
-          DATE: "2023-01-03",
-          "INVOICE NUMBER": "BILL-001",
-          "SUPPLIER/VENDOR": "Vendor A",
-          "BEFORE TAX (AED)": "300.00",
-          "VAT (AED)": "15.00",
-          "NET AMOUNT (AED)": "315.00",
-        },
-        {
-          DATE: "2023-01-12",
-          "INVOICE NUMBER": "BILL-002",
-          "SUPPLIER/VENDOR": "Vendor B",
-          "BEFORE TAX (AED)": "450.00",
-          "VAT (AED)": "22.50",
-          "NET AMOUNT (AED)": "472.50",
-        },
-      ],
+    // 1. Find business_id for this company
+    const [cRows] = await pool.query(
+      "SELECT business_id FROM companies WHERE id = ?",
+      [companyId],
+    );
+    if (!cRows.length) {
+      return res.status(404).json({ message: "Company not found" });
+    }
+    const businessId = cRows[0].business_id;
+
+    // 2. Find all successful invoice_converts for this company
+    const [icRows] = await pool.query(
+      `
+      SELECT ic.id, ic.file_output_json_path, ic.file_name
+      FROM invoice_converts ic
+      JOIN users u ON ic.user_id = u.id
+      WHERE u.business_id = ? AND ic.status = 'extracted'
+    `,
+      [businessId],
+    );
+
+    const invoiceData = {
+      uaeSalesRows: [],
+      uaePurchaseRows: [],
+      uaeOtherRows: [],
+      __explicitBuckets: true,
     };
 
-    const split = strictSplitInvoice(mockInvoiceData);
+    for (const ic of icRows) {
+      if (!ic.file_output_json_path) continue;
+      const fullPath = path.join(UPLOADS_ROOT, ic.file_output_json_path);
+      if (fs.existsSync(fullPath)) {
+        try {
+          const raw = fs.readFileSync(fullPath, "utf8");
+          const parsed = JSON.parse(raw);
+          const records = parsed.records || [];
+          records.forEach((row) => {
+            // Ensure ID for deletion (if old data)
+            if (!row._id) {
+              row._id = `old-${ic.id}-${Math.random().toString(36).slice(2)}`;
+            }
+            // Track source for deletion
+            row._source_convert_id = ic.id;
 
-    // optional de-mirror guard
-    function areMirrored(a = [], b = []) {
-      if (!a.length || !b.length) return false;
-      if (a.length !== b.length) return false;
-      for (let i = 0; i < a.length; i++) {
-        if (JSON.stringify(a[i]) !== JSON.stringify(b[i])) return false;
+            const type = (row.TYPE || "").toLowerCase();
+            if (type === "sales") {
+              invoiceData.uaeSalesRows.push(row);
+            } else if (type === "purchase") {
+              invoiceData.uaePurchaseRows.push(row);
+            } else {
+              invoiceData.uaeOtherRows.push(row);
+            }
+          });
+        } catch (e) {
+          console.warn("Failed to parse JSON:", ic.file_output_json_path);
+        }
       }
-      return true;
-    }
-
-    let uaeSalesRows = split.uaeSalesRows;
-    let uaePurchaseRows = split.uaePurchaseRows;
-
-    if (areMirrored(uaeSalesRows, uaePurchaseRows)) {
-      uaeSalesRows = []; // prefer purchases-only
     }
 
     res.json({
@@ -2681,15 +2697,100 @@ export async function getCombinedPreview(req, res) {
         ],
         rows: [],
       },
-      invoiceData: {
-        uaeSalesRows,
-        uaePurchaseRows,
-        __explicitBuckets: true,
-      },
+      invoiceData,
     });
   } catch (error) {
     console.error("Error fetching combined preview:", error);
     res.status(500).json({ message: "Failed to fetch preview data" });
+  }
+}
+
+export async function bulkDeleteRows(req, res) {
+  try {
+    const { ids, runId, companyId } = req.body;
+    if (!ids || !Array.isArray(ids) || !ids.length) {
+      return res.status(400).json({ message: "ids array is required" });
+    }
+
+    if (runId) {
+      // 1. Delete from saved draft
+      const [runs] = await pool.query(
+        "SELECT combined_json_path FROM vat_filing_runs WHERE id = ?",
+        [runId],
+      );
+      if (runs.length) {
+        const fullPath = path.join(UPLOADS_ROOT, runs[0].combined_json_path);
+        if (fs.existsSync(fullPath)) {
+          const raw = fs.readFileSync(fullPath, "utf8");
+          const payload = JSON.parse(raw);
+          if (payload.invoiceData) {
+            const filter = (arr) =>
+              (arr || []).filter((r) => !ids.includes(r._id));
+            payload.invoiceData.uaeSalesRows = filter(
+              payload.invoiceData.uaeSalesRows,
+            );
+            payload.invoiceData.uaePurchaseRows = filter(
+              payload.invoiceData.uaePurchaseRows,
+            );
+            payload.invoiceData.uaeOtherRows = filter(
+              payload.invoiceData.uaeOtherRows,
+            );
+            fs.writeFileSync(
+              fullPath,
+              JSON.stringify(payload, null, 2),
+              "utf8",
+            );
+          }
+        }
+      }
+    } else if (companyId) {
+      // 2. Delete from original documents (invoice_converts)
+      const [compRows] = await pool.query(
+        "SELECT business_id FROM companies WHERE id = ?",
+        [companyId],
+      );
+      if (compRows.length) {
+        const businessId = compRows[0].business_id;
+        const [icRows] = await pool.query(
+          `
+          SELECT ic.file_output_json_path 
+          FROM invoice_converts ic
+          JOIN users u ON ic.user_id = u.id
+          WHERE u.business_id = ? AND ic.status = 'extracted'
+        `,
+          [businessId],
+        );
+
+        for (const ic of icRows) {
+          if (!ic.file_output_json_path) continue;
+          const fullPath = path.join(UPLOADS_ROOT, ic.file_output_json_path);
+          if (fs.existsSync(fullPath)) {
+            try {
+              const raw = fs.readFileSync(fullPath, "utf8");
+              const parsed = JSON.parse(raw);
+              const originalCount = parsed.records?.length || 0;
+              parsed.records = (parsed.records || []).filter(
+                (r) => !ids.includes(r._id),
+              );
+              if (parsed.records.length !== originalCount) {
+                fs.writeFileSync(
+                  fullPath,
+                  JSON.stringify(parsed, null, 2),
+                  "utf8",
+                );
+              }
+            } catch (e) {
+              console.warn("Failed to update JSON:", ic.file_output_json_path);
+            }
+          }
+        }
+      }
+    }
+
+    res.json({ message: "Records deleted successfully" });
+  } catch (err) {
+    console.error("bulkDeleteRows error:", err);
+    res.status(500).json({ message: "Failed to delete records" });
   }
 }
 
