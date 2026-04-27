@@ -6,7 +6,6 @@ import {
   ChevronLeft,
   Search,
   Terminal,
-  Settings,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
@@ -116,15 +115,6 @@ export default function Navbar({ onToggleSidebar, setupProgress = 0 }) {
           type="button"
         >
           <Terminal size={18} />
-        </button>
-        <button
-          className="nav-icon-btn ghost"
-          aria-label="Settings"
-          title="Settings"
-          type="button"
-          onClick={() => navigate("/admin/settings")}
-        >
-          <Settings size={18} />
         </button>
 
         <button
