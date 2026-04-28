@@ -61,6 +61,36 @@ const toNumberLoose = (v) => {
 };
 
 const fmt2 = (n) => round2(n).toFixed(2);
+
+// Display-only formatter for compact metric/particular keys
+// (e.g. "STANDARDRATEDSUPPLIES" -> "STANDARD RATED SUPPLIES").
+// Underlying keys are untouched so calculations and locks stay intact.
+const formatMetricLabel = (label) =>
+  String(label ?? "")
+    .replace(/STANDARDRATED/g, "STANDARD RATED ")
+    .replace(/ZERORATED/g, "ZERO RATED ")
+    .replace(/EXEMPTED/g, "EXEMPTED ")
+    .replace(/OUTPUTTAX/g, "OUTPUT TAX")
+    .replace(/INPUTTAX/g, "INPUT TAX")
+    .replace(/TOTALAMOUNTINCLUDINGVAT/g, "TOTAL AMOUNT INCLUDING VAT")
+    .replace(/NETVATPAYABLEFORTHEPERIOD/g, "NET VAT PAYABLE FOR THE PERIOD")
+    .replace(/\s+/g, " ")
+    .trim();
+
+// When VAT (AED) parses to 0 (incl. null / "" / "0" / "0.00"), the row is
+// zero-rated and ZERO RATED (AED) mirrors NET AMOUNT (AED). Otherwise it's 0.
+const applyZeroRatedRule = (row) => {
+  if (!row || typeof row !== "object") return row;
+  const parsedVat = toNumberLoose(row["VAT (AED)"]);
+  const vatAmount = parsedVat == null ? 0 : parsedVat;
+  if (vatAmount === 0) {
+    const parsedNet = toNumberLoose(row["NET AMOUNT (AED)"]);
+    const netAmount = parsedNet == null ? 0 : parsedNet;
+    return { ...row, "ZERO RATED (AED)": fmt2(netAmount) };
+  }
+  return { ...row, "ZERO RATED (AED)": fmt2(0) };
+};
+
 const COLUMN_FILTER_VIEWS = new Set(["sales", "purchase", "others"]);
 const COLUMN_FILTER_STORAGE_KEY = "vatFilingPreview.hiddenColumnKeysByView";
 
@@ -1321,8 +1351,8 @@ export default function VatFillingPreview() {
       a.remove();
       URL.revokeObjectURL(url);
     } catch (err) {
-      console.error("Failed to download FTA Audit Filing:", err);
-      toast.error("Failed to download FTA Audit Filing");
+      console.error("Failed to download FTA Audit File:", err);
+      toast.error("Failed to download FTA Audit File");
     }
   }
 
@@ -2346,8 +2376,8 @@ export default function VatFillingPreview() {
     const posCombined = [...sales, ...purch, ...others];
 
     return {
-      salesRows: dedupeRows(sales),
-      purchaseRows: dedupeRows(purch),
+      salesRows: dedupeRows(sales).map(applyZeroRatedRule),
+      purchaseRows: dedupeRows(purch).map(applyZeroRatedRule),
       othersRowsView: dedupeRows(others),
       placeOfSupplyRowsView: dedupeRows(posCombined),
     };
@@ -2551,15 +2581,17 @@ export default function VatFillingPreview() {
     const hasBlankPlaceOfSupply = (row) =>
       String(row?.["PLACE OF SUPPLY"] ?? "").trim() === "";
 
-    return [...(salesRows || []), ...(purchaseRows || []), ...(othersRowsView || [])].some(
+    // Others rows are allowed to have a missing PLACE OF SUPPLY — they still
+    // flow into VAT Return based on VAT/amount/category logic.
+    return [...(salesRows || []), ...(purchaseRows || [])].some(
       hasBlankPlaceOfSupply
     );
-  }, [salesRows, purchaseRows, othersRowsView]);
+  }, [salesRows, purchaseRows]);
 
   const handleVatReturnTabClick = () => {
     if (hasMissingPlaceOfSupplyForVatReturn) {
       toast.error(
-        "Please fill the Place of Supply field for all Sales, Purchase, and Others records before opening VAT Return."
+        "Please fill the Place of Supply field for all Sales and Purchase records before opening VAT Return."
       );
       return;
     }
@@ -2670,11 +2702,22 @@ export default function VatFillingPreview() {
         .join(" | ");
 
     const salesLiveRows = Array.isArray(salesRows) ? salesRows : [];
+    const othersLiveRows = Array.isArray(othersRowsView) ? othersRowsView : [];
     const purchaseAndOtherRows = [
       ...(Array.isArray(purchaseRows) ? purchaseRows : []),
-      ...(Array.isArray(othersRowsView) ? othersRowsView : []),
+      ...othersLiveRows,
     ];
     const allVatSourceRows = [...salesLiveRows, ...purchaseAndOtherRows];
+
+    const othersRowKeys = new Set(othersLiveRows.map(getInvoiceRowMatchKey));
+    const isOthersRow = (row) =>
+      !!row && othersRowKeys.has(getInvoiceRowMatchKey(row));
+
+    // Treat null / undefined / "" / "-" / whitespace as "no place of supply".
+    const isPlaceOfSupplyMissing = (row) => {
+      const place = String(row?.["PLACE OF SUPPLY"] ?? "").trim();
+      return place === "" || place === "-";
+    };
 
     const isTouristRefundRow = (row) => {
       const text = getRowText(row);
@@ -2703,8 +2746,11 @@ export default function VatFillingPreview() {
       );
     };
 
+    // For Sales/Purchase a non-empty PLACE OF SUPPLY is still required.
+    // Others rows are admitted even when PLACE OF SUPPLY is missing — they get
+    // routed into the default location bucket below.
     const isStandardRatedPlaceRow = (row) =>
-      String(row?.["PLACE OF SUPPLY"] ?? "").trim() !== "" &&
+      (!isPlaceOfSupplyMissing(row) || isOthersRow(row)) &&
       !isTouristRefundRow(row) &&
       !isExemptRow(row) &&
       !isImportRow(row) &&
@@ -2741,10 +2787,16 @@ export default function VatFillingPreview() {
     };
 
     const standardPlaceRows = allVatSourceRows.filter(isStandardRatedPlaceRow);
-    const standardBaseByLocation = standardLocations.reduce((acc, location) => {
+    const standardBaseByLocation = standardLocations.reduce((acc, location, index) => {
       const matches = locationMatchers[location] || [];
       const locationRows = standardPlaceRows.filter((row) => {
         const place = lower(row?.["PLACE OF SUPPLY"]);
+        // Others rows with no PLACE OF SUPPLY are routed into the first
+        // location bucket (abuDhabi), matching the existing index-0 fallback
+        // for un-localized standard amounts.
+        if (!place || place === "-") {
+          return index === 0 && isOthersRow(row);
+        }
         return matches.some((token) => place.includes(token));
       });
       const bucket = sumVatBucket(locationRows);
@@ -3872,7 +3924,24 @@ export default function VatFillingPreview() {
                         const isLineItemsCol = String(c.key).toUpperCase() === "LINE_ITEMS";
                         const formattedLineItems = isLineItemsCol ? formatLineItems(val) : null;
 
-                        const text = isDateCol ? formattedDate : (isLineItemsCol ? formattedLineItems : String(val ?? ""));
+                        const isMetricLabelCol =
+                          (viewName === "salesTotal" || viewName === "purchaseTotal") &&
+                          String(c.key).toUpperCase() === "METRIC";
+                        const isParticularLabelCol =
+                          viewName === "vatSummary" &&
+                          String(c.key).toUpperCase() === "PARTICULAR";
+                        const isCompactLabelCol = isMetricLabelCol || isParticularLabelCol;
+                        const formattedMetricLabel = isCompactLabelCol
+                          ? formatMetricLabel(val)
+                          : null;
+
+                        const text = isDateCol
+                          ? formattedDate
+                          : isLineItemsCol
+                            ? formattedLineItems
+                            : isCompactLabelCol
+                              ? formattedMetricLabel
+                              : String(val ?? "");
 
                         // ✅ NEW: SOURCE column => open preview (pdf/image) using setPreview
                         if (c.key === "SOURCE") {
@@ -4347,7 +4416,7 @@ export default function VatFillingPreview() {
 
                   return (
                     <tr key={row.rowKey}>
-                      <td>{row.label}</td>
+                      <td>{formatMetricLabel(row.label)}</td>
                       <td>
                         {canEdit
                           ? renderVatReturnEditableCell(
@@ -4381,7 +4450,7 @@ export default function VatFillingPreview() {
                   );
                 })}
                 <tr className="vat-return-total-row">
-                  <td>Totals</td>
+                  <td>{formatMetricLabel("Totals")}</td>
                   <td>{formatAED(outputsTotals.amount)}</td>
                   <td>{formatAED(outputsTotals.vat)}</td>
                   <td>{formatAED(outputsTotals.total)}</td>
@@ -4412,7 +4481,7 @@ export default function VatFillingPreview() {
               </thead>
               <tbody>
                 <tr>
-                  <td>STANDARD RATED EXPENSES</td>
+                  <td>{formatMetricLabel("STANDARD RATED EXPENSES")}</td>
                   <td>{renderVatReturnEditableCell("inputs.standard", "inputs.standard.amount", inputs.standard.amount)}</td>
                   <td>{renderVatReturnEditableCell("inputs.standard", "inputs.standard.vat", inputs.standard.vat)}</td>
                   <td>{formatAED(inputs.standard.total)}</td>
@@ -4420,7 +4489,7 @@ export default function VatFillingPreview() {
                   {renderVatReturnActionCell("inputs.standard")}
                 </tr>
                 <tr>
-                  <td>Reverse Charge Provisions (Expenses)</td>
+                  <td>{formatMetricLabel("Reverse Charge Provisions (Expenses)")}</td>
                   <td>{renderVatReturnEditableCell("inputs.reverseCharge", "inputs.reverseCharge.amount", inputs.reverseCharge.amount)}</td>
                   <td>{renderVatReturnEditableCell("inputs.reverseCharge", "inputs.reverseCharge.vat", inputs.reverseCharge.vat)}</td>
                   <td>{formatAED(inputs.reverseCharge.total)}</td>
@@ -4428,7 +4497,7 @@ export default function VatFillingPreview() {
                   {renderVatReturnActionCell("inputs.reverseCharge")}
                 </tr>
                 <tr className="vat-return-total-row">
-                  <td>TOTAL AMOUNT</td>
+                  <td>{formatMetricLabel("TOTAL AMOUNT")}</td>
                   <td>{formatAED(inputsTotals.amount)}</td>
                   <td>{formatAED(inputsTotals.vat)}</td>
                   <td>{formatAED(inputsTotals.total)}</td>
@@ -4453,25 +4522,25 @@ export default function VatFillingPreview() {
               </thead>
               <tbody>
                 <tr>
-                  <td>Total Value of due tax for the period</td>
+                  <td>{formatMetricLabel("Total Value of due tax for the period")}</td>
                   <td>{formatAED(totalDueTax)}</td>
                   <td>{renderVatReturnAdjustmentCell("net.totalDueTax", totalDueTaxAdjustment)}</td>
                   {renderVatReturnActionCell("net.totalDueTax")}
                 </tr>
                 <tr>
-                  <td>Total Value of recoverable tax for the period</td>
+                  <td>{formatMetricLabel("Total Value of recoverable tax for the period")}</td>
                   <td>{formatAED(totalRecoverableTax)}</td>
                   <td>{renderVatReturnAdjustmentCell("net.totalRecoverableTax", totalRecoverableTaxAdjustment)}</td>
                   {renderVatReturnActionCell("net.totalRecoverableTax")}
                 </tr>
                 <tr>
-                  <td>VAT PAYABLE FOR THE PERIOD</td>
+                  <td>{formatMetricLabel("VAT PAYABLE FOR THE PERIOD")}</td>
                   <td>{formatAED(vatPayableForPeriod)}</td>
                   <td>{renderVatReturnAdjustmentCell("net.vatPayable", vatPayableForPeriodAdjustment)}</td>
                   {renderVatReturnActionCell("net.vatPayable")}
                 </tr>
                 <tr>
-                  <td>FUND AVAILABLE FTA</td>
+                  <td>{formatMetricLabel("FUND AVAILABLE FTA")}</td>
                   <td>
                     {isVatReturnRowEditing("ftaFund") ? (
                       <input
@@ -4498,15 +4567,16 @@ export default function VatFillingPreview() {
                   {renderVatReturnActionCell("ftaFund")}
                 </tr>
                 <tr className="vat-return-total-row">
-                  <td>NET VAT PAYABLE FOR THE PERIOD</td>
+                  <td>{formatMetricLabel("NET VAT PAYABLE FOR THE PERIOD")}</td>
                   <td>{formatAED(netVatPayableAfterFund)}</td>
                   <td>{renderVatReturnAdjustmentCell("net.afterFund", netVatPayableAfterFundAdjustment)}</td>
                   {renderVatReturnActionCell("net.afterFund")}
                 </tr>
                 <tr>
                   <td>
-                    Do you wish to request a refund for the above amount of excess
-                    recoverable tax?
+                    {formatMetricLabel(
+                      "Do you wish to request a refund for the above amount of excess recoverable tax?"
+                    )}
                   </td>
                   <td>{renderVatReturnYesNoCell("refundRequest", "refundRequest")}</td>
                   <td>
@@ -4518,8 +4588,9 @@ export default function VatFillingPreview() {
                 </tr>
                 <tr>
                   <td>
-                    Did you apply the profit margin scheme in respect of any
-                    supplies made during the tax period?
+                    {formatMetricLabel(
+                      "Did you apply the profit margin scheme in respect of any supplies made during the tax period?"
+                    )}
                   </td>
                   <td>
                     {renderVatReturnYesNoCell(
@@ -4680,7 +4751,7 @@ export default function VatFillingPreview() {
                     handleDownloadFtaAuditFiling();
                   }}
                 >
-                  Download FTA Audit Filing
+                  Download FTA Audit File
                 </button>
               </div>
             )}
