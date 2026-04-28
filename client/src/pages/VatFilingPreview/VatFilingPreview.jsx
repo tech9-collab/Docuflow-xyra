@@ -79,13 +79,27 @@ const formatMetricLabel = (label) =>
 
 // When VAT (AED) parses to 0 (incl. null / "" / "0" / "0.00"), the row is
 // zero-rated and ZERO RATED (AED) mirrors NET AMOUNT (AED). Otherwise it's 0.
+// When NET AMOUNT (AED) is itself empty (e.g. after the edit handler clears
+// it because VAT was emptied), fall back through BEFORE TAX (AED) — which
+// equals NET AMOUNT when VAT = 0 — and finally the raw NET AMOUNT column.
 const applyZeroRatedRule = (row) => {
   if (!row || typeof row !== "object") return row;
   const parsedVat = toNumberLoose(row["VAT (AED)"]);
   const vatAmount = parsedVat == null ? 0 : parsedVat;
   if (vatAmount === 0) {
-    const parsedNet = toNumberLoose(row["NET AMOUNT (AED)"]);
-    const netAmount = parsedNet == null ? 0 : parsedNet;
+    const candidates = [
+      row["NET AMOUNT (AED)"],
+      row["BEFORE TAX (AED)"],
+      row["NET AMOUNT"],
+    ];
+    let netAmount = 0;
+    for (const candidate of candidates) {
+      const parsed = toNumberLoose(candidate);
+      if (parsed != null) {
+        netAmount = parsed;
+        break;
+      }
+    }
     return { ...row, "ZERO RATED (AED)": fmt2(netAmount) };
   }
   return { ...row, "ZERO RATED (AED)": fmt2(0) };
@@ -2378,8 +2392,8 @@ export default function VatFillingPreview() {
     return {
       salesRows: dedupeRows(sales).map(applyZeroRatedRule),
       purchaseRows: dedupeRows(purch).map(applyZeroRatedRule),
-      othersRowsView: dedupeRows(others),
-      placeOfSupplyRowsView: dedupeRows(posCombined),
+      othersRowsView: dedupeRows(others).map(applyZeroRatedRule),
+      placeOfSupplyRowsView: dedupeRows(posCombined).map(applyZeroRatedRule),
     };
   }, [previewData]);
 
@@ -2508,19 +2522,8 @@ export default function VatFillingPreview() {
   }, [purchaseRows]);
 
   const othersData = useMemo(() => {
-    const rows = (othersRowsView || []).map((row) => {
-      const vatAed = Number(row?.["VAT (AED)"] || 0);
-      const beforeTaxAed = row?.["BEFORE TAX (AED)"];
-
-      if (vatAed === 0) {
-        return {
-          ...row,
-          "ZERO RATED (AED)": beforeTaxAed ?? row?.["ZERO RATED (AED)"] ?? 0,
-        };
-      }
-
-      return row;
-    });
+    // ZERO RATED (AED) is already derived by applyZeroRatedRule on othersRowsView.
+    const rows = othersRowsView || [];
     const keys = rows.length ? Object.keys(rows[0]) : [];
     const HIDDEN_META_KEYS = new Set([
       "SOURCE_URL",
