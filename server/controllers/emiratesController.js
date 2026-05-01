@@ -45,8 +45,11 @@ const CONCURRENCY = Number(process.env.EMIRATES_CONCURRENCY || 6);
 // We keep SPLIT_MODE var for future; for now we avoid splitting big PDFs to keep memory low.
 const SPLIT_MODE = (process.env.EMIRATES_SPLIT_PDFS || "smart").toLowerCase();
 
-const TMP_DIR = path.join(os.tmpdir(), "emirates");
-await fs.mkdir(TMP_DIR, { recursive: true });
+const TMP_DIR_NAME = `emirates-${
+  (typeof process.getuid === "function" && process.getuid()) || "default"
+}`;
+const TMP_DIR = path.join(os.tmpdir(), TMP_DIR_NAME);
+await fs.mkdir(TMP_DIR, { recursive: true, mode: 0o700 });
 
 // Disk-based, like invoices
 export const upload = multer({

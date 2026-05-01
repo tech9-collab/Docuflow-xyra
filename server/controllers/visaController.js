@@ -25,8 +25,11 @@ const CONCURRENCY = Number(process.env.VISA_CONCURRENCY || 6);
 const SPLIT_MODE = (process.env.VISA_SPLIT_PDFS || "smart").toLowerCase();
 
 // temp workspace (for PDF compression & split)
-const TMP_DIR = path.join(os.tmpdir(), "visa_jobs");
-await fs.mkdir(TMP_DIR, { recursive: true });
+const TMP_DIR_NAME = `visa_jobs-${
+  (typeof process.getuid === "function" && process.getuid()) || "default"
+}`;
+const TMP_DIR = path.join(os.tmpdir(), TMP_DIR_NAME);
+await fs.mkdir(TMP_DIR, { recursive: true, mode: 0o700 });
 
 export const upload = multer({
     storage: multer.memoryStorage(), // we’ll write buffers to disk when needed

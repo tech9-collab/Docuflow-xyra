@@ -37,8 +37,11 @@ const CONCURRENCY = Number(process.env.TL_CONCURRENCY || 6);
 // IMPORTANT: For one row per PDF, do NOT split. Keep whole PDFs.
 const SPLIT_MODE = (process.env.TL_SPLIT_PDFS || "never").toLowerCase();
 
-const TMP_DIR = path.join(os.tmpdir(), "trade_license");
-await fs.mkdir(TMP_DIR, { recursive: true });
+const TMP_DIR_NAME = `trade_license-${
+  (typeof process.getuid === "function" && process.getuid()) || "default"
+}`;
+const TMP_DIR = path.join(os.tmpdir(), TMP_DIR_NAME);
+await fs.mkdir(TMP_DIR, { recursive: true, mode: 0o700 });
 
 // Disk-based (same as Emirates)
 export const upload = multer({

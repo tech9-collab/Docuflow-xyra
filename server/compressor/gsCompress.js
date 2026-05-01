@@ -25,13 +25,17 @@ function gsBin() {
  * @returns {Promise<string>} absolute path to compressed PDF
  */
 
+const GS_TMP_DIR_NAME = `gs_compress-${
+  (typeof process.getuid === "function" && process.getuid()) || "default"
+}`;
+
 export async function compressPdfWithGs(
   inPath,
   { pdfSettings = "/ebook", compatibilityLevel = "1.6", dpi = 100, outDir } = {}
 ) {
   const inAbs = path.resolve(inPath);
-  const dir = outDir || path.join(os.tmpdir(), "invoices");
-  await fs.mkdir(dir, { recursive: true });
+  const dir = outDir || path.join(os.tmpdir(), GS_TMP_DIR_NAME);
+  await fs.mkdir(dir, { recursive: true, mode: 0o700 });
   const outAbs = path.join(
     dir,
     `${path.basename(inAbs, path.extname(inAbs))}-compressed.pdf`
