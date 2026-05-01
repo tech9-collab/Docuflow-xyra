@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Building2, Plus, Edit2, Trash2, Save, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../helper/helper';
@@ -10,6 +11,7 @@ export default function DepartmentManagement() {
         document.title = "Xyra Books - Department Management";
     }, []);
 
+    const navigate = useNavigate();
     const { isSuperAdmin } = useAuth();
     const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -134,9 +136,9 @@ export default function DepartmentManagement() {
                     <p>Organize your company into departments for better management</p>
                 </div>
                 <div className="header-actions">
-                    <button 
+                    <button
                         className="btn-primary"
-                        onClick={() => setShowDepartmentForm(true)}
+                        onClick={() => navigate('/admin/departments/create')}
                     >
                         <Plus size={16} color="white" />
                         Add Department

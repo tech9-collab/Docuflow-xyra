@@ -356,8 +356,11 @@ const JOBS = new Map();
 // });
 
 // const TMP_DIR = "/tmp/invoices";
-const TMP_DIR = path.join(os.tmpdir(), "invoices");
-await fs.mkdir(TMP_DIR, { recursive: true });
+const TMP_DIR_NAME = `invoices-${
+  (typeof process.getuid === "function" && process.getuid()) || "default"
+}`;
+const TMP_DIR = path.join(os.tmpdir(), TMP_DIR_NAME);
+await fs.mkdir(TMP_DIR, { recursive: true, mode: 0o700 });
 if (EXTRACTION_CACHE_PERSIST) {
   await fs.mkdir(EXTRACTION_CACHE_DIR, { recursive: true });
 }

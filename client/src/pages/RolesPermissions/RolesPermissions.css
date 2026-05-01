@@ -315,60 +315,83 @@
 /* Roles Section */
 .roles-section {
     background: #ffffff;
-    border: 2px solid #000000;
+    border: 1px solid #ece8f7;
     border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-shadow: 0 1px 2px rgba(16, 11, 43, 0.04);
 }
 
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid #000000;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ece8f7;
 }
 
 .section-header h3 {
     margin: 0;
-    font-size: 24px;
-    font-weight: 600;
-    color: #333333;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1b0f3a;
 }
 
 .role-count {
-    background: #000000;
-    color: #ffffff;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
+    background: #f3eeff;
+    color: #7c5cff;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    border: 1px solid #e3d7ff;
 }
 
 .roles-table-container {
     overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid #ece8f7;
 }
 
 .roles-table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 14px;
+}
+
+.roles-table thead {
+    background: #faf8ff;
 }
 
 .roles-table th {
     text-align: left;
-    padding: 16px;
-    font-weight: 600;
-    color: #000000;
-    border-bottom: 2px solid #000000;
+    padding: 12px 14px;
+    font-weight: 700;
+    color: #7c5cff;
+    border-bottom: 1px solid #ece8f7;
     white-space: nowrap;
-    background-color: #f8f8f8;
+    font-size: 13px;
+    letter-spacing: 0.2px;
 }
 
 .roles-table td {
-    padding: 16px;
-    border-bottom: 1px solid #e5e7eb;
-    vertical-align: top;
+    padding: 14px;
+    border-bottom: 1px solid #f3f0fa;
+    vertical-align: middle;
+    color: #2e2749;
+}
+
+.roles-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.roles-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.roles-table tbody tr:hover {
+    background: #faf8ff;
 }
 
 .role-name {

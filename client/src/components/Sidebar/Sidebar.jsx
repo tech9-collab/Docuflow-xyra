@@ -45,11 +45,11 @@ export default function Sidebar({ collapsed }) {
 
   const handleLogout = () => {
     logout();
-    window.location.href = "https://xyra.tvcbooks.com/";
+    window.location.href = "https://thexyra.ai/";
   };
 
   const handleBrandClick = () => {
-    window.location.href = "https://xyra.tvcbooks.com/";
+    window.location.href = "https://thexyra.ai/";
   };
 
   return (

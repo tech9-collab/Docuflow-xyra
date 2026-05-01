@@ -320,8 +320,19 @@ export default function DepartmentDashboard() {
   }).sort((a, b) => b.docCount - a.docCount);
 
   const pendingPageSize = 10;
+  // Collapse whitespace and normalize Unicode dash variants so a user typing
+  // "TRAVEL MEDIA MIDDLE EAST - FZCO" matches data that may use en-dash,
+  // em-dash, non-breaking spaces, or doubled spaces.
+  const normalizeSearchText = (value) =>
+    String(value ?? "")
+      .replace(/[‐-―−]/g, "-")
+      .replace(/ /g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+
   const filteredPendingFilings = useMemo(() => {
-    const term = pendingSearch.trim().toLowerCase();
+    const term = normalizeSearchText(pendingSearch);
     const rows = (pendingFilingRows || []).filter((row) => {
       if (!term) return true;
       return [
@@ -330,7 +341,7 @@ export default function DepartmentDashboard() {
         row.phone,
         row.service_required,
         row.status,
-      ].some((value) => String(value || "").toLowerCase().includes(term));
+      ].some((value) => normalizeSearchText(value).includes(term));
     });
 
     return rows.sort((a, b) => {
@@ -554,7 +565,11 @@ export default function DepartmentDashboard() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="empty">No pending filings available</td>
+                    <td colSpan="7" className="empty">
+                      {pendingSearch.trim()
+                        ? "No results available"
+                        : "No pending filings available"}
+                    </td>
                   </tr>
                 )}
               </tbody>

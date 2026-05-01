@@ -13,8 +13,11 @@ import BillsResultPage from "../pages/BillsResultPage/BillsResultPage";
 import TradeLicenseResultPage from "../pages/TradeLicenseResulPage/TradeLicenseResultPage";
 import InvoiceTable from "../pages/InvoiceTable/InvoiceTable";
 import RolesPermissions from "../pages/RolesPermissions/RolesPermissionsSimple";
+import AddRole from "../pages/RolesPermissions/AddRole";
 import EmployeeManagement from "../pages/EmployeeManagement/EmployeeManagement";
+import AddUser from "../pages/EmployeeManagement/AddUser";
 import DepartmentManagement from "../pages/DepartmentManagement/DepartmentManagement";
+import AddDepartment from "../pages/DepartmentManagement/AddDepartment";
 import AdminDashboard from "../pages/AdminDashboard/AdminDashboard";
 import DepartmentDashboard from "../pages/DepartmentDashboard/DepartmentDashboard";
 import DepartmentUsers from "../pages/DepartmentUsers/DepartmentUsers";
@@ -62,6 +65,7 @@ import ViewCustomer from "../pages/Customers/ViewCustomer";
 import EditCustomer from "../pages/Customers/EditCustomer";
 import Companies from "../pages/Companies/Companies";
 import TrnVerification from "../pages/TrnVerification/TrnVerification";
+import CreatePayrollPayment from "../pages/Payroll/CreatePayrollPayment";
 
 // Only the Converts submenu pages are routed.
 const routes = [
@@ -344,6 +348,14 @@ const routes = [
     ),
   },
   {
+    path: "/admin/departments/create",
+    element: () => (
+      <AdminRoute>
+        <AddDepartment />
+      </AdminRoute>
+    ),
+  },
+  {
     path: "/admin/employees",
     element: () => (
       <AdminRoute>
@@ -352,10 +364,26 @@ const routes = [
     ),
   },
   {
+    path: "/admin/employees/create",
+    element: () => (
+      <AdminRoute>
+        <AddUser />
+      </AdminRoute>
+    ),
+  },
+  {
     path: "/admin/roles-permissions",
     element: () => (
       <AdminRoute>
         <RolesPermissions />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/roles-permissions/create",
+    element: () => (
+      <AdminRoute>
+        <AddRole />
       </AdminRoute>
     ),
   },
@@ -373,6 +401,15 @@ const routes = [
     element: () => (
       <AdminRoute>
         <DepartmentUsers />
+      </AdminRoute>
+    ),
+  },
+  // Payroll routes
+  {
+    path: "/admin/payroll/create",
+    element: () => (
+      <AdminRoute>
+        <CreatePayrollPayment />
       </AdminRoute>
     ),
   },

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Users, Plus, Edit2, Trash2, Save, X, Shield, UserPlus, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../helper/helper';
@@ -10,6 +11,7 @@ export default function EmployeeManagement() {
         document.title = "Xyra Books - User Management";
     }, []);
 
+    const navigate = useNavigate();
     const { isSuperAdmin, user, isCompanyAdmin } = useAuth();
     const [employees, setEmployees] = useState([]);
     const [roles, setRoles] = useState([]);
@@ -218,15 +220,7 @@ export default function EmployeeManagement() {
                     {(isSuperAdmin() || isCompanyAdmin()) && (
                         <button
                             className="btn-primary"
-                            onClick={() => {
-                                setEditingEmployee(null);
-                                setShowEmployeeForm(true);
-                                if (!isSuperAdmin()) {
-                                    setNewEmployee(prev => ({ ...prev, companyId: user.company_id }));
-                                }
-                                fetchDepartments(isSuperAdmin() ? null : user.company_id);
-                                setRoles([]);
-                            }}
+                            onClick={() => navigate('/admin/employees/create')}
                         >
                             <UserPlus size={16} />
                             Add User

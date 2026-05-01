@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Shield, Plus, Edit2, Trash2, Save, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../helper/helper';
@@ -10,6 +11,7 @@ export default function RolesPermissions() {
         document.title = "Xyra Books - Roles & Permissions";
     }, []);
 
+    const navigate = useNavigate();
     const { isSuperAdmin, user } = useAuth();
     const [roles, setRoles] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -346,11 +348,7 @@ export default function RolesPermissions() {
                     {(isSuperAdmin() || (user.department_id && user.role_name === 'admin')) && (
                         <button
                             className="btn-primary"
-                            onClick={() => {
-                                setEditingRole(null);
-                                setNewRole({ name: 'user', description: '', departmentId: isSuperAdmin() ? '' : user.department_id, menus: [] });
-                                setShowRoleForm(true);
-                            }}
+                            onClick={() => navigate('/admin/roles-permissions/create')}
                         >
                             <Plus size={16} />
                             Add Role

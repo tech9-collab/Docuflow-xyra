@@ -183,10 +183,25 @@ export default function AdminDashboard() {
                 const periods = await fetchVatPeriods(selectedPendingCustomer);
                 if (ignore) return;
 
+                // A period is "pending" unless it has been explicitly closed.
+                // Using a deny-list keeps the dropdown working for legacy
+                // statuses (draft, review, blank, …) and any new pending-style
+                // values added later.
+                const CLOSED_STATUSES = new Set([
+                    "completed",
+                    "submitted",
+                    "filed",
+                    "approved",
+                    "closed",
+                    "done",
+                ]);
+                const isPendingStatus = (raw) => {
+                    const s = String(raw ?? "").trim().toLowerCase();
+                    return !CLOSED_STATUSES.has(s);
+                };
+
                 const rows = (periods || [])
-                    .filter((period) =>
-                        period?.status === "not_started" || period?.status === "in_progress"
-                    )
+                    .filter((period) => isPendingStatus(period?.status))
                     .map((period) => ({
                         id: period.id,
                         customer_id: customer.id,
@@ -314,11 +329,22 @@ export default function AdminDashboard() {
             .sort((a, b) => a.name.localeCompare(b.name));
     }, [pendingCustomers]);
 
+    // Collapse whitespace and normalize Unicode dash variants so a user typing
+    // "TRAVEL MEDIA MIDDLE EAST - FZCO" matches data that may use en-dash,
+    // em-dash, non-breaking spaces, or doubled spaces.
+    const normalizeSearchText = (value) =>
+        String(value ?? "")
+            .replace(/[‐-―−]/g, "-")
+            .replace(/ /g, " ")
+            .replace(/\s+/g, " ")
+            .trim()
+            .toLowerCase();
+
     const filteredPendingFilings = useMemo(() => {
         const sourceRows = selectedPendingCustomer
             ? selectedCustomerPendingRows
             : pendingFilingRows;
-        const term = pendingSearch.trim().toLowerCase();
+        const term = normalizeSearchText(pendingSearch);
         const rows = (sourceRows || []).filter((row) => {
             if (selectedPendingCustomer && String(row.customer_id) !== selectedPendingCustomer) {
                 return false;
@@ -330,7 +356,7 @@ export default function AdminDashboard() {
                 row.phone,
                 row.service_required,
                 row.status,
-            ].some((value) => String(value || "").toLowerCase().includes(term));
+            ].some((value) => normalizeSearchText(value).includes(term));
         });
 
         return rows.sort((a, b) => {
@@ -538,7 +564,11 @@ export default function AdminDashboard() {
                                     </tr>
                                 )) : (
                                     <tr>
-                                        <td colSpan="7" className="empty-cell">No pending filings available</td>
+                                        <td colSpan="7" className="empty-cell">
+                                            {pendingSearch.trim()
+                                                ? "No results available"
+                                                : "No pending filings available"}
+                                        </td>
                                     </tr>
                                 )}
                             </tbody>
