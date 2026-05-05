@@ -396,6 +396,89 @@ const PAYMENT_STATUS_ALIASES = [
   "PAYMENT STATE",
 ];
 
+// ---------- Sales / Purchase / Others classifier ----------
+const SALES_INVOICE_CATEGORIES = new Set([
+  "tax invoice",
+  "proforma tax invoice",
+  "proforma invoice",
+  "commercial invoice",
+  "cash invoice",
+  "invoice",
+  "sales order",
+  "sales summary",
+  "receipt",
+  "receipt voucher",
+]);
+const PURCHASE_INVOICE_CATEGORIES = new Set([
+  "bill",
+  "purchase order",
+  "purchase summary",
+  "payment voucher",
+  "remittance advice",
+]);
+const SALES_KEYWORDS_RE =
+  /\b(sales|sold to|bill to|customer name|client name|invoice to)\b/i;
+const PURCHASE_KEYWORDS_RE =
+  /\b(purchase order|p\.?o\.?\s*(?:no|number|#)|supplier|vendor|bought from|ship from)\b/i;
+
+function digits(v) {
+  return String(v ?? "").replace(/\D/g, "");
+}
+
+function classifyRowGroup(row, companyTrn) {
+  const t = String(row?.TYPE || "").trim().toLowerCase();
+  if (t.startsWith("sale")) return "sales";
+  if (t.startsWith("purchas")) return "purchase";
+
+  const co = digits(companyTrn);
+  if (co.length === 15) {
+    if (digits(row?.["SUPPLIER TRN"]) === co) return "sales";
+    if (digits(row?.["CUSTOMER TRN"]) === co) return "purchase";
+  }
+
+  const cat = String(row?.["INVOICE CATEGORY"] || "").trim().toLowerCase();
+  if (cat) {
+    if (SALES_INVOICE_CATEGORIES.has(cat)) return "sales";
+    if (PURCHASE_INVOICE_CATEGORIES.has(cat)) return "purchase";
+  }
+
+  const haystack = [
+    row?.["INVOICE CATEGORY"],
+    row?.["SUPPLIER/VENDOR"],
+    row?.PARTY,
+    row?.SOURCE,
+  ]
+    .filter(Boolean)
+    .join(" ");
+  if (haystack) {
+    const hasSales = SALES_KEYWORDS_RE.test(haystack);
+    const hasPurchase = PURCHASE_KEYWORDS_RE.test(haystack);
+    // Ambiguous (terms from both) → Others
+    if (hasSales && !hasPurchase) return "sales";
+    if (hasPurchase && !hasSales) return "purchase";
+  }
+
+  return "others";
+}
+
+function rebucketBySalesPurchase(salesIn, purchaseIn, othersIn, companyTrn) {
+  const sales = [];
+  const purchase = [];
+  const others = [];
+  const route = (row, defaultBucket) => {
+    if (!row || typeof row !== "object") return;
+    const group = classifyRowGroup(row, companyTrn) || defaultBucket;
+    if (group === "sales") sales.push({ ...row, TYPE: row?.TYPE || "Sales" });
+    else if (group === "purchase")
+      purchase.push({ ...row, TYPE: row?.TYPE || "Purchase" });
+    else others.push({ ...row, TYPE: row?.TYPE || "Others" });
+  };
+  (salesIn || []).forEach((r) => route(r, "sales"));
+  (purchaseIn || []).forEach((r) => route(r, "purchase"));
+  (othersIn || []).forEach((r) => route(r, "others"));
+  return { sales, purchase, others };
+}
+
 function rowHasPaymentMeta(row) {
   const hasMode =
     readRowValueByAliases(row, PAYMENT_MODE_ALIASES) !== undefined;
@@ -2385,6 +2468,20 @@ export default function VatFillingPreview() {
       ...(Array.isArray(inv.othersRows) ? inv.othersRows : []),
       ...(Array.isArray(inv.uaeOtherRows) ? inv.uaeOtherRows : []),
     ]);
+
+    // Re-bucket using Sales/Purchase/Others classifier (TYPE → company TRN match
+    // → invoice category → keyword scoring) so rows misclassified as Others
+    // are routed to the correct tab.
+    const companyTrn =
+      previewData?.companyData?.trn ||
+      previewData?.companyTrn ||
+      inv.companyTrn ||
+      inv.company_trn ||
+      "";
+    const rebucketed = rebucketBySalesPurchase(sales, purch, others, companyTrn);
+    sales = rebucketed.sales;
+    purch = rebucketed.purchase;
+    others = rebucketed.others;
 
     // Keep Place of Supply derived from the live source buckets so edits stay in sync.
     const posCombined = [...sales, ...purch, ...others];
@@ -4704,7 +4801,7 @@ export default function VatFillingPreview() {
           {/* 2️⃣ Back button – now before Download */}
           <button
             type="button"
-            className="prj-btn prj-btn-outline vf-back-btn"
+            className="vfp-secondary-btn"
             onClick={handleBack}
           >
             ← {isExistingRun ? "Back to conversions" : "Back to filing"}
@@ -4713,7 +4810,7 @@ export default function VatFillingPreview() {
           <div className="download-menu" ref={downloadMenuRef}>
             <button
               type="button"
-              className="btn btn-black download-menu-trigger"
+              className="vfp-primary-btn download-menu-trigger"
               aria-haspopup="menu"
               aria-expanded={downloadMenuOpen}
               onClick={() => setDownloadMenuOpen((prev) => !prev)}
@@ -4759,7 +4856,7 @@ export default function VatFillingPreview() {
               </div>
             )}
           </div>
-          <button className="btn btn-black" onClick={handleAddMoreFiles}>
+          <button className="vfp-primary-btn" onClick={handleAddMoreFiles}>
             Add More Files
           </button>
         </div>
@@ -4767,6 +4864,20 @@ export default function VatFillingPreview() {
 
       {/* Table Card */}
       <div className="result-card">
+        <div className="result-card-top">
+          <button
+            type="button"
+            className="vfp-primary-btn"
+            onClick={handleSaveDraft}
+            disabled={loading || !previewData}
+          >
+            {isExistingRun
+              ? "Save Changes"
+              : draftSaved
+                ? "Draft Saved"
+                : "Save Draft"}
+          </button>
+        </div>
         <div className="result-card-body">
           <div className="result-main-pane" ref={editablePaneRef}>
             {view === "vatReturn"
@@ -4844,7 +4955,7 @@ export default function VatFillingPreview() {
                   <div className="result-doc-actions">
                     <button
                       type="button"
-                      className="btn btn-outline"
+                      className="vfp-doc-btn"
                       onClick={() =>
                         setPreview({ ...activeDocument, page: activePage })
                       }
@@ -4852,7 +4963,7 @@ export default function VatFillingPreview() {
                       Open Preview
                     </button>
                     <a
-                      className="btn btn-outline"
+                      className="vfp-doc-btn"
                       href={activeDocument.url}
                       target="_blank"
                       rel="noreferrer"
@@ -4890,23 +5001,6 @@ export default function VatFillingPreview() {
               )}
             </div>
           </aside>
-        </div>
-        <div className="result-card-footer">
-          <button
-            type="button"
-            className="btn btn-outline"
-            onClick={handleSaveDraft}
-            disabled={loading || !previewData}
-          >
-            {isExistingRun
-              ? "Save Changes"
-              : draftSaved
-                ? "Draft Saved"
-                : "Save Draft"}
-          </button>
-          {/* <button type="button" className="btn btn-black">
-            Verify
-          </button> */}
         </div>
       </div>
       {preview && (

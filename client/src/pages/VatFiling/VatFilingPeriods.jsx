@@ -405,10 +405,10 @@ export default function VatFilingPeriods() {
 
   return (
     <div className="vat-periods-page">
-      <div className="page-header">
+      <div className="page-header vfp-page-header">
         <div>
-          <h2>VAT Filing – Periods</h2>
-          <p>
+          <h2 className="vfp-page-title">VAT Filing – Periods</h2>
+          <p className="vfp-page-sub">
             Manage filing periods for the selected customer and open Bank &amp;
             Invoice.
           </p>
@@ -416,7 +416,7 @@ export default function VatFilingPeriods() {
         <div>
           <button
             type="button"
-            className="prj-btn prj-btn-outline vf-back-btn"
+            className="vfp-back-btn"
             onClick={handleBack}
           >
             ← Back to customers
@@ -450,10 +450,10 @@ export default function VatFilingPeriods() {
 
               <button
                 type="button"
-                className="btn btn-black vf-btn"
+                className="vfp-add-btn"
                 onClick={openAddPeriodModal}
               >
-                <CalendarPlus size={16} />
+                <CalendarPlus size={14} />
                 Add Filing Period
               </button>
             </div>

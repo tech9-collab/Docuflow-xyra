@@ -33,22 +33,22 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 4px 10px;
-  height: 56px;
+  padding: 6px 10px;
+  height: 60px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  margin: 0 -12px 8px;
-  padding-left: 22px;
+  margin: 0 -8px 8px;
+  padding-left: 16px;
 }
 
 .brand-logo {
-  height: 56px;
+  height: 48px;
   width: auto;
   flex-shrink: 0;
   transition: height 220ms ease;
 }
 
 .sidebar.collapsed .brand-logo {
-  height: 40px;
+  height: 36px;
 }
 
 .brand-wordmark {
@@ -90,7 +90,7 @@
   gap: 12px;
   padding: 10px 12px;
   border-radius: 10px;
-  color: #d4ccff;
+  color: #ffffff;
   text-decoration: none;
   border: 1px solid transparent;
   transition: background 180ms ease, color 180ms ease, border-color 180ms ease;

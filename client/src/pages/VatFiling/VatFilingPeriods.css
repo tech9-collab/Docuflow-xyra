@@ -1,42 +1,104 @@
 /* PAGE WRAPPER */
 .vat-periods-page {
-  padding: 12px 16px;
-  max-width: 1320px;
+  padding: 24px;
+  max-width: 1400px;
   margin: 0 auto;
-  background: transparent;
-  color: #000;
+  background: linear-gradient(135deg, #fafbfc 0%, #f7f9fc 100%);
+  min-height: 100vh;
+  color: #1a1a1a;
 }
 
-/* BUTTON STYLING (small action buttons) */
-.vat-periods-page .btn.btn-black.vf-btn {
-  padding: 4px 10px;
-  font-size: 12px;
-  line-height: 1.2;
-  border-radius: 999px;
-  white-space: nowrap;
+/* HEADER — match Customers page */
+.vfp-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  gap: 12px;
+}
+
+.vfp-page-title {
+  margin: 0 0 6px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.4px;
+}
+
+.vfp-page-sub {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* Back button — outlined purple */
+.vfp-back-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-/* ACTION COLUMN FIX — CENTER BUTTON */
+.vfp-back-btn:hover {
+  background: #f3eeff;
+  border-color: #c5b3ff;
+  color: #7c5cff;
+}
+
+/* Primary Add Filing Period button — purple */
+.vfp-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #7c5cff;
+  background: #7c5cff;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.15;
+  box-shadow: 0 4px 10px rgba(124, 92, 255, 0.22);
+  transition: all 0.2s ease;
+}
+
+.vfp-add-btn:hover {
+  background: #6a48f5;
+  border-color: #6a48f5;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(124, 92, 255, 0.32);
+}
+
+/* ACTION COLUMN — left aligned like Customers */
 .vf-period-table th:last-child,
 .vf-period-table td:last-child {
-  width: 70px;
-  text-align: center;
-  padding: 0;
+  width: 160px;
+  text-align: left;
 }
 
 
-/* PERIOD CARD */
+/* PERIOD CARD — match Customers card */
 .vf-period-card {
-  background: #fff;
-  border-radius: 14px;
-  border: 1px solid #e5e7eb;
-  padding: 14px;
-  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.05);
+  background: #ffffff;
+  border: 1px solid #ece8f7;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(16, 11, 43, 0.04);
   display: grid;
-  gap: 10px;
+  gap: 16px;
 }
 
 .vf-period-head {
@@ -44,6 +106,55 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ece8f7;
+}
+
+.vf-period-head h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1b0f3a;
+}
+
+/* Purple-themed table headers — match Customers */
+.vat-periods-page .tbl.nice thead th,
+.vf-period-table thead th {
+  background: #faf8ff !important;
+  color: #7c5cff !important;
+  font-weight: 700;
+  text-align: left;
+  border-bottom: 1px solid #ece8f7;
+  padding: 14px 12px;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  white-space: normal;
+  line-height: 1.25;
+}
+
+.vat-periods-page .tbl.nice tbody td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #f3f0fa;
+  vertical-align: middle;
+  color: #2e2749;
+  font-size: 13px;
+  line-height: 1.45;
+  background: #ffffff;
+}
+
+.vat-periods-page .tbl-scroller {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid #ece8f7;
+}
+
+.vat-periods-page .tbl-scroller::-webkit-scrollbar-thumb {
+  background: #d8d2ee;
+  border-radius: 8px;
+}
+
+.vat-periods-page .tbl-scroller::-webkit-scrollbar-track {
+  background: #faf8ff;
 }
 
 /* CUSTOMER SUMMARY */
@@ -76,26 +187,159 @@
   color: #6b7280;
 }
 
-/* MODAL */
-.prj-modal { 
+/* MODAL — purple themed */
+.vat-periods-page ~ .prj-modal,
+.prj-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.35);
+  background: rgba(27, 15, 58, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   z-index: 50;
+  backdrop-filter: blur(2px);
 }
 
 .prj-modal-card {
   width: 100%;
-  max-width: 480px;
-  background: #fff;
+  max-width: 520px;
+  background: #ffffff;
   border-radius: 14px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  border: 1px solid #ece8f7;
+  box-shadow: 0 20px 50px rgba(27, 15, 58, 0.18);
   overflow: hidden;
+}
+
+/* Modal header */
+.prj-modal-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid #ece8f7;
+  background: #faf8ff;
+}
+
+.prj-modal-hd h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1b0f3a;
+}
+
+.prj-modal-hd .prj-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #ece8f7;
+  background: #ffffff;
+  color: #6b6483;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.prj-modal-hd .prj-icon-btn:hover {
+  background: #f3eeff;
+  border-color: #c5b3ff;
+  color: #7c5cff;
+}
+
+/* Modal body */
+.prj-modal-body {
+  padding: 22px;
+  display: grid;
+  gap: 16px;
+}
+
+.vf-field-row {
+  display: grid;
+  gap: 6px;
+}
+
+.prj-field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2e2749;
+}
+
+.prj-modal-body .prj-rename {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ece8f7;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 14px;
+  color: #2e2749;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prj-modal-body .prj-rename:focus {
+  outline: none;
+  border-color: #7c5cff;
+  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.15);
+}
+
+/* Modal footer */
+.prj-modal-ft {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 22px;
+  border-top: 1px solid #ece8f7;
+  background: #fafafa;
+}
+
+.prj-modal-ft .prj-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.prj-modal-ft .prj-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.prj-modal-ft .prj-btn-outline {
+  background: #ffffff;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.prj-modal-ft .prj-btn-outline:hover:not(:disabled) {
+  background: #f3eeff;
+  border-color: #c5b3ff;
+  color: #7c5cff;
+}
+
+.prj-modal-ft .prj-btn-solid {
+  background: #7c5cff;
+  color: #ffffff;
+  border-color: #7c5cff;
+  box-shadow: 0 4px 10px rgba(124, 92, 255, 0.22);
+}
+
+.prj-modal-ft .prj-btn-solid:hover:not(:disabled) {
+  background: #6a48f5;
+  border-color: #6a48f5;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(124, 92, 255, 0.32);
 }
 
 /* Back button small size */
@@ -125,41 +369,63 @@
 .vf-actions-cell {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  justify-content: flex-start;
+  gap: 8px;
 }
 
-/* Make the small icon buttons consistent */
-.vf-actions-cell .prj-icon-btn {
-  height: 32px;
-  width: 32px;
-  padding: 0;
+/* Action icon buttons — lavender pills with purple hover */
+.vat-periods-page .vf-actions-cell .prj-icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  height: 32px !important;
+  width: 32px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  border: 1px solid #c5b3ff !important;
+  background: #f3eeff !important;
+  color: #7c5cff !important;
+  cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: none !important;
 }
 
-.prj-icon-btn-danger {
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.2) !important;
-}
-
-.prj-icon-btn-danger:hover {
-  background: #ef4444 !important;
-  color: #fff !important;
-  border-color: #ef4444 !important;
-}
-
-.prj-icon-btn svg {
+.vat-periods-page .vf-actions-cell .prj-icon-btn svg {
   display: block;
   width: 16px;
   height: 16px;
+  color: inherit;
 }
 
-.prj-icon-btn-danger svg {
-  width: 20px;
-  height: 20px;
+.vat-periods-page .vf-actions-cell .prj-icon-btn:hover {
+  background: #7c5cff !important;
+  border-color: #7c5cff !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(124, 92, 255, 0.32) !important;
+}
+
+.vat-periods-page .vf-actions-cell .prj-icon-btn:hover svg {
+  color: #ffffff !important;
+}
+
+/* Danger (delete) — soft pink default, red on hover */
+.vat-periods-page .vf-actions-cell .prj-icon-btn-danger {
+  background: #ffe9ee !important;
+  border-color: #f9c0cc !important;
+  color: #f43f5e !important;
+}
+
+.vat-periods-page .vf-actions-cell .prj-icon-btn-danger:hover {
+  background: #f43f5e !important;
+  border-color: #f43f5e !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 14px rgba(244, 63, 94, 0.32) !important;
+}
+
+.vat-periods-page .vf-actions-cell .prj-icon-btn-danger svg {
+  width: 16px;
+  height: 16px;
 }
 
 .vf-period-table th:last-child,

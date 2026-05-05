@@ -616,12 +616,12 @@ export default function AdminDashboard() {
                             <AreaChart data={monthlyTrendData} margin={{ top: 8, right: 16, left: 16, bottom: 8 }}>
                                 <defs>
                                     <linearGradient id="gradPages" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#111" stopOpacity={0.15} />
-                                        <stop offset="95%" stopColor="#111" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#7c5cff" stopOpacity={0.25} />
+                                        <stop offset="95%" stopColor="#7c5cff" stopOpacity={0} />
                                     </linearGradient>
                                     <linearGradient id="gradDocs" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#6b7280" stopOpacity={0.15} />
-                                        <stop offset="95%" stopColor="#6b7280" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#c5b3ff" stopOpacity={0.25} />
+                                        <stop offset="95%" stopColor="#c5b3ff" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid stroke="#ececec" strokeDasharray="3 3" />
@@ -635,8 +635,8 @@ export default function AdminDashboard() {
                                     }}
                                 />
                                 <Legend />
-                                <Area type="monotone" dataKey="pages" name="Pages" stroke="#111" fill="url(#gradPages)" strokeWidth={2} />
-                                <Area type="monotone" dataKey="documents" name="Documents" stroke="#6b7280" fill="url(#gradDocs)" strokeWidth={2} />
+                                <Area type="monotone" dataKey="pages" name="Pages" stroke="#7c5cff" fill="url(#gradPages)" strokeWidth={2} />
+                                <Area type="monotone" dataKey="documents" name="Documents" stroke="#c5b3ff" fill="url(#gradDocs)" strokeWidth={2} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
@@ -676,8 +676,8 @@ export default function AdminDashboard() {
                                     <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
                                     <Tooltip cursor={{ fill: "rgba(0,0,0,.04)" }} contentStyle={{ borderRadius: 8 }} />
                                     <Legend verticalAlign="top" wrapperStyle={{ paddingBottom: 8 }} />
-                                    <Bar dataKey="documents" name="Documents" fill="#111111" radius={[6, 6, 0, 0]} />
-                                    <Bar dataKey="pages" name="Pages" fill="#6b7280" radius={[6, 6, 0, 0]} />
+                                    <Bar dataKey="documents" name="Documents" fill="#7c5cff" radius={[6, 6, 0, 0]} />
+                                    <Bar dataKey="pages" name="Pages" fill="#c5b3ff" radius={[6, 6, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
@@ -733,8 +733,8 @@ export default function AdminDashboard() {
                                     <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
                                     <Tooltip cursor={{ fill: "rgba(0,0,0,.04)" }} contentStyle={{ borderRadius: 8 }} />
                                     <Legend verticalAlign="top" wrapperStyle={{ paddingBottom: 8 }} />
-                                    <Bar dataKey="documents" name="Documents" fill="#111111" radius={[6, 6, 0, 0]} />
-                                    <Bar dataKey="pages" name="Pages" fill="#6b7280" radius={[6, 6, 0, 0]} />
+                                    <Bar dataKey="documents" name="Documents" fill="#7c5cff" radius={[6, 6, 0, 0]} />
+                                    <Bar dataKey="pages" name="Pages" fill="#c5b3ff" radius={[6, 6, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>

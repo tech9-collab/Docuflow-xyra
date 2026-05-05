@@ -159,7 +159,7 @@ export default function VatFiling() {
                       <td>
                         <button
                           type="button"
-                          className="prj-icon-btn"
+                          className="vf-action-btn"
                           onClick={() => handleGoToPeriods(customer)}
                           title="Manage VAT Filing"
                           aria-label="Manage VAT Filing"

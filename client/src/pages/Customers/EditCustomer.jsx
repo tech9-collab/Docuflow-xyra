@@ -338,29 +338,27 @@ export default function EditCustomer() {
 
   return (
     <div className="customer-form-page">
-      <div className="customer-form-head">
-        <div className="customer-form-title-wrap">
-          <h1 className="customer-form-title">Edit Customer</h1>
-          <p className="customer-form-sub">
-            Update customer, business and tax details.
-          </p>
-        </div>
+      <button
+        type="button"
+        className="cf-back-link"
+        onClick={handleCancel}
+      >
+        <ArrowLeft size={16} />
+        Back
+      </button>
 
-        <div className="customer-form-head-actions">
-          <button type="button" className="btn ghost" onClick={handleCancel}>
-            <ArrowLeft size={16} /> Back
-          </button>
-
-          <button
-            className="btn btn-black"
-            type="submit"
-            form="edit-customer-form"
-            disabled={saving}
-          >
-            <Save size={16} /> {saving ? "Saving..." : "Save Changes"}
-          </button>
-        </div>
+      <div className="cf-breadcrumb">
+        <span className="cf-breadcrumb-link" onClick={handleCancel}>
+          Customers
+        </span>
+        <span className="cf-breadcrumb-sep">›</span>
+        <span className="cf-breadcrumb-current">Edit</span>
       </div>
+
+      <h1 className="cf-page-title">Edit Customer</h1>
+      <p className="cf-page-sub">
+        Update customer, business and tax details.
+      </p>
 
       {error && <div className="alert alert-error">{error}</div>}
 
@@ -1041,6 +1039,24 @@ export default function EditCustomer() {
             </div>
           </div>
         </section>
+
+        <div className="cf-actions">
+          <button
+            type="button"
+            className="cf-btn cf-btn-secondary"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="cf-btn cf-btn-primary"
+            disabled={saving}
+          >
+            <Save size={16} />
+            {saving ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
       </form>
     </div>
   );

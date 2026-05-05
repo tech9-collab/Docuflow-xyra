@@ -385,24 +385,27 @@ export default function AddCustomer() {
 
   return (
     <div className="customer-form-page">
-      <div className="customer-form-head">
-        <div className="customer-form-title-wrap">
-          <h1 className="customer-form-title">Add Customer</h1>
-          <p className="customer-form-sub">
-            Capture customer, business and tax details for VAT / CT projects.
-          </p>
-        </div>
-        <div className="customer-form-head-actions">
-          <button type="button" className="btn ghost" onClick={handleCancel}>
-            <ArrowLeft size={16} />
-            Back
-          </button>
-          <button type="submit" form="customer-form" className="btn btn-black">
-            <Save size={16} />
-            Save Customer
-          </button>
-        </div>
+      <button
+        type="button"
+        className="cf-back-link"
+        onClick={handleCancel}
+      >
+        <ArrowLeft size={16} />
+        Back
+      </button>
+
+      <div className="cf-breadcrumb">
+        <span className="cf-breadcrumb-link" onClick={handleCancel}>
+          Customers
+        </span>
+        <span className="cf-breadcrumb-sep">›</span>
+        <span className="cf-breadcrumb-current">Create</span>
       </div>
+
+      <h1 className="cf-page-title">Add Customer</h1>
+      <p className="cf-page-sub">
+        Capture customer, business and tax details for VAT / CT projects.
+      </p>
 
       <form id="customer-form" onSubmit={handleSubmit}>
         {/* 1) BASIC DETAILS */}
@@ -1117,6 +1120,20 @@ export default function AddCustomer() {
             </div>
           </div>
         </section>
+
+        <div className="cf-actions">
+          <button
+            type="button"
+            className="cf-btn cf-btn-secondary"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+          <button type="submit" className="cf-btn cf-btn-primary">
+            <Save size={16} />
+            Save Customer
+          </button>
+        </div>
       </form>
     </div>
   );

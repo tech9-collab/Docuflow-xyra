@@ -1,41 +1,125 @@
 .customer-form-page {
-  display: grid;
-  gap: 18px;
-  padding: 16px;
+  padding: 28px 32px;
+  max-width: 1280px;
+  margin: 0 auto;
   background: #f9fafb;
+  color: #1a1a1a;
 }
 
-/* Header */
-.customer-form-head {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: end;
-  gap: 12px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.customer-form-title-wrap {
-  display: grid;
-  gap: 4px;
-}
-
-.customer-form-title {
-  margin: 0;
-  color: #0f172a;
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.customer-form-sub {
-  margin: 0;
-  color: #6b7280;
-  font-size: 13px;
-}
-
-.customer-form-head-actions {
-  display: flex;
+/* Back link — purple text-only, like Create User */
+.cf-back-link {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: #7c5cff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 18px;
+  transition: color 0.2s ease;
+}
+
+.cf-back-link:hover {
+  color: #5a3fd6;
+}
+
+/* Breadcrumb */
+.cf-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #9ca3af;
+  margin-bottom: 12px;
+}
+
+.cf-breadcrumb-link {
+  color: #9ca3af;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.cf-breadcrumb-link:hover {
+  color: #6b7280;
+}
+
+.cf-breadcrumb-sep {
+  color: #d1d5db;
+  font-size: 16px;
+}
+
+.cf-breadcrumb-current {
+  color: #6b7280;
+}
+
+/* Page title */
+.cf-page-title {
+  margin: 0 0 8px;
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.5px;
+}
+
+.cf-page-sub {
+  margin: 0 0 24px;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+/* Footer action strip — like Create User */
+.cf-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 0 8px;
+  margin-top: 8px;
+}
+
+.cf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.cf-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.cf-btn-secondary {
+  background: #ffffff;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.cf-btn-secondary:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.cf-btn-primary {
+  background: #7c5cff;
+  color: #ffffff;
+  border-color: #7c5cff;
+  box-shadow: 0 1px 2px rgba(124, 92, 255, 0.3);
+}
+
+.cf-btn-primary:hover:not(:disabled) {
+  background: #6a47ff;
+  border-color: #6a47ff;
+  box-shadow: 0 4px 10px rgba(124, 92, 255, 0.35);
+  transform: translateY(-1px);
 }
 
 /* Buttons */

@@ -95,10 +95,10 @@ export default function Customers() {
         <div className="customers-head-actions">
           <button
             type="button"
-            className="btn btn-black"
+            className="customers-add-btn"
             onClick={handleAddCustomer}
           >
-            <Plus size={16} />
+            <Plus size={14} />
             Add Customer
           </button>
         </div>
@@ -115,6 +115,9 @@ export default function Customers() {
                 : `Showing ${from}-${to} of ${totalItems} customers`}
             </p>
           </div>
+          <span className="customers-count">
+            {totalItems} total customer{totalItems === 1 ? "" : "s"}
+          </span>
         </div>
 
         <div className="tbl-scroller">

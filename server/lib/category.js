@@ -111,3 +111,105 @@ export function resolveInvoiceCategory({
 export function resolveWithOverrides(candidate, haystack) {
   return applyOverrides(candidate, haystack);
 }
+
+// ---------- Sales / Purchase / Others top-level grouping ----------
+
+export const TRANSACTION_GROUPS = ["Sales", "Purchase", "Others"];
+
+const SALES_CATEGORY_HINTS = new Set([
+  "Sales order",
+  "Sales summary",
+  "Tax Invoice",
+  "Proforma Tax Invoice",
+  "Proforma Invoice",
+  "Commercial invoice",
+  "Cash Invoice",
+  "Invoice",
+  "Receipt",
+  "Receipt Voucher",
+]);
+
+const PURCHASE_CATEGORY_HINTS = new Set([
+  "Purchase order",
+  "Purchase summary",
+  "Bill",
+  "Payment Voucher",
+  "Remittance advice",
+]);
+
+const SALES_KEYWORDS = [
+  /\bsales\s+order\b/i,
+  /\bsales\s+invoice\b/i,
+  /\bsales\s+receipt\b/i,
+  /\bsold\s+to\b/i,
+  /\bbill\s+to\b/i,
+  /\bcustomer(?:\s+name)?\b/i,
+  /\bclient(?:\s+name)?\b/i,
+];
+
+const PURCHASE_KEYWORDS = [
+  /\bpurchase\s+order\b/i,
+  /\bpo\s*number\b/i,
+  /\bp\.?o\.?\s*#/i,
+  /\bsupplier(?:\s+name)?\b/i,
+  /\bvendor(?:\s+name)?\b/i,
+  /\bbought\s+from\b/i,
+  /\bship\s+from\b/i,
+  /\bprocurement\b/i,
+];
+
+/**
+ * Classify a document into Sales | Purchase | Others.
+ * If signals from both Sales and Purchase appear, default to Others.
+ *
+ * @param {object} args
+ * @param {string} [args.transactionType]  - "sales" | "purchase" | "unknown"
+ * @param {string} [args.documentCategory] - one of CATEGORIES (e.g. "Tax Invoice", "Bill")
+ * @param {string} [args.companyTrn]
+ * @param {string} [args.vendorTrn]
+ * @param {string} [args.customerTrn]
+ * @param {string} [args.text]             - any document text for keyword fallback
+ * @returns {"Sales"|"Purchase"|"Others"}
+ */
+export function classifySalesPurchase({
+  transactionType,
+  documentCategory,
+  companyTrn,
+  vendorTrn,
+  customerTrn,
+  text,
+} = {}) {
+  // 1) Trust an explicit model classification.
+  const tt = String(transactionType || "").trim().toLowerCase();
+  if (tt === "sales" || tt === "sale") return "Sales";
+  if (tt === "purchase" || tt === "purchases") return "Purchase";
+
+  // 2) Owner-based hint: if we know the company's TRN, match it to vendor/customer.
+  const norm = (s) => String(s || "").replace(/\D/g, "");
+  const co = norm(companyTrn);
+  if (co.length === 15) {
+    const vendorMatch = norm(vendorTrn) === co;
+    const customerMatch = norm(customerTrn) === co;
+    if (vendorMatch && !customerMatch) return "Sales";
+    if (customerMatch && !vendorMatch) return "Purchase";
+  }
+
+  // 3) Document-category hint.
+  if (documentCategory) {
+    const isSalesCat = SALES_CATEGORY_HINTS.has(documentCategory);
+    const isPurchaseCat = PURCHASE_CATEGORY_HINTS.has(documentCategory);
+    if (isSalesCat && !isPurchaseCat) return "Sales";
+    if (isPurchaseCat && !isSalesCat) return "Purchase";
+  }
+
+  // 4) Keyword fallback. Ambiguous (terms from both) → Others.
+  if (text) {
+    const hasSales = SALES_KEYWORDS.some((re) => re.test(text));
+    const hasPurchase = PURCHASE_KEYWORDS.some((re) => re.test(text));
+    if (hasSales && !hasPurchase) return "Sales";
+    if (hasPurchase && !hasSales) return "Purchase";
+  }
+
+  // 5) Nothing matched, or conflicting signals → Others.
+  return "Others";
+}

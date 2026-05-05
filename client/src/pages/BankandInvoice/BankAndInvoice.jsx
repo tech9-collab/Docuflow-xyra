@@ -977,7 +977,7 @@ export function VatFilingComposer({
         <div className="imp2-header-actions">
           <button
             type="button"
-            className="prj-btn prj-btn-outline vf-back-btn"
+            className="bi-back-btn"
             onClick={() => {
               if (embedded && onClose) {
                 onClose();
@@ -996,7 +996,7 @@ export function VatFilingComposer({
           </button>
 
           <button
-            className="btn btn-black"
+            className="bi-import-btn"
             onClick={handleImport}
             disabled={polling}
           >
@@ -1050,11 +1050,11 @@ export function VatFilingComposer({
               <span className="count-pill purchase">{invFiles.length}</span>
             </div>
             <button
-              className="btn btn-black btn-add-files"
+              className="bi-add-files-btn"
               onClick={openInvPicker}
               disabled={polling}
             >
-              <Upload size={16} /> Add Files
+              <Upload size={14} /> Add Files
             </button>
             <input
               ref={invoicePickerRef}
@@ -1183,7 +1183,7 @@ export function VatFilingComposer({
                 <div className="vf-res-block">
                   <div className="vf-res-title">Combined VAT Filing</div>
                   <button
-                    className="btn btn-black"
+                    className="bi-modal-primary"
                     onClick={gotoCombinedPreview}
                   >
                     {onCombinedPreviewReady ? "Update Preview" : "View Combined Preview"}
@@ -1198,7 +1198,7 @@ export function VatFilingComposer({
             </div>
             <div className="vf-modal-ft">
               <button
-                className="prj-btn prj-btn-outline"
+                className="bi-modal-secondary"
                 onClick={() => setResultsModal(null)}
               >
                 Close

@@ -146,12 +146,12 @@ export default function VatPeriodRuns() {
   }
 
   return (
-    <div className="vat-periods-page">
+    <div className="vat-periods-page vat-runs-page">
       {/* Header */}
-      <div className="page-header">
+      <div className="page-header vfp-page-header">
         <div>
-          <h2>VAT Filing – Conversions</h2>
-          <p>All saved conversions for this filing period.</p>
+          <h2 className="vfp-page-title">VAT Filing – Conversions</h2>
+          <p className="vfp-page-sub">All saved conversions for this filing period.</p>
           {customer && (
             <p className="vf-runs-customer">
               Customer: <strong>{customer.customer_name}</strong>{" "}
@@ -164,10 +164,10 @@ export default function VatPeriodRuns() {
         <div>
           <button
             type="button"
-            className="prj-btn prj-btn-outline vf-back-btn"
+            className="vfp-back-btn"
             onClick={handleBackToPeriods}
           >
-            <ArrowLeft size={16} style={{ marginRight: 4 }} />
+            <ArrowLeft size={14} />
             Back to periods
           </button>
         </div>
@@ -210,10 +210,10 @@ export default function VatPeriodRuns() {
                     <td>{formatDateTime(run.created_at)}</td>
                     <td>{formatDateTime(run.updated_at)}</td>
                     <td>
-                      <div className="vf-run-actions">
+                      <div className="vf-run-actions vfp-action-row">
                         <button
                           type="button"
-                          className="prj-icon-btn"
+                          className="vfp-icon-btn"
                           title="View this conversion"
                           aria-label="View conversion"
                           onClick={() => openRunPreview(run)}
@@ -223,7 +223,7 @@ export default function VatPeriodRuns() {
 
                         <button
                           type="button"
-                          className="prj-icon-btn"
+                          className="vfp-icon-btn"
                           title="Add Files to this conversion"
                           aria-label="Add Files"
                           onClick={() => {
@@ -237,7 +237,7 @@ export default function VatPeriodRuns() {
 
                         <button
                           type="button"
-                          className="prj-icon-btn"
+                          className="vfp-icon-btn"
                           title="Edit this conversion"
                           aria-label="Edit conversion"
                           onClick={() => openRunEdit(run)}
@@ -247,7 +247,7 @@ export default function VatPeriodRuns() {
 
                         <button
                           type="button"
-                          className="prj-icon-btn prj-icon-danger"
+                          className="vfp-icon-btn vfp-icon-danger"
                           title="Delete this conversion"
                           aria-label="Delete conversion"
                           onClick={() => handleDeleteRun(run)}

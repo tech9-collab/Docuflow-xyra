@@ -4,6 +4,100 @@
   gap: 18px;
 }
 
+/* ====== Purple-themed buttons (match Customers theme) ====== */
+
+/* Import button — primary purple */
+.inv-import-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1px solid #7c5cff;
+  background: #7c5cff;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.15;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(124, 92, 255, 0.22);
+  transition: all 0.2s ease;
+}
+
+.inv-import-btn:hover:not(:disabled) {
+  background: #6a48f5;
+  border-color: #6a48f5;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(124, 92, 255, 0.32);
+}
+
+.inv-import-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Add Files button — primary purple */
+.inv-add-files-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #7c5cff;
+  background: #7c5cff;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.15;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(124, 92, 255, 0.22);
+  transition: all 0.2s ease;
+}
+
+.inv-add-files-btn:hover:not(:disabled) {
+  background: #6a48f5;
+  border-color: #6a48f5;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(124, 92, 255, 0.32);
+}
+
+.inv-add-files-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Inputs — purple focus ring */
+.imp2 .input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ece8f7;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 14px;
+  color: #2e2749;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.imp2 .input:focus {
+  outline: none;
+  border-color: #7c5cff;
+  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.15);
+}
+
+.imp2 .input:disabled {
+  background: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
 .imp2-header {
   display: grid;
   grid-template-columns: 1fr auto;

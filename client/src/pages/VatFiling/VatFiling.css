@@ -7,11 +7,192 @@
 
 /* Customer list page wrapper */
 .vat-filing-page {
-  color: #000;
-  background: transparent;
-  padding: 12px 16px;
-  max-width: 1320px;
+  color: #1a1a1a;
+  background: linear-gradient(135deg, #fafbfc 0%, #f7f9fc 100%);
+  padding: 24px;
+  max-width: 1400px;
   margin: 0 auto;
+  min-height: 100vh;
+}
+
+/* Page header — match Customers page */
+.vat-filing-page .page-header {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.vat-filing-page .page-header h2 {
+  margin: 0 0 6px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.4px;
+}
+
+.vat-filing-page .page-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* Action button — purple icon pill */
+.vf-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid #c5b3ff;
+  background: #f3eeff;
+  color: #7c5cff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0 auto;
+}
+
+.vf-action-btn svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  color: inherit;
+}
+
+.vf-action-btn:hover {
+  background: #7c5cff !important;
+  border-color: #7c5cff !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(124, 92, 255, 0.4);
+}
+
+.vf-action-btn:hover svg {
+  color: #ffffff !important;
+}
+
+/* Search input */
+.vat-filing-page .vf-search-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #ece8f7;
+  background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vat-filing-page .vf-search-input:focus-within {
+  border-color: #7c5cff;
+  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.15);
+}
+
+.vat-filing-page .vf-search-input svg {
+  color: #7c5cff;
+}
+
+.vat-filing-page .vf-search-input input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  color: #2e2749;
+  background: transparent;
+}
+
+.vat-filing-page .vf-search-input input::placeholder {
+  color: #9ca3af;
+}
+
+.vat-filing-page .vf-small-muted {
+  font-size: 12px;
+  color: #6b6483;
+  margin: 6px 0 0;
+}
+
+/* Customer list card */
+.vat-filing-page .vf-customers-only {
+  background: #ffffff;
+  border: 1px solid #ece8f7;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(16, 11, 43, 0.04);
+}
+
+/* Purple table headers */
+.vat-filing-page .tbl.nice thead th,
+.vat-filing-page .customers-table thead th {
+  background: #faf8ff !important;
+  color: #7c5cff !important;
+  font-weight: 700;
+  text-align: left;
+  border-bottom: 1px solid #ece8f7;
+  padding: 14px 12px;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  white-space: normal;
+  line-height: 1.25;
+}
+
+.vat-filing-page .tbl.nice tbody td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #f3f0fa;
+  vertical-align: middle;
+  color: #2e2749;
+  font-size: 13px;
+  background: #ffffff;
+}
+
+.vat-filing-page .tbl-scroller {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid #ece8f7;
+}
+
+.vat-filing-page .tbl-scroller::-webkit-scrollbar-thumb {
+  background: #d8d2ee;
+  border-radius: 8px;
+}
+
+.vat-filing-page .tbl-scroller::-webkit-scrollbar-track {
+  background: #faf8ff;
+}
+
+/* Pagination */
+.vat-filing-page .customers-pagination {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #ece8f7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #6b6483;
+}
+
+.vat-filing-page .pager-btn {
+  border-radius: 8px;
+  border: 1px solid #ece8f7;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #ffffff;
+  color: #6b6483;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vat-filing-page .pager-btn:hover:not([disabled]) {
+  background: #f3eeff;
+  border-color: #c5b3ff;
+  color: #7c5cff;
+}
+
+.vat-filing-page .pager-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Action column (customer table only) */

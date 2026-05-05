@@ -2,22 +2,110 @@
 
 /* --- page wrapper (same as periods) --- */
 .vat-periods-page {
-  padding: 12px 16px;
-  max-width: 1320px;
+  padding: 24px;
+  max-width: 1400px;
   margin: 0 auto;
-  background: transparent;
-  color: #000;
+  background: linear-gradient(135deg, #fafbfc 0%, #f7f9fc 100%);
+  min-height: 100vh;
+  color: #1a1a1a;
+}
+
+/* Customer line under the title */
+.vf-runs-customer {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: #6b6483;
+}
+
+.vf-runs-customer strong {
+  color: #1b0f3a;
+}
+
+.vf-runs-trn {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 10px;
+  background: #f3eeff;
+  color: #7c5cff;
+  border: 1px solid #e3d7ff;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Empty state */
+.vat-periods-page .vf-empty {
+  padding: 28px;
+  border-radius: 10px;
+  border: 1px dashed #e8e0fb;
+  background: #faf8ff;
+  text-align: center;
+  font-size: 14px;
+  color: #6b6483;
+}
+
+/* Action icon buttons — lavender default, purple hover */
+.vfp-action-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vfp-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid #c5b3ff;
+  background: #f3eeff;
+  color: #7c5cff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vfp-icon-btn svg {
+  width: 16px;
+  height: 16px;
+  color: inherit;
+}
+
+.vfp-icon-btn:hover {
+  background: #7c5cff;
+  border-color: #7c5cff;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(124, 92, 255, 0.32);
+}
+
+.vfp-icon-btn:hover svg {
+  color: #ffffff;
+}
+
+.vfp-icon-danger {
+  background: #ffe9ee;
+  border-color: #f9c0cc;
+  color: #f43f5e;
+}
+
+.vfp-icon-danger:hover {
+  background: #f43f5e;
+  border-color: #f43f5e;
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(244, 63, 94, 0.32);
 }
 
 /* Period-style card reused for runs */
 .vf-period-card {
-  background: #fff;
-  border-radius: 14px;
-  border: 1px solid #e5e7eb;
-  padding: 14px;
-  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.05);
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #ece8f7;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(16, 11, 43, 0.04);
   display: grid;
-  gap: 10px;
+  gap: 16px;
 }
 
 /* Slight extra spacing for runs card */

@@ -1,5 +1,133 @@
 /* src/pages/vat/VatFillingPreview.css */
 
+/* ====== Purple-themed buttons (match Customers theme) ====== */
+
+/* Primary purple — Download / Add More Files / Save Draft */
+.vfp-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #7c5cff;
+  background: #7c5cff;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.15;
+  box-shadow: 0 4px 10px rgba(124, 92, 255, 0.22);
+  transition: all 0.2s ease;
+}
+
+.vfp-primary-btn:hover:not(:disabled) {
+  background: #6a48f5;
+  border-color: #6a48f5;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(124, 92, 255, 0.32);
+}
+
+.vfp-primary-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Secondary outlined — Back to filing */
+.vfp-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.vfp-secondary-btn:hover {
+  background: #f3eeff;
+  border-color: #c5b3ff;
+  color: #7c5cff;
+}
+
+/* Document side-card buttons — Open Preview / Download */
+.vfp-doc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #7c5cff;
+  background: #7c5cff;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(124, 92, 255, 0.22);
+  transition: all 0.2s ease;
+}
+
+.vfp-doc-btn:hover {
+  background: #6a48f5;
+  border-color: #6a48f5;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(124, 92, 255, 0.32);
+}
+
+/* Tab strip — recolor "seg-black" pill so active tab is purple, not black */
+.result-page .seg.seg-black {
+  background: #ffffff;
+  border: 1px solid #ece8f7;
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.result-page .seg.seg-black .seg-btn {
+  background: transparent;
+  color: #6b6483;
+  border: none;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.result-page .seg.seg-black .seg-btn:hover:not(.active) {
+  background: #f3eeff;
+  color: #7c5cff;
+}
+
+.result-page .seg.seg-black .seg-btn.active {
+  background: #7c5cff;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(124, 92, 255, 0.3);
+}
+
+/* Table headers — purple to match Customers */
+.result-page .tbl thead th,
+.result-page .tbl.nice thead th {
+  background: #faf8ff !important;
+  color: #7c5cff !important;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
 /* Layout around the table */
 .result-page {
   display: grid;
@@ -129,36 +257,39 @@
   top: calc(100% + 6px);
   right: 0;
   z-index: 30;
-  min-width: 240px;
+  min-width: 260px;
   padding: 6px;
-  background: #111827;
-  border: 1px solid #111827;
+  background: #ffffff;
+  border: 1px solid #ece8f7;
   border-radius: 12px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 28px rgba(27, 15, 58, 0.18);
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 .download-menu-item {
   text-align: left;
-  padding: 9px 12px;
+  padding: 10px 14px;
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #fff;
+  color: #2e2749;
   font-size: 14px;
+  font-weight: 500;
   line-height: 1.2;
   cursor: pointer;
-  transition: background 120ms ease;
+  transition: all 0.15s ease;
   white-space: nowrap;
 }
 .download-menu-item:hover,
 .download-menu-item:focus-visible {
-  background: #1f2937;
+  background: #f3eeff;
+  color: #7c5cff;
   outline: none;
 }
 .download-menu-item:active {
-  background: #0a0a0a;
+  background: #e8defc;
+  color: #6a48f5;
 }
 
 /* Segmented control */
@@ -361,6 +492,13 @@
   justify-content: flex-end;
   gap: 8px;
   margin-top: 8px;
+}
+
+/* Save Draft moved to the top-right of the result card */
+.result-card-top {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 0 12px;
 }
 
 .result-card-body {

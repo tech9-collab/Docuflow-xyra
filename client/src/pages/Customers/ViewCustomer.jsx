@@ -87,27 +87,40 @@ export default function ViewCustomer() {
 
   return (
     <div className="customer-view-page">
-      {/* Header */}
-      <div className="customer-view-head">
-        <div className="customer-view-title-wrap">
-          <h1 className="customer-view-title">Customer Details</h1>
-          <p className="customer-view-sub">
+      {/* Header — back link + breadcrumb + title */}
+      <button
+        type="button"
+        className="cv-back-link"
+        onClick={() => navigate("/customers")}
+      >
+        <ArrowLeft size={16} />
+        Back
+      </button>
+
+      <div className="cv-breadcrumb">
+        <span
+          className="cv-breadcrumb-link"
+          onClick={() => navigate("/customers")}
+        >
+          Customers
+        </span>
+        <span className="cv-breadcrumb-sep">›</span>
+        <span className="cv-breadcrumb-current">Details</span>
+      </div>
+
+      <div className="cv-title-row">
+        <div>
+          <h1 className="cv-page-title">Customer Details</h1>
+          <p className="cv-page-sub">
             View basic, business and tax information.
           </p>
         </div>
-
-        <div className="customer-view-head-actions">
-          <button className="btn ghost" onClick={() => navigate("/customers")}>
-            <ArrowLeft size={16} /> Back
-          </button>
-
-          <button
-            className="btn btn-black"
-            onClick={() => navigate(`/customers/${id}/edit`)}
-          >
-            <Pencil size={16} /> Edit
-          </button>
-        </div>
+        <button
+          className="cv-edit-btn"
+          onClick={() => navigate(`/customers/${id}/edit`)}
+        >
+          <Pencil size={14} /> Edit
+        </button>
       </div>
 
       {/* BASIC DETAILS */}

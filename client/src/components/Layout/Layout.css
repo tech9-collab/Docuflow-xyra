@@ -1,7 +1,7 @@
 /* Light theme shell */
 .app-shell {
   display: grid;
-  grid-template-columns: 280px 1fr; /* expanded */
+  grid-template-columns: 250px 1fr; /* expanded */
   min-height: 100dvh;
   background: #f7f8fb;
   color: #0f172a;

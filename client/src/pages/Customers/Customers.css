@@ -1,197 +1,214 @@
 /* src/pages/Customers/Customers.css */
+/* Restyled to match User Management (EmployeeManagement) design language. */
 
 .customers-page {
-  display: grid;
-  gap: 16px;
-  padding: 16px;
-  background: #f9fafb;
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #fafbfc 0%, #f7f9fc 100%);
+  min-height: 100vh;
 }
 
 /* Header */
 .customers-head {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: end;
-  gap: 12px;
-  padding-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
   border-bottom: 1px solid #e5e7eb;
-  background: transparent;
 }
 
 .customers-title-wrap {
   display: grid;
-  gap: 4px;
+  gap: 8px;
 }
 
 .customers-title {
   margin: 0;
-  color: #0f172a;
-  font-size: 18px;
-  font-weight: 800;
+  color: #333333;
+  font-size: 32px;
+  font-weight: 700;
 }
 
 .customers-sub {
   margin: 0;
-  color: #6b7280;
-  font-size: 13px;
+  color: #666666;
+  font-size: 16px;
 }
 
 .customers-head-actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
-/* Primary button */
-.btn {
+/* Primary button — purple to match Add Department */
+.customers-add-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid #111827;
-  background: #111827;
-  color: #fff;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #7c5cff;
+  background: #7c5cff;
+  color: #ffffff;
   cursor: pointer;
   white-space: nowrap;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
   line-height: 1.15;
-  transition: background 120ms ease, transform 120ms ease, opacity 120ms ease;
+  box-shadow: 0 4px 10px rgba(124, 92, 255, 0.22);
+  transition: all 0.2s ease;
 }
 
-.btn:hover {
-  background: #000;
+.customers-add-btn:hover {
+  background: #6a48f5;
+  border-color: #6a48f5;
+  color: #ffffff;
   transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(124, 92, 255, 0.38);
 }
 
-.btn:active {
+.customers-add-btn:active {
   transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(124, 92, 255, 0.28);
 }
 
-.btn[disabled] {
+.customers-add-btn[disabled] {
   opacity: 0.55;
   cursor: not-allowed;
-}
-
-.btn-black {
-  background: #000;
-  border-color: #000;
-  color: #fff;
-}
-
-.btn-black:hover {
-  background: #0a0a0a;
+  transform: none;
 }
 
 /* Card */
 .customers-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.05);
+  background: #ffffff;
+  border: 1px solid #ece8f7;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(16, 11, 43, 0.04);
   display: grid;
-  gap: 12px;
+  gap: 16px;
 }
 
 .customers-card-head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ece8f7;
 }
 
 .customers-card-title {
   margin: 0;
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 700;
-  color: #111827;
+  color: #1b0f3a;
 }
 
 .customers-card-sub {
   margin: 4px 0 0;
-  font-size: 12px;
+  font-size: 13px;
   color: #6b7280;
+}
+
+/* Count badge — mirrors .employee-count */
+.customers-count {
+  background: #f3eeff;
+  color: #7c5cff;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: 1px solid #e3d7ff;
 }
 
 /* Table wrapper */
 .tbl-scroller {
-  max-height: 70vh;
-  overflow: auto;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid #ece8f7;
 }
 
-/* Table base */
+/* Table base — exact match to Department/User Management table */
 .tbl {
-  table-layout: fixed;
+  table-layout: auto;
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: #fff;
+  border-collapse: collapse;
+  background: #ffffff;
+  font-size: 14px;
 }
 
-/* Header & cells */
-.tbl.nice thead th {
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  background: #f7f7fb;
-  color: #1f2937;
+/* Header cells */
+.tbl.nice thead {
+  background-color: #faf8ff;
+}
+
+.customers-card .tbl.nice thead th,
+.customers-table thead th {
+  background: #faf8ff !important;
+  color: #7c5cff !important;
   font-weight: 700;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 10px 10px;
+  border-bottom: 1px solid #ece8f7;
+  padding: 14px 12px;
   font-size: 13px;
+  letter-spacing: 0.2px;
   white-space: normal;
   line-height: 1.25;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  min-width: 100px;
 }
 
+/* Body cells */
 .tbl.nice tbody td {
-  padding: 10px 10px;
-  border-bottom: 1px solid #f1f5f9;
+  padding: 14px 12px;
+  border-bottom: 1px solid #f3f0fa;
+  vertical-align: middle;
+  color: #2e2749;
+  font-size: 13px;
+  line-height: 1.45;
+  background: #ffffff;
   white-space: normal;
   word-wrap: break-word;
   word-break: break-word;
-  vertical-align: middle; /* center content vertically */
-  font-size: 13px;
-  line-height: 1.35;
-  background: #fff;
 }
 
-.tbl.nice tbody tr:nth-child(odd) td {
-  background: #fcfdff;
+.tbl.nice tbody tr {
+  transition: background 0.15s ease;
 }
 
 .tbl.nice tbody tr:hover td {
-  background: #f8fbff;
+  background: #faf8ff;
+}
+
+.tbl.nice tbody tr:last-child td {
+  border-bottom: none;
 }
 
 /* No column – narrow & centered */
 .customers-table .col-no {
-  text-align: center;
+  text-align: left;
   font-variant-numeric: tabular-nums;
-  min-width: 48px;
-  max-width: 48px;
+  width: 50px;
+  color: #2e2749;
+  font-weight: 600;
 }
 
 /* Action column */
 .customers-action-col,
 .customers-action-cell {
-  width: 140px;
-  min-width: 140px;
-  text-align: center;
+  width: 110px;
+  text-align: left;
 }
 
 /* No data */
 .customers-no-data {
   text-align: center;
-  padding: 30px 0;
+  padding: 48px 0;
   color: #6b7280;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 /* Scrollbars */
@@ -200,80 +217,90 @@
   width: 10px;
 }
 .tbl-scroller::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #d8d2ee;
   border-radius: 8px;
 }
 .tbl-scroller::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #faf8ff;
 }
 
 /* Action icon buttons row */
 .customers-action-buttons {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 8px;
-  flex-wrap: nowrap;         /* keep all 3 in one line */
+  flex-wrap: nowrap;
 }
 
-/* Small round icon button */
-.icon-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  border: 1px solid #e5e7eb;
-  background: #f9fafb;
-  padding: 0;
+/* Icon button — lavender default, purple hover */
+.customers-page .customers-action-buttons .icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #c5b3ff;
+  border-radius: 8px;
+  background: #f3eeff;
+  color: #7c5cff;
   cursor: pointer;
-  transition:
-    background 120ms ease,
-    border-color 120ms ease,
-    transform 120ms ease,
-    box-shadow 120ms ease;
+  transition: all 0.2s ease;
 }
 
-.icon-btn svg {
+.customers-page .customers-action-buttons .icon-btn svg {
   width: 14px;
   height: 14px;
-  color: #111827;
+  color: inherit;
 }
 
-.icon-btn:hover {
-  background: #f3f4f6;
-  border-color: #d1d5db;
+.customers-page .customers-action-buttons .icon-btn:hover {
+  background: #7c5cff !important;
+  border-color: #7c5cff !important;
+  color: #ffffff !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 6px 14px rgba(124, 92, 255, 0.32);
 }
 
-/* Delete icon */
-.icon-btn.danger {
-  background: #fef2f2;
-  border-color: #fecaca;
+.customers-page .customers-action-buttons .icon-btn:hover svg {
+  color: #ffffff !important;
 }
 
-.icon-btn.danger svg {
-  color: #b91c1c;
+/* Delete (Danger) — soft pink default, red hover */
+.customers-page .customers-action-buttons .icon-btn.danger {
+  background: #ffe9ee;
+  border-color: #f9c0cc;
+  color: #f43f5e;
 }
 
-.icon-btn.danger:hover {
-  background: #fee2e2;
-  border-color: #fca5a5;
+.customers-page .customers-action-buttons .icon-btn.danger:hover {
+  background: #f43f5e !important;
+  border-color: #f43f5e !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 14px rgba(244, 63, 94, 0.32);
+}
+
+.customers-page .customers-action-buttons .icon-btn.danger:hover svg {
+  color: #ffffff !important;
+}
+
+.customers-page .customers-action-buttons .icon-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Pagination */
 .customers-pagination {
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid #e5e7eb;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #ece8f7;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
   font-size: 13px;
-  color: #6b7280;
+  color: #6b6483;
 }
 
 .customers-pagination-info {
@@ -287,30 +314,69 @@
 }
 
 .pager-btn {
-  border-radius: 999px;
-  border: 1px solid #d1d5db;
-  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #ece8f7;
+  padding: 8px 14px;
   font-size: 13px;
-  background: #fff;
-  color: #111827;
+  font-weight: 600;
+  background: #ffffff;
+  color: #6b6483;
   cursor: pointer;
-  transition: background 120ms ease, border-color 120ms ease,
-    transform 120ms ease;
+  transition: all 0.15s ease;
 }
 
 .pager-btn:hover {
-  background: #f3f4f6;
-  border-color: #9ca3af;
-  transform: translateY(-1px);
+  background: #f3eeff;
+  border-color: #c5b3ff;
+  color: #7c5cff;
 }
 
 .pager-btn[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
+  background: #ffffff;
+  color: #6b6483;
+  border-color: #ece8f7;
 }
 
 .pager-page {
   font-size: 13px;
   color: #4b5563;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .customers-page {
+    padding: 16px;
+  }
+
+  .customers-head {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+  }
+
+  .customers-title {
+    font-size: 24px;
+  }
+
+  .customers-card-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .tbl.nice thead th,
+  .tbl.nice tbody td {
+    padding: 10px 8px;
+  }
+
+  .customers-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
 }

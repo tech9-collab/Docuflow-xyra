@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const API_BASE = (import.meta.env.VITE_API_BASE || "https://apivatfiling.thexyra.com/api").replace(/\/$/, "");
+export const API_BASE = (import.meta.env.VITE_API_BASE || "https://apivatfiling.thexyra.ai/api").replace(/\/$/, "");
 export const BACKEND_ORIGIN = API_BASE.replace(/\/api$/i, "");
 
 export const api = axios.create({

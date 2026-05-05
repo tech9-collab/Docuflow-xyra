@@ -224,7 +224,7 @@ function ImporterInvoices() {
           </p>
         </div>
         <button
-          className="btn btn-black"
+          className="inv-import-btn"
           onClick={handleImport}
           disabled={polling || !files.length}
           title={!files.length ? "Add files first" : ""}
@@ -277,13 +277,13 @@ function ImporterInvoices() {
                   {files.length}
                 </span>
               </div>
-              {/* Add Files — black button */}
+              {/* Add Files — purple button */}
               <button
-                className="btn btn-black btn-add-files"
+                className="inv-add-files-btn"
                 onClick={openPicker}
                 disabled={polling}
               >
-                <Upload size={16} /> Add Files
+                <Upload size={14} /> Add Files
               </button>
               <input
                 ref={inputRef}
